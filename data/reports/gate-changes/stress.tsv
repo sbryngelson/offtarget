@@ -1,0 +1,92 @@
+cell	signature	old_outcome	verdict	inherited	new_outcome	condition	decision	counts
+stress|clauses-omp-16-1|cce19|0|O2	cce19|wrong_answer|clauses-omp-16-1|checksum=50691 kernels=k0001	wrong_answer|checksum=50691 kernels=k0001	nondeterministic	no	b:correct_on_device a:correct_on_device d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+stress|clauses-omp-16-1|cce20|0|O2	cce20|wrong_answer|clauses-omp-16-1|checksum=50692 kernels=k0001	wrong_answer|checksum=50692 kernels=k0001	nondeterministic	no	c:wrong_answer b:correct_on_device a:correct_on_device d:correct_on_device		nondeterministic_defect	yes
+stress|clauses-omp-16-1|cce20|1|O2	cce20|wrong_answer|clauses-omp-16-1|checksum=50690 kernels=k0001	wrong_answer|checksum=50690 kernels=k0001	nondeterministic	no	b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+stress|clauses-omp-16-1|cce21|0|O2	cce21|wrong_answer|clauses-omp-16-1|checksum=50690 kernels=k0001	wrong_answer|checksum=50690 kernels=k0001	nondeterministic	no	b:wrong_answer a:correct_on_device d:wrong_answer c:correct_on_device		nondeterministic_defect	yes
+stress|clauses-omp-16-1|cce21|1|O2	cce21|wrong_answer|clauses-omp-16-1|checksum=50690 kernels=k0001	wrong_answer|checksum=50690 kernels=k0001	nondeterministic	no				no
+stress|kernels-acc-1720-1|cce21|0|O2	cce21|timeout|kernels-acc-1720-1|compile_timeout	timeout|compile_timeout	nondeterministic	no	c:timeout b:correct_on_device a:correct_on_device d:correct_on_device c:timeout		ours	no
+stress|kernels-acc-1720-1|cce21|1|O2	cce21|timeout|kernels-acc-1720-1|compile_timeout	timeout|compile_timeout	nondeterministic	no	c:correct_on_device c:timeout b:correct_on_device a:timeout d:correct_on_device		ours	no
+stress|lastprivate-omp-1024-1|cce19|0|O2	cce19|capacity|lastprivate-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|lastprivate-omp-1024-1|cce19|1|O2	cce19|capacity|lastprivate-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|lastprivate-omp-1024-1|cce20|0|O2	cce20|capacity|lastprivate-omp-1024-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|lastprivate-omp-1024-1|cce20|1|O2	cce20|capacity|lastprivate-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|lastprivate-omp-1024-1|cce21|0|O2	cce21|capacity|lastprivate-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|lastprivate-omp-1024-1|cce21|1|O2	cce21|capacity|lastprivate-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-acc-310-1|cce19|0|O2	cce19|capacity|map-acc-310-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|map-acc-310-1|cce19|1|O2	cce19|capacity|map-acc-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-acc-310-1|cce20|0|O2	cce20|capacity|map-acc-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-acc-310-1|cce20|1|O2	cce20|capacity|map-acc-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-acc-310-1|cce21|0|O2	cce21|capacity|map-acc-310-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|map-acc-310-1|cce21|1|O2	cce21|capacity|map-acc-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce19_g90|0|O2	cce19_g90|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce19|0|O2	cce19|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce19|1|O2	cce19|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce20_g90|0|O2	cce20_g90|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce20|0|O2	cce20|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce20|1|O2	cce20|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce21_g90|0|O2	cce21_g90|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce21|0|O2	cce21|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|map-omp-310-1|cce21|1|O2	cce21|capacity|map-omp-310-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|mixed-acc-256-1|cce19|0|O2	cce19|capacity|mixed-acc-256-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|mixed-acc-256-1|cce19|1|O2	cce19|capacity|mixed-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|mixed-acc-256-1|cce20|0|O2	cce20|capacity|mixed-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|mixed-acc-256-1|cce20|1|O2	cce20|capacity|mixed-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|mixed-acc-256-1|cce21|0|O2	cce21|capacity|mixed-acc-256-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|mixed-acc-256-1|cce21|1|O2	cce21|capacity|mixed-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-acc-256-1|cce19|0|O2	cce19|capacity|reduction-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-acc-256-1|cce19|1|O2	cce19|capacity|reduction-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-acc-256-1|cce20|0|O2	cce20|capacity|reduction-acc-256-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|reduction-acc-256-1|cce20|1|O2	cce20|capacity|reduction-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-acc-256-1|cce21|0|O2	cce21|capacity|reduction-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-acc-256-1|cce21|1|O2	cce21|capacity|reduction-acc-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-c-1024-1|afar|0|O2	afar|capacity|reduction-c-1024-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|reduction-c-1024-1|afar|1|O2	afar|capacity|reduction-c-1024-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|reduction-c-256-1|afar|0|O2	afar|capacity|reduction-c-256-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|reduction-c-256-1|afar|1|O2	afar|capacity|reduction-c-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-c-64-1|afar|0|O2	afar|capacity|reduction-c-64-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|reduction-c-64-1|afar|1|O2	afar|capacity|reduction-c-64-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce19_g90|0|O2	cce19_g90|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce19|0|O2	cce19|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce19|1|O2	cce19|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce20_g90|0|O2	cce20_g90|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce20|0|O2	cce20|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce20|1|O2	cce20|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce21_g90|0|O2	cce21_g90|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce21|0|O2	cce21|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|reduction-omp-256-1|cce21|1|O2	cce21|capacity|reduction-omp-256-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|runtime.alloc-acc-1073741824-1|cce19|0|O2	cce19|wrong_answer|runtime.alloc-acc-1073741824-1|checksum=836422615 kernels=k0001	wrong_answer|checksum=836422615 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		ours	yes
+stress|runtime.alloc-omp-4294967296-1|cce20|0|O2	cce20|crash|runtime.alloc-omp-4294967296-1|SIGABRT	crash|SIGABRT	nondeterministic	no	c:crash c:crash b:crash a:crash d:crash		ours	yes
+stress|runtime.alloc-omp-4294967296-1|cce21|1|O2	cce21|wrong_answer|runtime.alloc-omp-4294967296-1|checksum=2147378998 kernels=k0001	wrong_answer|checksum=2147378998 kernels=k0001	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+stress|runtime.teams-acc-1073741824-1|cce20|0|O2	cce20|wrong_answer|runtime.teams-acc-1073741824-1|checksum=13888 kernels=k0001	wrong_answer|checksum=13888 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		ours	yes
+stress|runtime.teams-omp-1073741824-1|cce19|0|O2	cce19|wrong_answer|runtime.teams-omp-1073741824-1|checksum=-1392 kernels=k0001	wrong_answer|checksum=-1392 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:timeout		ours	yes
+stress|scalars-c-64-1|cce19|0|O2	cce19|wrong_answer|scalars-c-64-1|checksum=1459529348 kernels=k0012	wrong_answer|checksum=1459529348 kernels=k0012	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:timeout		ours	yes
+stress|scalars.declare-acc-20-1|cce19|0|O2	cce19|wrong_answer|scalars.declare-acc-20-1|checksum=2137503216 kernels=k0001	wrong_answer|checksum=2137503216 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		ours	yes
+stress|scalars.declare-acc-200-1|cce19|0|O2	cce19|wrong_answer|scalars.declare-acc-200-1|checksum=77036244 kernels=k0001	wrong_answer|checksum=77036244 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:timeout		ours	yes
+stress|scalars.declare-acc-200-1|cce21|0|O2	cce21|wrong_answer|scalars.declare-acc-200-1|checksum=77036244 kernels=k0001	wrong_answer|checksum=77036244 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		ours	yes
+stress|scalars.declare-acc-64-1|cce19|0|O2	cce19|wrong_answer|scalars.declare-acc-64-1|checksum=1345058928 kernels=k0001	wrong_answer|checksum=1345058928 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		ours	yes
+stress|scalars.declare-acc-64-1|cce21|0|O2	cce21|wrong_answer|scalars.declare-acc-64-1|checksum=1345058928 kernels=k0001	wrong_answer|checksum=1345058928 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		ours	yes
+stress|scalars.reduction-acc-200-1|cce20|0|O2	cce20|wrong_answer|scalars.reduction-acc-200-1|checksum=1446626194 kernels=k0001	wrong_answer|checksum=1446626194 kernels=k0001	nondeterministic	no	c:wrong_answer c:timeout b:timeout a:timeout d:timeout		nondeterministic_defect	yes
+stress|scalars.reduction-acc-200-1|cce20|1|O2	cce20|wrong_answer|scalars.reduction-acc-200-1|checksum=-745992517 kernels=k0001	wrong_answer|checksum=-745992517 kernels=k0001	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+stress|scalars.reduction-acc-200-1|cce21|0|O2	cce21|wrong_answer|scalars.reduction-acc-200-1|checksum=908497454 kernels=k0001	wrong_answer|checksum=908497454 kernels=k0001	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+stress|scalars.reduction-acc-200-1|cce21|1|O2	cce21|wrong_answer|scalars.reduction-acc-200-1|checksum=1933092005 kernels=k0001	wrong_answer|checksum=1933092005 kernels=k0001	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+stress|scalars.reduction-omp-200-1|cce19|0|O2	cce19|capacity|scalars.reduction-omp-200-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|scalars.reduction-omp-200-1|cce19|1|O2	cce19|capacity|scalars.reduction-omp-200-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|scalars.reduction-omp-200-1|cce20|0|O2	cce20|capacity|scalars.reduction-omp-200-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|scalars.reduction-omp-200-1|cce20|1|O2	cce20|capacity|scalars.reduction-omp-200-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|scalars.reduction-omp-200-1|cce21|0|O2	cce21|capacity|scalars.reduction-omp-200-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|scalars.reduction-omp-200-1|cce21|1|O2	cce21|capacity|scalars.reduction-omp-200-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-acc-1024-1|cce19|0|O2	cce19|capacity|shared-acc-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-acc-1024-1|cce19|1|O2	cce19|capacity|shared-acc-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-acc-1024-1|cce20|0|O2	cce20|capacity|shared-acc-1024-1|capacity	capacity|capacity	not_a_failure	no			unspecified	no
+stress|shared-acc-1024-1|cce20|1|O2	cce20|capacity|shared-acc-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-acc-1024-1|cce21|0|O2	cce21|capacity|shared-acc-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-acc-1024-1|cce21|1|O2	cce21|capacity|shared-acc-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce19_g90|0|O2	cce19_g90|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce19|0|O2	cce19|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce19|1|O2	cce19|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce20_g90|0|O2	cce20_g90|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce20|0|O2	cce20|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce20|1|O2	cce20|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce21_g90|0|O2	cce21_g90|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce21|0|O2	cce21|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no
+stress|shared-omp-1024-1|cce21|1|O2	cce21|capacity|shared-omp-1024-1|capacity	capacity|capacity	not_a_failure	no				no

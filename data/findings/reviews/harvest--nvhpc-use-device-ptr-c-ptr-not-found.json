@@ -1,0 +1,113 @@
+{
+ "finding": "harvest/nvhpc-use-device-ptr-c-ptr-not-found.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-35",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "cp is of type C_PTR and holds the address of tab, which is mapped by target enter data when the target data construct is entered, so references to cp inside are converted to the device address. The device address equals what omp_get_mapped_ptr returns. The runtime error looked up the host address of cp itself instead of its pointee, contradicting the semantics."
+  },
+  {
+   "run": "run-20261113/batch-74",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "cp is a C_PTR whose value points to tab, which is mapped by target enter data. use_device_ptr on cp must then convert references to the device address of tab, which equals omp_get_mapped_ptr. The runtime searched for cp itself instead of its pointee. Reading the pointer values after exit data delete is only a comparison of addresses."
+  },
+  {
+   "run": "run-v2-20261113/batch-112",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "cp is of type C_PTR and points to tab, which is mapped by the preceding target enter data, so use_device_ptr(cp) on target data is permitted and cp inside the region refers to the device address. omp_get_mapped_ptr returns the same device address, so c_associated is true and check=pass is required. No race or restriction is violated; the fatal run-time error of compiler A is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-12",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-24",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "cp is a C_PTR whose value is the address of tab, which is mapped by the preceding target enter data. use_device_ptr requires references to cp in the target data block to become the device address of the corresponding entity. cp itself needs no mapping. p_ptr must therefore equal omp_get_mapped_ptr(c_loc(tab)), so check=pass is required. The failing run looked up the host address of cp itself, which the clause does not require.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-39",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d4d3beab0e1a29bb92d5a40f6db39b8f525bc25e80a9282153659615ce077a79",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

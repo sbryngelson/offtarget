@@ -1,0 +1,130 @@
+{
+ "finding": "stress/nvhpc-target-scalar-implicit-firstprivate.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s is a Fortran scalar with the TARGET attribute, not in any map or data-sharing clause. The implicit data-mapping rules (5.0, 5.2, 6.0) treat it as map(tofrom), so the device update s=2*s+1 (203) is copied back. An implicit firstprivate (s stays 101) would only apply to scalars without TARGET, ALLOCATABLE or POINTER. rd gets 101 either way. Observed s=101 is a compiler bug."
+  },
+  {
+   "run": "run-20261112/batch-23",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s is a scalar with the TARGET attribute and is not in a map clause, so the implicit rule treats it as map(tofrom). The device assignments to s are copied back and s ends at 2*101+1 = 203; rd=101 is read before the update. There is no race. This holds in 5.0, 5.2 and 6.0 text. s=101 means the implicit map was lost (firstprivate treatment)."
+  },
+  {
+   "run": "run-v2-20261113/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s is a scalar with the TARGET attribute, referenced in the target region and not in a map clause. The implicit data-mapping rules treat it as if mapped tofrom, in 5.0, 5.2 and 6.0 alike. The region updates s to 2*101+1=203 and it is copied back, so the expected output is required. The observed s=101 is the firstprivate result and is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-28",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-88",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s is a scalar with the TARGET attribute and is referenced in the target region without an explicit map. Section 5.8.1 treats it as map(tofrom), not firstprivate. The device update s=2*s+1 is copied back, so s=203 is required. The observed 101 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-27",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7618b2f0d7acd60131c8ee7e973aa7314bc1e13dc6d76ebc57609fe1726abd64",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

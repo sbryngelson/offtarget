@@ -1,0 +1,19 @@
+# Verbatim compile output captured on tuolumne2151, 2026-10-18.
+# source: offload.engine.harness.compile_script(cce19, -fopenmp -O2) of offload.engine.gen omp60-clause-severity-fatal (error directive at(compilation), round 1)
+# exit status: 1
+==== verbatim output below ====
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) cray-mpich/9.0.1
+
+The following have been reloaded with a version change:
+  1) cce/20.0.0 => cce/19.0.0     2) cray-libsci/25.09.0 => cray-libsci/25.03.0
+
+
+
+ftn-1984 ftn: ERROR GEN_PROG, File = ../../omp60-clause-severity-fatal.f90, Line = 16, Column = 9 
+  OpenMP Compilation Error : COMPLIANCE_PROBE_MESSAGE
+
+Cray Fortran : 39 source lines
+Cray Fortran : 1 errors, 0 warnings, 0 other messages, 0 ansi
+Cray Fortran : "explain ftn-message number" gives more information about each message.

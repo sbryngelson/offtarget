@@ -1,0 +1,14 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27; the compile's temporary directory replaced by <tmpdir> as the harness does.
+# source: GCC 16.2.0 gfortran -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2 (gcc_g90) on the message probe tests/data/gcc_probes/link_main.f90 link_ext.f90 (a target region calls a function that is not declare target; tools/jobs/run_gcc_sweep.sh)
+# exit status: 1
+==== verbatim output below ====
+ld: error: undefined symbol: ext_fn_
+>>> referenced by <tmpdir>/ccsIVO56.o:(MAIN__._omp_fn.0)
+>>> referenced by <tmpdir>/ccsIVO56.o:(MAIN__._omp_fn.0)
+collect2: error: ld returned 1 exit status
+gcn mkoffload: fatal error: <site>/gcc-16.2/bin/x86_64-pc-linux-gnu-accel-amdgcn-amdhsa-gcc returned 1 exit status
+compilation terminated.
+lto-wrapper: fatal error: <site>/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0//accel/amdgcn-amdhsa/mkoffload returned 1 exit status
+compilation terminated.
+/usr/bin/ld: error: lto-wrapper failed
+collect2: error: ld returned 1 exit status

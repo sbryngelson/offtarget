@@ -1,0 +1,128 @@
+# Debugging excerpts (CCE 19.0.0, tuolumne1015, tu12 = ftn-path-abort-tu12.f90 as stress.f90
+# in /tmp/<user>-stress/st-tu.plain-omp-12-1-abcd1234 unless noted; flux run with SPINDLE_FLUXOPT=disable:
+# the abort is the same with LLNL's Spindle LD_AUDIT active, which flux run adds by default)
+
+## 1. The core file is the driver's (gdb on the core, ftn_driver.exe -> driver)
+#0  raise () from /lib64/libc.so.6
+#1  abort () from /lib64/libc.so.6
+#2  __libc_message () from /lib64/libc.so.6
+#3  malloc_printerr () from /lib64/libc.so.6
+#4  _int_free () from /lib64/libc.so.6
+#5  0x000000000045ff5e in write_unit.constprop ()
+#6  0x00000000004623bc in Cif_Cifconv ()
+#7  0x000000000041cabd in print_buffered_messages ()
+#8  0x0000000000406955 in issue_messages ()
+#9  0x0000000000409299 in run_compiler ()
+#10 0x000000000040b670 in compile ()
+#11 0x0000000000405330 in main ()
+
+## 2. valgrind memcheck on the driver (children ftnfe/optcg not traced): the only error
+Invalid free() / delete / delete[] / realloc()
+   at free (vg_replace_malloc.c:950)
+   by write_unit.constprop.0 (driver)  by Cif_Cifconv  by print_buffered_messages  by issue_messages
+ Address 0x5e879d8 is 984 bytes inside a block of size 16,384 alloc'd
+   at calloc  by _Cif_mementry  by Cif_Memmode  by Cif_Cifconv  by print_buffered_messages
+(no invalid free in /tmp/<user>-zz/..., /tmp/<user>-stressQ/..., /tmp/xxxxxxxx, /dev/shm/<user>-stress/...)
+
+## 3. strace -f: who writes the CIF the driver reads (stress.T)
+ftnfe  openat(".../pe_N/stress.T", O_RDWR|O_CREAT|O_TRUNC)   ... openat(".../pe_N/stress.Tfe", O_WRONLY|O_CREAT|O_TRUNC)
+optcg  openat(".../pe_N/stress_1.cif.Ttmp", O_RDWR|O_CREAT|O_TRUNC)  (its own records, one line each)
+optcg  openat(".../pe_N/stress.Tfe", O_RDONLY)  openat(".../pe_N/stress.T", O_WRONLY|O_CREAT|O_TRUNC)
+driver openat(".../pe_N/stress.T", O_RDONLY) ... killed by SIGABRT
+
+## 4. stress.T as optcg left it (copied under gdb when the driver enters print_buffered_messages)
+## in the aborting directory: 23,150 bytes, the last record cut just before '-1-abcd1234'; in
+## /tmp/<user>-zz/... 66,768 bytes, complete. Tail of the cut file:
+/st-tu.plain-omp-12-1-abcd1234/stress.f90:73)         "k0001_g10"(/tmp/<user>-stress/st-tu.plain-omp-12-1-abcd1234/stress.f90:60)            "k0001_g11"(/tmp/<user>-stress/st-tu.plain-omp-12
+## the backend record (tu12.Ttmp line 8) at offset 1016..1039: -omp-12-1-abcd1234/stres
+
+## 5. The copy loops (objdump -d): fgets into a 1024-byte buffer, stop when strtol(chunk) == -1
+## optcg m_cif_merge_messages (buffer size in %ebx, calloc(0x400) above):
+0000000000805840 <m_cif_merge_messages+0x810>:
+  805840:	xor    %esi,%esi
+  805842:	mov    $0xa,%edx
+  805847:	mov    %r12,%rdi
+  80584a:	call   40dba0 <strtol@plt>
+  80584f:	cmp    $0xffffffff,%eax
+  805852:	je     8052fc <m_cif_merge_messages+0x2cc>
+  805858:	mov    0x972ca59(%rip),%rsi        # 9f322b8 <m_cif_main_file>
+  80585f:	mov    %r12,%rdi
+  805862:	call   40d4b0 <fputs@plt>
+  805867:	mov    %r13,%rdx
+  80586a:	mov    %ebx,%esi
+  80586c:	mov    %r12,%rdi
+  80586f:	call   40ea30 <fgets@plt>
+  805874:	test   %rax,%rax
+  805877:	jne    805840 <m_cif_merge_messages+0x810>
+  805879:	test   %r12,%r12
+  80587c:	je     80529f <m_cif_merge_messages+0x26f>
+  805882:	.byte 0xe9
+## ftnfe finish_msgs_and_cif:
+000000000040b290 <finish_msgs_and_cif+0x120>:
+  40b290:	mov    $0x1,%esi
+  40b295:	mov    $0x400,%edi
+  40b29a:	call   4054e0 <calloc@plt>
+  40b29f:	mov    %rax,%rbp
+  40b2a2:	test   %rax,%rax
+  40b2a5:	jne    40b2cf <finish_msgs_and_cif+0x15f>
+  40b2a7:	jmp    40b2f6 <finish_msgs_and_cif+0x186>
+  40b2a9:	nopl   0x0(%rax)
+  40b2b0:	xor    %esi,%esi
+  40b2b2:	mov    $0xa,%edx
+  40b2b7:	mov    %rbp,%rdi
+  40b2ba:	call   405b30 <strtol@plt>
+  40b2bf:	cmp    $0xffffffff,%eax
+  40b2c2:	je     40b2e9 <finish_msgs_and_cif+0x179>
+  40b2c4:	mov    %r12,%rsi
+  40b2c7:	mov    %rbp,%rdi
+  40b2ca:	call   4058c0 <fputs@plt>
+  40b2cf:	mov    %r13,%rdx
+  40b2d2:	mov    $0x400,%esi
+  40b2d7:	mov    %rbp,%rdi
+  40b2da:	call   405cd0 <fgets@plt>
+  40b2df:	test   %rax,%rax
+  40b2e2:	jne    40b2b0 <finish_msgs_and_cif+0x140>
+  40b2e4:	test   %rbp,%rbp
+  40b2e7:	je     40b26c <finish_msgs_and_cif+0xfc>
+  40b2e9:	mov    %rbp,%rdi
+  40b2ec:	call   405980 <free@plt>
+  40b2f1:	jmp    40b26c <finish_msgs_and_cif+0xfc>
+
+## 6. gdb hardware watchpoint on the freed record's use pointer (record struct R = 0x533dc0, R+0x18):
+enter Cif_Cifconv
+Hardware watchpoint 3: -location *(long*)0x533dd8
+write R+0x18 = 0x800000000
+#0  0x0000000000475dc0 in ascii_message ()
+#1  0x00000000004763c7 in Cif_Getrecord ()
+#2  0x0000000000461b48 in Cif_Cifconv ()
+write R+0x18 = 0x11000800000000
+#0  0x0000000000475f63 in ascii_message ()
+#1  0x00000000004763c7 in Cif_Getrecord ()
+#2  0x0000000000461b48 in Cif_Cifconv ()
+write R+0x18 = 0x2220202020202029
+#0  0x0000155554bd04fe in __strcpy_evex () from /lib64/libc.so.6
+#1  0x0000000000475f84 in ascii_message ()
+#2  0x00000000004763c7 in Cif_Getrecord ()
+write R+0x18 = 0x612d312d32312d70
+#0  0x0000155554bd057f in __strcpy_evex () from /lib64/libc.so.6
+#1  0x000000000046be7b in strlist ()
+#2  0x0000000000475d1e in ascii_message ()
+write R+0x18 = 0
+#0  0x0000155554bf3229 in __memset_avx512_unaligned_erms () from /lib64/libc.so.6
+#1  0x00000000004763b7 in Cif_Getrecord ()
+#2  0x0000000000461b48 in Cif_Cifconv ()
+write R+0x18 = 0x533de0
+#0  0x0000000000472afb in ascii_ftn_usage ()
+#1  0x00000000004763c7 in Cif_Getrecord ()
+#2  0x0000000000461b48 in Cif_Cifconv ()
+write R+0x18 = 0x538190
+#0  0x000000000045fdbf in merge_usages.isra ()
+#1  0x000000000045fea4 in write_unit.constprop ()
+#2  0x00000000004623bc in Cif_Cifconv ()
+write R+0x18 = 0x532b48
+#0  0x000000000045fb89 in merge_usages.isra ()
+#1  0x000000000045fea4 in write_unit.constprop ()
+#2  0x00000000004623bc in Cif_Cifconv ()
+free(): invalid pointer
+Program received signal SIGABRT, Aborted.
+0x0000155554b625af in raise () from /lib64/libc.so.6

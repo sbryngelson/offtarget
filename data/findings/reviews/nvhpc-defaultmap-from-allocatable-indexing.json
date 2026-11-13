@@ -1,0 +1,132 @@
+{
+ "finding": "nvhpc-defaultmap-from-allocatable-indexing.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-15",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "defaultmap(from) with no category means all. a and b are explicitly mapped, so explicit clauses win; only the loop scalar i gets an implicit from map. The target region runs sequentially and b(i)=a(i) is race-free, so b(1)=1, b(64)=64, sum=2080 follow. The observed values are wrong."
+  },
+  {
+   "run": "run-20261112/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "defaultmap(from) without category applies to all categories; a, b are explicitly mapped (to/from), i is mapped from and only used as a sequential loop variable. b must equal a after the region."
+  },
+  {
+   "run": "run-v2-20261113/batch-20",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "defaultmap(from) with no category applies to all variables; a and b are explicitly mapped, so only the scalar i is implicitly mapped from. The target region runs sequentially, so there is no race, and i is copied back as 65 on the host. a(i) to b(i) copies are deterministic, so b(1)=1, b(64)=64 and sum=2080 are required. The observed values are wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-98",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "defaultmap(from) with no variable-category applies to all categories; from is a valid implicit-behavior. a and b are explicitly mapped, the scalar i gets an implicit map(from). Each iteration writes a distinct b(i), so no race. The program is conforming and b(i)=a(i) is required; the observed values are wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-60",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "the scalar i gets an implicit map(from)"
+     ],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f48b97dbf06e62296a7f2bdfd977f0d89c0c186f0d4574767e850bd958c83bfe",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

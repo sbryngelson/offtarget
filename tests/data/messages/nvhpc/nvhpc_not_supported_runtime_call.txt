@@ -1,0 +1,7 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.gen omp50-clause-is_device_ptr (OpenMP/OpenACC version 50), compile sweep
+# exit status: 2
+==== verbatim output below ====
+NVFORTRAN-W-1288-Use of the USE_DEVICE_PTR clause is deprecated, use USE_DEVICE_ADDR clause instead (<tmpdir>/p.f90: 50)
+  0 inform,   1 warnings,   0 severes, 0 fatal for gen_prog
+NVFORTRAN-S-1058-Call to NVHPC runtime function not supported - pgf90_c_f_ptr_i8 (<tmpdir>/p.f90: 21)

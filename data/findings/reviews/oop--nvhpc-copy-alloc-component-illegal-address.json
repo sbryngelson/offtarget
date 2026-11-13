@@ -1,0 +1,113 @@
+{
+ "finding": "oop/nvhpc-copy-alloc-component-illegal-address.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-40",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "map(tofrom: x) uses the predefined default mapper, which maps every structure element including the allocated allocatable component x%a (descriptor and data), with attachment. Loop writes distinct elements; expected r1=10336, r2=256 follow. The illegal-address fault is a compiler/runtime bug."
+  },
+  {
+   "run": "run-20261113/batch-72",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "x is explicitly mapped tofrom; its allocatable component is mapped through the predefined default mapper, with allocated storage. The allocation status is not changed while mapped. The loop has no races and the expected sums follow (r1=10336, r2=256). The device illegal address is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-40",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Fortran structure x has the predefined default mapper, which maps each structure element (including the allocatable component a) with tofrom, so x%a storage is mapped and attached on map(tofrom: x). The loop writes disjoint elements. Device access to x%a is therefore required to work; the illegal address is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-53",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-60",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(tofrom: x) of a derived-type variable uses the predefined default mapper, which maps each structure element, including the allocatable component a, with tofrom. The component is allocated and thus mapped, so x%a is accessible in the region. The illegal address is a compiler/runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "eef357b83840e6218b982543cdbb6349833ff79fb2d9294392e46e98b3f07b42",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

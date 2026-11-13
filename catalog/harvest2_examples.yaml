@@ -1,0 +1,158 @@
+# The OpenMP Examples (github.com/OpenMP/Examples, corpus/omp_examples)
+# whose tags say `@@operation: run` and `@@expect: success` and that use a
+# device construct or device routine (tools/campaigns/harvest2.py examples). Each entry
+# gives the expected result the example itself documents:
+#   checks: CHECK lines from the example's documented output (an //OUTPUT:,
+#           "prints", "Outputs:" or trailing comment), or its own PASSED
+#           lines; only lines printed on the host (a device print is
+#           allowed but its output is not checked)
+#   oracle: exit_status when the example checks itself (a nonzero exit,
+#           ERROR STOP or STOP n on a wrong result) and prints nothing to
+#           compare
+#   modes:  copy or unified when the documented result holds in one only
+#   skip:   why the example is not converted
+# The examples' license: catalog note in offload/engine/harvest2/examples.py
+# (BSD-style, OpenMP ARB, redistribution with the notice).
+examples:
+  data_environment/sources/groupprivate.1.f90:
+    checks: ["CHECK: PASSED"]
+  data_environment/sources/target_reduction.1.c:
+    checks: ["CHECK: sum1 = 9900, sum2 = 147015000"]
+  data_environment/sources/target_reduction.1.f90:
+    checks: ["CHECK: sum1 = 10100 , sum2 = 153015000"]
+  data_environment/sources/target_reduction.2.c:
+    checks: ["CHECK: sum1 = 9900, sum2 = 147015000"]
+  data_environment/sources/target_reduction.2.f90:
+    checks: ["CHECK: sum1 = 10100 , sum2 = 153015000"]
+  data_environment/sources/target_task_reduction.1.c:
+    checks: ["CHECK: sum = 2"]
+  data_environment/sources/target_task_reduction.1.f90:
+    checks: ["CHECK: sum = 2"]
+  data_environment/sources/target_task_reduction.2a.c:
+    checks: ["CHECK: sum = 2"]
+  data_environment/sources/target_task_reduction.2a.f90:
+    checks: ["CHECK: sum = 2"]
+  data_environment/sources/target_task_reduction.2b.c:
+    checks: ["CHECK: sum = 2"]
+  data_environment/sources/target_task_reduction.2b.f90:
+    checks: ["CHECK: sum = 2"]
+  devices/sources/async_target.5.c:
+    checks: ["CHECK: Passed"]
+  devices/sources/async_target.5.f90:
+    oracle: exit_status
+  devices/sources/declare_target.8.c:
+    skip: no documented result and no check of its own (it prints each device's sum)
+  devices/sources/declare_target.8.f90:
+    skip: no documented result and no check of its own (it prints each device's sum)
+  devices/sources/declare_target_indirect_call.1.c:
+    oracle: exit_status
+  devices/sources/declare_target_indirect_call.1.f90:
+    oracle: exit_status
+  devices/sources/device.4.f90:
+    checks: ["CHECK: PASSED 3 of 5", "CHECK: PASSED 4 of 5"]
+    modes: [copy]
+  devices/sources/self_map.1.c:
+    oracle: exit_status
+    modes: [unified]
+  devices/sources/self_map.2.f90:
+    oracle: exit_status
+    modes: [unified]
+  devices/sources/target_associate_ptr.1.c:
+    checks: ["CHECK: before: arr[0]=0", "CHECK: after: arr[0]=1", "CHECK: before: arr[50]=50",
+             "CHECK: after: arr[50]=51"]
+    modes: [copy]
+  devices/sources/target_associate_ptr.1.f90:
+    checks: ["CHECK: before: arr( 1 )= 1", "CHECK: after: arr( 1 )= 2", "CHECK: before: arr( 51 )= 51",
+             "CHECK: after: arr( 51 )= 52"]
+    modes: [copy]
+  devices/sources/target_defaultmap.1.c:
+    checks: ["CHECK: PASSED 1 of 5", "CHECK: PASSED 2 of 5", "CHECK: PASSED 3 of 5",
+             "CHECK: PASSED 4 of 5", "CHECK: PASSED 5 of 5"]
+    modes: [copy]
+  devices/sources/target_defaultmap.1.f90:
+    checks: ["CHECK: PASSED 1 of 5", "CHECK: PASSED 2 of 5", "CHECK: PASSED 3 of 5",
+             "CHECK: PASSED 4 of 5", "CHECK: PASSED 5 of 5"]
+    modes: [copy]
+  devices/sources/target_fort_allocatable_map.1.f90:
+    # "prints 4*4" three times, then "prints 4*5"
+    checks: ["CHECK: 4 4 4 4", "CHECK: 4 4 4 4", "CHECK: 4 4 4 4", "CHECK: 5 5 5 5"]
+  devices/sources/target_mapper.1.c:
+    checks: ["CHECK: s.data[99]=99.000000"]
+  devices/sources/target_mapper.1.f90:
+    checks: ["CHECK: s%data( 100 )= 100.000000000000"]
+  devices/sources/target_ptr_map.1.c:
+    checks: ["CHECK: 6 9"]
+  devices/sources/target_ptr_map.2.c:
+    checks: ["CHECK: 3 297"]
+  devices/sources/target_reverse_offload.7.c:
+    skip: ends through exit(1) in its error handler by design (the harness requires exit status 0)
+  devices/sources/target_reverse_offload.7.f90:
+    checks: ["CHECK: Error in offload: A( 99)= -1", "CHECK: Expecting: A(  i)=  i"]
+  devices/sources/target_struct_map.1.c:
+    checks: ["CHECK: 4 202"]
+  devices/sources/target_struct_map.4.c:
+    checks: ["CHECK: 4 202", "CHECK: 4 202", "CHECK: 4 202"]
+  devices/sources/target_teams_workdistribute.1.f90:
+    checks: ["CHECK: calling axpy", "CHECK: sum 5.00 expected 5.00"]
+  devices/sources/target_update.3.c:
+    checks: ["CHECK: s.y:5", "CHECK: a:10", "CHECK: s.x:10, s.y:5, s.z:10"]
+    modes: [copy]
+  devices/sources/target_update.3.f90:
+    checks: ["CHECK: s%y: 5", "CHECK: a: 10", "CHECK: s%x: 10 s%y: 5 s%z: 10"]
+    modes: [copy]
+  devices/sources/teams.7.c:
+    skip: undefined behavior by design (num_teams from a device-local variable, the example says so)
+  devices/sources/teams.7.f90:
+    skip: undefined behavior by design (num_teams from a device-local variable, the example says so)
+  memory_model/sources/allocators.5.c:
+    checks: ["CHECK: PASSED 1 of 3", "CHECK: PASSED 2 of 3", "CHECK: PASSED 3 of 3"]
+  memory_model/sources/allocators.5.f90:
+    checks: ["CHECK: PASSED 1 of 3", "CHECK: PASSED 2 of 3", "CHECK: PASSED 3 of 3"]
+  memory_model/sources/allocators.6.c:
+    checks: ["CHECK: PASSED 1 of 2", "CHECK: PASSED 2 of 2"]
+  memory_model/sources/allocators.6.f90:
+    checks: ["CHECK: PASSED 1 of 2", "CHECK: PASSED 2 of 2"]
+  program_control/sources/declare_variant.1.c:
+    checks: ["CHECK: -3 -30000", "CHECK: -2 -20000", "CHECK: -1 -10000"]
+  program_control/sources/declare_variant.1.f90:
+    checks: ["CHECK: -3 -30000", "CHECK: -2 -20000", "CHECK: -1 -10000"]
+  program_control/sources/metadirective.1.c:
+    checks: ["CHECK: -1 -10000"]
+  program_control/sources/metadirective.3.c:
+    checks: ["CHECK: d[N-1] = 1.00000000000311", "CHECK: d[N-1] = 1.00000000000311"]
+  program_control/sources/metadirective.3.f90:
+    checks: ["CHECK: d(N) = 1.00000000000311", "CHECK: d(N) = 1.00000000000311"]
+  program_control/sources/metadirective.3a.c:
+    checks: ["CHECK: d[N-1] = 1.00000000000311", "CHECK: d[N-1] = 1.00000000000311"]
+  program_control/sources/metadirective.3a.f90:
+    checks: ["CHECK: d(N) = 1.00000000000311", "CHECK: d(N) = 1.00000000000311"]
+  program_control/sources/metadirective.3b.c:
+    checks: ["CHECK: d[N-1] = 1.00000000000311", "CHECK: d[N-1] = 1.00000000000311",
+             "CHECK: d[N-1] = 1.00000000000311"]
+  program_control/sources/requires.1.f90:
+    checks: ["CHECK: 1. 0"]
+    modes: [unified]
+  program_control/sources/selector_scoring.1.c:
+    skip: its expected result needs the arch(nvptx) isa(sm_70) variant (one device only)
+  program_control/sources/selector_scoring.1.f90:
+    skip: its expected result needs the arch(nvptx) isa(sm_70) variant (one device only)
+  program_control/sources/selector_scoring.2.c:
+    skip: its expected result needs unified_shared_memory required by a compiler flag (implementation-defined)
+  program_control/sources/selector_scoring.2.f90:
+    skip: its expected result needs unified_shared_memory required by a compiler flag (implementation-defined)
+  program_control/sources/target_offload_control.1.c:
+    skip: needs OMP_TARGET_OFFLOAD=default and an unavailable device number (the harness runs mandatory)
+  program_control/sources/target_offload_control.1.f90:
+    skip: needs OMP_TARGET_OFFLOAD=default and an unavailable device number (the harness runs mandatory)
+  synchronization/sources/safesync.1.c:
+    skip: reads the uninitialized array a (a[i] += b[i] with a never set) and expects NT*b[i]
+  synchronization/sources/safesync.1.f90:
+    skip: reads the uninitialized array a (a(i) = a(i) + b(i) with a never set) and expects NT*b(i)
+  program_control/sources/declare_variant.2.c:
+    skip: host only (a declare variant for a host ISA; no device construct)
+  program_control/sources/declare_variant.2.f90:
+    skip: host only (a declare variant for a host ISA; no device construct; loc() is an extension)
+  program_control/sources/metadirective.1.f90:
+    checks: ["CHECK: -1 -10000"]
+  program_control/sources/metadirective.4.f90:
+    checks: ["CHECK: PASSED 1 of 3", "CHECK: PASSED 2 of 3", "CHECK: PASSED 3 of 3"]

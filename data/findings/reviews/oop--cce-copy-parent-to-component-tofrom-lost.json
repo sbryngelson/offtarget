@@ -1,0 +1,217 @@
+{
+ "finding": "oop/cce-copy-parent-to-component-tofrom-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "map(to: x) with map(tofrom: x%a) names the allocatable component explicitly, so the default mapper does not treat it as implicit and tofrom x%a should copy the data back, giving 2528. The spec text on a structure and one of its allocatable components appearing in separate map clauses with different map-types is thin, and the outcome for the component is not stated plainly, so a requirement cannot be asserted with confidence."
+  },
+  {
+   "run": "run-20261112/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "x%a is a component of x, so the two map list items are allowed together (containing structure). x%a is explicitly mapped tofrom, so the device updates must be copied back; sum must be 2528. Observed 2080 means the update was lost."
+  },
+  {
+   "run": "run-v2-20261113/batch-113",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "x is mapped to and its allocatable component x%a is an explicit tofrom list item. The restriction on sharing original storage allows a list item contained in a mapped structure. The loop writes distinct elements, so there is no race. The program is legal, and on exit x%a must be copied back, so the host sum must be 2528. The observed 2080 is the unmodified sum, so the tofrom of x%a was not honored.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-09",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-21",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "x and its component x%a appear in map clauses of the same construct; this is allowed because one is the containing structure of the other. The end directive is optional. The program is legal. What 5.2 requires for the allocatable component, mapped both via the default mapper of x (to) and explicitly tofrom, with attachment of the descriptor, is not spelled out precisely, so a required copy-back is not clearly stated.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-43",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1a1f4c26a34c73e3803c98e21887ef350b69437f8e68e94177a679cfde927f3e",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The restriction allows two list items sharing original storage when one is the containing structure of the other, so map(to: x) with map(tofrom: x%a) is legal. x%a is an explicit list item, so the default-mapper treatment of allocatable components does not apply to it, and its tofrom map type copies the updated data back at exit. The loop writes distinct elements, so there is no race.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The restriction permits a containing structure and its member together. x%a is an explicit list item, so it is mapped tofrom in its own right and the default mapper's rules for implicit components do not apply to it. On exit the list item with tofrom and reference count one is updated as by a from clause, so the device updates must reach the host. Reading B's doubt is unfounded; 2080 is a lost copy-back."
+  },
+  {
+   "run": "adj-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "x and its component x%a may appear together; x%a is an explicit list item with tofrom, so the default-mapper special rules for non-explicit components do not apply. Each map list item on the construct is handled at exit: the reference count of x%a's corresponding item is one and the map-type is tofrom, so the original is updated. 2528 is required. Reading B's doubt is unfounded; Reading A is right."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B holds. The restriction allows two list items sharing original storage when one is the containing structure of the other, so map(to: x) with map(tofrom: x%a) is legal. x%a is an explicit list item, so the default-mapper treatment of allocatable components does not apply to it, and its tofrom map type copies the updated data back at exit. The loop writes distinct elements, so there is no race. The host sum must be 2528; the observed 2080 is the unmodified sum. Reading A's doubt is not supported by a passage.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-23",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B is right. x and x%a share storage but one is the containing structure of the other, which the restriction allows. All list items with the same containing structure form one mappable storage block, and on exit every list item in it with a from or tofrom map-type is copied back to the original. x%a is explicitly tofrom, so the modified elements must reach the host and sum(x%a) is 2528. Reading A's doubt does not hold because the explicit list item is outside the default-mapper component rule. The observed 2080 is the unmodified sum.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-37",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

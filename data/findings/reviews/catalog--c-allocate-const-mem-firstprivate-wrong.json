@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/c-allocate-const-mem-firstprivate-wrong.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "allocate(omp_const_mem_alloc: x) with firstprivate(x) on target is allowed (allocate is permitted on target, a privatizing clause is on the same directive). omp_const_mem_alloc appears in uses_allocators, satisfying the target restriction. Storage in the const memory space may be initialized via firstprivate and x is only read in the region, so the write prohibition is not violated. host_flag is written only by iteration 0, no race. The spec requires b[i]=a[i]+x, so a wrong result is a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-33",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "firstprivate(x) applies to distribute/target leaves and allocate applies to leaves that get a private copy; the allocator omp_const_mem_alloc is listed in uses_allocators on target, as required, and firstprivate initialization of const-memory variables is explicitly allowed. x is never written. The allocator fallback is default_mem_fb, so allocation cannot fail. The result b[i]=a[i]+5 is required."
+  },
+  {
+   "run": "run-v2-20261113/batch-16",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "firstprivate(x) applies to the distribute and target leaves, and the allocate clause follows it. omp_const_mem_alloc is listed in uses_allocators as the target restriction requires, and the const-memory variable is only read after being initialized through firstprivate, which 6.1 allows. The program is conforming, so b[i]=a[i]+x must hold.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-90",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "x is firstprivate with allocate(omp_const_mem_alloc: x), and the allocator is listed in uses_allocators, as required in a target region. The constant memory space may be initialized through firstprivate and x is never written. Each iteration writes its own b(i), and only i==0 writes host_flag. b(i)=a(i)+5 matches ref, so check=pass is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-62",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "5f8a132c0583e42079f40248239c57c736f18367e25ba3c13de1714fb524d0f3",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

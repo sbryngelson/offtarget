@@ -1,0 +1,6 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: amdflang -fopenmp --offload-arch=gfx942 -O2 tests/data/dev.f90 WITHOUT -L/usr/lib/gcc/x86_64-redhat-linux/8
+# exit status: 1
+==== verbatim output below ====
+<site>/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c/lib/llvm/bin/clang-linker-wrapper: error: unable to find library -lquadmath
+flang-24: error: linker command failed with exit code 1 (use -v to see invocation)

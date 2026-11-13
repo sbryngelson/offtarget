@@ -1,0 +1,510 @@
+# Confirmed catalog bugs without a finding (offload/engine/confirm/backlog.py,
+# `tools/confirm.py backlog --write` -> data/reports/unlinked-bugs.md). `groups`: every group the
+# backlog still has, with its cell count and why it has no finding (the test fails on a new or
+# resized group); `closed`: how the backlog was closed.
+version: 1
+history: 'A review of the catalog on 2026-10-23 found 1,016 catalog cells with a bug verdict and no finding, draft or related
+  link (974 with neither a duplicate nor a related link). After the findings index gained its data-derived gfx90a
+  scope (134 cells became instances), 840 cells in 50 signature groups remained. Each group''s representative
+  case went through `tools/confirm.py batch --draft` (offline, stored evidence; results/confirm/drafts/); every
+  draft kept the verdict compiler_bug with the catalog program itself as the reproducer (catalog programs are one-feature
+  programs of 30-60 lines; no minimization step was needed to keep the verdict). Four groups were explained by an
+  existing finding whose README text names the programs, and were linked by a `programs` pattern; 33 groups (37
+  signature groups: the four AFAR linear ICE groups share one stack, checked by compiling them, and the two AFAR
+  workdistribute groups another) were promoted to data/findings/catalog/ (`tools/confirm.py promote`, then the index
+  entry widened to the group''s compilers and programs). The C nohost groups left the backlog because the maintainer
+  withdrew the gfortran/gcc witnesses (R12a cannot fire). What remains is listed below with the reason it has no
+  finding.'
+closed:
+- key: afar|c|rejected|link __kmpc_doacross_init
+  cells: 6
+  outcome: 'promoted: data/findings/catalog/afar-c-ordered-doacross-link.c'
+- key: afar|c|rejected|link __kmpc_taskred_modifier_init
+  cells: 6
+  outcome: 'promoted: data/findings/catalog/afar-c-reduction-task-link.c'
+- key: afar|f90|ice|Call parameter type does not match function signature!
+  cells: 9
+  outcome: 'promoted: data/findings/catalog/afar-flang-reduction-task-ice.f90'
+- key: afar|f90|ice|omp*-clause-linear + afar|f90|ice|omp*-clause-linear-step + afar|f90|ice|omp*-clause-linear-step_simple_modifier
+    + afar|f90|ice|omp*-clause-linear-val
+  cells: 30
+  outcome: 'promoted: data/findings/catalog/afar-flang-linear-parallel-ice.f90'
+- key: afar|f90|ice|omp*-directive-target_teams_workdistribute + afar|f90|ice|omp*-directive-teams_workdistribute
+  cells: 6
+  outcome: 'promoted: data/findings/catalog/afar-flang-workdistribute-ice.f90'
+- key: afar|f90|rejected|The minus reduction operator is deprecated since OpenMP N.N and is not supported in the
+    REDUCTION clause.
+  cells: 12
+  outcome: 'promoted: data/findings/catalog/afar-flang-reduction-minus-rejected.f90'
+- key: afar|f90|wrong|omp*-clause-dist_schedule-chunk_size
+  cells: 9
+  outcome: 'promoted: data/findings/catalog/afar-flang-dist-schedule-chunk.f90'
+- key: afar|f90|wrong|omp*-clause-ordered
+  cells: 9
+  outcome: 'promoted: data/findings/catalog/afar-flang-ordered-wrong.f90'
+- key: cce|c|ice|omp*-c-clause-device_type-directive_name
+  cells: 9
+  outcome: 'promoted: data/findings/catalog/cce-c-device-type-directive-name-ice.c'
+- key: cce|c|ice|omp*-c-clause-map-iterator
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-c-map-iterator-ice.c'
+- key: cce|c|ice|omp*-c-clause-reduction-inscan
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-c-reduction-inscan-ice.c'
+- key: cce|c|ice|omp*-c-directive-target_loop
+  cells: 3
+  outcome: 'promoted: data/findings/catalog/cce21-c-target-loop-ice.c'
+- key: cce|c|rejected|expected , , , , , , , in OpenMP clause
+  cells: 6
+  outcome: 'promoted: data/findings/catalog/cce20-c-defaultmap-private-storage-rejected.c'
+- key: cce|c|rejected|link __kmpc_aligned_alloc
+  cells: 12
+  outcome: 'promoted: data/findings/catalog/cce-c-allocate-align-link.c'
+- key: cce|c|rejected|link __kmpc_dispatch_init_4
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-c-ordered-link.c'
+- key: cce|c|rejected|link __kmpc_doacross_init
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-c-ordered-doacross-link.c'
+- key: cce|c|rejected|link __kmpc_omp_task_alloc
+  cells: 21
+  outcome: 'promoted: data/findings/catalog/cce-c-task-in-target-link.c'
+- key: cce|c|rejected|link __kmpc_taskred_modifier_init
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-c-reduction-task-link.c'
+- key: cce|c|rejected|undeclared function allocator
+  cells: 12
+  outcome: 'promoted: data/findings/catalog/cce-c-allocate-allocator-modifier-rejected.c'
+- key: cce|c|rejected|undeclared function iterator
+  cells: 36
+  outcome: 'promoted: data/findings/catalog/cce-c-motion-iterator-rejected.c'
+- key: cce|c|rejected|undeclared function traits
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-c-uses-allocators-traits-rejected.c'
+- key: cce|c|rejected|unexpected clause, only , , or clauses expected
+  cells: 3
+  outcome: 'promoted: data/findings/catalog/cce21-c-declare-target-local-rejected.c'
+- key: cce|c|wrong|omp*-c-clause-dist_schedule-chunk_size
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-c-dist-schedule-chunk.c'
+- key: 'cce|f90|ice|INTERNAL COMPILER ERROR: "ACC - barrier/reset/protected last private not supported"'
+  cells: 40
+  outcome: 'promoted: data/findings/catalog/cce-linear-lastprivate-ice.f90'
+- key: 'cce|f90|ice|INTERNAL COMPILER ERROR: "Too few arguments on the stack"'
+  cells: 78
+  outcome: 'promoted: data/findings/catalog/cce-allocators-stack-ice.f90'
+- key: 'cce|f90|ice|INTERNAL COMPILER ERROR: "analyze_object: unknown object type"'
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-reduction-inscan-ice.f90'
+- key: 'cce|f90|ice|error: ompN-clause-reduction-task.fN:: in function gen_prog_$ck_LN_N void (iN, iN, iN, iN, iN,
+    iN, i'
+  cells: 9
+  outcome: 'promoted: data/findings/catalog/cce19-reduction-task-addrspacecast-ice.f90'
+- key: cce|f90|rejected|ftn-1725
+  cells: 36
+  outcome: 'promoted: data/findings/catalog/cce-atomic-default-mem-order-acquire-release-rejected.f90'
+- key: cce|f90|rejected|ftn-810
+  cells: 3
+  outcome: 'promoted: data/findings/catalog/cce20-map-self-rejected.f90'
+- key: cce|f90|rejected|link OmpIt$k
+  cells: 54
+  outcome: 'promoted: data/findings/catalog/cce-iterator-link.f90'
+- key: cce|f90|rejected|link _C_F_POINTER
+  cells: 54
+  outcome: 'promoted: data/findings/catalog/cce-c-f-pointer-device-link.f90'
+- key: cce|f90|rejected|link _cray$mt_taskred_modifier_init
+  cells: 18
+  outcome: 'promoted: data/findings/catalog/cce-reduction-task-link.f90'
+- key: cce|f90|rejected|link f$gen_mod_
+  cells: 21
+  outcome: 'promoted: data/findings/catalog/cce-nohost-link.f90'
+- key: cce|c|abort|omp*-c-clause-map-present
+  cells: 18
+  outcome: 'linked: data/findings/cce-c-map-present-assert.c (programs; README: every C program with a present or
+    close modifier crashes)'
+- key: cce|c|wrong|omp*-c-clause-linear, -linear-step, -linear-step_simple_modifier, -linear-val, -schedule, -schedule-static
+  cells: 108
+  outcome: 'linked: data/findings/cce-c-parallel-for-in-target.c (programs; README: makes the C linear and schedule
+    programs wrong_answer on CCE)'
+- key: cce|f90|wrong|omp*-directive-target_parallel
+  cells: 27
+  outcome: 'linked: data/findings/cce19-target-parallel-guarded-loop.f90 (programs: the catalog program is the finding''s
+    guarded loop)'
+- key: afar|f90|ice|omp*-clause-default-shared
+  cells: 9
+  outcome: 'linked: data/findings/afar-cce19-task-in-target-ice.f90 (programs; AFAR''s stack is OpenMPIRBuilder::createTask,
+    checked 2026-10-23)'
+- key: afar|c|rejected|nohost + cce|c|rejected|nohost
+  cells: 12
+  outcome: 'no longer a bug verdict: R12a withdrawn (ruling 2026-10-23), unsupported_everywhere'
+- key: cce|c|rejected|unexpected OpenMP clause in directive
+  cells: 18
+  outcome: 'no longer a bug verdict: rule R11d-documented-unsupported: CCE documents
+    requires reverse_offload as a compile-time error, so the rejection is unsupported (documented)'
+- key: afar|c|rejected|function with is not available on host
+  cells: 2
+  outcome: 'left the backlog: unsupported_everywhere by the ruling RUL-NOHOST-C-UNSUPPORTED-EVERYWHERE (rule R11r; both clang front ends, CCE''s included, reject the C twin), which a recorded ruling applies before the family witness'
+- key: cce|c|rejected|function with is not available on host
+  cells: 6
+  outcome: 'left the backlog: unsupported_everywhere by the ruling RUL-NOHOST-C-UNSUPPORTED-EVERYWHERE (rule R11r; both clang front ends, CCE''s included, reject the C twin), which a recorded ruling applies before the family witness'
+- key: 'nvhpc|c|rejected|diagnostic: NVC++-S-N-OpenMP unified_shared_memory clause is used in the requires construct but the
+    application is no'
+  cells: 6
+  outcome: 'left the backlog: requirement_refused by the ruling RUL-REQUIRES-IMPLDEF (rule R11r): NVHPC refuses the implementation-defined requirement unless built with -gpu=unified (5.2 §8.2 p.211)'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-F-N-OpenMP unified_shared_memory clause is used in the requires construct
+    but the application i'
+  cells: 6
+  outcome: 'left the backlog: requirement_refused by the ruling RUL-REQUIRES-IMPLDEF (rule R11r): NVHPC refuses the implementation-defined requirement unless built with -gpu=unified (5.2 §8.2 p.211)'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier simd (<tmpdir>/ompN-directive-distribute_simd.fN:
+    N)'
+  cells: 4
+  outcome: 'linked: data/findings/fuzz/nvhpc-end-distribute-simd-rejected.f90 (related by its index message "Syntax error
+    at or near identifier simd": the NVHPC s1 fuzz finding, merged 2026-11-03, is the same rejection of the end directive of
+    distribute simd; the omp50 and omp52 catalog cells of both releases in copy mode)'
+groups:
+- key: cce|f90|rejected|ftn-113
+  cells: 4
+  why: 'Compiler_bug (R11) only since NVHPC is a family witness for the AMD copy-mode cells: CCE 19/20 reject acc34-clause-collapse-force with ftn-113 (IMPLICIT NONE: a name of the collapse(force:) nest has no type) and the stored NVHPC cell compiles it; not triaged here (CCE 21 and unified memory are not in the group), for a later triage'
+- key: afar|c|wrong|omp*-c-clause-map-present
+  cells: 2
+  why: 'verdict unified_memory_failure, not compiler_bug (only compiler_bug groups are promoted): AFAR amdclang at HSA_XNACK=1
+    runs a map(present) region of an item that is not present; the defect of data/findings/afar-xnack1-present-not-enforced.f90,
+    whose README text covers amdclang but whose index entry is the Fortran front end'
+- key: cce|c|abort|omp*-c-clause-map-close
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 abort (SIGABRT) on map(close) in in both modes and on gfx90a;
+    AFAR passes. The README of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but
+    a common cause with that finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-lastprivate
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-lastprivate-conditional
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-schedule-auto
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-schedule-dynamic
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-schedule-guided
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-schedule-nonmonotonic
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-schedule-runtime
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: cce|c|wrong|omp*-c-clause-schedule-simd
+  cells: 9
+  why: 'The C 5.0 cells of these programs have a two-source expected value (the program''s oracle and sequential
+    elision by gcc and amdclang, tools/campaigns/c_slices.py), so the confirmer calls CCE''s failure compiler_bug, while the 5.2/6.0
+    twins stay needs_human (one source). CCE craycc 19, 20, 21 fail them in both modes and on gfx90a; AFAR passes. The README
+    of data/findings/cce-c-parallel-for-in-target.c names C lastprivate and schedule programs, but a common cause with that
+    finding was not shown; not promoted, for a later triage'
+- key: nvhpc|c|rejected|expected a
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: nvhpc|c|rejected|extra text after expected end of preprocessing directive
+  cells: 64
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted: the C 5.0 programs of the same forms joined the group.'
+- key: nvhpc|c|rejected|identifier is undefined
+  cells: 22
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted: the C 5.0 programs of the same forms joined the group.'
+- key: nvhpc|c|rejected|invalid text in pragma
+  cells: 84
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted: the C 5.0 programs of the same forms joined the group.'
+- key: nvhpc|c|rejected|this kind of pragma may not be used here
+  cells: 4
+  why: 'NVHPC nvc (25.11 and 26.9) rejects a C 5.0 program''s directive placement another family compiles (R11);
+    a support gap of the C front end, not promoted'
+- key: nvhpc|c|wrong|omp*-c-clause-depend-mutexinoutset
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, separate memory) gives a wrong answer on the C 5.0 depend(mutexinoutset) program (audited
+    valid; trusted expected value); the 5.2/6.0 C twins are rejected by nvc, so this is the only form it runs; a single cell
+    family on one program, not promoted until reduced'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-F-N-Unmatched directive END - TEAMS DISTRIBUTE. (<tmpdir>/ompN-directive-teams_distribute_simd'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-LOOP construct may not contain calls to the OpenMP Runtime API - . (<tmpdir>/ompN-clause-b'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Only global variables are allowed as parameter of a declare target directive:
+    f (<tmpdir>/o'
+  cells: 12
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-OpenMP GPU - alls cannot be used with defaultmap clause. (<tmpdir>/ompN-clause-defaultmap-'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-OpenMP GPU - presents cannot be used with defaultmap clause. (<tmpdir>/ompN-clause-default'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Symbol, t, has not been explicitly declared (<tmpdir>/accN-directive-declare.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near ( (<tmpdir>/ompN-clause-atomic_default_mem_order-acq_rel.fN:
+    N)'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near ( (<tmpdir>/ompN-clause-atomic_default_mem_order-acquire.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near ( (<tmpdir>/ompN-clause-atomic_default_mem_order-relaxed.fN:
+    N)'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near ( (<tmpdir>/ompN-clause-atomic_default_mem_order-release.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near ( (<tmpdir>/ompN-clause-atomic_default_mem_order-seq_cst.fN:
+    N)'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near ( (<tmpdir>/ompN-clause-atomic_default_mem_order.fN:
+    N)'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near ( (<tmpdir>/ompN-directive-requires.fN: N)'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near : (<tmpdir>/ompN-clause-device-device_num.fN:
+    N)'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near : (<tmpdir>/ompN-clause-from-present.fN: N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near : (<tmpdir>/ompN-clause-map-present.fN: N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near : (<tmpdir>/ompN-clause-num_teams-lower_bound.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near : (<tmpdir>/ompN-clause-order-reproducible.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near : (<tmpdir>/ompN-clause-order-unconstrained.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near : (<tmpdir>/ompN-clause-to-present.fN: N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier enter (<tmpdir>/ompN-clause-enter.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier enter (<tmpdir>/ompN-clause-indirect-invoked_by_fptr.fN'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier enter (<tmpdir>/ompN-clause-indirect.fN:
+    N)'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier has_device_addr (<tmpdir>/ompN-clause-has_device_addr.f'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier has_device_addr (<tmpdir>/ompN-clause-use_device_addr.f'
+  cells: 2
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-and.f'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-eqv.f'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-iand.'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-ieor.'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-ior.f'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-max.f'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-min.f'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-minus'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-neqv.'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-or.fN'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-plus.'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction-times'
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'
+- key: 'nvhpc|f90|rejected|diagnostic: NVFORTRAN-S-N-Syntax error at or near identifier task_reduction (<tmpdir>/ompN-clause-in_reduction.fN: '
+  cells: 4
+  why: 'NVHPC (25.11 and 26.9, the same rejection) does not implement this form: a legal program another compiler family compiles,
+    so the confirmer''s R11 calls it compiler_bug; it is a support gap (counted as rejected in the support tables and, where
+    the User''s Guide claims the feature, as a vendor-claim mismatch), not a defect a finding
+    could isolate beyond the rejection itself; not promoted'

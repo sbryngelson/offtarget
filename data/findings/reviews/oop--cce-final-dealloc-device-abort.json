@@ -1,0 +1,208 @@
+{
+ "finding": "oop/cce-final-dealloc-device-abort.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The finalizer and the allocating procedure carry declare target. The atomic update on a declare-target variable is allowed. The explicit deallocate of the allocatable scalar invokes the final subroutine, so fin_count becomes 64 and sum(res) is 2144. The to clause on declare target is deprecated in 5.2 but still allowed. The specification has no restriction on allocate or deallocate in device code, so the runtime abort is a compiler or runtime limitation."
+  },
+  {
+   "run": "run-20261113/batch-49",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Declare target on the module variable and procedures; finalizer called on deallocate of a local allocatable scalar, atomic update on fin_count, target update before and after; 64 finalizations and sum 2144 are deterministic. The to clause on declare target is deprecated but allowed. The runtime stop at allocate is a device runtime bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Finalizable allocatable scalar allocated and deallocated in a declare target procedure called from a target region; ft_fin is declare target and updates fin_count atomically. No restriction forbids it, and base-language ALLOCATE/DEALLOCATE must be thread-safe. The spec does not specify device heap limits, so whether failure of device allocation is a violation is unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-88",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The finalizer and alloc_work are declare target, fin_count is declared target and updated atomically. ALLOCATE and DEALLOCATE are not restricted in target regions, and the spec requires them to be thread-safe. Deallocating o runs the finalizer, so r1==64 and r2==2144 are expected. The runtime stop is a device-runtime limitation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-55",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "71a48548132ce5291b00eb5d67543cda13a44b595fbe8891fabf46e4430bb20e",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Nothing forbids ALLOCATE, DEALLOCATE or finalization in a declare target procedure called from target, and ft_fin is declare target. The spec requires ALLOCATE and DEALLOCATE to be thread-safe but sets no device heap or support level. A device runtime stop at the allocate is not clearly a violation.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Nothing forbids ALLOCATE, DEALLOCATE or finalization in a declare target procedure called from target, and ft_fin is declare target. The spec requires ALLOCATE and DEALLOCATE to be thread-safe but sets no device heap or support level. A device runtime stop at the allocate is not clearly a violation. Reading A overstates the requirement; Reading B is closer.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-40",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Nothing forbids ALLOCATE or DEALLOCATE with a finalizer in a declare target procedure called from a target region, and base-language statements must be thread-safe, so the program is conforming. Reading A overreaches in calling the stop a limitation of the runtime that the specification forbids; the specification says nothing on device heap support or finalization on the device. Reading B is right that the required outcome is unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

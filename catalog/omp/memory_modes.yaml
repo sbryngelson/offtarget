@@ -1,0 +1,40 @@
+# Memory modes of the matrix.
+#
+# The headline run is HSA_XNACK=1 with transparent huge pages (what LC's
+# example job script uses; on the MI300A it makes the runtime zero-copy).
+# Copy mode (HSA_XNACK=0) runs only for the programs
+# offload.engine.run_matrix.copy_mode_programs selects:
+#
+#   - every program whose evidence is copy_mode_only (its check separates
+#     the construct from a no-op only in copy mode), and
+#   - the memory-sensitive programs below: their primary atom matches one of
+#     `atoms` (fnmatch patterns), or their id is listed in `programs`.
+#
+# `programs` holds the programs whose two modes differed in the full
+# two-mode run of 2026-10-18 (results/support_table.csv, 9 program x
+# toolchain pairs) that no atom pattern already covers. Status: provisional.
+headline_xnack: 1
+copy_xnack: 0
+memory_sensitive:
+  atoms:
+    - pattern: omp.clause.map.present
+      why: >-
+        negative probe: the run must end in the runtime's error termination
+        on absent data; AFAR terminates only in copy mode (full run:
+        AFAR wrong_answer at HSA_XNACK=1, correct_on_device at 0, 5.2 and
+        6.0)
+    - pattern: omp.clause.unified_shared_memory*
+      why: >-
+        requires unified_shared_memory, every form (bare, -required,
+        -directive_name): the program needs zero-copy memory, so copy mode
+        is where a toolchain must refuse or fail (full run: unobservable at
+        1, crash or exit 255 at 0)
+    - pattern: omp.clause.map.mapper
+      why: >-
+        CCE 19 ran the map(mapper) program on the device at HSA_XNACK=1 and
+        fell back to the host at 0 (full run, 5.2)
+  programs:
+    - id: omp52-illegal-mapitem-map-001
+      why: >-
+        CCE 19 ran it on the device at HSA_XNACK=1 and fell back to the
+        host at 0 (full run); no atom pattern covers it

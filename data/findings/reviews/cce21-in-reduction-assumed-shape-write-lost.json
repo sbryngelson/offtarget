@@ -1,0 +1,113 @@
+{
+ "finding": "cce21-in-reduction-assumed-shape-write-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r appears in task_reduction on the enclosing taskgroup and in_reduction on the target task, which is closely nested, same operator +. Restrictions are met. The target region maps x to and y tofrom, so y(i)=2*x(i) must reach the host by the end of the target (no nowait). y(16)=32 is required; observed 0 means the copy-back was lost, plausibly due to mishandled in_reduction on target."
+  },
+  {
+   "run": "run-20261112/batch-23",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The target construct is closely nested in a taskgroup with task_reduction(+: r) over the same variable and operator, as in_reduction requires. r is not accessed in the region, so its value stays 3. The base variable of an in_reduction item is mapped tofrom/always; x and y are mapped explicitly. The target region must execute and copy y back, so y(16)=32. y(16)=0 means the region or the copy-back was lost."
+  },
+  {
+   "run": "run-v2-20261113/batch-47",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is a taskgroup task_reduction list item; the target task participates through in_reduction and r is treated as mapped tofrom,always. The target region does not modify r, so r stays 3. y is mapped tofrom and each y(i)=2*x(i) is written, with no race, so y(16)=32 is required. Observed y(16)=0 means the map of y or the device update was lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-71",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-73",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The taskgroup task_reduction(+: r) encloses the target task, which names r in in_reduction, so the match is valid. r is implicitly mapped tofrom with always. y is mapped tofrom explicitly and is written in the target region, so y(16)=32 must be visible on the host after the construct completes. r is unchanged (3).",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-69",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f0088187015dac64c1b5afc1c53e7c6f59dfc435f4dc04e8b96c3ad22dbca65a",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

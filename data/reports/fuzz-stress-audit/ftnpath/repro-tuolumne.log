@@ -1,0 +1,38 @@
+host tuolumne1015 accel gfx942; A=/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1aa (219 chars); C=/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2aa
+== CCE 17.0.1
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 double free or corruption (out) msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+== CCE 18.0.1
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+== CCE 19.0.0
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+cwd=O source A/stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=A source O/stress.f90: rc=0 no-heap-message msgs=3
+cwd=A -o O/x.o -J O: rc=6 free(): invalid pointer msgs=0
+cwd=A PWD=O: rc=6 free(): invalid pointer msgs=0
+cwd=A -O0: rc=0 no-heap-message msgs=3
+cwd=A -O3: rc=6 free(): invalid pointer msgs=0
+cwd=A link: rc=6 free(): invalid pointer msgs=0
+cwd=C control messages: rc=0 no-heap-message msgs=3
+ftn-878 ftn: WARNING C2, File = stress.f90, Line = 61, Column = 7 
+ftn-878 ftn: WARNING C1, File = stress.f90, Line = 73, Column = 7 
+ftn-878 ftn: WARNING CHAIN, File = stress.f90, Line = 85, Column = 7 
+== CCE 20.0.0
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+== CCE 20.0.2
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+== CCE 21.0.0
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+== CCE 21.0.3
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+== CCE 21.0.4
+cwd=A ftn -fopenmp -O2 -c stress.f90: rc=6 free(): invalid pointer msgs=0
+cwd=C (control): rc=0 no-heap-message msgs=3
+== AFAR AMD flang version 24.0.0git (https://github.com/ROCm/llvm-project.git 3ba19712e9fbf709f6c93d33394211ed4eeec8a7)
+AFAR cwd=A -fopenmp --offload-arch=gfx942 -O2 -c: rc=0 no-heap-message msgs=0

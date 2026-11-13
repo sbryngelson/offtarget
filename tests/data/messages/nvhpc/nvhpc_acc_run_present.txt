@@ -1,0 +1,14 @@
+# Verbatim run output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: offload.engine.harness.run_script(nvhpc with model acc, mode 0) running the nvfortran -acc=gpu -gpu=cc80 -gpu=mem:separate -O2 build (NVHPC 25.11) of offload.engine.gen acc34-clause-present (negative probe: present(t) with t not present)
+# exit status: 1
+==== verbatim output below ====
+hostptr=0x4082c0,stride=1,size=64,eltsize=4,name=t(:),flags=0x200=present,async=-1,threadid=1
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 8.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+...empty...
+deleted block   device:0x7fe9352fa000 size:512 threadid=1 
+deleted block   device:0x7fe9352fa200 size:512 threadid=1 
+deleted block   device:0x7fe9352fa400 size:512 threadid=1 
+FATAL ERROR: data in PRESENT clause was not found on device 1: name=t(:) host:0x4082c0
+ file:<tmpdir>/p.f90 gen_prog line:36
+

@@ -1,0 +1,113 @@
+{
+ "finding": "stress/nvhpc-lastprivate-combined-target-not-mapped.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate(l) on the combined target parallel do applies to the loop. Because target is a constituent and l is not the base of a map list item, the clause also acts as map(tofrom: l) (5.2 17.2; 5.0 2.19.7 implicit rule). The lastprivate value from iteration 64 (2560) is therefore written to the mapped l and copied back to the host. Observed l=0 is wrong. No race: the lastprivate assignment is defined."
+  },
+  {
+   "run": "run-20261112/batch-28",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "For a combined construct including target, a lastprivate list item behaves as if mapped tofrom on target, so the final value (2560) is copied back to the host l. Observed l=0 is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-39",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "For a combined target construct, a lastprivate list item that is not the base of a mapped item behaves as if it appeared in a map clause with map-type tofrom. So the last value, 64*40 = 2560, is copied back to the host l. The observed l=0 violates this.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-53",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-74",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "On a combined construct including target, a lastprivate list item that is not mapped is treated as if in a map clause with tofrom. So the last iteration value l=64*40=2560 is copied back to the host. The observed l=0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-22",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d70ece5021d7f5a21e216a30384935dfa3c599a0fc515b06b7d201dba467495d",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

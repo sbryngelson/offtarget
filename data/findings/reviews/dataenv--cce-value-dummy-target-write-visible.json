@@ -1,0 +1,113 @@
+{
+ "finding": "dataenv/cce-value-dummy-target-write-visible.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-15",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "v is a scalar without TARGET/ALLOCATABLE/POINTER, so in the target region it is firstprivate, not mapped. The write v=2*v+1 changes only the device copy; the host dummy (a local copy since VALUE) stays 101. Writing to a VALUE dummy is allowed in Fortran. r is explicitly mapped from. Result 101 is required; 203 means the write propagated back."
+  },
+  {
+   "run": "run-20261112/batch-25",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "v is a scalar referenced in the target region with no map; under the OpenMP 5.0 rule it is not mapped and has implicit data-sharing firstprivate, so the doubling updates a private copy and the host dummy v stays 101. vout must be 101; 203 means the device write leaked to the host variable. No race."
+  },
+  {
+   "run": "run-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "v is a scalar without map clause in the target construct, so it is firstprivate. The assignment in the target region changes only the device copy, and the host v stays 101. Printing 203 means the host copy was modified, which the specification does not allow.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-85",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "v is a VALUE dummy, a scalar without TARGET, ALLOCATABLE or POINTER, so in the target region it is implicitly firstprivate. The write v = 2*v + 1 changes only the device copy and the host v stays 101. vout must be 101; 203 means the write reached the host variable.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "5cc21384ab948ac5e6c4a04ae909f2dfbb2671144e162c91dd6cf4cb60ad06c0",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,214 @@
+{
+ "finding": "nested/cce-fortran-nested-allocatable-component-copy-fault.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r is a non-pointer structure; map(to: r) uses the default mapper, which maps each structure element, including nx and its allocated component a. The target region only reads r%nx%a and reduces into tot. Allocated allocatable component storage is mapped and attached, so tot==1628 is required. The device fault is a compiler or runtime error."
+  },
+  {
+   "run": "run-20261113/batch-57",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Map of r uses the predefined default mapper, which maps components including allocated allocatable components (5.2 text addresses allocatable components arising from the default mapper). r%nx%a is therefore present on the device inside the region; no restriction is broken. The reduction total 1628 is deterministic. A GPU memory fault is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-45",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(to: r) maps r, but the allocatable component r%nx%a is a structure element that is not listed in a map clause, so its allocated storage is not mapped to the device. The target region dereferences r%nx%a(q), which uses host storage with no corresponding device storage. The specification gives no behavior for that access, so a device fault is not a violation of a required result.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "map(to: r) leaves the allocatable component r%nx%a unmapped",
+      "therefore no device storage corresponds to the host allocatable storage"
+     ],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "map(to: r) does not map the allocated storage of the allocatable component r%nx%a",
+      "The spec gives no behavior for the access, so a fault is not a violation"
+     ],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-68",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(to: r) uses the predefined default mapper, which maps each structure element, including the nested allocated allocatable component a, with the tofrom map-type. The device copy of r%nx%a is therefore present in the target region, and the reduction sum is 1628. The memory fault is a compiler or runtime bug. The spec text on mapping allocatable components inside nested derived types is thin, so the requirement is somewhat less certain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-40",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "da31c01bcac4514de0ba96d38b885cbf49bcf346e6cb77fb95684c47b81b3b53",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The target region only references r, which is present from enter data; the structure-element restriction concerns map list items on the target construct, which has none. the fault is a compiler or runtime defect.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A fails: the predefined default mapper applies to map(to: r) and maps each structure element, including the nested derived-type element nx (which recurses through its own default mapper) and its allocatable component a, so the allocated storage is mapped. The target region only references r, which is present from enter data; the structure-element restriction concerns map list items on the target construct, which has none. Reading B is right; the fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-36",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The predefined default mapper of a structure type maps each structure element with tofrom, recursively through nx to the allocated allocatable component a. map(to: r) makes r%nx%a present on the device, so the reduction gives 1628. Reading A's claim that a is unmapped contradicts the default mapper rule; the device fault is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-23",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

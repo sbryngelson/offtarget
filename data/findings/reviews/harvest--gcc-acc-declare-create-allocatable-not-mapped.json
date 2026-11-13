@@ -1,0 +1,204 @@
+{
+ "finding": "harvest/gcc-acc-declare-create-allocatable-not-mapped.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "declare create of a module allocatable, visible at the allocate statement. On a non-shared device the allocate statement allocates in both local and device memory, so present(a) holds and update host is valid. Illegal address on the device is a compiler or runtime fault."
+  },
+  {
+   "run": "run-20261113/batch-47",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "declare create on a module allocatable is allowed; on a non-shared memory device the allocate statement allocates both host and device memory with dynamic reference counter one, so present(a) holds and update host(a) is valid. The scalar assignment a=-1 does not reallocate. Expected check=pass is required; the illegal address error is a defect."
+  },
+  {
+   "run": "run-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "declare create on a module allocatable: at allocate, memory is allocated on the host and the device with dynamic reference count one, so present(a) holds. The loop writes distinct elements, update host copies back, and acc_on_device in the parallel region is allowed. The illegal address error is a compiler or runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "declare create on a module allocatable; the allocate in the main program must allocate device memory for a non-shared-memory device, so present(a) and update host(a) are valid. The illegal device access is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-17",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-106",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare create(a) is in a module used at the allocate, so it is visible there. For a global declare, the spec sets the structured reference counter to one, yet it also says a runtime error is issued if that counter is not zero at allocate or deallocate. Read literally, the allocate and the final deallocate of a module-level allocatable would be errors, so the program's conformance and the required outcome are unclear. The observed failure is in a kernel using present(a), which a conforming implementation with the dynamic counter at one must support.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "c21cbfa9347c72062810f6aa97885a5827c36a5f88f9b44e4f94757427842665",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Section 2.13.2 says a global-context declare sets the structured reference counter to one, and also says that for an allocatable the allocate statement raises a runtime error if that counter is not zero. Read literally, the program's allocate would be an error.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Section 2.13.2 says a global-context declare sets the structured reference counter to one, and also says that for an allocatable the allocate statement raises a runtime error if that counter is not zero. Read literally, the program's allocate would be an error. Reading B ignores this conflict. Reading A is right that conformance and the required outcome are unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B skips the conflict in the text. A global declare sets the structured reference counter to one, and the same section says a runtime error is issued if that counter is not zero at an allocate or deallocate, which read literally makes the module-level allocate an error. Reading A is right that conformance is unclear; the intent is plausibly the non-global case. So both legality and the required result are uncertain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,9181 @@
+clauses:
+  absent:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: absent
+  acq_rel:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: acq_rel
+  acquire:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: acquire
+  adjust_args:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: adjust_args
+  affinity:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: affinity
+  align:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: align
+  aligned:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: aligned
+  allocate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: allocate
+  allocator:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: allocator
+  append_args:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: append_args
+  apply:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: apply
+  at:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: at
+  atomic_default_mem_order:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: atomic_default_mem_order
+  bind:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: bind
+  cancellation_construct_type:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: cancellation_construct_type
+  capture:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: capture
+  collapse:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: collapse
+  collector:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: collector
+  combiner:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: combiner
+  compare:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: compare
+  contains:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: contains
+  copyin:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: copyin
+  copyprivate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: copyprivate
+  counts:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: counts
+  default:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: default
+  default (DefaultVariant):
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: default
+  defaultmap:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: defaultmap
+  depend:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: depend
+  depobj:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: depobj
+  depth:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: depth
+  destroy:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: destroy
+  detach:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: detach
+  device:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: device
+  device_safesync:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: device_safesync
+  device_type:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: device_type
+  dist_schedule:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: dist_schedule
+  doacross:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: doacross
+  dyn_groupprivate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: dyn_groupprivate
+  dynamic_allocators:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: dynamic_allocators
+  enter:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: enter
+  exclusive:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: exclusive
+  fail:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: fail
+  filter:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: filter
+  final:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: final
+  firstprivate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: firstprivate
+  flush:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: flush
+  from:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: from
+  full:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: full
+  grainsize:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: grainsize
+  graph_id:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: graph_id
+  graph_reset:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: graph_reset
+  groupprivate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: groupprivate
+  has_device_addr:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: has_device_addr
+  hint:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: hint
+  holds:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: holds
+  if:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: if
+  in_reduction:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: in_reduction
+  inbranch:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: inbranch
+  inclusive:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: inclusive
+  indirect:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: indirect
+  induction:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: induction
+  inductor:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: inductor
+  init:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: init
+  init_complete:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: init_complete
+  initializer:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: initializer
+  interop:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: interop
+  is_device_ptr:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: is_device_ptr
+  lastprivate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: lastprivate
+  linear:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: linear
+  link:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: link
+  local:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: local
+  looprange:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: looprange
+  map:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: map
+  match:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: match
+  memory_order:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: memory_order
+  memscope:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: memscope
+  mergeable:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: mergeable
+  message:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: message
+  no_openmp:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: no_openmp
+  no_openmp_constructs:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: no_openmp_constructs
+  no_openmp_routines:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: no_openmp_routines
+  no_parallelism:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: no_parallelism
+  nocontext:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: nocontext
+  nogroup:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: nogroup
+  nontemporal:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: nontemporal
+  notinbranch:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: notinbranch
+  novariants:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: novariants
+  nowait:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: nowait
+  num_tasks:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: num_tasks
+  num_teams:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: num_teams
+  num_threads:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: num_threads
+  ompx_attribute:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: ompx_attribute
+  ompx_bare:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: ompx_bare
+  ompx_dyn_cgroup_mem:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: ompx_dyn_cgroup_mem
+  order:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: order
+  ordered:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: ordered
+  otherwise:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: otherwise
+  partial:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: partial
+  permutation:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: permutation
+  priority:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: priority
+  private:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: private
+  proc_bind:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: proc_bind
+  read:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: read
+  reduction:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: reduction
+  reduction_kind:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: reduction_kind
+  relaxed:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: relaxed
+  release:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: release
+  replayable:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: replayable
+  reverse_offload:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: reverse_offload
+  safelen:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: safelen
+  safesync:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: safesync
+  schedule:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: schedule
+  self_maps:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: self_maps
+  seq_cst:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: seq_cst
+  severity:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: severity
+  shared:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: shared
+  shift:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: shift
+  simd:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: simd
+  simdlen:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: simdlen
+  sizes:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: sizes
+  task_reduction:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: task_reduction
+  thread_limit:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: thread_limit
+  threadprivate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: threadprivate
+  threads:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: threads
+  threadset:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: threadset
+  to:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: to
+  transparent:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: transparent
+  unified_address:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: unified_address
+  unified_shared_memory:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: unified_shared_memory
+  uniform:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: uniform
+  unknown:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: unknown
+  untied:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: untied
+  update:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: update
+  update (UpdateDependObjects):
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: update
+  use:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: use
+  use_device_addr:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: use_device_addr
+  use_device_ptr:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: use_device_ptr
+  uses_allocators:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: uses_allocators
+  weak:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: weak
+  when:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: when
+  write:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: write
+directives:
+  allocate:
+    allowed:
+      align:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      allocator:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Explicit
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: allocate
+  allocators:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: Block
+    languages:
+    - Fortran
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: allocators
+  assume:
+    allowed:
+      absent:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      contains:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      holds:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_openmp:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_openmp_constructs:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      no_openmp_routines:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_parallelism:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: assume
+  assumes:
+    allowed:
+      absent:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      contains:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      holds:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_openmp:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_openmp_routines:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_parallelism:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: assumes
+  atomic:
+    allowed:
+      acq_rel:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      acquire:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      capture:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      compare:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      fail:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      hint:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      read:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      relaxed:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      release:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      seq_cst:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      update:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      weak:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      write:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: atomic
+  barrier:
+    allowed: {}
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: barrier
+  begin assumes:
+    allowed:
+      absent:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      contains:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      holds:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_openmp:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_openmp_routines:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      no_parallelism:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+    association: Delimited
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: begin assumes
+  begin declare target:
+    allowed:
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      indirect:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      link:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      to:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Delimited
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: begin declare target
+    - max_ver: null
+      min_ver: 60
+      text: begin declare_target
+  begin declare variant:
+    allowed: {}
+    association: Delimited
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: begin declare variant
+    - max_ver: null
+      min_ver: 60
+      text: begin declare_variant
+  cancel:
+    allowed:
+      cancellation_construct_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: cancel
+  cancellation point:
+    allowed:
+      cancellation_construct_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: cancellation point
+    - max_ver: null
+      min_ver: 60
+      text: cancellation_point
+  critical:
+    allowed:
+      hint:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: critical
+  declare mapper:
+    allowed:
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 45
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required:
+    - map
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: declare mapper
+    - max_ver: null
+      min_ver: 60
+      text: declare_mapper
+  declare reduction:
+    allowed:
+      combiner:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      initializer:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: declare reduction
+    - max_ver: null
+      min_ver: 60
+      text: declare_reduction
+  declare simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      inbranch:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      notinbranch:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uniform:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Declaration
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: declare simd
+    - max_ver: null
+      min_ver: 60
+      text: declare_simd
+  declare target:
+    allowed:
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      enter:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: false
+      indirect:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      link:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      local:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      to:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Explicit
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: declare target
+    - max_ver: null
+      min_ver: 60
+      text: declare_target
+  declare variant:
+    allowed:
+      adjust_args:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      append_args:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      match:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Declaration
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: declare variant
+    - max_ver: null
+      min_ver: 60
+      text: declare_variant
+  declare_induction:
+    allowed:
+      collector:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      inductor:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: declare_induction
+  depobj:
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      depobj:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      destroy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      init:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      update (UpdateDependObjects):
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: depobj
+  dispatch:
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nocontext:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      novariants:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: dispatch
+  distribute:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: distribute
+  distribute parallel do:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - distribute
+    - parallel
+    - do
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: distribute parallel do
+  distribute parallel do simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - distribute
+    - parallel
+    - do
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: distribute parallel do simd
+  distribute parallel for:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - distribute
+    - parallel
+    - for
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: distribute parallel for
+  distribute parallel for simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - distribute
+    - parallel
+    - for
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: distribute parallel for simd
+  distribute simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - distribute
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: distribute simd
+  do:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: LoopNest
+    languages:
+    - Fortran
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: do
+  do simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - do
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: do simd
+  end assumes:
+    allowed: {}
+    association: Delimited
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: end assumes
+  end declare target:
+    allowed: {}
+    association: Delimited
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: end declare target
+    - max_ver: null
+      min_ver: 60
+      text: end declare_target
+  end declare variant:
+    allowed: {}
+    association: Delimited
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: end declare variant
+    - max_ver: null
+      min_ver: 60
+      text: end declare_variant
+  error:
+    allowed:
+      at:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: error
+  flatten:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      depth:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: flatten
+  flush:
+    allowed:
+      acq_rel:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      acquire:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      flush:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      release:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      seq_cst:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: flush
+  for:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: LoopNest
+    languages:
+    - C
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: for
+  for simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - for
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: for simd
+  fuse:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      depth:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: true
+      looprange:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+    association: LoopSeq
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: fuse
+  groupprivate:
+    allowed:
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Explicit
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: groupprivate
+  interchange:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      permutation:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: interchange
+  interop:
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      destroy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      init:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      use:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: interop
+  loop:
+    allowed:
+      bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: loop
+  masked:
+    allowed:
+      filter:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: masked
+  masked taskloop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      filter:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - masked
+    - taskloop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: masked taskloop
+  masked taskloop simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      filter:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - masked
+    - taskloop
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: masked taskloop simd
+  master:
+    allowed: {}
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: master
+  master taskloop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - master
+    - taskloop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: master taskloop
+  master taskloop simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - master
+    - taskloop
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: master taskloop simd
+  metadirective:
+    allowed:
+      default (DefaultVariant):
+        exclusive_group: null
+        max_ver: 51
+        min_ver: 50
+        once: true
+      otherwise:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: true
+      when:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: metadirective
+  nothing:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: nothing
+  ordered (Block):
+    allowed:
+      simd:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: ordered
+  ordered (None):
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      doacross:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: ordered
+  parallel:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel
+  parallel do:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - parallel
+    - do
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel do
+  parallel do simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - parallel
+    - do
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel do simd
+  parallel for:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - parallel
+    - for
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel for
+  parallel for simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - parallel
+    - for
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel for simd
+  parallel loop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel loop
+  parallel masked:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      filter:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - masked
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel masked
+  parallel masked taskloop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      filter:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - masked
+    - taskloop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel masked taskloop
+  parallel masked taskloop simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      filter:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - masked
+    - taskloop
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel masked taskloop simd
+  parallel master:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - master
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel master
+  parallel master taskloop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - master
+    - taskloop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel master taskloop
+  parallel master taskloop simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_tasks:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - master
+    - taskloop
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel master taskloop simd
+  parallel sections:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - sections
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel sections
+  parallel workshare:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - parallel
+    - workshare
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel workshare
+  requires:
+    allowed:
+      atomic_default_mem_order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_safesync:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      dynamic_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reverse_offload:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      self_maps:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      unified_address:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      unified_shared_memory:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: requires
+  reverse:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: reverse
+  scan:
+    allowed:
+      exclusive:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      inclusive:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Separating
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: scan
+  scope:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: scope
+  section:
+    allowed: {}
+    association: Separating
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: section
+  sections:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: sections
+  simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: simd
+  single:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      copyprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: single
+  split:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      counts:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required:
+    - counts
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: split
+  stripe:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      sizes:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: stripe
+  target:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_bare:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      replayable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target
+  target data:
+    allowed:
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      transparent:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      use_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      use_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required:
+    - map
+    - use_device_addr
+    - use_device_ptr
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: target data
+    - max_ver: null
+      min_ver: 60
+      text: target_data
+  target enter data:
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      replayable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required:
+    - map
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: target enter data
+    - max_ver: null
+      min_ver: 60
+      text: target_enter_data
+  target exit data:
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      replayable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required:
+    - map
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: target exit data
+    - max_ver: null
+      min_ver: 60
+      text: target_exit_data
+  target loop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target loop
+  target parallel:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - parallel
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target parallel
+  target parallel do:
+    allowed:
+      allocator:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - target
+    - parallel
+    - do
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target parallel do
+  target parallel do simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - target
+    - parallel
+    - do
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target parallel do simd
+  target parallel for:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - target
+    - parallel
+    - for
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target parallel for
+  target parallel for simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      ordered:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - target
+    - parallel
+    - for
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target parallel for simd
+  target parallel loop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - parallel
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target parallel loop
+  target simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target simd
+  target teams:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_bare:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - teams
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams
+  target teams distribute:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - teams
+    - distribute
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams distribute
+  target teams distribute parallel do:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - target
+    - teams
+    - distribute
+    - parallel
+    - do
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams distribute parallel do
+  target teams distribute parallel do simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - target
+    - teams
+    - distribute
+    - parallel
+    - do
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams distribute parallel do simd
+  target teams distribute parallel for:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - target
+    - teams
+    - distribute
+    - parallel
+    - for
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams distribute parallel for
+  target teams distribute parallel for simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - target
+    - teams
+    - distribute
+    - parallel
+    - for
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams distribute parallel for simd
+  target teams distribute simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - teams
+    - distribute
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams distribute simd
+  target teams loop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - target
+    - teams
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams loop
+  target teams workdistribute:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      defaultmap:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      has_device_addr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      is_device_ptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      map:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      ompx_bare:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_dyn_cgroup_mem:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      uses_allocators:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - target
+    - teams
+    - workdistribute
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: target teams workdistribute
+  target update:
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      from:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      replayable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      to:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: 52
+      min_ver: 1
+      text: target update
+    - max_ver: null
+      min_ver: 60
+      text: target_update
+  task:
+    allowed:
+      affinity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      detach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      replayable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      threadset:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      transparent:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: task
+  taskgraph:
+    allowed:
+      graph_id:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      graph_reset:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: taskgraph
+  taskgroup:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      task_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: taskgroup
+  taskloop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_tasks:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      replayable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      threadset:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      transparent:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: taskloop
+  taskloop simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      final:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      grainsize:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      in_reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      mergeable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nogroup:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_tasks:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      priority:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      untied:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - taskloop
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: taskloop simd
+  taskwait:
+    allowed:
+      depend:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+      replayable:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: taskwait
+  taskyield:
+    allowed: {}
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: taskyield
+  teams:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: false
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams
+  teams distribute:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - teams
+    - distribute
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams distribute
+  teams distribute parallel do:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - teams
+    - distribute
+    - parallel
+    - do
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams distribute parallel do
+  teams distribute parallel do simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - teams
+    - distribute
+    - parallel
+    - do
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams distribute parallel do simd
+  teams distribute parallel for:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - teams
+    - distribute
+    - parallel
+    - for
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams distribute parallel for
+  teams distribute parallel for simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      message:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      num_threads:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      proc_bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      severity:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - C
+    leaves:
+    - teams
+    - distribute
+    - parallel
+    - for
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams distribute parallel for simd
+  teams distribute simd:
+    allowed:
+      aligned:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dist_schedule:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      linear:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nontemporal:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      safelen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      simdlen:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - teams
+    - distribute
+    - simd
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams distribute simd
+  teams loop:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      dyn_groupprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 61
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: false
+      lastprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      order:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages: []
+    leaves:
+    - teams
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams loop
+  teams workdistribute:
+    allowed:
+      allocate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 50
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 52
+        once: false
+      num_teams:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      ompx_attribute:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      shared:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      thread_limit:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: FromLeaves
+    languages:
+    - Fortran
+    leaves:
+    - teams
+    - workdistribute
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: teams workdistribute
+  threadprivate:
+    allowed: {}
+    association: Explicit
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: threadprivate
+  tile:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      sizes:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 51
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required:
+    - sizes
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: tile
+  unknown:
+    allowed: {}
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: unknown
+  unroll:
+    allowed:
+      apply:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 60
+        once: false
+      full:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 51
+        once: true
+      partial:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 51
+        once: true
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: unroll
+  workdistribute:
+    allowed: {}
+    association: Block
+    languages:
+    - Fortran
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: workdistribute
+  workshare:
+    allowed:
+      nowait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: Block
+    languages:
+    - Fortran
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: workshare

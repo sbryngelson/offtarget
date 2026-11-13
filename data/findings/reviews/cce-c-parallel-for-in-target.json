@@ -1,0 +1,141 @@
+{
+ "finding": "cce-c-parallel-for-in-target.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program is conforming. schedule(static) must still run all 64 iterations and lastprivate(t) must yield 63, so 'static 1 of 64' and t=-1 are errors. For linear(x:1), the spec assigns the value corresponding to the last logical iteration (original + 63*step = 63), not the value after the body's x++ (64); the expected x=64 is therefore not clearly required, though x=0 is wrong under either reading. The expected line as a whole is not fully supported."
+  },
+  {
+   "run": "run-20261112/batch-23",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each parallel for in the target region must execute all 64 iterations; lastprivate and linear give the final values to the original items. The body of the linear loop changes x by exactly the linear step per iteration (x++ with step 1), which satisfies the restriction, so x ends at 64. t is mapped tofrom and each array element is written by one iteration, so there is no race. schedule(static) without chunk is a plain conforming schedule, so 1 of 64 iterations and lost final values are a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 4,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each parallel for in the target region must execute all 64 iterations whatever the schedule. lastprivate(t) assigns the value from the sequentially last iteration (t=63) to the original list item, and linear(x: 1) leaves x as 64. Variables are mapped tofrom, and the loops have no races (distinct b[i], c[i], d[i]). The observed 1 of 64 iterations, t=-1 and x=0 are wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-07",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-71",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each parallel for in the target region writes distinct array elements, so there is no race. A schedule(static) loop executes every iteration across the team's chunks. lastprivate gives the original t the value from the sequentially last iteration (t=63). linear gives the original x the value of the last logical iteration (x=64). Both are mapped tofrom and return to the host. Observed 1 of 64, t=-1 and x=0 violate these rules.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-66",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "3b5c5aa9593e8f773628f33f1b8704168c61f9c07cfe48584e603318509ba924",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program conforms: x++ changes x by the step 1 per iteration, satisfying the linear restriction. schedule(static) must still run all 64 iterations and lastprivate(t) must give 63, so 'static 1 of 64' and t=-1 are errors. Reading A is wrong on x: the value assigned to the original item is the value corresponding to the last logical iteration, original plus 63 times the step, i.e. 63, not 64, so the expected x=64 is not what the text requires. Reading B is right on that. x=0 is wrong either way, so the compiler still errs, but the expected line as written is not wholly required."
+  },
+  {
+   "run": "adj-20261112/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program is conforming. linear(x: 1) with x++ in the body changes x by exactly the linear step per iteration, satisfying the restriction. Reading A is right that all 64 iterations must run under schedule(static), that lastprivate(t) yields 63, and that the observed 'static 1 of 64', t=-1 and x=0 are compiler errors. Reading B is right on one detail only: the specification assigns original + 63*step = 63 to x, not 64, so the stated expected x=64 is itself unsupported. Observed x=0 is wrong under either value, so the observed result is an error."
+  }
+ ]
+}

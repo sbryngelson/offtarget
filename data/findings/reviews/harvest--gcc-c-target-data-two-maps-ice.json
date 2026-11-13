@@ -1,0 +1,113 @@
+{
+ "finding": "harvest/gcc-c-target-data-two-maps-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-42",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The same list item may appear in several map clauses on one directive; the only restriction is on the mapper modifier, which is the default in both. The nested target uses map(present, alloc: x), x is present from the enclosing target data, and the from at exit copies 222 back. A conforming compiler must accept it; the ICE is a defect. The final value relies on the from map-type applying at exit, which the combined clauses permit."
+  },
+  {
+   "run": "run-20261113/batch-75",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The same list item x in two map clauses of one construct is allowed when the mapper modifier is the same (none here). Reference count is incremented once per construct on entry, not per clause, so at exit the count is one and the from map-type copies 222 back. The inner target with present,alloc finds x mapped, does not copy. A conforming compiler must accept it; the ICE is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-116",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A list item may appear more than once in map clauses on the same directive. The restriction needs only the same mapper modifier, which holds here. On exit the from clause copies the value back, so x is 222 on the host. The internal compiler error is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-55",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The restriction forbids list items sharing original storage unless they are the same list item. The same list item may appear more than once if mapper modifiers match (none here). The program conforms, so the compiler must accept it; the ICE is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-60",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1ba5880c849542c2eb97122d3fc67bbc5b6f48e280f45068327847582a42523c",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

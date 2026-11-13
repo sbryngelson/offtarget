@@ -1,0 +1,175 @@
+{
+ "finding": "stress/afar-target-scalar-implicit-firstprivate.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s is a scalar not named in any map clause, so on the target construct it is implicitly firstprivate. The device update s = 2*s+1 modifies the private copy and the host s stays 101. The observed output (rd=101 s=101) is the required one; the expected s=203 is wrong. A scalar with the TARGET attribute does not change the default rule (the 6491 rule concerns implicit mapping attributes of scalars, which are firstprivate unless mapped)."
+  },
+  {
+   "run": "run-20261112/batch-19",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s is a scalar with the TARGET attribute, so it is treated as mapped tofrom (not firstprivate). rd=s reads 101, s becomes 203 on the device and is copied back at the end. Observed s=101 is wrong. Same rule text in 5.0 and 6.0."
+  },
+  {
+   "run": "run-v2-20261113/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s is a scalar with the TARGET attribute, so it is implicitly mapped tofrom rather than firstprivate. The device update s = 2*s+1 must be copied back, giving s=203. Observed s=101 treats it as firstprivate, which the rule excludes.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 2,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-75",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s is a scalar with the TARGET attribute and is referenced in the target construct without an explicit data-sharing or map clause. The implicit rule maps it tofrom, so the device update s = 2*s+1 is copied back and s must be 203. The firstprivate rule applies only if the earlier rules do not apply. Output s=101 contradicts the specified mapping. No race, single thread of execution in the region.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-37",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7618b2f0d7acd60131c8ee7e973aa7314bc1e13dc6d76ebc57609fe1726abd64",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails: for Fortran, a scalar with the TARGET attribute is treated as mapped tofrom; the firstprivate default applies only if none of the earlier rules applies. s is TARGET, so the device update of s is copied back and s=203. The rule is identical in 5.0, 5.2 and 6.0. Reading A is right."
+  },
+  {
+   "run": "adj-20261112/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails: it ignores the Fortran rule that a scalar with the TARGET attribute is treated as mapped tofrom. s has TARGET, is not in a map clause and no earlier rule applies, so it is mapped tofrom; s=2*s+1 on the device is copied back, giving s=203. Observed s=101 is a compiler error (the rule is also in 5.0/6.0 per Reading A; checked here in 5.2)."
+  }
+ ]
+}

@@ -1,0 +1,314 @@
+{
+ "finding": "gcc/gcc-acc-detach-delete-attach-underflow.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "copyin(h%v) on an already present h attaches h%v (attachment counter 1); detach(h%v) decrements it to zero and detaches; delete(h%v) then only decrements the dynamic reference counter, and delete(h) frees h. Counters never go below zero, so libgomp's attach count underflow is not specified behavior. sum = 2080 + 64 = 2144."
+  },
+  {
+   "run": "run-20261113/batch-76",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "copyin(h) does not copy allocatable member data; copyin(h%v) then attaches (attachment counter 1); detach(h%v) decrements to 0 and detaches; delete(h%v) performs a further decrement, which leaves a zero counter unchanged, so no underflow error is specified. delete(h) removes the parent. present(h) is satisfied. Expected sum 2144 follows. An 'attach count underflow' abort is not specified."
+  },
+  {
+   "run": "run-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "h%v is attached by copyin (attachment counter 1), detach drops it to 0, then delete(h%v) performs a decrement on a counter already zero, which the specification defines as leaving the value unchanged, so no underflow error is specified. Dynamic count of h%v is 1 so the delete proceeds; h is deleted last. Sum is 64*2+2016=2144. A conforming implementation must run it; the libgomp underflow is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-29",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "copyin(h%v) is an allocatable component, and the attach rules apply only to a 'pointer reference'. The spec does not say whether an allocatable member counts. If it does not, copyin(h%v) leaves the attachment counter at zero, so detach(h%v) would decrement a zero counter. If it does, the sequence is conforming and the underflow is a bug. The spec text leaves this open.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The spec does not say whether an allocatable member counts as a pointer for attach rules"
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The spec does not say whether an allocatable member counts as a pointer reference"
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-67",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "copyin(h%v) on an enter data when h is present attaches the pointer and sets the attachment counter to one. The detach clause then decrements it to zero and detaches; later deletes are valid. No underflow should occur, so the runtime error is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-28",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113d/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "h%v is a Fortran allocatable, hence a pointer reference. copyin(h%v) attaches (counter 1), detach(h%v) decrements to 0 and detaches, delete(h%v) decrements a counter that is already zero, which the specification says leaves it unchanged, then the detach action with a zero counter just refreshes the pointer, and the dynamic counter reaches zero and deallocates. No error is specified, so the run-time 'attach count underflow' abort is not permitted. Sum is 2080+64=2144.",
+   "verifications": [
+    {
+     "run": "verify-20261113e/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 5,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 5,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9986a74fc4c6d36efdf5bf7954111f6fc71237e33df6eb193969a7319bf03707",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The attach and detach clauses accept Fortran allocatable variables, which suggests allocatable components count as pointer references. But the attach pointer action is defined only for a pointer reference, and that term is never defined. Whether copyin(h%v) sets the attachment counter to one is therefore not settled.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The attach and detach clauses accept Fortran allocatable variables, which suggests allocatable components count as pointer references. But the attach pointer action is defined only for a pointer reference, and that term is never defined. Whether copyin(h%v) sets the attachment counter to one is therefore not settled. Reading B assumes it does; Reading A is right that the text leaves it open.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B is right and Reading A's doubt is resolved by 2.6.4, which names a Fortran allocatable as a pointer. copyin(h%v) with h present allocates v, performs an attach and sets the attachment counter to one. detach(h%v) then decrements it to zero and detaches; delete follows. An underflow is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

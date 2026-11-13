@@ -1,0 +1,2877 @@
+{
+ "modes": {
+  "0": {
+   "run": {
+    "full": true,
+    "full_versions": [
+     34
+    ],
+    "lang": "c",
+    "merged": false,
+    "model": "acc",
+    "only": null,
+    "reused_from": null,
+    "reused_programs": 0,
+    "seconds": 169,
+    "settings": "-gpu=mem:separate (NVHPC separate memory, row key 0), -O2, one repeat, run timeout 120 s (a timeout is run once more), toolchains nvhpc, versions 34, version flags as the matrix (run_matrix.for_version: nvhpc 34: default)",
+    "started": "2026-10-24T22:45:10",
+    "versions": [
+     34
+    ],
+    "workers": 1
+   },
+   "source": "results/t37/accc_audit/nvhpc/audit.accc.x0.summary.json",
+   "versions": {
+    "34": {
+     "acc.clause.async": {
+      "body_sha": "ed4d513e6bad0d303f2cd062444cf5b6ed4a930ed9a2603aa4f90dfeb9aa826b",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-async",
+      "reason": "async lets the operations run asynchronously; they may also complete before the host goes on, so no run separates it [basis: OpenACC 3.4 \u00a72.16, p.99: \"If a compute construct, data directive, or runtime API call has an async-value other than acc_async_sync, the associated operations are executed on the activity queue associated with that async-value and the associated operations may be processed asynchronously while the local thread continues executing the code following the construct or directive.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.async.async_argument": {
+      "body_sha": "4c8096b304a5d56a03362c1f8725815e8e0258cb15e21854b79e8397c255fdbf",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-async-async_argument",
+      "reason": "the queue number selects an activity queue whose operations may run asynchronously or not [basis: OpenACC 3.4 \u00a72.16, p.99: \"If a compute construct, data directive, or runtime API call has an async-value other than acc_async_sync, the associated operations are executed on the activity queue associated with that async-value and the associated operations may be processed asynchronously while the local thread continues executing the code following the construct or directive.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.attach": {
+      "body_sha": "7f9c36ad1023b35093e82675c06e3dfbc29e7d84ca5f09edaa8b8699a3e578b8",
+      "disposition": "unverified_oracle_not_written",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-attach",
+      "reason": "attach of h%v: copyin(h%v) already attaches the device pointer (3.4 \u00a72.7.8), so the program cannot separate an explicit attach; a check needs a pointer whose target enters the device before its parent without an attach action (create of the target, then attach)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.auto": {
+      "body_sha": "d6dc32b4ac893c196ce52928b5036693a59181a4a8480fc8280c095492ba9662",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-auto",
+      "reason": "in a kernels construct a loop without independent or seq is treated as auto [basis: OpenACC 3.4 \u00a72.9.7, p.69: \"When the parent compute construct is a kernels construct, a loop construct with no independent or seq clause is treated as if it has the auto clause.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.bind": {
+      "body_sha": "b8c1b45a81eb6d4caa572e3a74289b088000582828d23fe1f1e83273cfdd52e0",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-bind",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.capture": {
+      "body_sha": "4b093786797b492f700639838a0b625845f3b8e86548666910d8bd4b32320fb1",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-capture",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.collapse": {
+      "body_sha": "f2459c59549b6d10f37d7ced126bf7d0a99e004ff38b3639251d83e6a127cc01",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-collapse",
+      "reason": "collapse decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.collapse.force": {
+      "body_sha": "77b5fad6e11deee935e29965c456d79703662e6d17d68ecc03f937e6e8ad7680",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-collapse-force",
+      "reason": "collapse(force: 2) decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.copy": {
+      "body_sha": "64e553ac3524aba6d674bd81fc71cd770de72ab560b0505827d9e30d9b9c8d21",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copy",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.copy.implicit_kernels_scalar": {
+      "body_sha": "139b8145dd7b5909f951af79a903e41318832e5eca18146921a7b77c7b9fa294",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copy-implicit_kernels_scalar",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.copyin": {
+      "body_sha": "ef7b8ccfbb7fad26de2e2c500658c2fefb57be994150c6ddf0162bc3e924f231",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copyin",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.copyout": {
+      "body_sha": "ef7b8ccfbb7fad26de2e2c500658c2fefb57be994150c6ddf0162bc3e924f231",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copyout",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.create": {
+      "body_sha": "5dad38da7d353fd6aaeaefc8dfaa764cf252a843fe962639ce9660e48a4f6ee3",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-create",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.default": {
+      "body_sha": "ada755c4e7abf0bccb2e929cab963e05bcd0af241133859dd407d17c24650fde",
+      "disposition": "valid",
+      "evidence": "probe",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-default",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.default.none": {
+      "body_sha": "87fc25a4a46df7c855845a9629c505f98a4e5a7d1d0d5eb7f542139f0516adff",
+      "disposition": "legality",
+      "evidence": "legality",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-default-none",
+      "reason": "its oracle is the illegal variant of ACC34-default-dsa-001",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.default.present": {
+      "body_sha": "ada755c4e7abf0bccb2e929cab963e05bcd0af241133859dd407d17c24650fde",
+      "disposition": "valid",
+      "evidence": "probe",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-default-present",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.default_async": {
+      "body_sha": "4970bff0a4c270d7f15fbf816be60795a63c073c3f08c4f404ec5bbb53b475ed",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-default_async",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.delete": {
+      "body_sha": "4703308cc357c2849fbf67bf88c22946bf292594b0985e466581d623968ab1dc",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-delete",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.detach": {
+      "body_sha": "51a2b393f3e134021d3734af8e658a95bdf44d02e8549714846aa6d0e96eef45",
+      "disposition": "unverified_oracle_not_written",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-detach",
+      "reason": "detach of h%v: copyin(h%v) already attaches the device pointer (3.4 \u00a72.7.8), so the program cannot separate an explicit detach; a check needs a pointer whose target enters the device before its parent without an attach action (create of the target, then attach)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.device": {
+      "body_sha": "0b198e6d8b1140b089d30cb5d7a454b611feb4b071ecb97fdf929d64d6ff561a",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-device",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.device_num": {
+      "body_sha": "729264a4dd2a2ffe721c8ea3d993b253ea23a29906c33fa06509d801b70caa24",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-device_num",
+      "reason": "selecting a device by number is separable only with a second device of the type, which this slice does not use (brief: nothing needing multiple devices)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.device_resident": {
+      "body_sha": "82bcc3b59822bb974dca7bac59372027139e88d0c0139182cafd134eb76ac933",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-device_resident",
+      "reason": "device_resident places dr in device memory only; the host may not access it (3.4 \u00a72.13.1), so the only difference is where the storage lives, which a conforming program cannot read",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.device_type": {
+      "body_sha": "7b781fa6087e66eb19f93258e72f5d6b77439b3a3fce103e0635f9f3929a13da",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-device_type",
+      "reason": "the device types and their names are implementation-defined; the clauses after device_type(*) are hints here (vector_length) [basis: OpenACC 3.4 \u00a72.4, p.32: \"The supported device types are implementation-defined.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.deviceptr": {
+      "body_sha": "ee4c175dd020f73d7a2d3cb54728decc0389370231dedbf917f7bea2bf55c64c",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-deviceptr",
+      "reason": "deviceptr tells the compiler the dummies hold device addresses; without it they are implicitly copy, and on the MI300A the host can read and write device memory, so the copies of the device addresses work too (the audit's mutant survived): a check needs a device whose memory the host cannot address",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.finalize": {
+      "body_sha": "a55b96c7c0bc2a7fc3ae9fd2d6771feb82701ff6577de7737d9d068f471a6878",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-finalize",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.firstprivate": {
+      "body_sha": "d33612b61be791790efd695b776c1d2b24faf6b927d73a3b1231f9b8f54413c1",
+      "disposition": "unaudited_no_passing_original",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "wrong_answer"
+      },
+      "program": "acc34-c-clause-firstprivate",
+      "reason": "nvhpc: wrong_answer",
+      "status": "unknown",
+      "toolchains": {
+       "nvhpc": "inconclusive"
+      },
+      "xnack": 0
+     },
+     "acc.clause.firstprivate.implicit_scalar": {
+      "body_sha": "10fc5a64824830d4136b389504f3f472e16bf52efcc8bfecf23b4b603ed8d376",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-firstprivate-implicit_scalar",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.gang": {
+      "body_sha": "79c242bcb403469347a6e4fa44cfc9217f7a422b4feb8366b398080362002c4e",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang",
+      "reason": "a data-independent loop in a parallel construct without a gang clause has an implied gang(dim:1) clause [basis: OpenACC 3.4 \u00a72.9.2, p.67: \"A gang(dim:1) clause is implied on a data-independent loop construct without an explicit gang clause if the following conditions hold while ignoring gang, worker, and vector clauses on any sequential loop constructs and while treating implicit routine directives as if they are explicit:\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.gang.dim": {
+      "body_sha": "81766965f88c8d56f74693b070d482548d4107be347851d75b318fc6f214b894",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang-dim",
+      "reason": "dimension one is the gang clause's dimension without dim [basis: OpenACC 3.4 \u00a72.9.2, p.66: \"The associated dimension is the value of the dim argument, if it appears, or is dimension one.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.gang.num": {
+      "body_sha": "bc0808da15a63a1c2ea0fd6881bda4e19a20c8b3470a312bbe8e2941be7e1d22",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang-num",
+      "reason": "the number of gangs a kernels loop uses is not reported by any OpenACC routine and the result is the same for every number",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.gang.static": {
+      "body_sha": "091762b4f3617efec4548a4b752263e2c6a20acd18c3e3318f0f770e6b01d296",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang-static",
+      "reason": "gang(static: 4) decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.host": {
+      "body_sha": "a84a10f6d15b20dccd30481294b88e2e00abee1882143d3d83cd2f3632ee93d5",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-host",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.if": {
+      "body_sha": "c4a62c01ebd4e84def9af35e0b8f0cf6cd0a74501fe10938a1851e3a34a56525",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-if",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.if_present": {
+      "body_sha": "537918b70231e690cc42f71568a9472697f9e323398f3773cbd72cfd903316d3",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-if_present",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.independent": {
+      "body_sha": "d2a7fbef2fce08acb55c6abb869766e63c6c2f9453f563aab7c4d5ab0df6b10d",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-independent",
+      "reason": "independent asserts that the iterations are data-independent; the implementation may parallelise the loop with or without it [basis: OpenACC 3.4 \u00a72.9.6, p.69: \"The independent clause tells the implementation that the loop iterations must be data indepen- dent, except for vars which appear in a reduction clause or which are modified in an atomic region.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.link": {
+      "body_sha": "bc6ecbc7e4ed863022073f1e0eb9bbd92db2dcbe0569747eeec9de4237e07aed",
+      "disposition": "unaudited_no_passing_original",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "wrong_answer"
+      },
+      "program": "acc34-c-clause-link",
+      "reason": "nvhpc: wrong_answer",
+      "status": "unknown",
+      "toolchains": {
+       "nvhpc": "inconclusive"
+      },
+      "xnack": 0
+     },
+     "acc.clause.no_create": {
+      "body_sha": "1889cd6d19c34a0b7c7bdfc8b3f59c4824d62e436351566953d5b6d7a95f6f4b",
+      "disposition": "unverified_oracle_not_written",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-no_create",
+      "reason": "no_create on present data behaves as present; the separating case is an absent var, whose device code then uses the host address (3.4 \u00a72.7.11), which copy mode faults on and zero-copy shares, so a check needs a var the kernel does not dereference",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.nohost": {
+      "body_sha": "2f40d08098174aba400d4a2d18f7e2f6bcbd0be0c0c0bdd88c0aefbc57352bd6",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-nohost",
+      "reason": "nohost only stops the host version from being compiled; a conforming program never calls it on the host, so its absence shows only as a link failure of a non-conforming one",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.num_gangs": {
+      "body_sha": "fee606dea709db822c08cfdf28d0f53b4dd71a7eb12567b6dffe184a76801ddf",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-num_gangs",
+      "reason": "the implementation may use fewer gangs [basis: OpenACC 3.4 \u00a72.5.10, p.38: \"The implementation may use a lower value than specified based on limitations imposed by the target architecture.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.num_workers": {
+      "body_sha": "25ed2c7577cecd46aa7da1652a4dce242546cb778f0dea14e1f0dd878a749b90",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-num_workers",
+      "reason": "the implementation may use another number of workers [basis: OpenACC 3.4 \u00a72.5.11, p.38: \"The implementation may use a different value than specified based on limitations imposed by the target architecture.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.present": {
+      "body_sha": "6cb4912b204be1476f3d101a90a3f4441ed4a9544d7769a2f451d12f4c941b11",
+      "disposition": "valid",
+      "evidence": "probe",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-present",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.private": {
+      "body_sha": "8f09d447643883c1fb2141eae21cc14d44b4cefc5309fed0d99b816b1b13bd4d",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-private",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.read": {
+      "body_sha": "1692b28a6161c41bd3d0177dcdd5b7428d03a197fb31be2bb56dbb5f8bbf2881",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-read",
+      "reason": "atomic read differs from a plain read only when another access races with it, which no deterministic single run exercises",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.reduction": {
+      "body_sha": "6aade2a480b27a1f79b46081bfd36dc7fc0bc3c2e0f5fc06ebc4aac7b5ca4b5c",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.and": {
+      "body_sha": "e8401e9e0255715ec263f704f4ce96f1e33b28233beee00e916e96248fcf02e6",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-and",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.iand": {
+      "body_sha": "ccc7fea9118b5c4c432569cea189af1ff87455e0b41c9a4addd5dbcfd931e889",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-iand",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.ieor": {
+      "body_sha": "d676df6edb0c27dec064995f9628c8f0c6007abbd9a6dbf565fe5443d860fd92",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-ieor",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.ior": {
+      "body_sha": "addda6116f2eff7854f9391d9a80187c798e2e5be8099f1fbe3205eac558ec04",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-ior",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.max": {
+      "body_sha": "84848b354ce3264857ab205a46bc07b7d9127896f585933f7ce2fd960a0010d1",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-max",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.min": {
+      "body_sha": "e34ef388123a65152db7b833ec2c5b49d287aa513efb340ec323bac7488090be",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-min",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.or": {
+      "body_sha": "50270b03556b9cea1aead067cd53cf552a26f581d104d86d94f8ec244b523099",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-or",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.plus": {
+      "body_sha": "e666186551a0400e9956e40c4090e857333c3f2a353d8d1ce3e66fffd10c0fa4",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-plus",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.reduction.times": {
+      "body_sha": "f0d493d2faebfc6e36b3033b8bb2fb36a98da9c102c554fa48051796c80275b9",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-times",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.self": {
+      "body_sha": "6d6d17bc0fba5aef37619ff83d39e6da586007c51706cfc202bce840997f2a5a",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-self",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.seq": {
+      "body_sha": "8b27a4fdd499b0eacfa4998f6fd83c892bb248d7294400833780e26d5ea8973e",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-seq",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.clause.tile": {
+      "body_sha": "1bd9ef631d169e68c31f51575f42e7f9853c5331fa7bca4766af0bbb1d22b57a",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-tile",
+      "reason": "tile decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.update": {
+      "body_sha": "5e810b47cc2cad2b76aecab9bca7bb98c6901e3b6ed1e6873398373c88a05543",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-update",
+      "reason": "atomic without a clause has the semantics of atomic update [basis: OpenACC 3.4 \u00a72.12, p.80: \"Note that when no clause appears, the semantics are equivalent to atomic update.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.use_device": {
+      "body_sha": "ee4c175dd020f73d7a2d3cb54728decc0389370231dedbf917f7bea2bf55c64c",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-use_device",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.clause.vector": {
+      "body_sha": "299b1f5cf3d52aa4bf1b98547cc31a60850d2732f73a7b1ccc88a3f5a8ddfbd4",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-vector",
+      "reason": "vector decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.vector.length": {
+      "body_sha": "100f7ffac3b3c6a8bbc46e082e6ff60b41bf927cbf40764a1eca6144fd2c10c5",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-vector-length",
+      "reason": "vector(length: 32) decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.vector_length": {
+      "body_sha": "fa84f5cfba2bb5ebb9ce9a0e7b825ebaea9a292c53d995afc5130b529e66e301",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-vector_length",
+      "reason": "the implementation may use another vector length [basis: OpenACC 3.4 \u00a72.5.12, p.38: \"The implementation may use a different value than specified based on limitations imposed by the target architecture.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.wait": {
+      "body_sha": "30d13d64d68854210d1faac8ab42fab85c0ad2b7e6573781243e7bd6bf639d9f",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-wait",
+      "reason": "operations on different queues may run in either order or concurrently, and also in order (CCE runs the second kernel after the first without the clause: the audit's mutant survived), so no run separates the clause [basis: OpenACC 3.4 \u00a72.16, p.99: \"Two asynchronous operations with different async-values may be enqueued onto different activity queues, and therefore may be executed on the device in either order or concurrently relative to each other.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.wait.devnum": {
+      "body_sha": "1b9498a42f6ad5fa9b09fbbfff1d4b1b52079ce58e150ba5a99d8f7cf34c1b30",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-wait-devnum",
+      "reason": "devnum names the current device, the associated device without it [basis: OpenACC 3.4 \u00a72.16, p.99: \"If no devnum modifier appears then the associated device is the current device.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.wait.queues": {
+      "body_sha": "46e7f57592b0b07ac701088faff6c3f29fd4e98beb9370b134ff3b75dd4bd686",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-wait-queues",
+      "reason": "the queues modifier is optional, for clarity [basis: OpenACC 3.4 \u00a72.16, p.99: \"The queues modifier within a wait-argument is optional to improve clarity of the expression list.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.worker": {
+      "body_sha": "763d169a14f93d23263a03802184bbf34d7003b5562681499a8ccb850ff756fe",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-worker",
+      "reason": "worker decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.worker.num": {
+      "body_sha": "485e46bb99c50a5bc1251d171c8a25a46e459bc2e944ccb804d720356a21affe",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-worker-num",
+      "reason": "the number of workers a kernels loop uses is not reported by any OpenACC routine and the result is the same for every number",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.write": {
+      "body_sha": "f053f0391771372cde45af02e35767c46e18cadc9e0e995377682edc4de80a4c",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-write",
+      "reason": "atomic write differs from a plain write only when another access races with it, which no deterministic single run exercises",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.atomic": {
+      "body_sha": "63dac3ec502388a3f3c0f96e2245f98d2f5c70e4609710f37778ba03ec3a1d8b",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-atomic",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.cache": {
+      "body_sha": "287bbc6a01b666c6f1889c2cb0d982f604c958b3d6abbe9c3e867a9bcdfc7c07",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-directive-cache",
+      "reason": "cache suggests that the elements be fetched into the fastest cache level; values are the same without it [basis: OpenACC 3.4 \u00a72.10, p.75: \"When the cache directive appears at the top of (inside of) a loop, it suggests array elements or subarrays would benefit by being fetched into the highest level of the cache for the body of the loop.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.data": {
+      "body_sha": "4e531c522fc2720869fa95f8a61b9c471b837166dd43c902bd519a4f438b8b40",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-data",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.declare": {
+      "body_sha": "afb81db050197477651005e465c1403f80ee12ab45bfd34cc02e6bdbb77ba46b",
+      "disposition": "unaudited_no_passing_original",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "wrong_answer"
+      },
+      "program": "acc34-c-directive-declare",
+      "reason": "nvhpc: wrong_answer",
+      "status": "unknown",
+      "toolchains": {
+       "nvhpc": "inconclusive"
+      },
+      "xnack": 0
+     },
+     "acc.directive.enter_data": {
+      "body_sha": "736f3f7f3acd552d2e5880ed56416fce68f402972a465dbde379fd5fc1109821",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-enter_data",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.exit_data": {
+      "body_sha": "736f3f7f3acd552d2e5880ed56416fce68f402972a465dbde379fd5fc1109821",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-exit_data",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.host_data": {
+      "body_sha": "ee4c175dd020f73d7a2d3cb54728decc0389370231dedbf917f7bea2bf55c64c",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-host_data",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.init": {
+      "body_sha": "7c08146fa5c73bb0ee699b081fdafd0e69203137f9962b0b58479e1639eedb85",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-directive-init",
+      "reason": "initialisation is observable only as timing or through the profiling interface (3.4 chapter 5); the runtime initialises on first use anyway",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.kernels": {
+      "body_sha": "f5d4f1deff4dcbbeae7f42bd295713e1ef8ac4ee9cfe193ffede1386b03e21d5",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-kernels",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.kernels_loop": {
+      "body_sha": "028035cf4d316cb846f9b2021fd3b30b99582f7acf20485e8230280861c60c5c",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-kernels_loop",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.loop": {
+      "body_sha": "27dd1f0ffd3b4245de4e5485b2725cf9319ba7d62ff45599dec8126cf20214d8",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-loop",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.parallel": {
+      "body_sha": "2dd05f2d45236dcf51db066dac2c1b96b5ec342c53b661da3bae42770604cba7",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-parallel",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.parallel_loop": {
+      "body_sha": "85f2aaa078a4ec2958419d12f778d178c81ac09e84dc7530940a0225f3cd35e3",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-parallel_loop",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.routine": {
+      "body_sha": "c89a50a6cbcf76b7630ee2c20206c5bd4046b3547907863013298d8c46b90b22",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-directive-routine",
+      "reason": "a procedure called in a compute region without a routine directive gets an implicit routine seq (3.4 \u00a72.15.1), the directive this program writes [basis: OpenACC 3.4 \u00a72.15.1, p.92: \"If no explicit routine directive applies to a procedure whose definition appears in the program unit being compiled, then the implementation applies an implicit routine directive to that procedure if any of the following conditions holds:\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.serial": {
+      "body_sha": "1fd3114f97fefea927b36317bc629e7be14b380e98e366a5bda7a259e1531f77",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-serial",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.serial_loop": {
+      "body_sha": "2a5bce35ff83139fd49cda70f8257f56db24a0761779785df74610ebf24e1eff",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-serial_loop",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.set": {
+      "body_sha": "4970bff0a4c270d7f15fbf816be60795a63c073c3f08c4f404ec5bbb53b475ed",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-set",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 0
+     },
+     "acc.directive.shutdown": {
+      "body_sha": "c3f677113a06cced8c6623fe0f1558edb2502ca8da79103669159a60099c4c1e",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-shutdown",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.update": {
+      "body_sha": "6d6d17bc0fba5aef37619ff83d39e6da586007c51706cfc202bce840997f2a5a",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-update",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     },
+     "acc.directive.wait": {
+      "body_sha": "1617720b7cfb18c510a7ccc892bc0102d982192f4cfa35979200b61fe431301d",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-wait",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 0
+     }
+    }
+   }
+  },
+  "2": {
+   "run": {
+    "full": false,
+    "full_versions": [],
+    "lang": "c",
+    "merged": false,
+    "model": "acc",
+    "only": null,
+    "reused_from": null,
+    "reused_programs": 0,
+    "seconds": 168,
+    "settings": "-gpu=mem:managed (NVHPC managed memory, row key 2), -O2, one repeat, run timeout 120 s (a timeout is run once more), toolchains nvhpc, versions 34, version flags as the matrix (run_matrix.for_version: nvhpc 34: default)",
+    "started": "2026-10-24T22:45:07",
+    "versions": [
+     34
+    ],
+    "workers": 1
+   },
+   "source": "results/t37/accc_audit/nvhpc/audit.accc.x2.summary.json",
+   "versions": {
+    "34": {
+     "acc.clause.async": {
+      "body_sha": "ed4d513e6bad0d303f2cd062444cf5b6ed4a930ed9a2603aa4f90dfeb9aa826b",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-async",
+      "reason": "async lets the operations run asynchronously; they may also complete before the host goes on, so no run separates it [basis: OpenACC 3.4 \u00a72.16, p.99: \"If a compute construct, data directive, or runtime API call has an async-value other than acc_async_sync, the associated operations are executed on the activity queue associated with that async-value and the associated operations may be processed asynchronously while the local thread continues executing the code following the construct or directive.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.async.async_argument": {
+      "body_sha": "4c8096b304a5d56a03362c1f8725815e8e0258cb15e21854b79e8397c255fdbf",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-async-async_argument",
+      "reason": "the queue number selects an activity queue whose operations may run asynchronously or not [basis: OpenACC 3.4 \u00a72.16, p.99: \"If a compute construct, data directive, or runtime API call has an async-value other than acc_async_sync, the associated operations are executed on the activity queue associated with that async-value and the associated operations may be processed asynchronously while the local thread continues executing the code following the construct or directive.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.attach": {
+      "body_sha": "7f9c36ad1023b35093e82675c06e3dfbc29e7d84ca5f09edaa8b8699a3e578b8",
+      "disposition": "unverified_oracle_not_written",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-attach",
+      "reason": "attach of h%v: copyin(h%v) already attaches the device pointer (3.4 \u00a72.7.8), so the program cannot separate an explicit attach; a check needs a pointer whose target enters the device before its parent without an attach action (create of the target, then attach)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.auto": {
+      "body_sha": "d6dc32b4ac893c196ce52928b5036693a59181a4a8480fc8280c095492ba9662",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-auto",
+      "reason": "in a kernels construct a loop without independent or seq is treated as auto [basis: OpenACC 3.4 \u00a72.9.7, p.69: \"When the parent compute construct is a kernels construct, a loop construct with no independent or seq clause is treated as if it has the auto clause.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.bind": {
+      "body_sha": "b8c1b45a81eb6d4caa572e3a74289b088000582828d23fe1f1e83273cfdd52e0",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-bind",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.capture": {
+      "body_sha": "4b093786797b492f700639838a0b625845f3b8e86548666910d8bd4b32320fb1",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-capture",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.collapse": {
+      "body_sha": "f2459c59549b6d10f37d7ced126bf7d0a99e004ff38b3639251d83e6a127cc01",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-collapse",
+      "reason": "collapse decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.collapse.force": {
+      "body_sha": "77b5fad6e11deee935e29965c456d79703662e6d17d68ecc03f937e6e8ad7680",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-collapse-force",
+      "reason": "collapse(force: 2) decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.copy": {
+      "body_sha": "64e553ac3524aba6d674bd81fc71cd770de72ab560b0505827d9e30d9b9c8d21",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copy",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.copy.implicit_kernels_scalar": {
+      "body_sha": "139b8145dd7b5909f951af79a903e41318832e5eca18146921a7b77c7b9fa294",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copy-implicit_kernels_scalar",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.copyin": {
+      "body_sha": "ef7b8ccfbb7fad26de2e2c500658c2fefb57be994150c6ddf0162bc3e924f231",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copyin",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.copyout": {
+      "body_sha": "ef7b8ccfbb7fad26de2e2c500658c2fefb57be994150c6ddf0162bc3e924f231",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-copyout",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.create": {
+      "body_sha": "5dad38da7d353fd6aaeaefc8dfaa764cf252a843fe962639ce9660e48a4f6ee3",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-create",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.default": {
+      "body_sha": "ada755c4e7abf0bccb2e929cab963e05bcd0af241133859dd407d17c24650fde",
+      "disposition": "valid",
+      "evidence": "probe",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-default",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.default.none": {
+      "body_sha": "87fc25a4a46df7c855845a9629c505f98a4e5a7d1d0d5eb7f542139f0516adff",
+      "disposition": "legality",
+      "evidence": "legality",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-default-none",
+      "reason": "its oracle is the illegal variant of ACC34-default-dsa-001",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.default.present": {
+      "body_sha": "ada755c4e7abf0bccb2e929cab963e05bcd0af241133859dd407d17c24650fde",
+      "disposition": "valid",
+      "evidence": "probe",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-default-present",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.default_async": {
+      "body_sha": "4970bff0a4c270d7f15fbf816be60795a63c073c3f08c4f404ec5bbb53b475ed",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-default_async",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.delete": {
+      "body_sha": "4703308cc357c2849fbf67bf88c22946bf292594b0985e466581d623968ab1dc",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-delete",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.detach": {
+      "body_sha": "51a2b393f3e134021d3734af8e658a95bdf44d02e8549714846aa6d0e96eef45",
+      "disposition": "unverified_oracle_not_written",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-detach",
+      "reason": "detach of h%v: copyin(h%v) already attaches the device pointer (3.4 \u00a72.7.8), so the program cannot separate an explicit detach; a check needs a pointer whose target enters the device before its parent without an attach action (create of the target, then attach)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.device": {
+      "body_sha": "0b198e6d8b1140b089d30cb5d7a454b611feb4b071ecb97fdf929d64d6ff561a",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-device",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.device_num": {
+      "body_sha": "729264a4dd2a2ffe721c8ea3d993b253ea23a29906c33fa06509d801b70caa24",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-device_num",
+      "reason": "selecting a device by number is separable only with a second device of the type, which this slice does not use (brief: nothing needing multiple devices)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.device_resident": {
+      "body_sha": "82bcc3b59822bb974dca7bac59372027139e88d0c0139182cafd134eb76ac933",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-device_resident",
+      "reason": "device_resident places dr in device memory only; the host may not access it (3.4 \u00a72.13.1), so the only difference is where the storage lives, which a conforming program cannot read",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.device_type": {
+      "body_sha": "7b781fa6087e66eb19f93258e72f5d6b77439b3a3fce103e0635f9f3929a13da",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-device_type",
+      "reason": "the device types and their names are implementation-defined; the clauses after device_type(*) are hints here (vector_length) [basis: OpenACC 3.4 \u00a72.4, p.32: \"The supported device types are implementation-defined.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.deviceptr": {
+      "body_sha": "ee4c175dd020f73d7a2d3cb54728decc0389370231dedbf917f7bea2bf55c64c",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-deviceptr",
+      "reason": "deviceptr tells the compiler the dummies hold device addresses; without it they are implicitly copy, and on the MI300A the host can read and write device memory, so the copies of the device addresses work too (the audit's mutant survived): a check needs a device whose memory the host cannot address",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.finalize": {
+      "body_sha": "a55b96c7c0bc2a7fc3ae9fd2d6771feb82701ff6577de7737d9d068f471a6878",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-finalize",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.firstprivate": {
+      "body_sha": "d33612b61be791790efd695b776c1d2b24faf6b927d73a3b1231f9b8f54413c1",
+      "disposition": "unaudited_no_passing_original",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "wrong_answer"
+      },
+      "program": "acc34-c-clause-firstprivate",
+      "reason": "nvhpc: wrong_answer",
+      "status": "unknown",
+      "toolchains": {
+       "nvhpc": "inconclusive"
+      },
+      "xnack": 2
+     },
+     "acc.clause.firstprivate.implicit_scalar": {
+      "body_sha": "10fc5a64824830d4136b389504f3f472e16bf52efcc8bfecf23b4b603ed8d376",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-firstprivate-implicit_scalar",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.gang": {
+      "body_sha": "79c242bcb403469347a6e4fa44cfc9217f7a422b4feb8366b398080362002c4e",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang",
+      "reason": "a data-independent loop in a parallel construct without a gang clause has an implied gang(dim:1) clause [basis: OpenACC 3.4 \u00a72.9.2, p.67: \"A gang(dim:1) clause is implied on a data-independent loop construct without an explicit gang clause if the following conditions hold while ignoring gang, worker, and vector clauses on any sequential loop constructs and while treating implicit routine directives as if they are explicit:\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.gang.dim": {
+      "body_sha": "81766965f88c8d56f74693b070d482548d4107be347851d75b318fc6f214b894",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang-dim",
+      "reason": "dimension one is the gang clause's dimension without dim [basis: OpenACC 3.4 \u00a72.9.2, p.66: \"The associated dimension is the value of the dim argument, if it appears, or is dimension one.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.gang.num": {
+      "body_sha": "bc0808da15a63a1c2ea0fd6881bda4e19a20c8b3470a312bbe8e2941be7e1d22",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang-num",
+      "reason": "the number of gangs a kernels loop uses is not reported by any OpenACC routine and the result is the same for every number",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.gang.static": {
+      "body_sha": "091762b4f3617efec4548a4b752263e2c6a20acd18c3e3318f0f770e6b01d296",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-gang-static",
+      "reason": "gang(static: 4) decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.host": {
+      "body_sha": "a84a10f6d15b20dccd30481294b88e2e00abee1882143d3d83cd2f3632ee93d5",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-host",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.if": {
+      "body_sha": "c4a62c01ebd4e84def9af35e0b8f0cf6cd0a74501fe10938a1851e3a34a56525",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-if",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.if_present": {
+      "body_sha": "537918b70231e690cc42f71568a9472697f9e323398f3773cbd72cfd903316d3",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-if_present",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.independent": {
+      "body_sha": "d2a7fbef2fce08acb55c6abb869766e63c6c2f9453f563aab7c4d5ab0df6b10d",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-independent",
+      "reason": "independent asserts that the iterations are data-independent; the implementation may parallelise the loop with or without it [basis: OpenACC 3.4 \u00a72.9.6, p.69: \"The independent clause tells the implementation that the loop iterations must be data indepen- dent, except for vars which appear in a reduction clause or which are modified in an atomic region.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.link": {
+      "body_sha": "bc6ecbc7e4ed863022073f1e0eb9bbd92db2dcbe0569747eeec9de4237e07aed",
+      "disposition": "unaudited_no_passing_original",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "wrong_answer"
+      },
+      "program": "acc34-c-clause-link",
+      "reason": "nvhpc: wrong_answer",
+      "status": "unknown",
+      "toolchains": {
+       "nvhpc": "inconclusive"
+      },
+      "xnack": 2
+     },
+     "acc.clause.no_create": {
+      "body_sha": "1889cd6d19c34a0b7c7bdfc8b3f59c4824d62e436351566953d5b6d7a95f6f4b",
+      "disposition": "unverified_oracle_not_written",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-no_create",
+      "reason": "no_create on present data behaves as present; the separating case is an absent var, whose device code then uses the host address (3.4 \u00a72.7.11), which copy mode faults on and zero-copy shares, so a check needs a var the kernel does not dereference",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.nohost": {
+      "body_sha": "2f40d08098174aba400d4a2d18f7e2f6bcbd0be0c0c0bdd88c0aefbc57352bd6",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-clause-nohost",
+      "reason": "nohost only stops the host version from being compiled; a conforming program never calls it on the host, so its absence shows only as a link failure of a non-conforming one",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.num_gangs": {
+      "body_sha": "fee606dea709db822c08cfdf28d0f53b4dd71a7eb12567b6dffe184a76801ddf",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-num_gangs",
+      "reason": "the implementation may use fewer gangs [basis: OpenACC 3.4 \u00a72.5.10, p.38: \"The implementation may use a lower value than specified based on limitations imposed by the target architecture.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.num_workers": {
+      "body_sha": "25ed2c7577cecd46aa7da1652a4dce242546cb778f0dea14e1f0dd878a749b90",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-num_workers",
+      "reason": "the implementation may use another number of workers [basis: OpenACC 3.4 \u00a72.5.11, p.38: \"The implementation may use a different value than specified based on limitations imposed by the target architecture.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.present": {
+      "body_sha": "6cb4912b204be1476f3d101a90a3f4441ed4a9544d7769a2f451d12f4c941b11",
+      "disposition": "valid",
+      "evidence": "probe",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-present",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.private": {
+      "body_sha": "8f09d447643883c1fb2141eae21cc14d44b4cefc5309fed0d99b816b1b13bd4d",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-private",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.read": {
+      "body_sha": "1692b28a6161c41bd3d0177dcdd5b7428d03a197fb31be2bb56dbb5f8bbf2881",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-read",
+      "reason": "atomic read differs from a plain read only when another access races with it, which no deterministic single run exercises",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.reduction": {
+      "body_sha": "6aade2a480b27a1f79b46081bfd36dc7fc0bc3c2e0f5fc06ebc4aac7b5ca4b5c",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.and": {
+      "body_sha": "e8401e9e0255715ec263f704f4ce96f1e33b28233beee00e916e96248fcf02e6",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-and",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.iand": {
+      "body_sha": "ccc7fea9118b5c4c432569cea189af1ff87455e0b41c9a4addd5dbcfd931e889",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-iand",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.ieor": {
+      "body_sha": "d676df6edb0c27dec064995f9628c8f0c6007abbd9a6dbf565fe5443d860fd92",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-ieor",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.ior": {
+      "body_sha": "addda6116f2eff7854f9391d9a80187c798e2e5be8099f1fbe3205eac558ec04",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-ior",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.max": {
+      "body_sha": "84848b354ce3264857ab205a46bc07b7d9127896f585933f7ce2fd960a0010d1",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-max",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.min": {
+      "body_sha": "e34ef388123a65152db7b833ec2c5b49d287aa513efb340ec323bac7488090be",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-min",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.or": {
+      "body_sha": "50270b03556b9cea1aead067cd53cf552a26f581d104d86d94f8ec244b523099",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-or",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.plus": {
+      "body_sha": "e666186551a0400e9956e40c4090e857333c3f2a353d8d1ce3e66fffd10c0fa4",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-plus",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.reduction.times": {
+      "body_sha": "f0d493d2faebfc6e36b3033b8bb2fb36a98da9c102c554fa48051796c80275b9",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-reduction-times",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.self": {
+      "body_sha": "6d6d17bc0fba5aef37619ff83d39e6da586007c51706cfc202bce840997f2a5a",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-self",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.seq": {
+      "body_sha": "8b27a4fdd499b0eacfa4998f6fd83c892bb248d7294400833780e26d5ea8973e",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-seq",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.clause.tile": {
+      "body_sha": "1bd9ef631d169e68c31f51575f42e7f9853c5331fa7bca4766af0bbb1d22b57a",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-tile",
+      "reason": "tile decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.update": {
+      "body_sha": "5e810b47cc2cad2b76aecab9bca7bb98c6901e3b6ed1e6873398373c88a05543",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-update",
+      "reason": "atomic without a clause has the semantics of atomic update [basis: OpenACC 3.4 \u00a72.12, p.80: \"Note that when no clause appears, the semantics are equivalent to atomic update.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.use_device": {
+      "body_sha": "ee4c175dd020f73d7a2d3cb54728decc0389370231dedbf917f7bea2bf55c64c",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-clause-use_device",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.clause.vector": {
+      "body_sha": "299b1f5cf3d52aa4bf1b98547cc31a60850d2732f73a7b1ccc88a3f5a8ddfbd4",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-vector",
+      "reason": "vector decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.vector.length": {
+      "body_sha": "100f7ffac3b3c6a8bbc46e082e6ff60b41bf927cbf40764a1eca6144fd2c10c5",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-vector-length",
+      "reason": "vector(length: 32) decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.vector_length": {
+      "body_sha": "fa84f5cfba2bb5ebb9ce9a0e7b825ebaea9a292c53d995afc5130b529e66e301",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-vector_length",
+      "reason": "the implementation may use another vector length [basis: OpenACC 3.4 \u00a72.5.12, p.38: \"The implementation may use a different value than specified based on limitations imposed by the target architecture.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.wait": {
+      "body_sha": "30d13d64d68854210d1faac8ab42fab85c0ad2b7e6573781243e7bd6bf639d9f",
+      "disposition": "implementation_defined",
+      "evidence": "implementation_defined",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-wait",
+      "reason": "operations on different queues may run in either order or concurrently, and also in order (CCE runs the second kernel after the first without the clause: the audit's mutant survived), so no run separates the clause [basis: OpenACC 3.4 \u00a72.16, p.99: \"Two asynchronous operations with different async-values may be enqueued onto different activity queues, and therefore may be executed on the device in either order or concurrently relative to each other.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.wait.devnum": {
+      "body_sha": "1b9498a42f6ad5fa9b09fbbfff1d4b1b52079ce58e150ba5a99d8f7cf34c1b30",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-wait-devnum",
+      "reason": "devnum names the current device, the associated device without it [basis: OpenACC 3.4 \u00a72.16, p.99: \"If no devnum modifier appears then the associated device is the current device.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.wait.queues": {
+      "body_sha": "46e7f57592b0b07ac701088faff6c3f29fd4e98beb9370b134ff3b75dd4bd686",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-wait-queues",
+      "reason": "the queues modifier is optional, for clarity [basis: OpenACC 3.4 \u00a72.16, p.99: \"The queues modifier within a wait-argument is optional to improve clarity of the expression list.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.worker": {
+      "body_sha": "763d169a14f93d23263a03802184bbf34d7003b5562681499a8ccb850ff756fe",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-worker",
+      "reason": "worker decides which gang, worker or vector lane runs an iteration; no OpenACC routine reports it (the result of a correct loop is the same under every schedule)",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.worker.num": {
+      "body_sha": "485e46bb99c50a5bc1251d171c8a25a46e459bc2e944ccb804d720356a21affe",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-worker-num",
+      "reason": "the number of workers a kernels loop uses is not reported by any OpenACC routine and the result is the same for every number",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.clause.write": {
+      "body_sha": "f053f0391771372cde45af02e35767c46e18cadc9e0e995377682edc4de80a4c",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-clause-write",
+      "reason": "atomic write differs from a plain write only when another access races with it, which no deterministic single run exercises",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.atomic": {
+      "body_sha": "63dac3ec502388a3f3c0f96e2245f98d2f5c70e4609710f37778ba03ec3a1d8b",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-atomic",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.cache": {
+      "body_sha": "287bbc6a01b666c6f1889c2cb0d982f604c958b3d6abbe9c3e867a9bcdfc7c07",
+      "disposition": "hint_only",
+      "evidence": "hint_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-directive-cache",
+      "reason": "cache suggests that the elements be fetched into the fastest cache level; values are the same without it [basis: OpenACC 3.4 \u00a72.10, p.75: \"When the cache directive appears at the top of (inside of) a loop, it suggests array elements or subarrays would benefit by being fetched into the highest level of the cache for the body of the loop.\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.data": {
+      "body_sha": "4e531c522fc2720869fa95f8a61b9c471b837166dd43c902bd519a4f438b8b40",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-data",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.declare": {
+      "body_sha": "afb81db050197477651005e465c1403f80ee12ab45bfd34cc02e6bdbb77ba46b",
+      "disposition": "unaudited_no_passing_original",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "wrong_answer"
+      },
+      "program": "acc34-c-directive-declare",
+      "reason": "nvhpc: wrong_answer",
+      "status": "unknown",
+      "toolchains": {
+       "nvhpc": "inconclusive"
+      },
+      "xnack": 2
+     },
+     "acc.directive.enter_data": {
+      "body_sha": "736f3f7f3acd552d2e5880ed56416fce68f402972a465dbde379fd5fc1109821",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-enter_data",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.exit_data": {
+      "body_sha": "736f3f7f3acd552d2e5880ed56416fce68f402972a465dbde379fd5fc1109821",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-exit_data",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.host_data": {
+      "body_sha": "ee4c175dd020f73d7a2d3cb54728decc0389370231dedbf917f7bea2bf55c64c",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-host_data",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.init": {
+      "body_sha": "7c08146fa5c73bb0ee699b081fdafd0e69203137f9962b0b58479e1639eedb85",
+      "disposition": "unverified_needs_other_infrastructure",
+      "evidence": "unverified",
+      "kill_kinds": [],
+      "observable": false,
+      "originals": {},
+      "program": "acc34-c-directive-init",
+      "reason": "initialisation is observable only as timing or through the profiling interface (3.4 chapter 5); the runtime initialises on first use anyway",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.kernels": {
+      "body_sha": "f5d4f1deff4dcbbeae7f42bd295713e1ef8ac4ee9cfe193ffede1386b03e21d5",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-kernels",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.kernels_loop": {
+      "body_sha": "028035cf4d316cb846f9b2021fd3b30b99582f7acf20485e8230280861c60c5c",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-kernels_loop",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.loop": {
+      "body_sha": "27dd1f0ffd3b4245de4e5485b2725cf9319ba7d62ff45599dec8126cf20214d8",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-loop",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.parallel": {
+      "body_sha": "2dd05f2d45236dcf51db066dac2c1b96b5ec342c53b661da3bae42770604cba7",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-parallel",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.parallel_loop": {
+      "body_sha": "85f2aaa078a4ec2958419d12f778d178c81ac09e84dc7530940a0225f3cd35e3",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-parallel_loop",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.routine": {
+      "body_sha": "c89a50a6cbcf76b7630ee2c20206c5bd4046b3547907863013298d8c46b90b22",
+      "disposition": "equivalent_default",
+      "evidence": "equivalent_default",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {},
+      "program": "acc34-c-directive-routine",
+      "reason": "a procedure called in a compute region without a routine directive gets an implicit routine seq (3.4 \u00a72.15.1), the directive this program writes [basis: OpenACC 3.4 \u00a72.15.1, p.92: \"If no explicit routine directive applies to a procedure whose definition appears in the program unit being compiled, then the implementation applies an implicit routine directive to that procedure if any of the following conditions holds:\"]",
+      "status": "not_audited",
+      "toolchains": {},
+      "xnack": 0
+     },
+     "acc.directive.serial": {
+      "body_sha": "1fd3114f97fefea927b36317bc629e7be14b380e98e366a5bda7a259e1531f77",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-serial",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.serial_loop": {
+      "body_sha": "2a5bce35ff83139fd49cda70f8257f56db24a0761779785df74610ebf24e1eff",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "fell_back_to_host"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-serial_loop",
+      "reason": "valid only via fell_back_to_host",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.set": {
+      "body_sha": "4970bff0a4c270d7f15fbf816be60795a63c073c3f08c4f404ec5bbb53b475ed",
+      "disposition": "weak",
+      "evidence": "construct",
+      "kill_kinds": [],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-set",
+      "reason": "",
+      "status": "weak",
+      "toolchains": {
+       "nvhpc": "survived"
+      },
+      "xnack": 2
+     },
+     "acc.directive.shutdown": {
+      "body_sha": "c3f677113a06cced8c6623fe0f1558edb2502ca8da79103669159a60099c4c1e",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-shutdown",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.update": {
+      "body_sha": "6d6d17bc0fba5aef37619ff83d39e6da586007c51706cfc202bce840997f2a5a",
+      "disposition": "valid",
+      "evidence": "copy_mode_only",
+      "kill_kinds": [
+       "check_fail"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-update",
+      "reason": "",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     },
+     "acc.directive.wait": {
+      "body_sha": "1617720b7cfb18c510a7ccc892bc0102d982192f4cfa35979200b61fe431301d",
+      "disposition": "valid",
+      "evidence": "construct",
+      "kill_kinds": [
+       "crash"
+      ],
+      "observable": true,
+      "originals": {
+       "nvhpc": "correct_on_device"
+      },
+      "program": "acc34-c-directive-wait",
+      "reason": "valid only via crash",
+      "status": "valid",
+      "toolchains": {
+       "nvhpc": "killed"
+      },
+      "xnack": 2
+     }
+    }
+   }
+  }
+ },
+ "what": "The oracle (mutation) audit on NVHPC 25.11 (wingtip, NVIDIA A100), per memory mode (row key 0 separate, 2 managed); dispositions as in tests/data/oracle_audit_summary*.json, for the toolchain nvhpc alone"
+}

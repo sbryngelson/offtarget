@@ -1,0 +1,2047 @@
+# Vendor claims for the first slice (OpenMP, free-form Fortran, target offload).
+#
+# Read by offload/engine/report.py (load_claims, compare_claims). Every entry is
+# `status: provisional`: the mapping from a vendor's prose to catalog atoms is
+# this project's reading and awaits the maintainer's review.
+#
+# Fields
+#   source        short id of the document (see the sources list below)
+#   url           where the claim is published (the citation)
+#   toolchain     afar | cce19 (the compiler the claim is compared with)
+#   atom / atoms  catalog atoms the claim covers (or `pattern`, an fnmatch glob)
+#   claim         supported | unsupported | partial
+#   form          optional: compile_error (an unsupported feature is a compile
+#                 error, so anything but rejection contradicts it) or accepted
+#                 (a partial feature is accepted, so rejection contradicts it)
+#   general       true for a release-level statement ("full OpenMP 4.5"); it
+#                 applies to an atom only when no specific claim for the same
+#                 toolchain covers that atom
+#   versions      optional: catalog versions (52, 60) the claim is compared at.
+#                 Release-level 4.5/5.0 claims are compared with the 5.2
+#                 programs only; 6.0 spellings are outside such claims.
+#   quote         the vendor's words (verbatim, or "feature | status" for a
+#                 status-table row)
+#   language      language the vendor's statement is about
+#   version_note  which compiler or release the document describes
+#
+# Sources
+#   hpe-cce-intro-openmp      HPE intro_openmp(7). The quoted sentences are
+#                             also in the man page shipped with CCE 19.0.0
+#                             (/opt/cray/pe/cce/19.0.0/man/man7/intro_openmp.7,
+#                             checked 2026-10-18); the web page describes the
+#                             current release.
+#   rocm-openmp-support       AMD "ROCm OpenMP support": "fully supports the
+#                             OpenMP 4.5 standard and a subset of OpenMP 5.0,
+#                             5.1, and 5.2 standards" (release-level, ROCm 7.x
+#                             LLVM; no per-feature list).
+#   rocm-clang-openmp-status  AMD-hosted Clang 20.0.0git OpenMPSupport table:
+#                             C/C++ only, older than AFAR's 24.0.0git; a
+#                             purported column for amdflang.
+#   afar-flang-openmp-status  flang/docs/OpenMPSupport.md at the exact AFAR
+#                             24.3.0 source commit of ROCm/llvm-project
+#                             (copied to data/index/claims/amdflang_afar_openmp_status.csv).
+#                             Status good -> supported, part / progress ->
+#                             partial, none -> unsupported. Quotes use the CSV
+#                             transcription's status codes; the rendered page
+#                             words them differently (good is shown as done,
+#                             none as unclaimed).
+#   afar-flang-lowering-todo  flang/test/Lower/OpenMP/Todo tests at the same
+#                             commit: the lowering stops with "not yet
+#                             implemented" (the doc calls these authoritative).
+#                             Listed in data/index/claims/amdflang_afar_lowering_todo_tests.txt.
+
+claims:
+
+# --- HPE CCE (cce19) ----------------------------------------------------------------
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "CCE supports full OpenMP 5.0 and partial OpenMP 5.1 and 5.2."
+    note: "Atoms that exist in OpenMP 4.5 (full 5.0 includes them)."
+    language: Fortran and C/C++
+    version_note: &hpe_note "intro_openmp(7); same text in the CCE 19.0.0 man page"
+    status: provisional
+    atoms: &omp45
+      - omp.directive.target
+      - omp.directive.target_data
+      - omp.directive.target_enter_data
+      - omp.directive.target_exit_data
+      - omp.directive.target_update
+      - omp.directive.teams
+      - omp.directive.distribute
+      - omp.directive.distribute_simd
+      - omp.directive.distribute_parallel_do
+      - omp.directive.distribute_parallel_do_simd
+      - omp.directive.declare_target
+      - omp.directive.parallel_do
+      - omp.directive.parallel_do_simd
+      - omp.directive.target_parallel
+      - omp.directive.target_parallel_do
+      - omp.directive.target_parallel_do_simd
+      - omp.directive.target_simd
+      - omp.directive.target_teams
+      - omp.directive.target_teams_distribute
+      - omp.directive.target_teams_distribute_simd
+      - omp.directive.target_teams_distribute_parallel_do
+      - omp.directive.target_teams_distribute_parallel_do_simd
+      - omp.directive.teams_distribute
+      - omp.directive.teams_distribute_simd
+      - omp.directive.teams_distribute_parallel_do
+      - omp.directive.teams_distribute_parallel_do_simd
+      - omp.clause.map
+      - omp.clause.map.to
+      - omp.clause.map.from
+      - omp.clause.map.tofrom
+      - omp.clause.map.alloc
+      - omp.clause.map.release
+      - omp.clause.map.delete
+      - omp.clause.map.always
+      - omp.clause.defaultmap
+      - omp.clause.defaultmap.tofrom
+      - omp.clause.defaultmap.scalar
+      - omp.clause.is_device_ptr
+      - omp.clause.use_device_ptr
+      - omp.clause.device
+      - omp.clause.if
+      - omp.clause.if.directive_name
+      - omp.clause.depend
+      - omp.clause.depend.in
+      - omp.clause.depend.out
+      - omp.clause.depend.inout
+      - omp.clause.nowait
+      - omp.clause.private
+      - omp.clause.firstprivate
+      - omp.clause.lastprivate
+      - omp.clause.shared
+      - omp.clause.default
+      - omp.clause.default.shared
+      - omp.clause.default.none
+      - omp.clause.reduction
+      - omp.clause.reduction.plus
+      - omp.clause.reduction.times
+      - omp.clause.reduction.minus
+      - omp.clause.reduction.max
+      - omp.clause.reduction.min
+      - omp.clause.reduction.iand
+      - omp.clause.reduction.ior
+      - omp.clause.reduction.ieor
+      - omp.clause.reduction.and
+      - omp.clause.reduction.or
+      - omp.clause.reduction.eqv
+      - omp.clause.reduction.neqv
+      - omp.clause.collapse
+      - omp.clause.dist_schedule
+      - omp.clause.dist_schedule.static
+      - omp.clause.dist_schedule.chunk_size
+      - omp.clause.schedule
+      - omp.clause.schedule.static
+      - omp.clause.schedule.dynamic
+      - omp.clause.schedule.guided
+      - omp.clause.schedule.auto
+      - omp.clause.schedule.runtime
+      - omp.clause.schedule.chunk_size
+      - omp.clause.schedule.monotonic
+      - omp.clause.schedule.nonmonotonic
+      - omp.clause.schedule.simd
+      - omp.clause.ordered
+      - omp.clause.ordered.n
+      - omp.clause.linear
+      - omp.clause.linear.val
+      - omp.clause.linear.ref
+      - omp.clause.linear.uval
+      - omp.clause.linear.step_simple_modifier
+      - omp.clause.aligned
+      - omp.clause.aligned.alignment
+      - omp.clause.safelen
+      - omp.clause.simdlen
+      - omp.clause.num_teams
+      - omp.clause.thread_limit
+      - omp.clause.num_threads
+      - omp.clause.proc_bind
+      - omp.clause.proc_bind.master
+      - omp.clause.proc_bind.close
+      - omp.clause.proc_bind.spread
+      - omp.clause.copyin
+      - omp.clause.to
+      - omp.clause.from
+      - omp.clause.link
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "CCE supports full OpenMP 5.0 and partial OpenMP 5.1 and 5.2."
+    note: "Atoms new in OpenMP 5.0 (OpenMP 5.0 Appendix B, 4.5 to 5.0 differences)."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms: &omp50
+      - omp.directive.requires
+      - omp.directive.loop
+      - omp.directive.parallel_loop
+      - omp.directive.target_parallel_loop
+      - omp.directive.target_teams_loop
+      - omp.directive.teams_loop
+      - omp.clause.unified_shared_memory
+      - omp.clause.unified_address
+      - omp.clause.atomic_default_mem_order
+      - omp.clause.atomic_default_mem_order.seq_cst
+      - omp.clause.atomic_default_mem_order.acq_rel
+      - omp.clause.atomic_default_mem_order.relaxed
+      - omp.clause.bind
+      - omp.clause.bind.teams
+      - omp.clause.bind.parallel
+      - omp.clause.bind.thread
+      - omp.clause.order
+      - omp.clause.order.concurrent
+      - omp.clause.map.mapper
+      - omp.clause.use_device_addr
+      - omp.clause.device_type
+      - omp.clause.device_type.any
+      - omp.clause.device_type.host
+      - omp.clause.device_type.nohost
+      - omp.clause.depend.mutexinoutset
+      - omp.clause.depend.depobj
+      - omp.clause.depend.iterator
+      - omp.clause.in_reduction
+      - omp.clause.in_reduction.plus
+      - omp.clause.in_reduction.times
+      - omp.clause.in_reduction.minus
+      - omp.clause.in_reduction.max
+      - omp.clause.in_reduction.min
+      - omp.clause.in_reduction.iand
+      - omp.clause.in_reduction.ior
+      - omp.clause.in_reduction.ieor
+      - omp.clause.in_reduction.and
+      - omp.clause.in_reduction.or
+      - omp.clause.in_reduction.eqv
+      - omp.clause.in_reduction.neqv
+      - omp.clause.reduction.task
+      - omp.clause.reduction.inscan
+      - omp.clause.reduction.default
+      - omp.clause.lastprivate.conditional
+      - omp.clause.allocate
+      - omp.clause.allocate.allocator_simple_modifier
+      - omp.clause.uses_allocators
+      - omp.clause.defaultmap.alloc
+      - omp.clause.defaultmap.to
+      - omp.clause.defaultmap.from
+      - omp.clause.defaultmap.firstprivate
+      - omp.clause.defaultmap.none
+      - omp.clause.defaultmap.default
+      - omp.clause.defaultmap.aggregate
+      - omp.clause.defaultmap.pointer
+      - omp.clause.defaultmap.allocatable
+      - omp.clause.device.ancestor
+      - omp.clause.device.device_num
+      - omp.clause.nontemporal
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: unsupported
+    form: compile_error
+    quote: "The requires directive clauses dynamic_allocators and reverse_offload currently result in compile time errors."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.reverse_offload
+      - omp.clause.reverse_offload.required
+      - omp.clause.dynamic_allocators
+      - omp.clause.dynamic_allocators.required
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: unsupported
+    quote: "The device clause is not supported.  The other mechanisms for selecting a default device are supported: OMP_DEFAULT_DEVICE and omp_set_default_device."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.device
+      - omp.clause.device.device_num
+      - omp.clause.device.ancestor
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: partial
+    form: accepted
+    quote: "Several hints are parsed and accepted, but no action is taken: simd nontemporal, atomic hints, nonmonotonic loop scheduling, and the close modifier."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.nontemporal
+      - omp.clause.schedule.nonmonotonic
+      - omp.clause.map.close
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: partial
+    form: accepted
+    quote: "The mutexinoutset and inoutset dependence types are accepted but treated as inout dependence types"
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.depend.mutexinoutset
+      - omp.clause.depend.inoutset
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: partial
+    form: accepted
+    quote: "The uses_allocators clause is accepted, but its usefulness is limited because CCE does not currently support the OpenMP memory allocation APIs in target regions for non-host devices"
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.uses_allocators
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: partial
+    form: accepted
+    quote: "The order(concurrent) clause is accepted, but is not used for additional optimization."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.order
+      - omp.clause.order.concurrent
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "The following OpenMP 5.1 features are supported: ... iterator modifier in depend, map, and motion clauses (Fortran only)"
+    spec_version: "5.1"
+    language: Fortran
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.depend.iterator
+      - omp.clause.map.iterator
+      - omp.clause.to.iterator
+      - omp.clause.from.iterator
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "The following OpenMP 5.1 features are supported: ... has_device_addr clause on target construct"
+    spec_version: "5.1"
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.has_device_addr
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "The following OpenMP 5.1 features are supported: ... indirect clause"
+    spec_version: "5.1"
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.indirect
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: unsupported
+    quote: "indirect invoked-by-fptr argument is not supported."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.indirect.invoked_by_fptr
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "The following OpenMP 5.1 features are supported: ... primary policy for the proc_bind clause"
+    spec_version: "5.1"
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.proc_bind.primary
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "The following OpenMP 5.1 features are supported: ... reproducible/unconstrainted modifiers for order clause"
+    spec_version: "5.1"
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.order.reproducible
+      - omp.clause.order.unconstrained
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: unsupported
+    quote: "The following OpenMP 5.1 features are supported: ... present behavior for defaultmap (C/C++ only)"
+    spec_version: "5.1"
+    note: "Fortran is excluded by the vendor's '(C/C++ only)'; read as unsupported for Fortran (an inference)."
+    language: Fortran
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.defaultmap.present
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "Default and named mappers in Fortran are supported for top-level objects (scalars and arrays) on map clauses; only default mappers are supported for update directives"
+    note: "The generated to/from programs name mapper(default), the form said to be supported on update."
+    language: Fortran
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.map.mapper
+      - omp.clause.to.mapper
+      - omp.clause.from.mapper
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "omp scan is functionally supported, but loops will be limited to a single thread"
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.reduction.inscan
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "The conditional modifier for lastprivate is functionally supported on GPU, but runs with a single thread."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.lastprivate.conditional
+
+  - source: hpe-cce-intro-openmp
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    claim: supported
+    quote: "Currently, CCE only supports omp requires unified_shared_memory for AMD MI250X, AMD MI300A, and NVIDIA GH200 GPUs.  Recoverable page faults must be enabled at runtime for AMD GPUs to support unified memory (e.g., by setting the HSA_XNACK=1 environment variable), otherwise full unified memory support will not be available and the CCE OpenMP library will issue a fatal runtime error."
+    language: Fortran and C/C++
+    version_note: *hpe_note
+    status: provisional
+    atoms:
+      - omp.clause.unified_shared_memory
+
+# --- AMD: ROCm release statement (afar) ---------------------------------------------
+
+  - source: rocm-openmp-support
+    url: https://rocm.docs.amd.com/projects/llvm-project/en/docs-7.1.0/conceptual/openmp.html
+    toolchain: afar
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "The ROCm installation includes an LLVM-based implementation that fully supports the OpenMP 4.5 standard and a subset of OpenMP 5.0, 5.1, and 5.2 standards. Fortran, C/C++ compilers, and corresponding runtime libraries are included."
+    note: "Atoms that exist in OpenMP 4.5. The 5.x subset is not itemised, so no 5.x atom gets a claim from this page."
+    language: Fortran and C/C++
+    version_note: "Release-level claim for the ROCm 7.1/7.2 LLVM (same text at docs-7.2.4); not a statement about AFAR 24.3.0 (amdflang 24.0.0git)"
+    status: provisional
+    atoms: *omp45
+
+# --- AMD: Clang 20.0.0git status table (afar, C/C++ only) --------------------------
+
+  - source: rocm-clang-openmp-status
+    url: &clang_url https://rocm.docs.amd.com/projects/llvm-project/en/docs-7.1.1/LLVM/clang/html/OpenMPSupport.html
+    toolchain: afar
+    claim: supported
+    quote: "device | clause: device_type | done"
+    language: C/C++
+    version_note: &clang_note "Clang 20.0.0git C/C++ table hosted by AMD; purported for amdflang, older than AFAR"
+    status: provisional
+    atoms: [omp.clause.device_type, omp.clause.device_type.any, omp.clause.device_type.host, omp.clause.device_type.nohost]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "device | clause: extended device | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.device.ancestor, omp.clause.device.device_num]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "device | clause: uses_allocators clause | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.uses_allocators]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "device | support full 'defaultmap' functionality | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.defaultmap.alloc, omp.clause.defaultmap.to, omp.clause.defaultmap.from, omp.clause.defaultmap.firstprivate, omp.clause.defaultmap.none, omp.clause.defaultmap.default, omp.clause.defaultmap.aggregate, omp.clause.defaultmap.pointer]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "device | requires directive | done; device | clause: unified_shared_memory | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.directive.requires, omp.clause.unified_shared_memory]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: partial
+    quote: "device | clause: reverse_offload | partial; device | clause: dynamic_allocators | unclaimed parts"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.reverse_offload, omp.clause.dynamic_allocators]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "device | user-defined mappers | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.map.mapper]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "device | support close modifier on map clause | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.map.close]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "misc | iterator and multidependences | done; misc | depobj directive and depobj dependency kind | done; task | mutexinoutset dependence-type for tasks | done; task | inoutset in depend clause | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.depend.iterator, omp.clause.depend.depobj, omp.clause.depend.mutexinoutset, omp.clause.depend.inoutset]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "memory management | allocate directive and allocate clause | done; 'allocator' modifier for allocate clause | done; 'align' modifier for allocate clause | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.allocate, omp.clause.allocate.allocator_simple_modifier, omp.clause.allocate.allocator, omp.clause.allocate.align]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "device | 'present' map type modifier | done; 'present' motion modifier | done; 'present' in defaultmap clause | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.map.present, omp.clause.to.present, omp.clause.from.present, omp.clause.defaultmap.present]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: partial
+    quote: "device | thread_limit clause on target construct | partial"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.thread_limit]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: unsupported
+    quote: "device | has_device_addr clause on target construct | unclaimed"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.has_device_addr]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: unsupported
+    quote: "device | iterators in map clause or motion clauses | unclaimed"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.map.iterator, omp.clause.to.iterator, omp.clause.from.iterator]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: unsupported
+    quote: "device | indirect clause on declare target directive | unclaimed"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.indirect, omp.clause.indirect.invoked_by_fptr]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: partial
+    quote: "loop | 'reproducible'/'unconstrained' modifiers in 'order' clause | partial"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.order.reproducible, omp.clause.order.unconstrained]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: partial
+    quote: "loop | #pragma omp loop (directive) | partial; loop | #pragma omp loop bind | worked on"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.directive.loop, omp.directive.parallel_loop, omp.directive.teams_loop, omp.directive.target_teams_loop, omp.directive.target_parallel_loop, omp.clause.bind, omp.clause.bind.teams, omp.clause.bind.parallel, omp.clause.bind.thread]
+
+  - source: rocm-clang-openmp-status
+    url: *clang_url
+    toolchain: afar
+    claim: supported
+    quote: "loop | inclusive scan (matching C++17 PSTL) | done"
+    language: C/C++
+    version_note: *clang_note
+    status: provisional
+    atoms: [omp.clause.reduction.inscan]
+
+# --- AMD: flang OpenMPSupport.md at the AFAR commit (afar, Fortran) ----------------
+
+  - source: afar-flang-openmp-status
+    url: &flang_url https://github.com/ROCm/llvm-project/blob/3ba19712e9fbf709f6c93d33394211ed4eeec8a7/flang/docs/OpenMPSupport.md
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 4.0 | target data construct | good; target construct | good; target update construct | good; declare target directive | good; teams construct | good; distribute construct | good; distribute parallel loop construct | good; target teams construct | good; teams distribute construct | good; target teams distribute construct | good; teams distribute parallel loop construct | good; target teams distribute parallel loop construct | good"
+    spec_version: "4.0"
+    language: Fortran
+    version_note: &flang_note "flang/docs/OpenMPSupport.md at the AFAR 24.3.0 source commit (data/index/claims/amdflang_afar_openmp_status.csv)"
+    status: provisional
+    atoms: [omp.directive.target_data, omp.directive.target, omp.directive.target_update, omp.directive.declare_target, omp.directive.teams, omp.directive.distribute, omp.directive.distribute_parallel_do, omp.directive.target_teams, omp.directive.teams_distribute, omp.directive.target_teams_distribute, omp.directive.teams_distribute_parallel_do, omp.directive.target_teams_distribute_parallel_do]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 4.0 | distribute simd construct | part; distribute parallel loop simd construct | part; parallel do simd construct | part; teams distribute simd construct | part; teams distribute parallel loop simd construct | part; target teams distribute parallel loop simd construct | part"
+    spec_version: "4.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.directive.distribute_simd, omp.directive.distribute_parallel_do_simd, omp.directive.parallel_do_simd, omp.directive.teams_distribute_simd, omp.directive.teams_distribute_parallel_do_simd, omp.directive.target_teams_distribute_parallel_do_simd]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 4.0 | depend clause | good; OpenMP 4.0 | proc_bind clause | good"
+    spec_version: "4.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.depend, omp.clause.depend.in, omp.clause.depend.out, omp.clause.depend.inout, omp.clause.proc_bind, omp.clause.proc_bind.master, omp.clause.proc_bind.close, omp.clause.proc_bind.spread]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 4.5 | directive-name-modifier in if clause for combined constructs | good"
+    spec_version: "4.5"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.if.directive_name]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 4.5 | private, firstprivate, and defaultmap on target | good"
+    spec_version: "4.5"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.private, omp.clause.firstprivate, omp.clause.defaultmap, omp.clause.defaultmap.tofrom, omp.clause.defaultmap.scalar]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 4.5 | linear-modifier for linear clause | good; OpenMP 4.5 | linear clause on worksharing-loop construct | good"
+    spec_version: "4.5"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.linear, omp.clause.linear.val, omp.clause.linear.ref, omp.clause.linear.uval]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 4.5 | is_device_ptr and use_device_ptr clauses | part"
+    spec_version: "4.5"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.is_device_ptr, omp.clause.use_device_ptr]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 4.5 | target enter data and target exit data constructs | good; simdlen clause on simd construct | good; nowait and depend clauses on target construct | good"
+    spec_version: "4.5"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.directive.target_enter_data, omp.directive.target_exit_data, omp.clause.simdlen, omp.clause.nowait]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 4.5 | target parallel, target parallel do, and target parallel do simd constructs | part"
+    spec_version: "4.5"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.directive.target_parallel, omp.directive.target_parallel_do, omp.directive.target_parallel_do_simd]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 5.0 | memory allocators | part; allocate directive and allocate clause | part; clause: uses_allocators | part; OpenMP 5.1 | align clause on allocate directive and allocator/align modifiers on allocate clause | part"
+    spec_version: "5.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.allocate, omp.clause.allocate.allocator_simple_modifier, omp.clause.allocate.allocator, omp.clause.allocate.align]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 5.0 | support full defaultmap functionality | part"
+    spec_version: "5.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.defaultmap.alloc, omp.clause.defaultmap.to, omp.clause.defaultmap.from, omp.clause.defaultmap.none, omp.clause.defaultmap.default, omp.clause.defaultmap.aggregate, omp.clause.defaultmap.pointer, omp.clause.defaultmap.allocatable]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 5.0 | clause: in_reduction | part"
+    spec_version: "5.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.in_reduction, omp.clause.in_reduction.plus, omp.clause.in_reduction.times, omp.clause.in_reduction.minus, omp.clause.in_reduction.max, omp.clause.in_reduction.min, omp.clause.in_reduction.iand, omp.clause.in_reduction.ior, omp.clause.in_reduction.ieor, omp.clause.in_reduction.and, omp.clause.in_reduction.or, omp.clause.in_reduction.eqv, omp.clause.in_reduction.neqv]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 5.0 | user-defined mappers | good; clause: use_device_addr for target data | good; iterator modifier for depend clause | good; mutexinoutset on depend clause | good"
+    spec_version: "5.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.map.mapper, omp.clause.use_device_addr, omp.clause.depend.iterator, omp.clause.depend.mutexinoutset]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 5.0 | conditional modifier for lastprivate clause | progress; scan directive and inscan modifier for reduction | part; close modifier in map clause | part; if clause and nontemporal clause on simd | part"
+    spec_version: "5.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.lastprivate.conditional, omp.clause.reduction.inscan, omp.clause.map.close, omp.clause.nontemporal]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 5.0 | requires directive | part; loop construct and order(concurrent) clause | part"
+    spec_version: "5.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.directive.requires, omp.clause.unified_shared_memory, omp.clause.unified_address, omp.clause.atomic_default_mem_order, omp.directive.loop, omp.directive.parallel_loop, omp.directive.teams_loop, omp.directive.target_teams_loop, omp.directive.target_parallel_loop, omp.directive.target_loop, omp.clause.order, omp.clause.order.concurrent]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: unsupported
+    quote: "OpenMP 5.0 | reverse offload | none"
+    spec_version: "5.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.reverse_offload, omp.clause.reverse_offload.required]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 5.1 | present map type modifier | part; present modifier in motion clauses | part; present in defaultmap clause | part; thread_limit clause on target construct | part; has_device_addr clause on target construct | part; indirect clause on declare target | part; default(private) | part; inoutset in depend clause | part"
+    spec_version: "5.1"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.map.present, omp.clause.to.present, omp.clause.from.present, omp.clause.defaultmap.present, omp.clause.thread_limit, omp.clause.has_device_addr, omp.clause.indirect, omp.clause.default.private, omp.clause.depend.inoutset]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    quote: "OpenMP 5.1 | iterators in map or motion clauses | part"
+    spec_version: "5.1"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.map.iterator]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: supported
+    quote: "OpenMP 5.1 | default(firstprivate) | good; OpenMP 5.2 | enter clause replaces to clause on declare target | good"
+    spec_version: "5.1"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.default.firstprivate, omp.clause.enter]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: unsupported
+    quote: "OpenMP 5.2 | step modifier | none"
+    spec_version: "5.2"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.clause.linear.step]
+
+  - source: afar-flang-openmp-status
+    url: *flang_url
+    toolchain: afar
+    claim: partial
+    versions: [60]
+    quote: "OpenMP 6.0 | workdistribute construct | part; map clause updates (v6.0 forms) | part; map modifier updates (v6.0 and v6.1 forms) | part"
+    spec_version: "6.0"
+    language: Fortran
+    version_note: *flang_note
+    status: provisional
+    atoms: [omp.directive.teams_workdistribute, omp.directive.target_teams_workdistribute, omp.clause.map.ref_ptr, omp.clause.map.ref_ptee, omp.clause.map.ref_ptr_ptee, omp.clause.map.storage, omp.clause.map.self]
+
+# --- AMD: flang lowering TODO tests at the AFAR commit (afar, Fortran) -------------
+
+  - source: afar-flang-lowering-todo
+    url: &todo_url https://github.com/ROCm/llvm-project/tree/3ba19712e9fbf709f6c93d33394211ed4eeec8a7/flang/test/Lower/OpenMP/Todo
+    toolchain: afar
+    claim: unsupported
+    quote: "to-iterator-modifier.f90 / from-iterator-modifier.f90: not yet implemented: Iterator modifier is not supported yet"
+    language: Fortran
+    version_note: &todo_note "flang/test/Lower/OpenMP/Todo at the AFAR 24.3.0 source commit"
+    status: provisional
+    atoms: [omp.clause.to.iterator, omp.clause.from.iterator]
+
+  - source: afar-flang-lowering-todo
+    url: *todo_url
+    toolchain: afar
+    claim: unsupported
+    quote: "omp-clause-indirect.f90: not yet implemented: Unhandled clause INDIRECT in DECLARE TARGET construct"
+    language: Fortran
+    version_note: *todo_note
+    status: provisional
+    atoms: [omp.clause.indirect, omp.clause.indirect.invoked_by_fptr]
+
+  - source: afar-flang-lowering-todo
+    url: *todo_url
+    toolchain: afar
+    claim: unsupported
+    quote: "target-uses-allocators.f90: not yet implemented: USES_ALLOCATORS clause is not implemented yet"
+    language: Fortran
+    version_note: *todo_note
+    status: provisional
+    atoms: [omp.clause.uses_allocators, omp.clause.uses_allocators.traits, omp.clause.uses_allocators.memspace]
+
+  - source: afar-flang-lowering-todo
+    url: *todo_url
+    toolchain: afar
+    claim: unsupported
+    quote: "defaultmap-clause-firstprivate.f90: not yet implemented: Firstprivate is currently unsupported defaultmap behaviour"
+    language: Fortran
+    version_note: *todo_note
+    status: provisional
+    atoms: [omp.clause.defaultmap.firstprivate]
+
+  - source: afar-flang-lowering-todo
+    url: *todo_url
+    toolchain: afar
+    claim: unsupported
+    quote: "depend-clause-depobj.f90: not yet implemented: DEPOBJ dependence-type"
+    language: Fortran
+    version_note: *todo_note
+    status: provisional
+    atoms: [omp.clause.depend.depobj]
+
+# --- HPE CCE 20.0.2 / 21.0.3 (intro_openmp(7) of each release) -------------
+# Ingested per release: `tools/derive/claims.py ingest` records an entry for each
+# CCE toolchain whose man page (or release notes) contains the quote.
+
+  - source: hpe-cce-intro-openmp
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "CCE supports full OpenMP 5.0 and partial OpenMP 5.1, 5.2, and 6.0."
+    note: "Atoms that exist in OpenMP 4.5 (full 5.0 includes them)."
+    language: Fortran and C/C++
+    atoms: *omp45
+  - source: hpe-cce-intro-openmp
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "CCE supports full OpenMP 5.0 and partial OpenMP 5.1, 5.2, and 6.0."
+    note: "Atoms new in OpenMP 5.0 (OpenMP 5.0 Appendix B, 4.5 to 5.0 differences)."
+    language: Fortran and C/C++
+    atoms: *omp50
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "5.2"
+    versions: [52, 60]
+    quote: "The following OpenMP 5.2 features are supported: ... enter clause (Fortran only)"
+    language: Fortran
+    atoms: [omp.clause.enter]
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "5.2"
+    versions: [52, 60]
+    quote: "The following OpenMP 5.2 features are supported: ... new linear clause syntax (Fortran only)"
+    note: "The 5.2 linear syntax: modifiers val/ref/uval and step() inside the clause (5.2 §5.4.6)."
+    language: Fortran
+    atoms: [omp.clause.linear, omp.clause.linear.val, omp.clause.linear.ref, omp.clause.linear.uval, omp.clause.linear.step_simple_modifier]
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "The following OpenMP 6.0 features are supported: ... support for self mapping via self modifier"
+    note: "The self map-type modifier (6.0 §7.9.6): map(self: ...). defaultmap(self) is an implicit behaviour, not a modifier, so this entry does not name it (the release notes' broader 'self mapping' does)."
+    language: Fortran and C/C++
+    atoms: [omp.clause.map.self]
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "The following OpenMP 6.0 features are supported: ... extended default and defaultmap support"
+    note: "Project reading: the 6.0 defaultmap implicit behaviours storage and private (6.0 §7.9.9). Not the default clause's variable categories: CCE 21's page lists those as a separate item ('variable category modifier in default clause') and its release notes add them in 21.0. The 20.0.0 release notes say Fortran only for this item; the page names no language."
+    language: Fortran and C/C++
+    atoms: [omp.clause.defaultmap.storage, omp.clause.defaultmap.private]
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "The following OpenMP 6.0 features are supported: ... variable category modifier in default clause"
+    language: Fortran and C/C++
+    atoms: [omp.clause.default.aggregate, omp.clause.default.all, omp.clause.default.allocatable, omp.clause.default.pointer, omp.clause.default.scalar]
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "The following OpenMP 6.0 features are supported: ... reductions for already privatized variables"
+    note: "The original-sharing modifier of reduction (6.0 §7.6.?: original(private))."
+    language: Fortran and C/C++
+    atoms: [omp.clause.reduction.original]
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "The following OpenMP 6.0 features are supported: ... automap modifier for enter clause (Fortran)"
+    language: Fortran
+    atoms: [omp.clause.enter.automap]
+  - source: hpe-cce-intro-openmp
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "The following OpenMP 6.0 features are supported: ... local clause for declare_target directive (Fortran)"
+    language: Fortran
+    atoms: [omp.clause.local]
+  - source: hpe-cce-intro-openmp
+    claim: unsupported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "The workdistribute construct is not supported as part of a combined construct."
+    note: "The catalog's workdistribute programs use the combined teams workdistribute and target teams workdistribute forms; the man page lists the construct itself (Fortran) as supported."
+    language: Fortran
+    atoms: [omp.directive.teams_workdistribute, omp.directive.target_teams_workdistribute]
+  - source: hpe-cce-intro-openmp
+    claim: unsupported
+    quote: "For C/C++, the stand-alone loop directive is supported, but it is not supported when expressed as part of a combined or composite construct."
+    language: C/C++
+    atoms: [omp.directive.parallel_loop, omp.directive.teams_loop, omp.directive.target_parallel_loop, omp.directive.target_teams_loop, omp.directive.target_loop]
+
+# --- HPE CCE release notes (release_info of each release) ------------------
+
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "[6.0] ... self mapping for accelerators"
+    language: Fortran and C/C++
+    atoms: [omp.clause.map.self, omp.clause.defaultmap.self]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "[6.0] ... reductions on private variables"
+    language: Fortran and C/C++
+    atoms: [omp.clause.reduction.original]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "[6.0] ... Fortran: misc. extensions to `default` and `defaultmap` clauses"
+    note: "Same project reading as the man page's 'extended default and defaultmap support' (defaultmap storage and private; the variable categories of default came in 21.0)."
+    language: Fortran
+    atoms: [omp.clause.defaultmap.storage, omp.clause.defaultmap.private]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "[6.0] ... Fortran: automap modifier for declare target"
+    language: Fortran
+    atoms: [omp.clause.enter.automap]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "[6.0] ... local clause for declare target"
+    note: "No language restriction in the release notes; the man page of the same release says (Fortran)."
+    language: Fortran and C/C++
+    atoms: [omp.clause.local]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "[6.0] ... variable-category modifier for default clause"
+    language: Fortran and C/C++
+    atoms: [omp.clause.default.aggregate, omp.clause.default.all, omp.clause.default.allocatable, omp.clause.default.pointer, omp.clause.default.scalar]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "5.2"
+    versions: [52]
+    quote: "[5.2] ... misc. new syntax allowed by specification (e.g. `declare target`, `ordered`, metadirective)"
+    note: "(maintainer reading): the only new 5.2 syntax of declare target is the enter clause (5.2 Appendix B.2 p.627 lists nothing else for declare target), so the line claims enter. Compared with the 5.2 programs only: a 6.0 program is covered by a 6.0 feature list (rules.claims_for), which CCE 20 does not have for enter. No language restriction in the release notes (Fortran and C/C++, as the other unqualified release-note items). The ordered and metadirective parts are not mapped (no fuzz or catalog cell depends on them here)."
+    language: Fortran and C/C++
+    atoms: [omp.clause.enter]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "5.2"
+    versions: [52, 60]
+    quote: "[5.2] ... Fortran: new linear clause syntax"
+    language: Fortran
+    atoms: [omp.clause.linear, omp.clause.linear.val, omp.clause.linear.ref, omp.clause.linear.uval, omp.clause.linear.step_simple_modifier]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "5.1"
+    quote: "Added the following OpenMP 5.1/5.2 features ... Support iterators in 'map' clause and motion clauses"
+    note: "No language restriction in the 19.0.0 release notes; intro_openmp(7) says (Fortran only)."
+    language: Fortran and C/C++
+    atoms: [omp.clause.map.iterator, omp.clause.to.iterator, omp.clause.from.iterator]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "5.1"
+    quote: "Added the following OpenMP 5.1/5.2 features ... Support 'unconstrained' and 'reproducible' modifiers in 'order' clause"
+    language: Fortran and C/C++
+    atoms: [omp.clause.order.reproducible, omp.clause.order.unconstrained]
+  - source: hpe-cce-release-notes
+    claim: supported
+    spec_version: "5.1"
+    quote: "Added the following OpenMP 5.1/5.2 features ... Support 'indirect' clause on declare target directive"
+    language: Fortran and C/C++
+    atoms: [omp.clause.indirect]
+
+# --- AMD amdclang, clang/docs/OpenMPSupport.md at the AFAR commit (C/C++) --
+
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "device | clause: device_type | done"
+    language: C/C++
+    atoms: [omp.clause.device_type, omp.clause.device_type.any, omp.clause.device_type.host, omp.clause.device_type.nohost]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "device | clause: extended device | done"
+    language: C/C++
+    atoms: [omp.clause.device.ancestor, omp.clause.device.device_num]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "device | clause: uses_allocators clause | done"
+    language: C/C++
+    atoms: [omp.clause.uses_allocators]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "device | support full 'defaultmap' functionality | done"
+    language: C/C++
+    atoms: [omp.clause.defaultmap.alloc, omp.clause.defaultmap.to, omp.clause.defaultmap.from, omp.clause.defaultmap.firstprivate, omp.clause.defaultmap.none, omp.clause.defaultmap.default, omp.clause.defaultmap.aggregate, omp.clause.defaultmap.pointer]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "device | requires directive | done; device | clause: unified_shared_memory | done"
+    language: C/C++
+    atoms: [omp.directive.requires, omp.clause.unified_shared_memory]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: partial
+    spec_version: "5.0"
+    quote: "device | clause: unified_address | partial; device | clause: reverse_offload | partial; device | clause: dynamic_allocators | unclaimed parts"
+    language: C/C++
+    atoms: [omp.clause.unified_address, omp.clause.reverse_offload, omp.clause.dynamic_allocators]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "device | user-defined mappers | done; device | support close modifier on map clause | done; device | clause: use_device_addr for target data | done"
+    language: C/C++
+    atoms: [omp.clause.map.mapper, omp.clause.map.close, omp.clause.use_device_addr]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: partial
+    spec_version: "5.0"
+    quote: "device | clause: in_reduction | worked on"
+    language: C/C++
+    atoms: [omp.clause.in_reduction]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "misc | iterator and multidependences | done; misc | depobj directive and depobj dependency kind | done; task | mutexinoutset dependence-type for tasks | done"
+    language: C/C++
+    atoms: [omp.clause.depend.iterator, omp.clause.depend.depobj, omp.clause.depend.mutexinoutset]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.0"
+    quote: "memory management | allocate directive and allocate clause | done; misc | conditional modifier for lastprivate clause | done; loop | inclusive scan (matching C++17 PSTL) | done"
+    language: C/C++
+    atoms: [omp.clause.allocate, omp.clause.allocate.allocator_simple_modifier, omp.clause.lastprivate.conditional, omp.clause.reduction.inscan]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: partial
+    spec_version: "5.0"
+    quote: "loop | #pragma omp loop (directive) | partial; loop | #pragma omp loop bind | worked on"
+    language: C/C++
+    atoms: [omp.directive.loop, omp.directive.parallel_loop, omp.directive.teams_loop, omp.directive.target_teams_loop, omp.directive.target_parallel_loop, omp.clause.bind, omp.clause.bind.teams, omp.clause.bind.parallel, omp.clause.bind.thread]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.1"
+    quote: "device | 'present' map type modifier | done; device | 'present' motion modifier | done; device | 'present' in defaultmap clause | done"
+    language: C/C++
+    atoms: [omp.clause.map.present, omp.clause.to.present, omp.clause.from.present, omp.clause.defaultmap.present]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.1"
+    quote: "device | iterators in map clause or motion clauses | done"
+    language: C/C++
+    atoms: [omp.clause.map.iterator, omp.clause.to.iterator, omp.clause.from.iterator]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: unsupported
+    spec_version: "5.1"
+    quote: "device | has_device_addr clause on target construct | unclaimed"
+    language: C/C++
+    atoms: [omp.clause.has_device_addr]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: partial
+    spec_version: "5.1"
+    quote: "device | thread_limit clause on target construct | partial; device | indirect clause on declare target directive | In Progress"
+    language: C/C++
+    atoms: [omp.clause.thread_limit, omp.clause.indirect]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "5.1"
+    quote: "memory management | 'allocator' modifier for allocate clause | done; memory management | 'align' modifier for allocate clause | done; misc | default(firstprivate) & default(private) | done; task | inoutset in depend clause | done"
+    language: C/C++
+    atoms: [omp.clause.allocate.allocator, omp.clause.allocate.align, omp.clause.default.firstprivate, omp.clause.default.private, omp.clause.depend.inoutset]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: partial
+    spec_version: "5.1"
+    quote: "loop | 'reproducible'/'unconstrained' modifiers in 'order' clause | partial"
+    language: C/C++
+    atoms: [omp.clause.order.reproducible, omp.clause.order.unconstrained]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | Prescriptive num_threads | done"
+    language: C/C++
+    atoms: [omp.clause.num_threads.strict]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | Message and severity clauses | done"
+    note: "6.0 adds message and severity to the parallel construct (the catalog's 6.0 forms)."
+    language: C/C++
+    atoms: [omp.clause.message, omp.clause.severity, omp.clause.severity.fatal, omp.clause.severity.warning]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | Local clause on declare target | done"
+    language: C/C++
+    atoms: [omp.clause.local]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | variable-category on default clause | done"
+    language: C/C++
+    atoms: [omp.clause.default.aggregate, omp.clause.default.all, omp.clause.default.allocatable, omp.clause.default.pointer, omp.clause.default.scalar]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: supported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | defaultmap implicit-behavior 'storage' | done; defaultmap implicit-behavior 'private' | done"
+    language: C/C++
+    atoms: [omp.clause.defaultmap.storage, omp.clause.defaultmap.private]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: partial
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | Self maps | partial; Private reductions | mostly; transparent clause (hull tasks) | partial; ref modifier for map clauses | In Progress"
+    language: C/C++
+    atoms: [omp.clause.map.self, omp.clause.defaultmap.self, omp.clause.self_maps, omp.clause.self_maps.required, omp.clause.reduction.original, omp.clause.transparent, omp.clause.transparent.impex_type, omp.clause.map.ref_ptr, omp.clause.map.ref_ptee, omp.clause.map.ref_ptr_ptee]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: unsupported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | All clauses accept directive name modifier | unclaimed"
+    note: "Every clause's directive-name modifier except if's (if(directive-name: ...) exists since OpenMP 4.5)."
+    language: C/C++
+    atoms: [omp.clause.aligned.directive_name, omp.clause.allocate.directive_name, omp.clause.atomic_default_mem_order.directive_name, omp.clause.bind.directive_name, omp.clause.collapse.directive_name, omp.clause.default.directive_name, omp.clause.defaultmap.directive_name, omp.clause.depend.directive_name, omp.clause.device.directive_name, omp.clause.device_safesync.directive_name, omp.clause.device_type.directive_name, omp.clause.dist_schedule.directive_name, omp.clause.dynamic_allocators.directive_name, omp.clause.enter.directive_name, omp.clause.firstprivate.directive_name, omp.clause.from.directive_name, omp.clause.has_device_addr.directive_name, omp.clause.in_reduction.directive_name, omp.clause.indirect.directive_name, omp.clause.induction.directive_name, omp.clause.is_device_ptr.directive_name, omp.clause.lastprivate.directive_name, omp.clause.linear.directive_name, omp.clause.link.directive_name, omp.clause.local.directive_name, omp.clause.map.directive_name, omp.clause.message.directive_name, omp.clause.nogroup.directive_name, omp.clause.nontemporal.directive_name, omp.clause.nowait.directive_name, omp.clause.num_teams.directive_name, omp.clause.num_threads.directive_name, omp.clause.order.directive_name, omp.clause.ordered.directive_name, omp.clause.private.directive_name, omp.clause.proc_bind.directive_name, omp.clause.reduction.directive_name, omp.clause.replayable.directive_name, omp.clause.reverse_offload.directive_name, omp.clause.safelen.directive_name, omp.clause.schedule.directive_name, omp.clause.self_maps.directive_name, omp.clause.severity.directive_name, omp.clause.shared.directive_name, omp.clause.simdlen.directive_name, omp.clause.thread_limit.directive_name, omp.clause.to.directive_name, omp.clause.transparent.directive_name, omp.clause.unified_address.directive_name, omp.clause.unified_shared_memory.directive_name, omp.clause.use_device_addr.directive_name, omp.clause.use_device_ptr.directive_name, omp.clause.uses_allocators.directive_name]
+  - source: amdclang-afar-openmp-support
+    toolchain: afar
+    claim: unsupported
+    spec_version: "6.0"
+    versions: [60]
+    quote: "OpenMP 6.0 | Parallel inductions | unclaimed; Non-const do_not_sync for nowait/nogroup | unclaimed"
+    language: C/C++
+    atoms: [omp.clause.induction, omp.clause.induction.plus, omp.clause.induction.times, omp.clause.induction.step, omp.clause.induction.relaxed, omp.clause.induction.strict, omp.clause.nowait.do_not_synchronize, omp.clause.nogroup.do_not_synchronize]
+
+# --- CCE's documented device-region limitation ----------------------------
+# Pseudo-atoms device.directive.<name>: a directive lexically inside a target
+# region (offload.engine.confirm.triage.device_directives). Not compared with
+# the support tables (no catalog atom); the triage reads them to tell a
+# failure the vendor documents from a compiler bug.
+
+  - source: hpe-cce-intro-openmp
+    claim: unsupported
+    quote: "All other APIs and constructs are not supported in omp target regions when targeting a non-host device."
+    note: "The constructs the bullet does not list as supported in target regions (teams, distribute, parallel, for, do, simd, loop, atomic, error, assume, assumes, nothing; scan is 'functionally supported' elsewhere on the page)."
+    language: Fortran and C/C++
+    atoms: [device.directive.task, device.directive.taskloop, device.directive.taskgroup, device.directive.taskwait, device.directive.single, device.directive.masked, device.directive.ordered, device.directive.sections, device.directive.section, device.directive.workshare]
+  - source: hpe-cce-intro-openmp
+    claim: unsupported
+    quote: "The following OpenMP constructs are supported: teams, distribute, parallel, for, do, simd, loop, atomic, barrier (C/C++), master (C/C++), critical (C/C++), error, assume, assumes, and nothing."
+    note: "barrier, master and critical are listed for C/C++ only: read as unsupported in Fortran target regions (an inference)."
+    language: Fortran
+    atoms: [device.directive.barrier, device.directive.master, device.directive.critical]
+
+# --- NVHPC's documented distribute limitation ----------------
+# Pseudo-atoms onleaf.<leaf>.<clause>: the clause on a construct with that leaf
+# (a combined or composite construct included: "Clauses on combined
+# constructs are supported to the extent that the clauses are supported on
+# the component constructs", guide §7.4, 2.14). Not compared with the support
+# tables (no catalog atom); the triage reads them
+# (offload.engine.confirm.triage.device_limits) to class a failure of such a
+# program as the documented limitation (partial_support), not a compiler bug.
+
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The lastprivate clause is not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.4 Distribute Directives ("Support for distribute construct clauses is as follows: ... The lastprivate clause is not supported"); with 2.14 Clauses on Combined and Composite Constructs. The same sentence under 2.9.5 Loop Construct is not mapped here.'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - onleaf.distribute.lastprivate
+
+# --- Default(private) and
+# default(firstprivate) exist in Fortran since 4.5 but in C/C++ only since
+# 5.1, so the release-level "full 4.5/5.0" sentences cover them for Fortran
+# only ---------------------------------------------------------------------------
+
+  - source: hpe-cce-intro-openmp
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "CCE supports full OpenMP 5.0 and partial OpenMP 5.1 and 5.2."
+    note: "default(private/firstprivate): OpenMP 4.5 atoms in Fortran only (C/C++ gained them in 5.1)."
+    language: Fortran
+    atoms: [omp.clause.default.private, omp.clause.default.firstprivate]
+  - source: hpe-cce-intro-openmp
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "CCE supports full OpenMP 5.0 and partial OpenMP 5.1, 5.2, and 6.0."
+    note: "default(private/firstprivate): OpenMP 4.5 atoms in Fortran only (C/C++ gained them in 5.1)."
+    language: Fortran
+    atoms: [omp.clause.default.private, omp.clause.default.firstprivate]
+  - source: rocm-openmp-support
+    general: true
+    versions: [52]
+    claim: supported
+    quote: "The ROCm installation includes an LLVM-based implementation that fully supports the OpenMP 4.5 standard and a subset of OpenMP 5.0, 5.1, and 5.2 standards. Fortran, C/C++ compilers, and corresponding runtime libraries are included."
+    note: "default(private/firstprivate): OpenMP 4.5 atoms in Fortran only (C/C++ gained them in 5.1)."
+    language: Fortran
+    atoms: [omp.clause.default.private, omp.clause.default.firstprivate]
+
+# --- NVIDIA HPC SDK 25.11 (nvhpc) -----------------------------------------
+# Each statement of the HPC Compilers User's Guide (25.11 and 26.9 read the same; section 7.4 OpenMP
+# Subset, numbered as OpenMP 5.0; 7.8) mapped to the catalog atoms it is about,
+# compared at 5.0 and 5.2 (a 5.0-feature subset; 6.0 spellings are outside it).
+# C rows are compared under the Fortran (do) atom names
+# (offload.engine.c_gen.fortran_atom). 'X is ignored' is recorded as unsupported (no form): a measured pass of an
+# oracle-backed program then contradicts it (hint-only atoms never do).
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: partial
+    form: accepted
+    versions:
+    - 50
+    - 52
+    quote: The requirement clauses unified_address and unified_shared_memory are accepted but have no effect.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.4 Requires Directive. Accepted (no compile error) is the claim; the effect needs -gpu=mem:unified'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.unified_address
+    - omp.clause.unified_shared_memory
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The num_threads, default, private, firstprivate, and shared clauses are supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.6 Parallel Construct. The catalog programs put these clauses on a parallel do (for) inside a target region'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.num_threads
+    - omp.clause.default
+    - omp.clause.default.none
+    - omp.clause.default.private
+    - omp.clause.default.firstprivate
+    - omp.clause.private
+    - omp.clause.firstprivate
+    - omp.clause.shared
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    form: compile_error
+    versions:
+    - 50
+    - 52
+    quote: The if and copyin clauses are supported only for CPU targets; the compiler emits an error for GPU targets
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.6 Parallel Construct. The if programs put if on a parallel do in a target region (if(parallel: ...) for the directive-name modifier)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.if
+    - omp.clause.if.directive_name
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The proc_bind clause is supported only for CPU targets; it is ignored for GPU targets
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.6 Parallel Construct. Ignored for GPU targets'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.proc_bind
+    - omp.clause.proc_bind.close
+    - omp.clause.proc_bind.spread
+    - omp.clause.proc_bind.master
+    - omp.clause.proc_bind.primary
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The num_teams, thread_limit, default, private, and firstprivate clauses are supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.7 Teams Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.num_teams
+    - omp.clause.thread_limit
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The private, firstprivate, and collapse clauses are supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.collapse
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The schedule clause is supported; the optional modifiers are not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.schedule
+    - omp.clause.schedule.static
+    - omp.clause.schedule.chunk_size
+    - omp.clause.schedule.dynamic
+    - omp.clause.schedule.guided
+    - omp.clause.schedule.auto
+    - omp.clause.schedule.runtime
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The schedule clause is supported; the optional modifiers are not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.schedule.monotonic
+    - omp.clause.schedule.nonmonotonic
+    - omp.clause.schedule.simd
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The lastprivate clause is supported; the optional lastprivate modifier is not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.lastprivate
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The lastprivate clause is supported; the optional lastprivate modifier is not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.lastprivate.conditional
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The ordered clause is supported only for CPU targets; ordered(n) clause is not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.ordered
+    - omp.clause.ordered.n
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The linear clause is not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.linear
+    - omp.clause.linear.val
+    - omp.clause.linear.ref
+    - omp.clause.linear.uval
+    - omp.clause.linear.step
+    - omp.clause.linear.step_simple_modifier
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The order(concurrent) clause is ignored
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.2 Worksharing-Loop Construct (for/do). Ignored'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.order
+    - omp.clause.order.concurrent
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The if, simdlen, and linear clauses are not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.3 SIMD Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.simdlen
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The safelen, aligned, nontemporal, and order(concurrent) clauses are ignored
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.3 SIMD Directives. Ignored'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.safelen
+    - omp.clause.aligned
+    - omp.clause.aligned.alignment
+    - omp.clause.nontemporal
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The private, firstprivate, collapse, and dist_schedule(static [ ,chunksize]) clauses are supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.4 Distribute Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.dist_schedule
+    - omp.clause.dist_schedule.static
+    - omp.clause.dist_schedule.chunk_size
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The distribute construct is supported within a teams construct.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.4 Distribute Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.distribute
+    - omp.directive.teams_distribute
+    - omp.directive.target_teams_distribute
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The distribute simd construct is treated as a distribute construct and is supported for GPU targets
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.4 Distribute Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.distribute_simd
+    - omp.directive.teams_distribute_simd
+    - omp.directive.target_teams_distribute_simd
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The distributeparallelfor or distributeparalleldo constructs are supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.4 Distribute Directives. The snapshot keeps the page''s run-together code spans (distributeparallelfor = distribute parallel for)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.distribute_parallel_do
+    - omp.directive.teams_distribute_parallel_do
+    - omp.directive.target_teams_distribute_parallel_do
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: are treated as distribute parallel for or distribute parallel do constructs and are supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.4 Distribute Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.distribute_parallel_do_simd
+    - omp.directive.teams_distribute_parallel_do_simd
+    - omp.directive.target_teams_distribute_parallel_do_simd
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The private, bind, and collapse clauses are supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.9.5 Loop Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.bind
+    - omp.clause.bind.parallel
+    - omp.clause.bind.teams
+    - omp.clause.bind.thread
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The reduction clause is supported. The optional modifier is not supported.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.19.5 Reduction Clauses and Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.reduction
+    - omp.clause.reduction.plus
+    - omp.clause.reduction.times
+    - omp.clause.reduction.minus
+    - omp.clause.reduction.max
+    - omp.clause.reduction.min
+    - omp.clause.reduction.iand
+    - omp.clause.reduction.ior
+    - omp.clause.reduction.ieor
+    - omp.clause.reduction.and
+    - omp.clause.reduction.or
+    - omp.clause.reduction.eqv
+    - omp.clause.reduction.neqv
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The reduction clause is supported. The optional modifier is not supported.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.19.5 Reduction Clauses and Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.reduction.task
+    - omp.clause.reduction.inscan
+    - omp.clause.reduction.default
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The memory management allocators, memory management API routines, and memory management directives are not supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.11 Memory Management Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.uses_allocators
+    - omp.clause.uses_allocators.memspace
+    - omp.clause.uses_allocators.traits
+    - omp.clause.allocate.allocator
+    - omp.clause.allocate.allocator_simple_modifier
+    - omp.clause.allocate.align
+    - omp.clause.dynamic_allocators
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The target data construct is supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.2 Target Data Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.target_data
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The if, device, use_device_ptr, and use_device_addr clauses are supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.2 Target Data Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.use_device_ptr
+    - omp.clause.use_device_addr
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The target enter data construct is supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.3 Target Enter Data Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.target_enter_data
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The target exit data construct is supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.4 Target Exit Data Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.target_exit_data
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The target construct is supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.5 Target Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.target
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The if, private, firstprivate, is_device_ptr, and nowait clauses are supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.5 Target Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.is_device_ptr
+    - omp.clause.nowait
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The device clause is supported without the device-modifier ancestor keyword
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.5 Target Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.device
+    - omp.clause.device.device_num
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The device clause is supported without the device-modifier ancestor keyword
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.5 Target Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.device.ancestor
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    quote: The defaultmap clause is supported using OpenMP 5.0 semantics
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.5 Target Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.defaultmap
+    - omp.clause.defaultmap.alloc
+    - omp.clause.defaultmap.to
+    - omp.clause.defaultmap.from
+    - omp.clause.defaultmap.tofrom
+    - omp.clause.defaultmap.firstprivate
+    - omp.clause.defaultmap.none
+    - omp.clause.defaultmap.default
+    - omp.clause.defaultmap.scalar
+    - omp.clause.defaultmap.aggregate
+    - omp.clause.defaultmap.pointer
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The target update construct is supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.6 Target Update Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.target_update
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The to and from clauses are supported without mapper or mapid
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.6 Target Update Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.to
+    - omp.clause.from
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The to and from clauses are supported without mapper or mapid
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.6 Target Update Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.to.mapper
+    - omp.clause.from.mapper
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: declare target(list) is supported
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.7 Declare Target Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.declare_target
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The device_type clause is supported for C/C++
+    language: C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.12.7 Declare Target Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.device_type
+    - omp.clause.device_type.any
+    - omp.clause.device_type.nohost
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The teams construct is supported for GPU targets.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.7 Teams Construct'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.directive.teams
+    - omp.directive.target_teams
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The dependence types in, out, and inout are supported.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.17.11 Depend Clause, read with 2.12.3-2.12.6 (target enter data, target exit data, target, target update: "The depend([dependmodifier,] dependtype : list) clause is supported as described in 2.17.11") and the section on target depend/nowait and CUDA streams. The catalog''s depend programs put depend on target constructs. The 2.17.11 sentence "It is not supported on GPU targets" is read as depend inside device code (task constructs in a target region), not depend on the target construct (review 1); inoutset is in neither list (no claim)'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.depend
+    - omp.clause.depend.in
+    - omp.clause.depend.out
+    - omp.clause.depend.inout
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: The dependence types mutexinoutset and depobj, dependence modifier iterator(iters), depend(source), and depend(sink:vector) are not supported.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.17.11 Depend Clause'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.depend.mutexinoutset
+    - omp.clause.depend.depobj
+    - omp.clause.depend.iterator
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: The map([[mapmod[,]...] maptype:] datalist) clause is supported.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.19.7 Data Mapping Attribute Rules, Clauses, and Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.map
+    - omp.clause.map.to
+    - omp.clause.map.from
+    - omp.clause.map.tofrom
+    - omp.clause.map.alloc
+    - omp.clause.map.release
+    - omp.clause.map.delete
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: supported
+    versions:
+    - 50
+    - 52
+    quote: Of the map-type-modifiers, always is supported, close is ignored, and mapper(mapid) is not supported.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.19.7 Data Mapping Attribute Rules, Clauses, and Directives'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.map.always
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: unsupported
+    versions:
+    - 50
+    - 52
+    quote: Of the map-type-modifiers, always is supported, close is ignored, and mapper(mapid) is not supported.
+    language: Fortran and C/C++
+    note: 'HPC Compilers User''s Guide, section 7.4 OpenMP Subset (numbered as OpenMP 5.0): 2.19.7 Data Mapping Attribute Rules, Clauses, and Directives. close: ignored; mapper: not supported'
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.map.close
+    - omp.clause.map.mapper
+  - source: nvidia-hpc-ug-openmp
+    toolchains: [nvhpc, nvhpc269]
+    claim: partial
+    form: accepted
+    versions:
+    - 50
+    - 52
+    quote: Source code with requires unified_shared_memory directive is accepted but requires -gpu=mem:unified flag to activate Unified Memory Mode.
+    language: Fortran and C/C++
+    note: HPC Compilers User's Guide, section 7.8 OpenMP with CUDA Unified Memory
+    version_note: NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)
+    status: provisional
+    atoms:
+    - omp.clause.unified_shared_memory

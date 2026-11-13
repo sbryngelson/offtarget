@@ -1,0 +1,6 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-clause-if-directive_name (OpenMP/OpenACC version 52), compile sweep
+# exit status: 2
+==== verbatim output below ====
+NVC++-S-0155-GPU targets do not support if clauses for managing parallel regions.  (<tmpdir>/p.c: 35)
+NVC++/x86-64 Linux 25.11-0: compilation completed with severe errors

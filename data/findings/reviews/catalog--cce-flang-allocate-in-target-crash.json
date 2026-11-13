@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-flang-allocate-in-target-crash.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A BLOCK with a local allocatable allocated and deallocated within the target region is a base-language construct executed on the device; map clauses cover a and b; no races. A conforming compiler must produce check=pass; a hardware exception is a compiler or runtime bug (device heap limits are a small risk)."
+  },
+  {
+   "run": "run-20261113/batch-52",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A BLOCK construct with a local allocatable, ALLOCATE, array assignment and DEALLOCATE inside a target region is ordinary Fortran; the spec places no restriction on it. a is mapped to, b from, host_flag tofrom, so the result is fixed (b = 2a+1). A conforming compiler must run it; the runtime abort is a compiler or runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-106",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target region starts with an assignment, followed by a BLOCK construct, so it is a loosely structured block whose first executable construct is not a BLOCK. The BLOCK has no ASYNCHRONOUS or VOLATILE statements. Its local allocatable w is private and allocated and deallocated inside the region, which is not restricted because w is not a mapped variable. a and b are mapped explicitly. The result 2*a+1 is well defined, so a hardware exception at run time is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-22",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A BLOCK construct inside a target region is allowed; a local allocatable declared in it has no SAVE attribute, so it is private to the region. The ALLOCATE, array assignment and DEALLOCATE run in the initial thread of the target region, with no restriction in the specification against them. a and b are mapped, w is local. No race or mapping violation, so a device hardware exception is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "8b4418be1cede67632c5daf3a74a15a93d290bee8ac921fb3260a73d6dfba46e",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

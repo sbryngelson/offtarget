@@ -1,0 +1,10 @@
+[
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "ctor", "rec": "small", "extras": false, "geom": "dense", "dims": [255, 255, 255], "trials": 20, "hda": false},
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "elem", "rec": "small", "extras": false, "geom": "dense", "dims": [255, 255, 255], "trials": 20, "hda": false},
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "ctor", "rec": "small", "extras": false, "geom": "dense", "dims": [383, 383, 383], "trials": 10, "hda": false},
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "elem", "rec": "small", "extras": false, "geom": "dense", "dims": [383, 383, 383], "trials": 10, "hda": false},
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "ctor", "rec": "small", "extras": false, "geom": "dense", "dims": [255, 255, 255], "trials": 20, "storage": "enter", "marker": "alloc", "hda": false},
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "elem", "rec": "small", "extras": false, "geom": "dense", "dims": [255, 255, 255], "trials": 20, "storage": "enter", "marker": "alloc", "hda": false},
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "ctor", "rec": "small", "extras": false, "geom": "dense", "dims": [255, 255, 255], "trials": 20, "hda": true},
+ {"collapse": 3, "claim": "cap_uf", "branch": "all", "loc": "elem", "rec": "small", "extras": false, "geom": "dense", "dims": [255, 255, 255], "trials": 20, "hda": true}
+]

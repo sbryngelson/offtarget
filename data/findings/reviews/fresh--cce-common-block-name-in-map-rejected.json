@@ -1,0 +1,113 @@
+{
+ "finding": "fresh/cce-common-block-name-in-map-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A named common block in a map clause is allowed in Fortran and means every explicit member appears in the list. The block is declared in the same scoping unit, is not blank, and A, B, C are ordinary mappable variables. Compiler A's refusal that the common block must not be on MAP has no basis in the text. Mapping to: is fine since the values are only read on the device."
+  },
+  {
+   "run": "run-20261113/batch-79",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A named common block may appear in a list and means every explicit member appears; map has no restriction against common block names, and the block is declared in the same scoping unit. All members are mapped to; r is mapped from. 5.2 repeats this. Refusing it is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-47",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A named common block may appear in an OpenMP argument list and then has the meaning of every explicit member being listed. The map clause has no restriction against common block names. The block is declared in the same scoping unit as the directive, so the program is conforming and must be accepted; the rejection is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-67",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-93",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A common block name is a list item and in a clause has the meaning of every explicit member appearing; it is declared as a common block in the same scoping unit (common /mycommon/). So map(to: /mycommon/) is legal in 5.0 and 5.2, and a compiler must accept it. The refusal is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "06227c7a0ee5489a64f3013c8468002dffa63ff246540fd4e631ffc392477407",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

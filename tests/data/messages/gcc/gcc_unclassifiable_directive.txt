@@ -1,0 +1,14 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran (gcc_g90) on offload.engine.gen omp50-clause-to-mapper (the gcc smoke subset, tools/jobs/run_gcc_lane.sh); flags: -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2
+# exit status: 1
+==== verbatim output below ====
+<tmpdir>/omp50-clause-to-mapper.f90:18:9:
+
+   18 |   !$omp declare mapper(mm: dt :: q) map(q%v)
+      |         1
+Error: Unclassifiable OpenMP directive at (1)
+<tmpdir>/omp50-clause-to-mapper.f90:54:32:
+
+   54 |   !$omp target update to(mapper(mm): s)
+      |                                1
+Error: Syntax error in OpenMP variable list at (1)

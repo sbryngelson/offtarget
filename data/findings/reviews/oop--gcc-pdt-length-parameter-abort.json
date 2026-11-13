@@ -1,0 +1,141 @@
+{
+ "finding": "oop/gcc-pdt-length-parameter-abort.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A Fortran parameterized derived type with a length parameter is a mappable derived type: the specification imposes no restriction beyond type-bound procedures. Mapping tofrom and reading type parameter x%m on the device are not excluded. However, the specification does not define how length type parameters are mapped, so whether a conforming compiler must support it is unclear; no compiler recorded as passing."
+  },
+  {
+   "run": "run-20261113/batch-57",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Parameterized derived type with a len parameter, non-allocatable scalar variable, mapped tofrom. Type parameter inquiry x%m in the target region is treated as a reference to x, already mapped. No mapping or nesting restriction found; the sum 1496 is determined."
+  },
+  {
+   "run": "run-v2-20261113/batch-110",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The parameterized derived type with a length parameter is mapped tofrom as a whole; x%m is a type parameter inquiry treated as a reference to x, which is mapped. The specification places no restriction on mapping such a type. Squares of 1..16 sum to 1496 and r1 is 16, so the expected output is determined. The device crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-31",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The derived type with a length parameter is a Fortran type with no listed OpenMP restriction; mappable-type rules for Fortran exclude only type-bound procedures used in target regions, and none are used. x is explicitly mapped tofrom, x%m is a type parameter inquiry treated as a reference to its designator. The program has no race. sum of squares 1..16 is 1496, r1 is 16, so the expected output is required; the device crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A Fortran derived type with a length parameter is a mappable type: the spec places no restriction on Fortran types except type-bound procedures. x is a non-allocatable scalar of fixed size, so tofrom maps its storage; the type parameter inquiry x%m is treated as a reference to x. Reading A's doubt that length parameters are undefined for mapping has no basis in the text; Reading B is right. Result r1=16, r2=1496 is determined; the device fault is a compiler defect."
+  },
+  {
+   "run": "adj-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A parameterized derived type with a len parameter is not excluded from being mappable: the mappable-type definition only restricts component types and, in Fortran, type-bound procedures accessed in target regions, and none are used. x has a fixed array component a(16), so it is plain contiguous storage mapped tofrom. The inquiry x%m is treated as a reference to x, already mapped. The result r1=16, r2=1496 is determined. Reading B is right; Reading A's doubt has no basis in the text."
+  }
+ ]
+}

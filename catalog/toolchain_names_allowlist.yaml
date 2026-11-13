@@ -1,0 +1,118 @@
+# Files allowed to name a registered toolchain id or version in code, each with
+# its reason (tests/cluster/test_reports.py::test_no_hard_coded_toolchain_outside_the_catalog).
+# The list only shrinks: a listed file with no hit must be removed; a new hit
+# elsewhere fails the test (read the list from catalog/toolchains.yaml instead).
+# Not scanned at all: offload/engine/toolchains.py (the loader), the generated files,
+# tests/, the archived tools/*_probe directories, comments and docstrings.
+version: 1
+entries:
+  - path: offload/engine/confirm/validate.py
+    reason: "the hand-verdict validation set: its case files and the toolchains they were judged on (data)"
+  - path: offload/engine/fuzz_report.py
+    reason: "report prose: finding names and failure descriptions quoted in generated report text"
+  - path: offload/engine/gate_report.py
+    reason: "report prose: finding names and failure descriptions quoted in generated report text"
+  - path: offload/engine/harness.py
+    reason: "message tables are keyed by the catalog's message_table id (cce19: the CCE tables were captured from CCE 19)"
+  - path: offload/engine/report.py
+    reason: "message tables are keyed by the catalog's message_table id (cce19: the CCE tables were captured from CCE 19)"
+  - path: data/vendor/checks/dispositions.py
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/probe/run.sh
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/probe/sweep.sh
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/readme.py
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/render.py
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/run_checks.py
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/run_cif.sh
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/run_tuolumne.sh
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/run_wingtip.sh
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: data/vendor/checks/wt_fix.sh
+    reason: "the vendor packet (data/vendor/checks) is a self-contained copy of the recipes; tests/cluster/test_reports.py checks its tables against the catalog"
+  - path: tools/campaigns/app_bench.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/c_coverage.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/site/dashboard_data.py
+    reason: "the fuzz datasets name the CCE releases the n0x0/n1x0 samples compare"
+  - path: tools/dataenv/dataenv.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/derive/expected.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/fresh_bench.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/harvest.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/harvest_known.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/kbody.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/malloc_dd.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/map_audit.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/nvhpc_audit.py
+    reason: "the NVHPC audit compares the two installed releases by name (its purpose)"
+  - path: tools/derive/omp50_delta.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/oracle_audit.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/campaigns/presence_x1.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+  - path: tools/jobs/run_copy_subset_c.sh
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+  - path: tools/jobs/run_mfc.sh
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+  - path: tools/jobs/run_oop_pdebug.sh
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+  - path: tools/jobs/run_map_iterator_audit.sh
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+  - path: tools/jobs/run_omp_vv_probes.sh
+    reason: "dated campaign job script: records the toolchains and module versions of the runs it made"
+  - path: tools/lanes/tioga_suite.py
+    reason: "the Tioga suite's class reasons quote the twin toolchain whose libraries a class uses (prose)"
+  - path: tools/campaigns/widen.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/wild/wild_bench.py
+    reason: "campaign driver: the toolchains the campaign measured (the record behind its stored rows); a new release is a new campaign, not an edit here"
+  - path: tools/jobs/gcc_smoke.sh
+    reason: "the smoke run of one install: it reads that toolchain's install root from the catalog"
+  - path: tools/lanes/tioga_suite_job.sh
+    reason: "the Tioga job runs AFAR's copy of the release: it reads that toolchain's install root from the catalog"

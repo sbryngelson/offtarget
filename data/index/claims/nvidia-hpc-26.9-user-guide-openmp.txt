@@ -1,0 +1,450 @@
+NVIDIA HPC Compilers User's Guide — NVIDIA HPC Compilers User's Guide 26.9 documentation
+NVIDIA HPC Compilers User's Guide, version 26.9 (https://docs.nvidia.com/hpc-sdk/archive/26.9/compilers/hpc-compilers-user-guide/index.html), fetched 2026-10-24; HTML stripped to one paragraph per line, list items as "- " bullets.
+7. Using OpenMP
+OpenMP is a specification for a set of compiler directives, an applications programming interface (API), and a set of environment variables that can be used to specify parallel execution in Fortran, C++, and C programs. For general information about using OpenMP and to obtain a copy of the OpenMP specification, refer to the OpenMP organization’s website.
+The NVFORTRAN, NVC++, and NVC compilers support a subset of the OpenMP Application Program Interface for CPUs and GPUs. In defining this subset, we have focused on OpenMP 5.0 features that will enable CPU and GPU targeting for OpenMP applications with a goal of encouraging programming practices that are portable and scalable. For features that are to be avoided, wherever possible, the directives and API calls related to those features are parsed and ignored to maximize portability. Where ignoring such features is not possible, or could result in ambiguous or incorrect execution, the compilers emit appropriate error messages at compile- or run-time.
+OpenMP applications properly structured for GPUs, meaning they expose massive parallelism and have relatively little or no synchronization in GPU-side code segments, should compile and execute with performance on par with or close to equivalent OpenACC. Codes that are not well-structured for GPUs may perform poorly but should execute correctly.
+Use the -mp compiler switch to enable processing of OpenMP directives and pragmas. The most important sub-options to -mp are the following:
+gpu: OpenMP directives are compiled for GPU execution plus multicore CPU fallback; this feature is supported on NVIDIA V100 or later GPUs.
+multicore: OpenMP directives are compiled for multicore CPU execution only; this sub-option is the default.
+Predefined Macros
+The following macros corresponding to the offload target compiled for are added implicitly:
+__NVCOMPILER_OPENMP_GPU when OpenMP target directives are compiled for GPU.
+__NVCOMPILER_OPENMP_MULTICORE when OpenMP target directives are compiled for multicore CPU.
+7.1. Environment Variables
+The OpenMP specification includes many environment variables related to program execution.
+Thread affinity
+One important environment variable is OMP_PROC_BIND. It controls the OpenMP CPU thread affinity policy. When thread affinity is disabled, the operating system is free to move threads between the available CPU cores. When thread affinity is enabled, each thread is bound to a subset of the available CPU cores. The environment variable OMP_PLACES can be used to specify how a subset of the available CPU cores is determined for each thread. When set to a valid value, this environment variable will enable thread affinity and override the default thread affinity policy.
+Binding threads to certain CPU cores is often beneficial for application performance, because that can improve the CPU cache hit rate and limit memory transactions between different NUMA nodes. Therefore, it is important to consider enabling thread affinity for your application.
+The default value of OMP_PROC_BIND is false. Thus, thread affinity is disabled by default. This is a conservative setting that allows certain classes of applications (such as OpenMP + MPI) to create multiple processes without taking special care of the thread affinity policy to avoid binding threads in different processes to the same CPU cores.
+The following table explains the simplest possible values of OMP_PROC_BIND. For the comprehensive explanation of OMP_PROC_BIND and OMP_PLACES, please refer to the OpenMP specification.
+Value
+Behavior
+OMP_PROC_BIND=false
+Thread affinity is disabled unless OMP_PLACES is set to a valid value. When thread affinity is disabled, the operating system is free to assign threads to any available CPU core at any time of the application execution. This is the default value.
+OMP_PROC_BIND=true
+Thread affinity is enabled. Unless OMP_PLACES is set, the implementation attempts to assign threads optimally to CPU cores to maximize the cache hit rate and minimize the number of memory transactions between NUMA nodes.
+Delaying Thread Affinity
+Some applications need to initialize non-OpenMP threads or third-party multithreaded libraries before entering OpenMP logic. In such cases, if thread affinity is enabled, the application may want to prevent the restricted main thread affinity from being inherited by non-OpenMP threads (which is the standard behavior in the Linux OS).
+To support this use case, the NVIDIA HPC OpenMP Runtime provides the NVCOMPILER_OMP_LAZY_PROC_BIND environment variable. This variable controls whether OpenMP CPU thread affinity binding should be delayed until an OpenMP parallel region is created, or whether it should be set as early as possible. The table below explains the behavior for each setting:
+Value
+Behavior
+NVCOMPILER_OMP_LAZY_PROC_BIND=false
+The main thread affinity is set during the initialization of the NVIDIA HPC OpenMP Runtime. This occurs at an unspecified point in the application’s lifecycle, before any OpenMP directive or most OpenMP API functions are executed. This is the default setting.
+NVCOMPILER_OMP_LAZY_PROC_BIND=true
+The OpenMP CPU thread affinity binding is delayed until the first parallel region is created.
+Note: When thread affinity is disabled, the NVCOMPILER_OMP_LAZY_PROC_BIND environment variable has no effect.
+Number of threads
+By default, the NVIDIA HPC OpenMP Runtime limits the number of threads that can be created for a parallel region to 4 times the number of logical CPU processors.
+If an application attempts to exceed this limit, a warning message is emitted to the standard error output. You can suppress this warning by setting the NVCOMPILER_OMP_DISABLE_WARNINGS environment variable to the true value.
+To override the default limit on the maximum number of threads, use the NVCOMPILER_CPU_HARD_THREAD_LIMIT environment variable:
+Value
+Behavior
+NVCOMPILER_CPU_HARD_THREAD_LIMIT=<positive_integer>
+Maximum number of threads in parallel regions
+Handling Stack Overflows
+OpenMP threads created by the NVIDIA HPC OpenMP Runtime have a default stack size determined by the implementation and the operating system. This can be adjusted by setting the OMP_STACKSIZE environment variable. When the stack size is too small, the application may crash due to a stack overflow.
+To help diagnose this situation, the NVIDIA HPC OpenMP Runtime attempts to recognize stack overflows and can provide a meaningful error message along with a backtrace when a stack overflow occurs. You can control this behavior by setting the NVCOMPILER_OMP_STACK_GUARD environment variable. The table below explains the behavior for each setting:
+Value
+Behavior
+NVCOMPILER_OMP_STACK_GUARD=true
+The runtime will handle stack overflows by showing a meaningful error message along with a backtrace. This is the default setting.
+NVCOMPILER_OMP_STACK_GUARD=false
+The runtime will not handle stack overflows. Applications may crash with a memory access violation error such as segmentation fault.
+Handling stack overflows is only supported for OpenMP threads created by the NVIDIA HPC OpenMP Runtime.
+The implementation of the stack overflow handling relies on the use of system calls such as sigaction and sigaltstack to set up a signal handler for stack overflows. This may cause issues with third-party libraries that rely on the default signal handler behavior. To work around this, you can set the NVCOMPILER_OMP_STACK_GUARD environment variable to false to disable stack overflow handling.
+Device offload
+Another important environment variable to understand is OMP_TARGET_OFFLOAD. Use this environment variable to affect the behavior of execution on host and device including host fallback. The following table explains the behavior determined by each of the values to which you can set this environment variable.
+Value
+Behavior
+OMP_TARGET_OFFLOAD=DEFAULT
+Try to execute on a GPU; if a supported GPU is not available, fallback to the host
+OMP_TARGET_OFFLOAD=DISABLED
+Do not execute on the GPU even if one is available; execute on the host
+OMP_TARGET_OFFLOAD=MANDATORY
+Execute on a GPU or terminate the program
+Number of teams on device
+When an application offloads an omp target teams construct to the GPU, the number of teams is calculated automatically unless the construct has a num_teams clause. The automatic setting of the number of teams can be limited to a maximum value provided by the OMP_NUM_TEAMS environment variable. The same maximum value can also be set by the application at run time with the function omp_set_num_teams.
+Value
+Behavior
+OMP_NUM_TEAMS=<positive_integer>
+Maximum number of teams on device
+For the comprehensive explanation of OMP_NUM_TEAMS, please refer to the OpenMP specification.
+Number of threads in teams
+An omp target teams construct offloaded to the GPU creates a league of teams each consisting of a certain number of threads. The number of threads is the same for all teams in the league, and is calculated automatically unless the construct has a thread_limit clause.
+The environment variable OMP_TEAMS_THREAD_LIMIT can be used to limit the maximum number of threads in teams. The same maximum value can be set by the application with the runtime function omp_set_teams_thread_limit.
+For NVIDIA GPUs, we recommend using values that are multiples of 32 (which is the size of the GPU thread warp). That equally applies to the OMP_TEAMS_THREAD_LIMIT environment variable, the omp_set_teams_thread_limit function and the thread_limit clause. For any other value, the actual limit on the number of threads per team will likely be rounded down to the nearest multiple of 32. The same guidance applies to the num_threads clause as well.
+Value
+Behavior
+OMP_TEAMS_THREAD_LIMIT=<positive_integer>
+Maximum number of threads in teams
+For the comprehensive explanation of OMP_TEAMS_THREAD_LIMIT, please refer to the OpenMP specification.
+Forcing the number of device teams and threads
+In certain situations, for instance for debugging or performance tuning, it may be desirable to specify an exact number of teams and threads on the GPU. While OpenMP offers a number of convenient ways to control that, e.g. the num_teams and thread_limit clauses, as well as the environment variables described above, they do not guarantee an exact teams and threads configuration.
+The NVIDIA HPC OpenMP Runtime supports the NVCOMPILER_OMP_CUDA_GRID environment variable. When set, it requests the runtime to use the exact number of teams and threads per team when running OpenMP compute constructs on the GPU. Essentially, its effect is to use a specific CUDA grid configuration for any kernel, bypassing runtime and compiler guidance.
+Value
+Behavior
+NVCOMPILER_OMP_CUDA_GRID=<num_blocks>,<num_threads>
+The <num_blocks> and <num_threads> must be positive integers. They are used to form a CUDA grid when running GPU kernels associated with omp target compute constructs.
+However, even with an exact CUDA grid specified, the runtime may still use a corrected configuration if that is necessary for a successful kernel launch.
+Please refer to the CUDA C++ Programming Guide for the detailed explanation of how the CUDA kernel execution configurations work.
+Runtime warnings
+The NVIDIA HPC OpenMP Runtime may issue warnings when it encounters behavior that is non-standard or not explicitly defined by the OpenMP specification. These warnings are printed to the application’s standard error output. Warnings do not interrupt execution; the application continues running normally.
+To suppress all runtime warning messages, set the NVCOMPILER_OMP_DISABLE_WARNINGS environment variable to the true value.
+Value
+Behavior
+NVCOMPILER_OMP_DISABLE_WARNINGS=false
+The runtime can generate warning messages to the standard error output. This is the default setting.
+NVCOMPILER_OMP_DISABLE_WARNINGS=true
+No warning messages will be generated.
+7.2. Fallback Mode
+The HPC compilers support host fallback of OpenMP target regions when no GPU is present or OMP_TARGET_OFFLOAD is set to DISABLED. Execution should always be correct but the performance of the target region may not always be optimal when run on the host. OpenMP target regions prescriptively structured for optimal execution on GPUs may not perform well when run on the dissimilar architecture of the CPU. To provide performance portability between host and device, we recommend use of the loop construct.
+firstprivates with nowait not supported for host execution
+There is currently a limitation on the use of the nowait clause on target regions intended for execution on the host (-mp or -mp=gpu with OMP_TARGET_OFFLOAD=DISABLED). If the target region references variables having the firstprivate data-sharing attribute, their concurrent updates are not guaranteed to be safe. To work around this limitation, when running on the host, we recommend avoiding the nowait clause on such target regions or equivalently using the taskwait construct immediately following the region.
+7.3. Loop
+The HPC compilers support the loop construct with an extension to the default binding thread set mechanism specified by OpenMP in order to allow the compilers the freedom to analyze loops and dependencies to generate highly parallel code for CPU and GPU targets. In other words, the compilers map loop to either teams or to threads, as the compiler chooses, unless the user explicitly specifies otherwise. The mapping selected is specific to each target architecture even within the same executable (i.e., GPU offload and host fallback) thereby facilitating performance portability.
+The shape of the parallelism offered by NVIDIA’s GPUs, consisting of thread blocks and three dimensions of threads therein, differs from the multi-threaded vector parallelism of modern CPUs. The following table summarizes the OpenMP mapping to NVIDIA GPUs and multicore CPUs:
+Construct
+CPU
+GPU
+!$omp target
+starts offload
+!$omp teams
+single team
+CUDA thread blocks in grid
+!$omp parallel
+CPU threads
+CUDA threads within thread block
+!$omp simd
+hint for vector instructions
+simdlen(1)
+HPC programs need to leverage all available parallelism to achieve performance. The programmer can attempt to become an expert in the intricacies of each target architecture and use that knowledge to structure programs accordingly. This prescriptive model can be successful but tends to increase source code complexity and often requires restructuring for each new target architecture. Here’s an example where a programmer explicitly requests the steps the compiler should take to map parallelism to two targets:
+#ifdef TARGET_GPU #pragma omp target teams distribute reduction(max:error) #else #pragma omp parallel for reduction(max:error) #endif for( int j = 1; j < n-1; j++) { #ifdef TARGET_GPU #pragma omp parallel for reduction(max:error) #endif for( int i = 1; i < m-1; i++ ) { Anew[j][i] = 0.25f * ( A[j][i+1] + A[j][i-1] + A[j-1][i] + A[j+1][i]); error = fmaxf( error, fabsf(Anew[j][i]-A[j][i])); } }
+In this example, the GPU target has nested parallelism in the target teams distribute construct. In such cases, the compiler may need help from the programmer to allocate the optimal number of threads for the nested parallel region. We recommend considering the use of the thread_limit clause on the entire target construct that has nested parallelism.
+An alternative is for the programmer to focus on exposing parallelism in a program and allowing a compiler to do the mapping onto the target architectures. The HPC compilers’ implementation of loop supports this descriptive model. In this example, the programmer specifies the loop regions to be parallelized by the compiler and the compilers parallelize loop across teams and threads:
+#pragma omp target teams loop reduction(max:error) for( int j = 1; j < n-1; j++) { #pragma omp loop reduction(max:error) for( int i = 1; i < m-1; i++ ) { Anew[j][i] = 0.25f * ( A[j][i+1] + A[j][i-1] + A[j-1][i] + A[j+1][i]); error = fmaxf( error, fabsf(Anew[j][i]-A[j][i])); } }
+The programmer’s tuning tool with loop is the bind clause. The following table extends the previous mapping example:
+Construct
+CPU
+GPU
+!$omp loop bind(teams)
+threads
+CUDA thread blocks and threads
+!$omp loop bind(parallel)
+threads
+CUDA threads
+!$omp loop bind(thread)
+single thread (useful for vector instructions)
+single thread
+Orphaned loop constructs within a single file are supported; a binding region of either parallel or thread must be specified with such loops via the bind clause. The compilers support loop regions containing procedure calls as long as the callee does not contain OpenMP directives.
+Here are a few additional examples using loop. We also show examples of the type of information the compiler would provide when using the -Minfo compiler option.
+Use of loop in Fortran:
+!$omp target teams loop do n1loc_blk = 1, n1loc_blksize do igp = 1, ngpown do ig_blk = 1, ig_blksize do ig = ig_blk, ncouls, ig_blksize do n1_loc = n1loc_blk, ntband_dist, n1loc_blksize !expensive computation codes enddo enddo enddo enddo enddo $ nvfortran test.f90 -mp=gpu -Minfo=mp 42, !$omp target teams loop 42, Generating "nvkernel_MAIN__F1L42_1" GPU kernel Generating Tesla code 43, Loop parallelized across teams ! blockidx%x 44, Loop run sequentially 45, Loop run sequentially 46, Loop run sequentially 47, Loop parallelized across threads(128) ! threadidx%x 42, Generating Multicore code 43, Loop parallelized across threads
+Use of loop, collapse, and bind:
+!$omp target teams loop collapse(3) do n1loc_blk = 1, n1loc_blksize do igp = 1, ngpown do ig_blk = 1, ig_blksize !$omp loop bind(parallel) collapse(2) do ig = ig_blk, ncouls, ig_blksize do n1_loc = n1loc_blk, ntband_dist, n1loc_blksize !expensive computation codes enddo enddo enddo enddo enddo $ nvfortran test.f90 -mp=gpu -Minfo=mp 42, !$omp target teams loop 42, Generating "nvkernel_MAIN__F1L42_1" GPU kernel Generating Tesla code 43, Loop parallelized across teams collapse(3) ! blockidx%x 44, ! blockidx%x collapsed 45, ! blockidx%x collapsed 47, Loop parallelized across threads(128) collapse(2) ! threadidx%x 48, ! threadidx%x collapsed 42, Generating Multicore code 43, Loop parallelized across threads
+Use of loop, collapse, and bind(thread):
+!$omp target teams loop collapse(3) do n1loc_blk = 1, n1loc_blksize do igp = 1, ngpown do ig_blk = 1, ig_blksize !$omp loop bind(thread) collapse(2) do ig = ig_blk, ncouls, ig_blksize do n1_loc = n1loc_blk, ntband_dist, n1loc_blksize ! expensive computation codes enddo enddo enddo enddo enddo $ nvfortran test.f90 -mp=gpu -Minfo=mp 42, !$omp target teams loop 42, Generating "nvkernel_MAIN__F1L42_1" GPU kernel Generating Tesla code 43, Loop parallelized across teams, threads(128) collapse(3) ! blockidx%x threadidx%x 44, ! blockidx%x threadidx%x collapsed 45, ! blockidx%x threadidx%x collapsed 47, Loop run sequentially 48, collapsed 42, Generating Multicore code 43, Loop parallelized across threads
+7.4. OpenMP Subset
+This section contains the subset of OpenMP 5.0 features that the HPC compilers support. We have attempted to define this subset of features to be those that enable, where possible, OpenMP-for-GPU application performance that closely mirrors the success NVIDIA has seen with OpenACC. Almost every feature supported on NVIDIA GPUs is also supported on multicore CPUs, although the reverse is not true. Most constructs from OpenMP 3.1 and OpenMP 4.5 that apply to multicore CPUs are supported for CPU targets, and some features from OpenMP 5.0 are supported as well.
+OpenMP target offload to NVIDIA GPUs is supported on NVIDIA V100 or later GPUs.
+The section numbers below correspond to the section numbers in the OpenMP Application Programming Interface Version 5.0 November 2018 document.
+2. Directives
+2.3 Variant Directives
+2.3.4 Metadirectives
+The target_device/device context selector is supported with the kind(host|nohost|cpu|gpu) and arch(nvptx|nvptx64) trait selectors. The arch trait property nvptx is an alias for nvptx64; any other arch trait properties are treated as not matching or are ignored. The isa selector is treated as not matching or is ignored; no support is provided to select a context based on NVIDIA GPU compute capability.
+The implementation context selector is supported with the vendor(nvidia) trait selector.
+The user context selector is supported with the condition(expression) trait selector including dynamic user traits.
+The syntax begin/end metadirective is not supported.
+2.3.5 Declare Variant Directive
+The device context selector is supported with the kind(host|nohost|cpu|gpu) and arch(nvptx|nvptx64) trait selectors. The arch trait property nvptx is an alias for nvptx64; any other arch trait properties are treated as not matching or are ignored. The isa selector is also treated as not matching or is ignored; no support is provided to select a context based on NVIDIA GPU compute capability.
+The implementation context selector is supported with the vendor(nvidia) trait selector; all other implementation trait selectors are treated as not matching.
+The syntax begin/end declare variant is supported for C/C++.
+2.4 Requires Directive
+The requires directive has limited support. The requirement clauses unified_address and unified_shared_memory are accepted but have no effect. To activate OpenMP unified shared memory programming a command-line option needs to be passed in (refer to OpenMP with CUDA Unified Memory for more details).
+2.5 Internal Control Variables
+ICV support is as follows.
+dyn-var, nthread-var, thread-limit-var, max-active-levels-var, active-levels-var, levels-var, run-sched-var, dyn-sched-var, and stacksize-var are supported
+place-partition-var, bind-var, wait-policy-var, display-affinity-var, default-device-var, and target-offload-var are supported only on the CPU
+affinity-format-var is supported only on the CPU; its value is immutable
+max-task-priority-var, def-allocator-var are not supported
+cancel-var is not supported; it always returns false
+2.6 Parallel Construct
+Support for parallel construct clauses is as follows.
+The num_threads, default, private, firstprivate, and shared clauses are supported
+The reduction clause is supported as described in 2.19.5
+The if and copyin clauses are supported only for CPU targets; the compiler emits an error for GPU targets
+The proc_bind clause is supported only for CPU targets; it is ignored for GPU targets
+The allocate clause is ignored
+2.7 Teams Construct
+The teams construct is supported only when nested within a target construct that contains no statements, declarations, or directives outside the teams construct, or as a combined targetteams construct. The teams construct is supported for GPU targets. If the target construct falls back to CPU mode, the number of teams is one. Support for teams construct clauses is as follows.
+The num_teams, thread_limit, default, private, and firstprivate clauses are supported
+The reduction clause is supported as described in 2.19.5
+The shared clause is supported for CPU targets and is supported for GPU targets in unified-memory mode
+The allocate clause is ignored
+2.8 Worksharing Constructs
+2.8.1 Sections Construct
+The sections construct is supported only for CPU targets; the compiler emits an error for GPU targets. Support for sections construct clauses is as follows.
+The private and firstprivate clauses are supported
+The reduction clause is supported as described in 2.19.5
+The lastprivate clause is supported; the optional lastprivate modifier is not supported
+The allocate clause is ignored
+2.8.2 Single Construct
+Support for single construct clauses is as follows.
+The private, firstprivate, and nowait clauses are supported
+The copyprivate clause is supported only for CPU targets; the compiler emits an error for GPU targets
+The allocate clause is ignored
+2.8.3 Workshare Construct
+The workshare construct is supported in Fortran only for CPU targets; the compiler emits an error for GPU targets.
+2.9 Loop-Related Constructs
+2.9.2 Worksharing-Loop Construct (for/do)
+Support for worksharing for and do construct clauses is as follows.
+The private, firstprivate, and collapse clauses are supported
+The reduction clause is supported as described in 2.19.5
+The schedule clause is supported; the optional modifiers are not supported
+The lastprivate clause is supported; the optional lastprivate modifier is not supported
+The ordered clause is supported only for CPU targets; ordered(n) clause is not supported
+The linear clause is not supported
+The order(concurrent) clause is ignored
+The allocate clause is ignored
+2.9.3 SIMD Directives
+The simd construct can be used to provide tuning hints for CPU targets; the simd construct is ignored for GPU targets. Support for simd construct clauses is as follows.
+The reduction clause is supported as described in 2.19.5
+The lastprivate clause is supported; the optional lastprivate modifier is not supported
+The if, simdlen, and linear clauses are not supported
+The safelen, aligned, nontemporal, and order(concurrent) clauses are ignored
+The composite forsimd and dosimd constructs are supported for CPU targets; they are treated as for and do directives for GPU targets. Supported simd clauses are supported on the composite constructs for the CPU. Any simd clauses are ignored for GPU targets.
+The declaresimd directive is ignored.
+2.9.4 Distribute Directives
+The distribute construct is supported within a teams construct. Support for distribute construct clauses is as follows:
+The private, firstprivate, collapse, and dist_schedule(static [ ,chunksize]) clauses are supported
+The lastprivate clause is not supported
+The allocate clause is ignored
+The distribute simd construct is treated as a distribute construct and is supported for GPU targets; valid supported distribute clauses are accepted; simd clauses are ignored. The distributesimd construct is not supported for CPU targets.
+The distributeparallelfor or distributeparalleldo constructs are supported for GPU targets. Valid supported distribute and parallel and for or do clauses are accepted. The distributeparallelfor or distributeparalleldo constructs are not supported for CPU targets.
+The distribute parallel `for simd or distribute parallel do simd constructs are treated as distribute parallel for or distribute parallel do constructs and are supported for GPU targets. These are not supported for CPU targets.
+2.9.5 Loop Construct
+Support for loop construct clauses is as follows.
+The private, bind, and collapse clauses are supported
+The reduction clause is supported as described in 2.19.5
+The order(concurrent) clause is assumed
+The lastprivate clause is not supported
+2.10 Tasking Constructs
+2.10.1 Task Construct
+The task construct is supported for CPU targets. The compiler emits an error when it encounters task within a target construct. Support for task construct clauses is as follows:
+The if, final, default , private, firstprivate, and shared clauses are supported
+The depend([dependmodifier,] dependtype : list) clause is supported as described in 2.17.11
+2.10.4 Taskyield Construct
+The taskyield construct is supported for CPU targets; it is ignored for GPU targets.
+2.11 Memory Management Directives
+The memory management allocators, memory management API routines, and memory management directives are not supported
+2.12 Device Directives
+2.12.1 Device Initialization
+Depending on how the program is compiled and linked, device initialization may occur at the first target construct or API routine call, or may occur implicitly at program startup.
+2.12.2 Target Data Construct
+The target data construct is supported for GPU targets. Support for target data construct clauses is as follows.
+The if, device, use_device_ptr, and use_device_addr clauses are supported
+The map clause is supported as described in 2.19.7
+2.12.3 Target Enter Data Construct
+The target enter data construct is supported for GPU targets. Support for enter data construct clauses is as follows.
+The if, device, and nowait clauses are supported
+The map clause is supported as described in 2.19.7.
+The depend([dependmodifier,] dependtype : list) clause is supported as described in 2.17.11
+2.12.4 Target Exit Data Construct
+The target exit data construct is supported for GPU targets. Support for exit data construct clauses is as follows.
+The if, device, and nowait clauses are supported
+The map clause is supported as described in 2.19.7.
+The depend([dependmodifier,] dependtype : list) clause is supported as described in 2.17.11
+2.12.5 Target Construct
+The target construct is supported for GPU targets. If there is no GPU or GPU offload is otherwise disabled, execution falls back to CPU mode. Support for target construct clauses is as follows:
+The if, private, firstprivate, is_device_ptr, and nowait clauses are supported
+The device clause is supported without the device-modifier ancestor keyword
+The map clause is supported as described in 2.19.7
+The defaultmap clause is supported using OpenMP 5.0 semantics
+The depend([dependmodifier,] dependtype : list) clause is supported as described in 2.17.11
+The allocate and uses_allocate clauses are ignored
+2.12.6 Target Update Construct
+The target update construct is supported for GPU targets. Support for target update construct clauses is as follows.
+The if, device, and nowait clauses are supported.
+The to and from clauses are supported without mapper or mapid
+The depend([dependmodifier,] dependtype : list) clause is supported as described in 2.17.11
+Array sections are supported in to and from clauses, including noncontiguous array sections. Array section strides are not supported. If the array section is noncontiguous, the OpenMP runtime may have to use multiple host-to-device or device-to-host data transfer operations, which increases the overhead. If the host data is in host-pinned memory, then update data transfers with the nowait clause are asynchronous. This means the data transfer for a target update to nowait may not occur immediately or synchronously with the program thread, and any changes to the data may affect the transfer, until a synchronizing operation is reached. Similarly, a target update from nowait may not occur immediately or synchronously with the program thread, and the downloaded data may not be available until a synchronizing operation is reached. If the host data is not in host-pinned memory, then update data transfers with the nowait clause may require that the data transfer operation use an intermediate pinned buffer managed by the OpenMP runtime library, and that a memory copy operation on the host between the program memory and the pinned buffer may be needed before starting or before finishing the transfer operation, which affects overhead and performance. To learn more about the pinned buffer, please refer to Staging Memory Buffer <acc-mem-pinned-buffer>.
+2.12.7 Declare Target Construct
+The declare target construct is supported for GPU targets.
+declare target ... end declare target is supported
+declare target(list) is supported
+The to(list) clause is supported
+The device_type clause is supported for C/C++
+A function or procedure that is referenced in a function or procedure that appears in a declare target to clause (explicitly or implicitly) is treated as if its name had implicitly appeared in a declare target to clause.
+2.13 Combined Constructs
+Combined constructs are supported to the extent that the component constructs are themselves supported.
+2.14 Clauses on Combined and Composite Constructs
+Clauses on combined constructs are supported to the extent that the clauses are supported on the component constructs.
+2.16 Master Construct
+The master construct is supported for CPU and GPU targets.
+2.17 Synchronization Constructs and Clauses
+2.17.1 Critical Construct
+The critical construct is supported only for CPU targets; the compiler emits an error for GPU targets.
+2.17.2 Barrier Construct
+The barrier construct is supported.
+2.17.3 Implicit Barriers
+Implicit barriers are implemented.
+2.17.4 Implementation-Specific Barriers
+There may be implementation-specific barriers, and they may be different for CPU targets than for GPU targets.
+2.17.5 Taskwait Construct
+The taskwait construct is supported only for CPU targets; it is ignored for GPU targets.
+The depend([dependmodifier,] dependtype : list) clause is supported as described in 2.17.11
+2.17.6 Taskgroup Construct
+The taskgroup construct is supported only for CPU targets. It is ignored for GPU targets.
+2.17.7 Atomic Construct
+Support for atomic construct clauses is as follows.
+The read, write, update, and capture clauses are supported.
+The memory order clauses seq_cst, acq_rel, release, acquire, relaxed are not supported
+The hint clause is ignored
+2.17.8 Flush Construct
+The flush construct is supported only for CPU targets.
+2.17.9 Ordered Construct and Ordered Directive
+The ordered block construct is supported only for CPU targets.
+2.17.11 Depend Clause
+The depend clause is supported on CPU targets. It is not supported on GPU targets. The dependence types in, out, and inout are supported. The dependence types mutexinoutset and depobj, dependence modifier iterator(iters), depend(source), and depend(sink:vector) are not supported.
+2.19 Data Environment
+2.19.2 Threadprivate Directive
+The threadprivate directive is supported only for CPU targets. It is not supported for GPU targets; references to threadprivate variables in device code are not supported.
+2.19.5 Reduction Clauses and Directives
+The reduction clause is supported. The optional modifier is not supported.
+2.19.6 Data Copying Clauses
+The data copying copyin and copyprivate clauses are supported only for CPU targets; the compiler emits a compile-time error for GPU targets.
+2.19.7 Data Mapping Attribute Rules, Clauses, and Directives
+The map([[mapmod[,]...] maptype:] datalist) clause is supported. Of the map-type-modifiers, always is supported, close is ignored, and mapper(mapid) is not supported.
+The defaultmap clause is supported using OpenMP 5.0 semantics.
+2.20 Nesting of Regions
+For constructs supported in this subset, restrictions on nesting of regions is observed. Additionally, nested parallel regions on CPU are not supported and nested teams or parallel regions in a target region are not supported.
+Runtime Library Routines
+3.2 Execution Environment Routines
+The following execution environment runtime API routines are supported.
+omp_set_num_threads, omp_get_num_threads, omp_get_max_threads, omp_get_thread_num, omp_get_thread_limit, omp_get_supported_active_levels, omp_set_max_active_levels, omp_get_max_active_levels, omp_get_level, omp_get_ancestor_thread_num, omp_get_team_size, omp_get_num_teams, omp_get_team_num, omp_is_initial_device
+The following execution environment runtime API routines are supported only on the CPU.
+omp_get_num_procs, omp_set_dynamic, omp_get_dynamic, omp_set_schedule, omp_get_schedule, omp_in_final, omp_get_proc_bind, omp_get_num_places, omp_get_affinity_format, omp_set_default_device, omp_get_default_device, omp_get_num_devices, omp_get_device_num, omp_get_initial_device
+The following execution environment runtime API routines have limited support.
+omp_get_cancellation, omp_get_nested; supported only on the CPU; the value returned is always false
+omp_display_affinity, omp_capture_affinity; supported only on the CPU; the format specifier is ignored
+omp_set_nested; supported only on the CPU, the value is ignored
+The following execution environment runtime API routines are not supported.
+omp_get_place_num_procs, omp_get_place_proc_ids, omp_get_place_num, omp_get_partition_num_places, omp_get_partition_place_nums, omp_set_affinity_format, omp_get_max_task_priority, omp_pause_resource, omp_pause_resource_all
+3.3 Lock Routines
+Lock runtime API routines are not supported on the GPU. The following lock runtime API routines are supported on the CPU.
+omp_init_lock, omp_init_nest_lock, omp_destroy_lock, omp_destroy_nest_lock, omp_set_lock, omp_set_nest_lock, omp_unset_lock, omp_unset_nest_lock, omp_test_lock, omp_test_nest_lock
+The following lock runtime API routines are not supported.
+omp_init_lock_with_hint, omp_init_nest_lock_with_hint
+3.4 Timing Routines
+The following timing runtime API routines are supported.
+omp_get_wtime, omp_get_wtick
+3.6 Device Memory Routines
+The following device memory routines are supported only on the CPU.
+omp_target_is_present, omp_target_associate_ptr, omp_target_disassociate_ptr
+omp_target_memcpy and omp_target_memcpy_rect are only supported when copying to and from the same device.
+The following device memory routines are supported on the CPU; we extend OpenMP to support these in target regions on a GPU, but only allocation and deallocation on the same device is supported.
+omp_target_alloc, omp_target_free
+3.7 Memory Management Routines
+The following memory management routines are supported.
+omp_alloc, omp_free
+The following memory management routines are not supported.
+omp_init_allocator, omp_destroy_allocator, omp_set_default_allocator, omp_get_default_allocator
+6 Environment Variables
+The following environment variables have limited support.
+OMP_SCHEDULE, OMP_NUM_THREADS, OMP_NUM_TEAMS, OMP_DYNAMIC, OMP_PROC_BIND, OMP_PLACES, OMP_STACKSIZE, OMP_WAIT_POLICY, OMP_MAX_ACTIVE_LEVELS, OMP_NESTED, OMP_THREAD_LIMIT, OMP_TEAMS_THREAD_LIMIT, OMP_DISPLAY_ENV, OMP_DISPLAY_AFFINITY, OMP_DEFAULT_DEVICE, and OMP_TARGET_OFFLOAD are supported on CPU.
+OMP_CANCELLATION and OMP_MAX_TASK_PRIORITY are ignored.
+OMP_AFFINITY_FORMAT, OMP_TOOL, OMP_TOOL_LIBRARIES, OMP_DEBUG, and OMP_ALLOCATOR are not supported
+7.5. Using metadirective
+This section contains limitations affecting metadirective along with a few guidelines for its use.
+The Fortran compiler does not support variants leading to an OpenMP directive for which a corresponding end directive is required.
+Nesting user conditions, while legal, may create situations that the HPC Compilers do not handle gracefully. To avoid potential problems, use device traits inside user conditions instead. The following example illustrates this best practice.
+Avoid nesting dynamic user conditions like this:
+#pragma omp metadirective \ when( user={condition(use_offload)} : target teams distribute) \ default( parallel for schedule(static) ) for (i = 0; i < N; i++) { ... #pragma omp metadirective \ when( user={condition(use_offload)} : parallel for) for (j = 0; j < N; j++) { ... } ... }
+Instead, use target_device and device traits within dynamic user conditions like this:
+#pragma omp metadirective \ when( target_device={kind(gpu)}, user={condition(use_offload)} : target teams distribute) \ default( parallel for schedule(static) ) for (i = 0; i < N; i++) { ... #pragma omp metadirective \ when( device={kind(gpu)} : parallel for) for (j = 0; j < N; j++) { ... } ... }
+The HPC compilers do not support nesting metadirective inside a target construct applying to a syntactic block leading to a teams variant. Some examples:
+The compilers will emit an error given the following code:
+#pragma omp target map(to:v1,v2) map(from:v3) { #pragma omp metadirective \ when( device={arch("nvptx")} : teams distribute parallel for) \ default( parallel for) for (int i = 0; i < N; i++) { v3[i] = v1[i] * v2[i]; } }
+The compilers will always match device={arch("nvptx")} given the following code:
+#pragma omp target map(to:v1,v2) map(from:v3) #pragma omp metadirective \ when( device={arch("nvptx")} : teams distribute parallel for) \ default( parallel for) for (int i = 0; i < N; i++) { v3[i] = v1[i] * v2[i]; }
+The compilers match device={"arch") for GPU code, and default for host fallback, given the following code:
+#pragma omp target teams distribute map(to:v1,v2) map(from:v3) for (...) { #pragma omp metadirective \ when( device={arch("nvptx")} : parallel for) \ default( simd ) for (int i = 0; i < N; i++) { v3[i] = v1[i] * v2[i]; } }
+7.6. Mapping target constructs to CUDA streams
+An OpenMP target task generating construct is executed on the GPU in a CUDA stream. The following are target task generating constructs:
+target enter data
+target exit data
+target update
+target
+This section explains how these target constructs are mapped to CUDA streams. The relationship with the OpenACC queues is also explained below.
+Keep in mind that the target data construct does not generate a task and is not necessarily executed in a CUDA stream. It also cannot have the depend and nowait clauses, thus its behavior cannot be directly controlled by the user application. The rest of this section does not cover the behavior of the target data construct.
+Any task-generating target construct can have depend and nowait clauses. The NVIDIA OpenMP Runtime takes these clauses as a guidance for how to map the construct to a specific CUDA stream. Below is a breakdown of how the clauses affect the mapping decisions.
+‘target’ without ‘depend’, without ‘nowait’
+For these constructs, the per-thread default CUDA stream is normally used. The stream is unique for each host thread, so target regions created by different host threads will execute independently in different streams according to the CUDA rules described in CUDA Runtime API; see the rules in the “Per-thread default stream” section.
+The OpenACC queue acc_async_sync is initially associated with the same per-thread default CUDA stream. The user is allowed to change the association by calling acc_set_cuda_stream(acc_async_sync, stream). This will change accordingly the stream used for target without nowait.
+The CUDA stream handle can be directly obtained via the ompx_get_cuda_stream(int device, int nowait) function, with the nowait parameter set to 0. The per-thread default stream can be obtained with the CUDA handle CU_STREAM_PER_THREAD or cudaStreamPerThread.
+Here is an example of how a custom CUDA stream can be used to substitute the default stream:
+extern __global__ void kernel(int *data); CUstream stream; cuStreamCreate(&stream, CU_STREAM_DEFAULT); acc_set_cuda_stream(acc_async_sync, stream); #pragma omp target enter data map(to:data[:N]) #pragma omp target data use_device_ptr(data) kernel<<<N/32, 32, 0, stream>>>(data); #pragma omp target teams distribute parallel for for (int i = 0; i < N; i++) { data[i]++; } #pragma omp target exit data map(from:data[:N])
+Note there is no explicit stream synchronization after the CUDA kernel is launched. The stream is synchronized automatically at the target constructs that follow.
+‘target’ with ‘depend’, without ‘nowait’
+For this construct, the runtime will block the current thread until all dependencies listed in the depend clause are resolved. Then, the target construct will be executed in the default per-thread CUDA stream as described in the previous section (that is, as if there is no depend clause).
+‘target’ with ‘nowait’, without ‘depend’
+By default, the runtime will select a CUDA stream for each new target nowait construct. The selected stream may be the same that was used for a prior target nowait construct. That is, there is no guarantee of uniqueness of the selected stream.
+This is different from the OpenACC model that uses the same CUDA stream associated with the acc_async_noval queue for any asynchronous construct with the async clause without an argument. To change this behavior, the user can call the ompx_set_cuda_stream_auto(int enable) function with the enable parameter set to 0. In this case, the CUDA stream associated with the acc_async_noval OpenACC queue will be used for all OpenMP target nowait constructs. Another way to enable this behavior is to set the environment variable NVCOMPILER_OMP_AUTO_STREAMS to FALSE.
+To access the stream used for the next target nowait construct, the user can call the ompx_get_cuda_stream(int device, int nowait) function, with the nowait parameter set to 1.
+‘target’ with both ‘depend’ and ‘nowait’
+The decision on which CUDA stream to use in this case relies on previously scheduled target and host tasks sharing a subset of the dependencies listed in the depend clause:
+If the target construct has only one dependency, which is of the type inout or out, and that dependency maps to a previously scheduled target depend(...) nowait construct, and the same device is used for both target constructs, then the CUDA stream which the previous target task was scheduled to will be used.
+Otherwise, a CUDA stream will be selected for this target construct according to the stream selection policy.
+Note that target constructs with a single in dependency can be scheduled on a newly selected CUDA stream. This is to allow parallel execution of multiple target nowait constructs that depend on data produced by another previously scheduled target nowait construct.
+Here is a simplified example of how a target construct, a CUDA library function and a CUDA kernel can be executed on the GPU in the same stream asynchronously with respect to the host thread:
+extern __global__ void kernel(int *data); cudaStream_t stream = (cudaStream_t)ompx_get_cuda_stream(omp_get_default_device(), 1); cufftSetStream(cufft_plan, stream); #pragma omp target enter data map(to:data[:N]) depend(inout:stream) nowait #pragma omp target data use_device_ptr(data) { kernel<<<N/32, 32, 0, stream>>>(data); cufftExecC2C(cufft_plan, data, data, CUFFT_FORWARD); } #pragma omp target teams distribute parallel for depend(inout:stream) nowait for (int i = 0; i < N; i++) { data[i]++; } #pragma omp target exit data map(from:data[:N]) depend(inout:stream) nowait
+Note that the stream variable holds the CUDA stream handle and also serves as the dependency for the target constructs. This dependency enforces the order of execution and also guarantees the target constructs are on the same stream that was returned from the ompx_get_cuda_stream function call.
+NVIDIA OpenMP API to access and control CUDA streams
+NVIDIA OpenMP Runtime provides the following API to access CUDA streams and to control their use.
+void *ompx_get_cuda_stream(int device, int nowait);
+This function returns the handle of the CUDA stream that will be used for the next target construct:
+If the nowait parameter is set to 0, it returns the CUDA stream associated with the OpenACC queue acc_async_sync, which is initially mapped to the default per-thread CUDA stream;
+Otherwise, it returns a CUDA stream which will be used for the next target nowait construct that cannot be mapped to an existing stream according to the rules for the depend clause.
+void ompx_set_cuda_stream_auto(int enable);
+This function sets the policy for how CUDA streams are selected for target nowait constructs:
+If the enable parameter is set to a non-zero value, an internally selected CUDA stream will be used for each target nowait construct that follows. This is the default behavior;
+Otherwise, the CUDA stream associated with the OpenACC queue acc_async_noval will be used for all target nowait constructs that follow. This becomes the default behavior if the environment variable NVCOMPILER_OMP_AUTO_STREAMS is set to FALSE.
+The setting is done only for the host thread which calls this function.
+7.7. Noncontiguous Array Sections
+Array sections can be used in to and from clauses, including noncontiguous array sections. The noncontiguous array section must be specified in a single map clause; it cannot be split between multiple directives. Although this feature may become a part of a future OpenMP specification, at this time it is an NVIDIA HPC compilers extension.
+7.8. OpenMP with CUDA Unified Memory
+This section will focus on OpenMP unified shared memory programming, and assume users are familiar with Separate, Managed, and Unified Memory Modes explained in the Memory Model and Managed and Unified Memory Modes sections. OpenMP unified shared memory corresponds to Unified Memory Mode in NVHPC Compilers and it can be enabled with -gpu=mem:unified flag. Source code with requires unified_shared_memory directive is accepted but requires -gpu=mem:unified flag to activate Unified Memory Mode.
+In Unified Memory Mode, map clauses on target constructs are optional. Additionally, declare target directives are optional for variables with static storage duration accessed inside functions to which such directive is applied. The OpenMP unified shared memory eases accelerator programming on the GPUs removing the need for data management and only requiring to express the parallelism in the compute regions.
+In Unified Memory Mode, all data is managed by the CUDA runtime. Explicit data map clauses which manage the data movement across the host and devices become optional. All variables are accessible from the OpenMP offload compute regions executing on the GPU. The map clause with alloc, to, from, and tofrom type will not result in any device allocation or data transfer. The OpenMP runtime, however, may leverage such clauses to communicate preferable data placement to the CUDA runtime by means of memory hint APIs as elaborated in the following blog post on the NVIDIA website: Simplifying GPU Application Development with Heterogeneous Memory Management. Device memory can be allocated or deallocated in OpenMP programs in Unified Memory Mode by using the omp_target_alloc and omp_target_free API calls. Please, note that the memory allocated through omp_target_alloc cannot be accessed by the host.
+Understanding Data Movement
+When the compiler encounters a compute construct without visible target data directives or map clauses, it attempts to determine what data is required for correct execution of the region on the GPU. When the compiler is unable to determine the size and shape of data needing to be accessible on the device, it behaves as follows:
+In Separate Memory Mode, the compiler may not be able to alert you to the need for an explicit data clause specifying size and/or shape of data being copied to/from the GPU. In this case, the default length of one may be used. This may cause illegal memory access errors at runtime on the GPU devices.
+In Managed Memory Mode (-gpu=mem:managed), the compiler assumes the data is allocated in managed memory and thus is accessible from the device; if this assumption is wrong, for example, if the data was defined globally or is located on the CPU stack, the program may fail at runtime.
+In Unified Memory Mode (-gpu=mem:unified), all data is accessible from the device making information about size and shape unnecessary.
+Take the following example in C:
+#pragma omp declare target void set(int* ptr, int i, int j, int dim){ int idx = i * dim + j; return ptr[idx] = someval(i, j); } #pragma omp end declare target void fill2d(int* ptr, int dim){ #pragma omp target teams distribute parallel for for (int i = 0; i < dim; i++) for (int j = 0; j < dim; j++) set(ptr, i, j, dim); }
+In Separate Memory Mode, the only way to guarantee correctness for this example is to specify an array section in the target construct as follows:
+#pragma omp target teams distribute parallel for map(from: ptr[0:dim*dim])
+This change explicitly instructs the OpenMP implementation about the precise data segment used within the target for loop.
+In Unified Memory Mode, the map clause is not required.
+The next example, in Fortran, illustrates how a global variable can be accessed in an OpenMP routine without requiring any explicit annotation.
+module m integer :: globmin = 1234 contains subroutine findmin(a) !$omp declare target integer, intent(in) :: a(:) integer :: i do i = 1, size(a) if (a(i) .lt. globmin) then globmin = a(i) endif end do end subroutine end module m
+Compile the example above for Unified Memory Mode:
+nvfortran -mp=gpu -gpu=mem:unified example.f90
+The source does not need any OpenMP directives to access module variable globmin, to either read or update its value, in the routine invoked from CPU and GPU. Moreover, any access to globmin will be made to the same exact instance of the variable from CPU and GPU; its value is synchronized automatically. In Separate or Managed Memory Modes, such behavior can only be achieved with a combination of OpenMP declare target and target update directives in the source code.
+Migrating existing OpenMP applications written for Separate Memory Mode should, in most cases, be a seamless process requiring no source changes. Some data access patterns, however, may lead to different results produced during application execution in Unified Memory Mode. Applications which rely on having separate data copies in GPU memory to conduct temporary computations on the GPU – without maintaining data synchronization with the CPU – pose a challenge for migration to unified memory. For the following Fortran example, the value of variable c after the last loop will differ depending on whether the example is compiled with or without -gpu=mem:unified.
+b(:) = ... c = 0 !$omp target data map(to: b) map(from: a) !$omp target distribute teams parallel for do i = 1, N b(i) = b(i) * i end do !$omp target distribute teams parallel for do i = 1, N a(i) = b(i) + i end do !$omp end target data do i = 1, N c = c + a(i) + b(i) end do
+Without Unified Memory, array b is copied into the GPU memory at the beginning of the OpenMP target data region. It is then updated in the GPU memory and used to compute elements of array a. As instructed by the data clause map(to:b), b is not copied back to the CPU memory at the end of the target data region and therefore its initial value is used in the computation of c. With -mp=gpu -gpu=mem:unified, the updated value of b in the first loop is automatically visible in the last loop leading to a different value of c at its end.
+Additional complications may arise from the asynchronous execution as the use of unified shared memory may require extra synchronizations to avoid data races.
+7.9. Multiple Device Support
+A program can use multiple devices on a single node.
+This functionality is supported using the omp_set_default_device API call and the device() clause on the target constructs. Our experience is that most programs use MPI parallelism with each MPI rank selecting a single GPU to which to offload. Some programs assign multiple MPI ranks to each GPU, in order to keep the GPU fully occupied, though the fixed memory size of the GPU limits how effective this strategy can be. Similarly, other programs use OpenMP thread parallelism on the CPU, with each thread selecting a single GPU to which to offload.
+7.10. Interoperability with CUDA
+The HPC Compilers support interoperability of OpenMP and CUDA to the same extent they support CUDA interoperability with OpenACC.
+If OpenMP and CUDA code coexist in the same program, the OpenMP runtime and the CUDA runtime use the same CUDA context on each GPU. To enable this coexistence, use the compilation and linking option -cuda. CUDA-allocated data is available for use inside OpenMP target regions with the OpenMP analog is_device_ptr to OpenACC’s deviceptr() clause.
+OpenMP-allocated data is available for use inside CUDA kernels directly if the data was allocated with the omp_target_alloc() API call; if the OpenMP data was created with a target data map clause, it can be made available for use inside CUDA kernels using the target data use_device_addr() clause. Calling a CUDA device function inside an OpenMP target region is supported, as long as the CUDA function is a scalar function, that is, does not use CUDA shared memory or any inter-thread synchronization. Calling an OpenMP declare target function inside a CUDA kernel is supported as long as the declare target function has no OpenMP constructs or API calls.
+7.11. Interoperability with Other OpenMP Compilers
+OpenMP CPU-parallel object files compiled with NVIDIA’s HPC compilers are interoperable with OpenMP CPU-parallel object files compiled by other compilers using the KMPC OpenMP runtime interface. Compilers supporting KMPC OpenMP include Intel and CLANG. The HPC compilers support a GNU OpenMP interface layer as well which provides OpenMP CPU-parallel interoperability with the GNU compilers.
+For OpenMP GPU computation, there is no similar formal or informal standard library interface for launching GPU compute constructs or managing GPU memory. There is also no standard way to manage the device context in such a way as to interoperate between multiple offload libraries. The HPC compilers therefore do not support interoperability of device compute offload operations and similar operations generated with another compiler.
+7.12. GNU STL
+When using nvc++ on Linux, the GNU STL is thread-safe to the extent listed in the GNU documentation as required by the C++11 standard. If an STL thread-safe issue is suspected, the suspect code can be run sequentially inside of an OpenMP region using #pragma omp critical sections.

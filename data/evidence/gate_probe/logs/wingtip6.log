@@ -1,0 +1,10 @@
+start 2026-10-26T04:21:05-04:00 wingtip-gpu3.cc.gatech.edu gpu 0
+25.11 red_acc_200_i8.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+25.11 red_acc_200_i8.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+25.11 red_c_63.c run1 rc=0 bad= 0 first= -1 s1= 105 s63= 415 
+25.11 red_c_63.c run2 rc=0 bad= 0 first= -1 s1= 105 s63= 415 
+26.9 red_acc_200_i8.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+26.9 red_acc_200_i8.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+26.9 red_c_63.c run1 rc=0 bad= 0 first= -1 s1= 105 s63= 415 
+26.9 red_c_63.c run2 rc=0 bad= 0 first= -1 s1= 105 s63= 415 
+end 2026-10-26T04:21:31-04:00

@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/s1-7882-cce20.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "xc is mapped by the enclosing target data with map(to: xc), so it is present when the target construct with the present map-type-modifier is encountered. No restriction is violated and the present check must succeed, so the Cray present-table failure is a compiler error."
+  },
+  {
+   "run": "run-20261113/batch-59",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "xc is mapped by the enclosing target data (map(to: xc)), so on entry to the target region it is present in the device data environment. map(present, tofrom: xc) is a valid modifier list. The present requirement is met, so runtime error termination must not occur; hf1 is 0 on the device and the check passes. The reported 'not found in present table' is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-37",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "xc is mapped by the enclosing target data with map(to: xc). When the target construct is entered, xc is present in the device data environment, so the present modifier is satisfied and no runtime error termination applies. The tofrom copy back is harmless. hf1 is set once to 0 on the device. The present-table lookup failure is a runtime defect in handling the allocatable character array.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-69",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-87",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "xc is mapped by the enclosing target data (map(to: xc)), so it is present when the target construct is entered. map(present, tofrom: xc) therefore does not cause the runtime error termination, and the region must run on the device (hf1 = 0). The observed present-table failure is a compiler/runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "bafdcc077186fd50ff67029da69a4f4203daedd91b9bf8113c15a099e956c477",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

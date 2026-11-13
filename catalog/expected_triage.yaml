@@ -1,0 +1,110 @@
+# Dispositions of the disputed expected-behaviour verdicts
+# (data/reports/triage-2026-10.md; tools/derive/expected.py TRIAGE_DISPOSITIONS).
+# compiler_wrong: the runs of the `withdraw` toolchains (their gfx942 names;
+# copy-mode and gfx90a runs of the same compilers included) are no witness
+# for this (Fortran) program; its C port is built by another front end and
+# can still be one:
+# the finding's minimal reproducer and the cited spec text show their value
+# wrong. implementation_defined: the quoted sentence leaves the behaviour
+# open; the verdict is then not a support verdict.
+# `withdraw` is exactly the toolchains the finding names
+# (tests/engine/test_findings_afar.py checks it against data/findings/index.yaml).
+# `needs_human`: why the confirmer leaves this program's failing cells
+# needs_human although the disposition is compiler_wrong (the confirmer
+# adds it to the reason; tools/derive/expected.py report shows it).
+entries:
+  # schedule(static[, chunk]) on a parallel do nested in a target region:
+  # AFAR flang and CCE ftn 19/20/21 deal the iterations out one at a time
+  # round-robin (iteration i on thread mod(i - 1, T)) whatever the clause
+  # says; AMD clang (the C port) follows the clause
+  - {version: 50, program: omp50-clause-schedule, disposition: compiler_wrong,
+     cite: "5.0 §2.9.2 p.104", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     needs_human: "R22 (RUL-DERIVED-NEEDS-EXECUTION), by design: the expected value check=pass is derived (derivation + model) with no executed witness: every compiler that ran this Fortran program is withdrawn (AFAR by the finding, CCE by the guarded-loop finding), the sequential elision gives no value, and OpenMP 5.0 has no C port (its 5.2 and 6.0 twins are compiler_bug because their C ports print check=pass on the device); the cells stay needs_human until a 5.0 witness exists",
+     note: "oracle also corrected: only what the spec fixes without a chunk size is checked, every iteration on a thread and one contiguous chunk per thread, no chunk size (the Note calls ceil(n/p) chunks and q / q - 1 splits compliant); the program is no-oracle implementation_defined (checked)"}
+  - {version: 52, program: omp52-clause-schedule, disposition: compiler_wrong,
+     cite: "5.2 §11.5.3 p.252", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "oracle also corrected: only what the spec fixes without a chunk size is checked, every iteration on a thread and one contiguous chunk per thread, no chunk size (the Note calls ceil(n/p) chunks and q / q - 1 splits compliant); the program is no-oracle implementation_defined (checked)"}
+  - {version: 60, program: omp60-clause-schedule, disposition: compiler_wrong,
+     cite: "6.0 §13.6.3 p.418", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "oracle also corrected: only what the spec fixes without a chunk size is checked, every iteration on a thread and one contiguous chunk per thread, no chunk size (the Note calls ceil(n/p) chunks and q / q - 1 splits compliant); the program is no-oracle implementation_defined (checked)"}
+  - {version: 50, program: omp50-clause-schedule-static, disposition: compiler_wrong,
+     cite: "5.0 §2.9.2 p.104", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     needs_human: "R22 (RUL-DERIVED-NEEDS-EXECUTION), by design: the expected value check=pass is derived (derivation + model) with no executed witness: every compiler that ran this Fortran program is withdrawn (AFAR by the finding, CCE by the guarded-loop finding), the sequential elision gives no value, and OpenMP 5.0 has no C port (its 5.2 and 6.0 twins are compiler_bug because their C ports print check=pass on the device); the cells stay needs_human until a 5.0 witness exists",
+     note: "oracle also corrected (as omp50-clause-schedule)"}
+  - {version: 52, program: omp52-clause-schedule-static, disposition: compiler_wrong,
+     cite: "5.2 §11.5.3 p.252", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "oracle also corrected (as omp52-clause-schedule)"}
+  - {version: 60, program: omp60-clause-schedule-static, disposition: compiler_wrong,
+     cite: "6.0 §13.6.3 p.418", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "oracle also corrected (as omp60-clause-schedule)"}
+  - {version: 50, program: omp50-clause-schedule-chunk_size, disposition: compiler_wrong,
+     cite: "5.0 §2.9.2 p.104", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     needs_human: "R22 (RUL-DERIVED-NEEDS-EXECUTION), by design: the expected value check=pass is derived (derivation + model) with no executed witness: every compiler that ran this Fortran program is withdrawn (AFAR by the finding, CCE by the guarded-loop finding), the sequential elision gives no value, and OpenMP 5.0 has no C port (its 5.2 and 6.0 twins are compiler_bug because their C ports print check=pass on the device); the cells stay needs_human until a 5.0 witness exists",
+     note: "schedule(static, 4): every compiler puts iteration i on thread mod(i - 1, T) instead of mod((i - 1)/4, T)"}
+  - {version: 52, program: omp52-clause-schedule-chunk_size, disposition: compiler_wrong,
+     cite: "5.2 §11.5.3 p.252", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "schedule(static, 4): every compiler puts iteration i on thread mod(i - 1, T) instead of mod((i - 1)/4, T)"}
+  - {version: 60, program: omp60-clause-schedule-chunk_size, disposition: compiler_wrong,
+     cite: "6.0 §13.6.3 p.418", finding: data/findings/fortran-schedule-static-in-target.f90,
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "schedule(static, 4): every compiler puts iteration i on thread mod(i - 1, T) instead of mod((i - 1)/4, T)"}
+  # loop bind(thread) in a parallel region in a target region: the program
+  # was nonconforming (a counter updated by every iteration of a loop whose
+  # iterations may run concurrently) and is fixed; the fixed program still
+  # fails: AFAR flang and CCE ftn share the iterations among the team.
+  # : the finding is AFAR's
+  # (bind(thread)); CCE fails these programs by the sequential-loop defect of
+  # cce19-target-parallel-guarded-loop.f90 (also_findings: that finding's
+  # toolchains are withdrawn too; without it the failing CCE runs dispute
+  # the derived value, R14)
+  - {version: 50, program: omp50-clause-bind-thread, disposition: compiler_wrong,
+     also: program_fixed, cite: "5.0 §2.9.5 pp.129-130", finding: data/findings/fortran-loop-bind-thread-in-parallel.f90,
+     also_findings: [data/findings/cce19-target-parallel-guarded-loop.f90],
+     withdraw: [afar, cce19, cce20, cce21],
+     needs_human: "R22 (RUL-DERIVED-NEEDS-EXECUTION), by design: the expected value check=pass is derived (derivation + model) with no executed witness: every compiler that ran this Fortran program is withdrawn (AFAR by the finding, CCE by the guarded-loop finding), the sequential elision gives no value, and OpenMP 5.0 has no C port (its 5.2 and 6.0 twins are compiler_bug because their C ports print check=pass on the device); the cells stay needs_human until a 5.0 witness exists",
+     note: "program fixed first: each iteration records itself in hit(i, thread + 1) instead of mine = mine + 1 (a data race, 5.2 §11.7 p.257: the iterations may execute concurrently)"}
+  - {version: 52, program: omp52-clause-bind-thread, disposition: compiler_wrong,
+     also: program_fixed, cite: "5.2 §11.7 p.257, §11.7.1 p.258", finding: data/findings/fortran-loop-bind-thread-in-parallel.f90,
+     also_findings: [data/findings/cce19-target-parallel-guarded-loop.f90],
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "program fixed first: each iteration records itself in hit(i, thread + 1) instead of mine = mine + 1 (a data race: the iterations may execute concurrently)"}
+  - {version: 60, program: omp60-clause-bind-thread, disposition: compiler_wrong,
+     also: program_fixed, cite: "6.0 §13.8 p.423, §13.8.1 p.424", finding: data/findings/fortran-loop-bind-thread-in-parallel.f90,
+     also_findings: [data/findings/cce19-target-parallel-guarded-loop.f90],
+     withdraw: [afar, cce19, cce20, cce21],
+     note: "program fixed first: each iteration records itself in hit(i, thread + 1) instead of mine = mine + 1 (a data race: the iterations may execute concurrently)"}
+  # Fortran character variables are aggregates, implicitly mapped tofrom:
+  # AFAR, CCE 19 and CCE 20 treat them as firstprivate scalars (CCE 21 is
+  # correct)
+  - {version: 50, program: omp50-clause-defaultmap-character, disposition: compiler_wrong,
+     cite: "5.0 §1.2.6 p.12", finding: data/findings/afar-cce19-character-defaultmap.f90,
+     withdraw: [afar, cce19, cce20]}
+  - {version: 52, program: omp52-clause-defaultmap-character, disposition: compiler_wrong,
+     cite: "5.2 §1.2.6 p.14, §5.8.1 p.148", finding: data/findings/afar-cce19-character-defaultmap.f90,
+     withdraw: [afar, cce19, cce20]}
+  - {version: 60, program: omp60-clause-defaultmap-character, disposition: compiler_wrong,
+     cite: "6.0 Glossary p.94, §7.9.3 p.276", finding: data/findings/afar-cce19-character-defaultmap.f90,
+     withdraw: [afar, cce19, cce20]}
+  # Defaultmap(firstprivate) with explicit map(from)/map(tofrom)
+  # items: NVHPC (25.11 and 26.9) does not copy the explicitly mapped
+  # items back (their check fails in both memory modes); the explicit
+  # clause determines their attributes, defaultmap only the implicit ones.
+  # Its separate-memory runs joined the expected verdict as another family
+  # and disputed the AMD value; the finding withdraws them.
+  - {version: 50, program: omp50-clause-defaultmap-firstprivate, disposition: compiler_wrong,
+     cite: "5.0 §2.19.7.2 p.324", finding: data/findings/nvhpc-defaultmap-firstprivate-explicit-map.f90,
+     withdraw: [nvhpc, nvhpc269]}
+  - {version: 52, program: omp52-clause-defaultmap-firstprivate, disposition: compiler_wrong,
+     cite: "5.2 §5.8.7 p.161", finding: data/findings/nvhpc-defaultmap-firstprivate-explicit-map.f90,
+     withdraw: [nvhpc, nvhpc269]}
+  - {version: 60, program: omp60-clause-defaultmap-firstprivate, disposition: compiler_wrong,
+     cite: "6.0 §7.9.9 p.291", finding: data/findings/nvhpc-defaultmap-firstprivate-explicit-map.f90,
+     withdraw: [nvhpc, nvhpc269]}

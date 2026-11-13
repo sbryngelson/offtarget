@@ -1,0 +1,217 @@
+{
+ "finding": "fresh/cce-list-directed-print-in-target-copy-crash.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-15",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A Fortran PRINT inside a target region is not prohibited by the OpenMP 5.2 text; no restriction on the target construct forbids I/O. The specification gives no device-side I/O semantics beyond the base language and says nothing about how output reaches the host, so whether the memory fault is a required-behavior violation cannot be settled from the specification alone. Three other compilers print the text."
+  },
+  {
+   "run": "run-20261113/batch-55",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A target region containing a Fortran PRINT is a conforming OpenMP 5.2 program; no restriction on the target construct forbids base-language I/O. The specification does not define device-side I/O behaviour or where the output goes, so whether 'Hello, world!' must appear is not specified, though a memory fault is hardly a permitted outcome."
+  },
+  {
+   "run": "run-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A Fortran print statement in a target region is base-language code; the specification places no restriction on it. The program is conforming, so the GPU memory fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-36",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-99",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is a bare target region with a Fortran print. The specification does not prohibit I/O in a target region, but it also does not define the behavior or required support of Fortran I/O statements executed on a device, so it does not require the output to appear. A device fault in the I/O runtime is not a violation the specification can be said to require against.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "043808ae5911eb5fd915be8254fb896c4136d64d7a7e9245dc8a01b9e4112084",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: Both readings agree the program is conforming: a print statement is base-language code and nothing forbids it in a target region.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings agree. OpenMP 5.2 has no restriction on the target construct forbidding base-language I/O (no I/O restriction text was found in the specification). The specification defines no device-side I/O semantics or how output reaches the host, so a required output cannot be established from the text. A memory fault is an undesirable outcome, but the specification does not decide it."
+  },
+  {
+   "run": "adj-20261113/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings agree. No restriction on target forbids Fortran PRINT, so the program is conforming, and the specification gives no device-side I/O semantics, so a required output is not established; a fault is not shown to violate a stated requirement."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is a bare target construct with a Fortran print statement. OpenMP 5.2 contains no restriction on base-language I/O in a target region, and section 1.6 makes an implementation compliant only if it compiles and executes all conforming programs. Reading B's claim that device I/O behavior is undefined has no passage. Reading A is right; the GPU fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-23",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree the program is conforming: a print statement is base-language code and nothing forbids it in a target region. Reading A fails: the specification never defines device-side Fortran I/O support or requires the output to appear, so a runtime fault in the device I/O path is not shown to violate a requirement. Reading B holds.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

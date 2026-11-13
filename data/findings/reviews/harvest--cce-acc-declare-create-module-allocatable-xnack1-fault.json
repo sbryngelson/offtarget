@@ -1,0 +1,113 @@
+{
+ "finding": "harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "buf is a module allocatable with acc declare create; allocate creates its device copy, so present(buf) in the parallel loop and update host are valid. No race or restriction is broken, so the GPU write fault is a compiler or runtime bug."
+  },
+  {
+   "run": "run-20261113/batch-69",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "declare create on a module allocatable: the allocate statement allocates device memory too (non-shared memory device), so present(buf) holds, the loop writes device copy, update host brings it back. Later parallel with copy(hk_host) fine; acc_on_device is valid in compute region. No race: each iteration writes its own element. Memory fault on write is a compiler/runtime bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-48",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "declare create on a module allocatable: for a non-shared memory device the allocate statement allocates both host and device memory, so present(buf) holds and the kernel write is valid. The update host returns the values; the program has no race. A GPU write fault means device memory was not allocated, a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-18",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-61",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "buf is a module allocatable in a declare create. For a non-shared-memory device, the allocate statement allocates device memory too, so present(buf) holds in the parallel loop and update host copies the values back. The program is conforming. A write fault in the device code is a compiler or runtime error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-16",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "aae78fa9801f90f43449d9261857d9e6f3df09583697500ad62e6bb6a4d13106",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

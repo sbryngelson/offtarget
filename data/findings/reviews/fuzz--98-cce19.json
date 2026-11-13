@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/98-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "o1 has an explicit map(tofrom). defaultmap only sets the implicit attribute for variables without explicit ones, so o1 stays mapped tofrom and the assignments return to the host; checksum must be non-zero. Treating o1 as firstprivate (checksum 0) is wrong."
+  },
+  {
+   "run": "run-20261112/batch-28",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "o1 has an explicit map(tofrom) clause. defaultmap(firstprivate: aggregate) only governs implicit attributes, so the explicit map applies and the device writes o1 back. checksum 0 is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-19",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 has an explicit map(tofrom: o1), so defaultmap(firstprivate: aggregate), which only affects implicit attributes, does not apply to it. The device writes 1 to every element and copies it back, so the checksum is nonzero. A result of 0 means o1 was treated as firstprivate despite the explicit map.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-59",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-74",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 appears in an explicit map(tofrom) clause, so its mapping is explicit. The defaultmap clause only gives implicit attributes for variables without explicit mapping. o1 is therefore mapped tofrom, all elements become 1, and the checksum is nonzero. The observed 0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "de4e99f619bf267f9ccdf428915bba4e071a3ad9eae24bfe87cd5afc81b54750",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

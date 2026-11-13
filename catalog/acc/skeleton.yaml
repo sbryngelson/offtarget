@@ -1,0 +1,1567 @@
+clauses:
+  async:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: async
+  attach:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: attach
+  auto:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: auto
+  bind:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: bind
+  capture:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: capture
+  collapse:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: collapse
+  copy:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: copy
+    - max_ver: null
+      min_ver: 0
+      text: present_or_copy
+    - max_ver: null
+      min_ver: 0
+      text: pcopy
+  copyin:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: copyin
+    - max_ver: null
+      min_ver: 0
+      text: present_or_copyin
+    - max_ver: null
+      min_ver: 0
+      text: pcopyin
+  copyout:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: copyout
+    - max_ver: null
+      min_ver: 0
+      text: present_or_copyout
+    - max_ver: null
+      min_ver: 0
+      text: pcopyout
+  create:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: create
+    - max_ver: null
+      min_ver: 0
+      text: present_or_create
+    - max_ver: null
+      min_ver: 0
+      text: pcreate
+  default:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: default
+  default_async:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: default_async
+  delete:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: delete
+  detach:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: detach
+  device:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: device
+  device_num:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: device_num
+  device_resident:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: device_resident
+  device_type:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: device_type
+    - max_ver: null
+      min_ver: 0
+      text: dtype
+  deviceptr:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: deviceptr
+  finalize:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: finalize
+  firstprivate:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: firstprivate
+  gang:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: gang
+  host:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: host
+  if:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: if
+  if_present:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: if_present
+  independent:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: independent
+  link:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: link
+  no_create:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: no_create
+  nohost:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: nohost
+  num_gangs:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: num_gangs
+  num_workers:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: num_workers
+  present:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: present
+  private:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: private
+  read:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: read
+  reduction:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: reduction
+  self:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: self
+  seq:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: seq
+  shortloop:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: shortloop
+  tile:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: tile
+  unknown:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: unknown
+  use_device:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: use_device
+  vector:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: vector
+  vector_length:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: vector_length
+  wait:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: wait
+  worker:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: worker
+  write:
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: write
+directives:
+  atomic:
+    allowed:
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 34
+        once: true
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: atomic
+  cache:
+    allowed: {}
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: cache
+  data:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 32
+        once: false
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 32
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      no_create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 32
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required:
+    - attach
+    - copy
+    - copyin
+    - copyout
+    - create
+    - default
+    - deviceptr
+    - no_create
+    - present
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: data
+  declare:
+    allowed:
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device_resident:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      link:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: declare
+  enter data:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required:
+    - attach
+    - copyin
+    - create
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: enter data
+  exit data:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      delete:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      detach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      finalize:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required:
+    - copyout
+    - delete
+    - detach
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: exit data
+  host_data:
+    allowed:
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if_present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      use_device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required:
+    - use_device
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: host_data
+  init:
+    allowed:
+      device_num:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: init
+  kernels:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      no_create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_gangs:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_workers:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      self:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      vector_length:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: kernels
+  kernels loop:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      auto:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      gang:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      independent:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      no_create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_gangs:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_workers:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      self:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      seq:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      shortloop:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      tile:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      vector:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      vector_length:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      worker:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - kernels
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: kernels loop
+  loop:
+    allowed:
+      auto:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      gang:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      independent:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      seq:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      shortloop:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      tile:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      vector:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      worker:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: LoopNest
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: loop
+  parallel:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      no_create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_gangs:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_workers:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      self:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      vector_length:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel
+  parallel loop:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      auto:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      gang:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      independent:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      no_create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_gangs:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      num_workers:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      self:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      seq:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      shortloop:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      tile:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      vector:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      vector_length:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      worker:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - parallel
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: parallel loop
+  routine:
+    allowed:
+      bind:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      gang:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      nohost:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      seq:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      vector:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      worker:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Declaration
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: routine
+  serial:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      no_create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      self:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: Block
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: serial
+  serial loop:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      attach:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      auto:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      collapse:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copy:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyin:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      copyout:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      default:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      deviceptr:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      firstprivate:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      gang:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      independent:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      no_create:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      private:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      reduction:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      self:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      seq:
+        exclusive_group: exclusive
+        max_ver: null
+        min_ver: 1
+        once: true
+      shortloop:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      tile:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      vector:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      worker:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: FromLeaves
+    languages: []
+    leaves:
+    - serial
+    - loop
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: serial loop
+  set:
+    allowed:
+      default_async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_num:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required:
+    - default_async
+    - device_num
+    - device_type
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: set
+  shutdown:
+    allowed:
+      device_num:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: shutdown
+  unknown:
+    allowed: {}
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: unknown
+  update:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      device:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      device_type:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      host:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if_present:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      self:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+      wait:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: false
+    association: None
+    languages: []
+    leaves: []
+    required:
+    - device
+    - host
+    - self
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: update
+  wait:
+    allowed:
+      async:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+      if:
+        exclusive_group: null
+        max_ver: null
+        min_ver: 1
+        once: true
+    association: None
+    languages: []
+    leaves: []
+    required: []
+    spellings:
+    - max_ver: null
+      min_ver: 0
+      text: wait

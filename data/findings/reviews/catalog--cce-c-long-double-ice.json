@@ -1,0 +1,217 @@
+{
+ "finding": "catalog/cce-c-long-double-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-23",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The loop is conforming: each iteration writes its own ld[i]; host_flag is written only by iteration 0; maps are valid; the backslash-newline in the pragma is spliced by the C preprocessor. The specification has no statement restricting long double on devices, so a conforming compiler should accept it, but it does not say a device must support that type's representation, and the long double format on a target is implementation defined in the base language. No compiler is recorded as running it, so the evidence is thin."
+  },
+  {
+   "run": "run-20261113/batch-51",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Plain C with long double inside a target region; the specification has no restriction on long double in target regions or maps. Map clauses and the data-parallel loop are valid; only i==0 writes host_flag, so no race. A backend assertion failure is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is race-free and maps a, ld and host_flag. The spec does not exclude long double in target regions, but support for a type on a device target is not specified; no compiler is recorded as running it, so whether acceptance is required is unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-77",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming C: arrays mapped to/from, scalar host_flag mapped tofrom and written only by iteration 0, no race. The specification does not require support for any particular floating type such as long double on a device, and no passage addresses it. A compiler crash is poor quality, but whether acceptance is mandated by the specification text is unclear, and no compiler is recorded as passing.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-09",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Both readings agree. The only mapping restriction is a mappable type, and the specification does not exclude long double or require a device to support it. The program is race-free. Whether a compiler must accept long double in a target region is not stated, and no compiler is recorded as passing, so requiring acceptance is not supported.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Plain C long double in a target region. The spec has no restriction on long double or on floating types in target regions or maps (mappable type for C only requires a complete type). Each iteration writes its own ld[i]; host_flag is written by one iteration; no race. Reading A's worry about implementation-defined format does not make the program non-conforming or excuse a backend assertion crash. Reading B is right."
+  },
+  {
+   "run": "adj-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Plain C, complete type long double, no restriction on the type in target regions or maps; each iteration writes its own ld[i], only iteration 0 writes host_flag. The mappable-type definition for C requires only a complete type. A backend assertion is a compiler defect. Reading B is right; Reading A's doubt about device representation is not a spec rule."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree. The only mapping restriction is a mappable type, and the specification does not exclude long double or require a device to support it. The program is race-free. Whether a compiler must accept long double in a target region is not stated, and no compiler is recorded as passing, so requiring acceptance is not supported.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree. The program is race-free: a is mapped to, ld from, host_flag tofrom and written only by iteration 0. Nothing in the specification restricts long double in a target region or requires an implementation to support it on a device, so whether a crash in the device back end violates a requirement is not decided by the text.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,156 @@
+HPE Cray Compiling Environment (CCE) 21.0.3
+===========================================
+
+
+Purpose:
+--------
+CCE 21.0.3 provides Fortran, C, and C++ compilers for
+HPE Cray supercomputer and HPE Apollo 2000 Gen10Plus systems.
+
+
+Key Changes and Support with CCE 21.0.3:
+----------------------------------------
+
+CCE 21.0.3:
+-----------
+ - LLVM 21 base (merges up to Dec 12, 2025 - LLVM version 21.1.8)
+ - Support for Clang extensions for AMD GPU floating-point atomics:
+   https://clang.llvm.org/docs/LanguageExtensions.html#extensions-for-controlling-atomic-code-generation
+ - Added or extended support for the following OpenMP features:
+   [6.0]
+   - groupprivate directive
+   - Fortran: workdistribute construct
+   - Fortran: automap modifier for declare target
+   - local clause for declare target
+   - variable-category modifier for default clause
+   [5.2]
+   - extended declare mapper to support iterators and present modifier
+   - support omp_initial_device and omp_invalid_device identifiers
+   - Fortran: doacross clause for stand-alone ordered directive
+   - Fortran: new linear clause syntax
+ - ROCm 7.0
+ - NVIDIA SDK 25.09
+ - Enhanced DWARF Support
+ - Functional support for low-precision floating point (FP16 and BFloat16) for C, C++, and Fortran.
+
+
+
+User and Application Impact:
+----------------------------
+
+CCE 21.0.3:
+-----------
+ - The "fast address" GPU optimization has been disabled at default
+   (equivalent to "-hacc_model=no_fast_addr").  This optimization
+   attempts to use 32-bit integers for GPU array index calculations
+   to improve performance, but it can result in incorrect behavior
+   if 32-bit precision is insufficient for large arrays.  The
+   optimization can be explicitly re-enabled with "-hacc_model=fast_addr".
+ - The "craycc" and "crayCC" compiler drivers now bypass the Cray PE
+   driver and invoke CCE's "clang" driver directly.  As a result, Cray
+   PE driver flags are no longer accepted by "craycc" and "crayCC".
+   This behavior now matches the "crayftn" driver, which was changed
+   to bypass the Cray PE driver in CCE 20.
+ - LLVM backends for unsupported targets have been removed.  CCE now
+   only provides LLVM backends for supported CPU and GPU targets (X86,
+   AArch64, NVPTX, and AMDGPU).
+ - Support for the AMD GPU gfx940 target has been removed.
+
+
+
+Issues or Bugs Resolved:
+------------------------
+CCE 21.0.3:
+-----------
+CAST-39292     CCE/20.0.x compiler bug on GSL (GNU Scientific Library)
+CAST-39199     Error with a combined SAVE + a DO loop + a BLOCK construct containing an ALLOCATABLE declaration-construct
+CAST-39134     integer(8) displaying 32-bit overflow related error with CCE compiler in rush_larsen_gpu_omp_fort benchmark
+CAST-39116     CPE/25.09 mpif90/f77/fort and crayftn mis-handling `-shared` flag
+CAST-38893     AFW ESMF segfault when compiling with CCE/20.0.0
+CAST-38866     CCE 20 fortran link time increase compared to CCE 19
+CAST-38817     Thornado linking error with CCE/20.0.0
+CAST-38802     Cray Fortran compiler in cce/19.0.0 and cce/18.x is failing to compile a code that is correct and was compilable with cce/16.x and cce/17.x
+CAST-38782     CCE 20 Incorrect Error ftn-1195 with a Particular ENUM Value and ISO_C_BINDING
+CAST-38775     crayftn error on unlimited polymorphic assumed rank argument
+CAST-38750     User reports issues with CCE fortran "do concurrent"
+CAST-38682     Thornado linking error with CCE/20.0.0
+CAST-38461     OpenMP collapse leads to out of bound access
+CAST-38329     CCE 19 Ftn gives incorrect results with O2 or O3
+CAST-38228     CCE 19 ftn gives extraneous warning with -h omp
+CAST-38206     Cray Fortran - OpenMP private variable is being shared
+CAST-38117     ftn -h sanitize=thread has false positives
+CAST-38097     Woosley Heger problem cannot compile/run with cce later than 16.0.1
+CAST-38089     CCE19: OpenMP producing wrong answer in ComputeRadialMomentsKernel in GenASiS
+CAST-37847     The ftn sanitize option has problems and false positives
+CAST-37719     Cray Fortran compiler mishandling use of intrinsic within specification expressions
+CAST-37200     Arrays of abstract data types (DV SM==0)
+CAST-37071     CCE Fortran Internal error in THATMPI PIC codes
+CAST-36536     llc error linking dyna3d target openmp with cce 18 ftn on rzadams
+CAST-36339     Issue with the OpenACC kernels construct
+CAST-36177     HPE Cray EX Supercomputer - Base System CodeOpenACC compile time error "Invalid accelerator routine parallelism"
+CAST-35380     CCE 17.0.0 Fortran compiler fails four Smart-Pointers tests
+CAST-35015     Global PARAMETER arrays not working with OpenACC
+CAST-34641     Issue with ftn/OpenACC
+CAST-33343     Crayftn Unlimited Polymorphic Assumed Rank Argument
+CAST-33162     ftn compiler internal error on openmp target loop setting pointer to null
+CAST-32041     OpenACC + OpenMP kernel optimization/serialization issue
+CAST-31462     OpenACC exit data delete failure
+CAST-31407     OpenMP offloading: poor performance of reduction for array elements
+CAST-30651     Unable to use runtime variable in openmp thread_limit(var) clause
+CAST-30331     Weak alias fails with CCE 13/14 C + OpenMP
+CAST-30276     OpenMP atomic directive inside loop region
+
+
+Product and OS Dependencies:
+----------------------------
+This CCE release is supported on
+- HPE Cray supercomputer systems running CSM with COS 2.5.X (SLES15 SP4) or COS 23.11 (SLES15 SP5)
+- HPE Cray supercomputer systems running HPCM with COS 2.5.X (SLES15 SP4) or COS 23.11 (SLES15 SP5)
+- HPE Cray supercomputer systems running HPCM with RHEL 8.10
+- HPE Apollo 2000 Gen10Plus systems running RHEL 8.9
+- AMD GPU offloading support requires at least ROCm 7.0 (ROCm 6.x is no longer supported)
+
+
+
+Notes and Limitations:
+----------------------
+
+
+Documentation:
+--------------
+- S-5212 Cray Compiling Environment Release Overview (21.0)
+- S-3901 Cray Fortran Reference Manual
+- S-2179 Cray C and C++ Quick Reference
+- Basic man pages: crayftn(1), craycc(1), crayCC(1), intro_openmp(7), intro_openacc(7)
+- Please see https://clang.llvm.org/docs/UsersManual.html or use the -help command line option for 
+  more information on using Clang
+
+
+Modulefile:
+-----------
+The following will load the modules necessary to use CCE:
+module load PrgEnv-cray
+
+The following will switch to x.y.z version of CCE:
+module swap cce cce/x.y.z
+
+
+Installation instructions:
+--------------------------
+rpm -ivh cce-21.0.3-202607141701.03f45ce3d0ede-0.el8.x86_64.rpm
+
+The following script will set CCE version 21.0.3 default:
+/opt/cray/pe/admin-pe/set_default_files/set_default_cce_21.0.3
+
+
+License:
+--------
+Except for the third party components and software licensed by HPE through
+proprietary agreements, components, files or programs contained within this
+package or product are Copyright -2025 Hewlett Packard Enterprise Development LP.
+
+
+Attribution notices for open source licensed software for this 
+package are detailed in the file:
+
+/opt/cray/pe/cce/21.0.3/ATTRIBUTIONS_21.0.txt

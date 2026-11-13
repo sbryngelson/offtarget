@@ -1,0 +1,177 @@
+# Hand derivations of catalog programs' expected results.
+#
+# Each entry derives, from the spec text alone (section and page of the
+# program's own version), the values a conforming execution of the program
+# produces and shows that its check accepts them (value check=pass) or that
+# the run must end in runtime error termination (value error_termination).
+# offload.engine.gen writes the text into the program header as
+# `! derivation (<value>): <text>` (legal programs only; the header is not
+# part of the audited body, offload.engine.mutate.body_sha); tools/derive/expected.py
+# reads it as the `derivation` source (offload.engine.expected.
+# derivation_evidence), which counts next to the program's own oracle (the
+# brief: "an independent hand-derived expected value with the derivation
+# written in the program header"). A derivation is written by reading the
+# program as generated, not the generator's check code, and states every
+# assumption that is not a spec guarantee. Programs whose expected value
+# the spec does not fix (it depends on the memory mode or on an
+# implementation-defined resource; the relaxed
+# induction forms, whose new list item at the start of a chunk the text
+# does not fix) have no entry, and no entry may rest on a ruling of this
+# project (tests/engine/test_gen.py); data/reports/
+# triage-2026-10.md lists them.
+#
+# Keys: atom, versions, value, text (one line; {cite:<key>} is replaced by
+# the version's entry in `cites`).
+cites:
+  linear: {50: "5.0 §2.19.4.6 p.292", 52: "5.2 §5.4.6 p.118", 60: "6.0 §7.5.6 p.233"}
+  declare_simd: {50: "5.0 §2.9.3.3 p.116", 52: "5.2 §7.7 p.202", 60: "6.0 §9.8 p.341"}
+  scan: {50: "5.0 §2.9.6 p.132", 52: "5.2 §5.6 p.141", 60: "6.0 §7.7 p.266"}
+  allocate: {50: "5.0 §2.11.4 p.159", 52: "5.2 §6.6 p.179", 60: "6.0 §8.6 p.314"}
+  ancestor: {50: "5.0 §2.12.5 p.174", 52: "5.2 §13.2 p.276 and §8.2.1 p.212", 60: "6.0 §15.2 p.451 and §10.5.1.3 p.359"}
+  nohost: {52: "5.2 §13.1 p.275", 60: "6.0 §15.1 p.450"}
+  iterator: {52: "5.2 §3.2.6 p.67", 60: "6.0 §5.2.6 p.169"}
+  update: {50: "5.0 §2.12.6 p.176", 52: "5.2 §13.9 p.289", 60: "6.0 §15.9 p.465"}
+  use_device_ptr: {52: "5.2 §5.4.8 p.121", 60: "6.0 §7.5.8 p.236"}
+  is_device_ptr: {52: "5.2 §5.4.7 p.120", 60: "6.0 §7.5.7 p.235"}
+  map: {50: "5.0 §2.19.7.1 p.315", 52: "5.2 §5.8.3 p.152", 60: "6.0 §7.9.6 p.283"}
+  mapper: {50: "5.0 §2.19.7.3 p.326", 52: "5.2 §5.8.8 p.163 (Table 5.3)", 60: "6.0 §7.9.2 p.276 (Table 7.5) and §7.9.10 p.293"}
+  task_default: {50: "5.0 §2.19.1.1 p.273 and §2.19.4.1 p.283", 52: "5.2 §5.1.1 p.100 and §5.4.1 p.109", 60: "6.0 §7.1.1 p.211 and §7.5.1 p.223"}
+  has_device_addr: {52: "5.2 §5.4.9 p.123 and §5.4.10 p.123", 60: "6.0 §7.5.9 p.237 and §7.5.10 p.238"}
+  schedule: {50: "5.0 §2.9.2 pp.103-104", 52: "5.2 §11.5.3 p.252", 60: "6.0 §13.6.3 p.418 and Glossary 'chunk' p.31"}
+  dist_schedule: {50: "5.0 §2.9.4.1 pp.121-122 and §2.9.2 p.103 ('chunks')", 52: "5.2 §11.6.1 p.256", 60: "6.0 §13.7.1 p.422 and Glossary 'chunk' p.31"}
+  num_teams: {50: "5.0 §2.7 p.83", 52: "5.2 §10.2.1 p.233", 60: "6.0 §12.2.1 p.397"}
+  loop_bind: {50: "5.0 §2.9.5 pp.129-130", 52: "5.2 §11.7 p.257 and §11.7.1 p.258", 60: "6.0 §13.8 p.423 and §13.8.1 p.424"}
+  character: {50: "5.0 §1.2.6 p.12", 52: "5.2 §1.2.6 p.14 and §5.8.1 p.148", 60: "6.0 Glossary p.94 and §7.9.3 p.276"}
+entries:
+  - atom: omp.clause.linear
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "linear(x: 1) on the parallel do ({cite:linear}): on the logical iteration of i (number i - 1) the new x is the original x (3) plus (i - 1)*1, so x - (i + 2) = 0 and b(i) = 2*a(i) + 1 = 2*i + 1 = ref(i); the body's x = x + 1 keeps x on that sequence, and the value of the sequentially last iteration, taken as the new x at the end of that iteration (3 + n after its increment, as the OpenMP Examples' linear programs assume), is assigned to the original x, which the target maps tofrom: x = 1*n + 3; the check accepts"
+  - atom: omp.clause.linear.val
+    versions: [52, 60]
+    value: check=pass
+    text: "linear(x: val, step(1)) ({cite:linear}): for a variable that is not a reference the val modifier is the default value semantics, so as without it: the new x on the iteration of i is 3 + (i - 1), b(i) = 2*i + 1 = ref(i), and the sequentially last iteration's value 3 + n is assigned to x (mapped tofrom): x = 1*n + 3; the check accepts"
+  - atom: omp.clause.linear.step
+    versions: [52, 60]
+    value: check=pass
+    text: "linear(x: step(2)) ({cite:linear}): the new x on the iteration of i is 3 + 2*(i - 1) = 2*i + 1, so x - (2*i + 1) = 0 and b(i) = 2*i + 1 = ref(i); the body adds the step, and the sequentially last iteration's value 3 + 2*n is assigned to x (mapped tofrom): x = 2*n + 3; the check accepts"
+  - atom: omp.clause.linear.step_simple_modifier
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "linear(x: 2), the step written as a simple modifier ({cite:linear}): the new x on the iteration of i is 3 + 2*(i - 1) = 2*i + 1, so b(i) = 2*i + 1 = ref(i); the sequentially last iteration's value 3 + 2*n is assigned to x (mapped tofrom): x = 2*n + 3; the check accepts"
+  - atom: omp.clause.linear.ref
+    versions: [50, 52]
+    value: check=pass
+    text: "the linear clause is on the declare simd directive of lf ({cite:declare_simd}, {cite:linear}): it describes the arguments of lf's SIMD versions; the target region calls lf from a sequential loop, where lf(x) returns 2*x(1) + 1 (2*x + 1 in the 5.0 form), so b(i) = 2*a(i) + 1 = ref(i) whichever version runs; the check accepts"
+  - atom: omp.clause.linear.uval
+    versions: [52]
+    value: check=pass
+    text: "the linear(x: uval) clause is on the declare simd directive of lf ({cite:declare_simd}, {cite:linear}): it describes lf's SIMD versions; the target region calls lf from a sequential loop and lf(x) returns 2*x + 1, so b(i) = 2*a(i) + 1 = ref(i); the check accepts"
+  - atom: omp.clause.reduction.inscan
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "reduction(inscan, +: s) with scan inclusive(s) ({cite:scan}): the statement before the scan directive is the input phase, the one after it the scan phase, which sees the sum of the updates of every iteration up to and including its own; s starts at 0, so b(i) = a(1) + ... + a(i) = i*(i + 1)/2 = ref(i); the check accepts"
+  - atom: omp.clause.allocate
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "allocate(t) with private(t) on the parallel do in a target region, allowed without an allocator because the unit has requires dynamic_allocators ({cite:allocate}): t is each thread's private copy, allocated with the default allocator; each iteration sets t = 2*a(i) before b(i) = t + 1, so b(i) = 2*i + 1 = ref(i); the check reads b only and accepts"
+  - atom: omp.clause.device.ancestor
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "the nested target device(ancestor: 1) firstprivate(t) runs on the parent device of the enclosing target region (requires reverse_offload, {cite:ancestor}) and changes only its private t; the enclosing region computes b(i) = 2*a(i) + 1 on the device and b is mapped from, so b = ref; the check reads b only and accepts"
+  - atom: omp.clause.device_type.nohost
+    versions: [52]
+    value: check=pass
+    text: "declare target to(f) device_type(nohost) makes only a non-host version of f available ({cite:nohost}); f is called only inside the target region, where f(x) = 2*x + 1, so b(i) = 2*a(i) + 1 = ref(i) (b mapped from); the check accepts"
+  - atom: omp.clause.from.iterator
+    versions: [52, 60]
+    value: check=pass
+    text: "target enter data maps a (to) and b (alloc); the host adds 10 to a and target update to(a) copies it ({cite:update}), so the device's a(i) = i + 10 and the target region writes b(i) = 2*(i + 10) + 1 on the device; target update from(iterator(k = 1:1): b(k:n)) expands to from(b(1:n)) ({cite:iterator}), so the host's b is the device's: b = ref = 2*(i + 10) + 1; the check accepts"
+  - atom: omp.clause.to.iterator
+    versions: [52, 60]
+    value: check=pass
+    text: "target enter data maps a (to) and b (alloc); the host adds 10 to a and target update to(iterator(k = 1:1): a(k:n)) expands to to(a(1:n)) ({cite:iterator}, {cite:update}), so the device's a(i) = i + 10; the target region writes b(i) = 2*(i + 10) + 1 and target update from(b) copies it back: b = ref; the check accepts"
+  - atom: omp.clause.use_device_ptr
+    versions: [52]
+    value: check=pass
+    text: "target data maps a (to) and b (from); use_device_ptr(pa, pb) makes pa and pb the device addresses of a and b inside the construct ({cite:use_device_ptr}); the nested target has is_device_ptr(pa, pb) ({cite:is_device_ptr}), so pp and qq (c_f_pointer) alias the device copies and qq(i) = 2*pp(i) + 1 writes the device's b; the end of target data copies b back: b = ref; the check accepts"
+  - atom: omp.clause.is_device_ptr
+    versions: [52]
+    value: check=pass
+    text: "target data maps a (to) and b (from); use_device_ptr(pa, pb) makes pa and pb the device addresses of a and b ({cite:use_device_ptr}); the nested target has is_device_ptr(pa, pb), so they are used as device pointers there ({cite:is_device_ptr}) and qq(i) = 2*pp(i) + 1 writes the device's b; the end of target data copies b back: b = ref; the check accepts"
+  - atom: omp.clause.map.iterator
+    versions: [52, 60]
+    value: check=pass
+    text: "map(iterator(k = 1:1), to: w(k + 1:n/2)) expands to map(to: w(2:n/2)) ({cite:iterator}, {cite:map}): until the exit data, w(2) and w(n/2) are present and w(1) and w(n/2 + 1) are not, which the copy-mode-only presence checks assert (skipped when host and device share storage); the target region writes b(i) = 2*a(i) + 1 (b mapped from): b = ref; the check accepts in both memory modes"
+  - atom: omp.clause.map.mapper
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "mapper mm maps q%v with map type to; map(mapper(mm), tofrom: s) applies it with the decayed map type: mapper to with clause tofrom gives to ({cite:mapper}); so s%v (1) is copied to the device and not back: the device writes b(i) = 2*a(i) + s%v = 2*i + 1 = ref(i), then s%v = 7 on the device only; in copy mode the host's s%v stays 1 (the copy-mode-only check), under shared storage that check is skipped; the check accepts"
+  - atom: omp.clause.map.present
+    versions: [52, 60]
+    value: error_termination
+    text: "the first target region maps a (to) and removes it at its end (reference count 0); the second target region has map(present, to: a), and on entry a is not present in the device data environment, so runtime error termination is performed ({cite:map}: 'If a map clause with a present map-type-modifier appears on a construct and on entry to the region the corresponding list item is not present in the device data environment, runtime error termination is performed'); the program never reaches continued = .true."
+  - atom: omp.clause.default.shared
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "in the parallel region c is private (c = 7 per thread); the task has default(shared), so c in the task is shared, i.e. the generating implicit task's private c ({cite:task_default}); the task sets c = 42 and taskwait waits for it, so thread 0 sets r = 42 (r mapped from); b(i) = 2*a(i) + 1 on the device; the check accepts"
+  - atom: omp.clause.has_device_addr
+    versions: [52, 60]
+    value: check=pass
+    text: "target data maps a (to) and b (from) with use_device_addr(a, b): inside it a and b refer to their device storage, whose addresses differ from the host's in copy mode (the copy-mode-only checks); the nested target has has_device_addr(a, b), so it accesses that device storage directly ({cite:has_device_addr}) and writes b(i) = 2*a(i) + 1 there; the end of target data copies b back: b = ref; the check accepts"
+  - atom: omp.clause.defaultmap.private
+    versions: [60]
+    value: check=pass
+    text: "defaultmap(private) makes c and w private in the target region (6.0 §7.9.9 p.291; a and b keep their explicit maps); the region sets c = 1 and w(i) = 2*a(i) before reading them, so b(i) = w(i) + c = 2*i + 1 on the device and b is mapped from: b = ref; the check accepts"
+  - atom: omp.clause.firstprivate.saved
+    versions: [60]
+    value: check=pass
+    text: "the saved modifier affects only replay executions of a replayable construct (6.0 §7.2 p.215: 'The saved modifier has no effect if' the construct is not replayable), and nothing here is replayable, so firstprivate(saved: c) is firstprivate(c) (6.0 §7.5.4 p.227): every thread's c starts at the original 1 and grows by 100 per iteration it runs, so mod(c, 100) = 1 and b(i) = 2*i + 1 = ref(i); the original c (mapped tofrom) is not changed: c = 1; the check accepts"
+  - atom: omp.clause.induction.strict
+    versions: [60]
+    value: check=pass
+    text: "induction(step(1), strict, +: x): with strict the new x at the beginning of each iteration is the closed form 3 + (i - 1) and the original x gets the inductor applied to the last iteration's value, 3 + n (6.0 §7.6.13 p.258, §7.6.4 p.246); so b(i) = 2*i + 1 = ref(i) and x = n + 3 (mapped tofrom); the check accepts"
+  - atom: omp.clause.local
+    versions: [60]
+    value: check=pass
+    text: "declare_target local(dv) makes dv device-local: static storage duration, visible only to tasks on that device (6.0 Glossary p.44, §7.14 p.303, §7.1.1 p.211); the first target region sets the device's dv = 5, and the second, on the same device, reads that storage: b(i) = 2*a(i) + 5 - 4 = 2*i + 1 = ref(i) (b mapped from); the check accepts"
+  - atom: omp.directive.teams_workdistribute
+    versions: [60]
+    value: check=pass
+    text: "on_dev is a declare_target variable: the first target region sets the device's copy to 1, and it keeps its value on the device; teams workdistribute divides the array assignment b = 2*a + on_dev into units of work each executed once (6.0 §13.5 p.412), so b(i) = 2*i + 1 on the device, mapped from: b = ref; the check accepts"
+  - atom: omp.directive.target_teams_workdistribute
+    versions: [60]
+    value: check=pass
+    text: "on_dev is a declare_target variable: the first target region sets the device's copy to 1, and it keeps its value on the device; target teams workdistribute divides the array assignment b = 2*a + on_dev into units of work each executed once (6.0 §13.5 p.412), so b(i) = 2*i + 1 on the device, mapped from: b = ref; the check accepts"
+  - atom: omp.clause.dist_schedule
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "num_teams(4) creates at most 4 teams (exactly 4 from 5.1, {cite:num_teams}); dist_schedule(static) without a chunk size divides the 64 iterations into contiguous non-empty chunks, at most one per initial team ({cite:dist_schedule}), so every iteration runs on one team, team(i) is a team number 0 .. nt - 1 and each team's iterations are one contiguous run, the two things dok tests (it tests no chunk size); nt >= 1 and b = ref; the check accepts"
+  - atom: omp.clause.dist_schedule.static
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "num_teams(4) creates at most 4 teams (exactly 4 from 5.1, {cite:num_teams}); dist_schedule(static) without a chunk size divides the 64 iterations into contiguous non-empty chunks, at most one per initial team ({cite:dist_schedule}), so every iteration runs on one team, team(i) is a team number 0 .. nt - 1 and each team's iterations are one contiguous run, the two things dok tests (it tests no chunk size); nt >= 1 and b = ref; the check accepts"
+  - atom: omp.clause.dist_schedule.chunk_size
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "dist_schedule(static, 4): chunks of 4 iterations assigned to the initial teams round-robin in team-number order ({cite:dist_schedule}), so iteration i runs on team mod((i - 1)/4, nt), which dok tests; nt >= 1 and b = ref; the check accepts"
+  - atom: omp.clause.schedule
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "schedule(static) without a chunk size divides the 1000 iterations into contiguous non-empty chunks, at most one per thread ({cite:schedule}), so every iteration runs on one thread of the team, tid(i) is a thread number 0 .. nthr - 1 and each thread's iterations are one contiguous run, the two things sok tests (it tests no chunk size); nthr >= 1 (omp_get_num_threads) and b = ref; the check accepts"
+  - atom: omp.clause.schedule.static
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "schedule(static) without a chunk size divides the 1000 iterations into contiguous non-empty chunks, at most one per thread ({cite:schedule}), so every iteration runs on one thread of the team, tid(i) is a thread number 0 .. nthr - 1 and each thread's iterations are one contiguous run, the two things sok tests (it tests no chunk size); nthr >= 1 (omp_get_num_threads) and b = ref; the check accepts"
+  - atom: omp.clause.schedule.chunk_size
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "schedule(static, 4): chunks of 4 iterations assigned to the threads round-robin in thread-number order ({cite:schedule}), so iteration i runs on thread mod((i - 1)/4, nthr), which sok tests; nthr >= 1 and b = ref; the check accepts"
+  - atom: omp.clause.bind.thread
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "loop bind(thread) in a parallel region: the binding thread set is the encountering thread, and each logical iteration is executed once per loop region by exactly one thread of that set ({cite:loop_bind}), so every thread runs all 64 iterations and writes hit(i, tid + 1) once each (distinct elements, so the concurrent iterations do not race): tot(t) = 64 for every thread; the team size is implementation defined and only threads 0 .. 1023 record (hit has 1024 columns), so all(tot(1:min(nthr, 1024)) == n) holds for any team size, and nthr >= 1; thread 0 writes b = ref; the check accepts"
+  - atom: omp.clause.defaultmap.character
+    versions: [50, 52, 60]
+    value: check=pass
+    text: "for Fortran a scalar variable excludes character type and a character variable is an aggregate ({cite:character}), so with no defaultmap clause ch and s are mapped tofrom and the device's ch = 'b', s = 'wxyz' come back, while the integer scalar k is firstprivate and the host's k stays 1; b = ref; the check (ch == 'b', s == 'wxyz', k == 1) accepts"

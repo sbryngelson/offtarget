@@ -1,0 +1,3334 @@
+[
+ {
+  "id": "site-catalog--cce-nohost-link",
+  "finding": "catalog/cce-nohost-link.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/catalog/cce-nohost-link.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nvhpc-c-ordered-in-target-nvcpfe-crash",
+  "finding": "nvhpc-c-ordered-in-target-nvcpfe-crash.c",
+  "symptom": "compile:.",
+  "expect": "out:RESULT ran_on_host=0 check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/nvhpc-c-ordered-in-target-nvcpfe-crash.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-cce19-c-reduction-63-scalars-one-wrong",
+  "finding": "cce19-c-reduction-63-scalars-one-wrong.c",
+  "symptom": "wrong",
+  "expect": "out:bad= 0",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "cce19"
+  ],
+  "repro": "../../findings/cce19-c-reduction-63-scalars-one-wrong.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-cce-acc-reduction-200-int8-scalars-wrong",
+  "finding": "cce-acc-reduction-200-int8-scalars-wrong.f90",
+  "symptom": "wrong",
+  "expect": "out:bad= 0",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/cce-acc-reduction-200-int8-scalars-wrong.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-cce21-alloc-2e32-sum-wrong",
+  "finding": "cce21-alloc-2e32-sum-wrong.f90",
+  "symptom": "wrong",
+  "expect": "out:s= 2164663527981",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/cce21-alloc-2e32-sum-wrong.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-cce21-in-reduction-assumed-shape-write-lost",
+  "finding": "cce21-in-reduction-assumed-shape-write-lost.f90",
+  "symptom": "wrong",
+  "expect": "out:r= 3 y(16)= 32",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/cce21-in-reduction-assumed-shape-write-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-dataenv--cce-value-dummy-target-write-visible",
+  "finding": "dataenv/cce-value-dummy-target-write-visible.f90",
+  "symptom": "wrong",
+  "expect": "out:rd= 5 vout= 101 dev= 1",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/dataenv/cce-value-dummy-target-write-visible.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-afar-c-teams-distribute-reduction-first-team",
+  "finding": "afar-c-teams-distribute-reduction-first-team.c",
+  "symptom": "wrong",
+  "expect": "out:l= 83200 dev= 1",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "afar"
+  ],
+  "repro": "../../findings/afar-c-teams-distribute-reduction-first-team.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-afar-c-lastprivate-distribute-parallel-for-small-type",
+  "finding": "afar-c-lastprivate-distribute-parallel-for-small-type.c",
+  "symptom": "wrong",
+  "expect": "out:lp= 192 dev= 1",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "afar"
+  ],
+  "repro": "../../findings/afar-c-lastprivate-distribute-parallel-for-small-type.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce-named-constant-array-declare-target-routine-rejected",
+  "finding": "harvest/cce-named-constant-array-declare-target-routine-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce-named-constant-array-declare-target-routine-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--nvhpc-named-constant-array-declare-target-routine-rejected",
+  "finding": "harvest/nvhpc-named-constant-array-declare-target-routine-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/harvest/nvhpc-named-constant-array-declare-target-routine-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--nvhpc-c-target-data-if-false-use-device-ptr-garbage",
+  "finding": "harvest/nvhpc-c-target-data-if-false-use-device-ptr-garbage.c",
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/harvest/nvhpc-c-target-data-if-false-use-device-ptr-garbage.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--nvhpc-use-device-ptr-c-ptr-not-found",
+  "finding": "harvest/nvhpc-use-device-ptr-c-ptr-not-found.f90",
+  "symptom": "crash:",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/harvest/nvhpc-use-device-ptr-c-ptr-not-found.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce-use-device-ptr-c-ptr-not-converted",
+  "finding": "harvest/cce-use-device-ptr-c-ptr-not-converted.f90",
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce-use-device-ptr-c-ptr-not-converted.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--nvhpc2511-target-nowait-in-parallel-for-ice",
+  "finding": "harvest/nvhpc2511-target-nowait-in-parallel-for-ice.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "nvhpc"
+  ],
+  "repro": "../../findings/harvest/nvhpc2511-target-nowait-in-parallel-for-ice.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce-acc-declare-create-module-allocatable-xnack1-fault",
+  "finding": "harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90",
+  "symptom": "crash:",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce-c-strided-target-update",
+  "finding": "harvest/cce-c-strided-target-update.c",
+  "symptom": "wrong",
+  "expect": "out:a: 10 1 12 3 14 5 16 7",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce-c-strided-target-update.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--afar-flang-strided-target-update",
+  "finding": "harvest/afar-flang-strided-target-update.f90",
+  "symptom": "wrong",
+  "expect": "out:a:  11.0   2.0  13.0   4.0  15.0   6.0  17.0   8.0",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar"
+  ],
+  "repro": "../../findings/harvest/afar-flang-strided-target-update.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce-ftn-target-parallel-thread-query-ice",
+  "finding": "harvest/cce-ftn-target-parallel-thread-query-ice.f90",
+  "symptom": "compile:.",
+  "expect": "out:x= ",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce-ftn-target-parallel-thread-query-ice.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce-c-implicit-struct-map-partly-present",
+  "finding": "harvest/cce-c-implicit-struct-map-partly-present.c",
+  "symptom": "crash:",
+  "expect": "out:4 202 dev= 1",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce-c-implicit-struct-map-partly-present.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce21-declare-target-link-module-variable-write-lost",
+  "finding": "harvest/cce21-declare-target-link-module-variable-write-lost.f90",
+  "symptom": "wrong",
+  "expect": "out:v= 1 dev= T",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce21-declare-target-link-module-variable-write-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--cce21-internal-procedure-calls-internal-in-target-fault",
+  "finding": "harvest/cce21-internal-procedure-calls-internal-in-target-fault.f90",
+  "symptom": "crash:",
+  "expect": "out:r= 43 44 a= 6 7 dev= T",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/harvest/cce21-internal-procedure-calls-internal-in-target-fault.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-c-target-in-task-mandatory-device-not-found",
+  "finding": "gcc/gcc-c-target-in-task-mandatory-device-not-found.c",
+  "symptom": "crash:",
+  "expect": "out:bad= 0",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-c-target-in-task-mandatory-device-not-found.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-target-in-task-mandatory-device-not-found",
+  "finding": "gcc/gcc-target-in-task-mandatory-device-not-found.f90",
+  "symptom": "crash:",
+  "expect": "out:bad= 0",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-target-in-task-mandatory-device-not-found.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-defaultmap-to-pointer-copy-back",
+  "finding": "gcc/gcc-defaultmap-to-pointer-copy-back.f90",
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-defaultmap-to-pointer-copy-back.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-detach-delete-attach-underflow",
+  "finding": "gcc/gcc-acc-detach-delete-attach-underflow.f90",
+  "symptom": "crash:",
+  "expect": "out:sum= 2144",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-detach-delete-attach-underflow.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-c-detach-delete-attach-underflow",
+  "finding": "gcc/gcc-acc-c-detach-delete-attach-underflow.c",
+  "symptom": "crash:",
+  "expect": "out:sum= 2144",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-c-detach-delete-attach-underflow.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-c-omp60-unimplemented-rejected",
+  "finding": "gcc/gcc-c-omp60-unimplemented-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-c-omp60-unimplemented-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-omp60-unimplemented-rejected",
+  "finding": "gcc/gcc-omp60-unimplemented-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-omp60-unimplemented-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-c-omp60-undocumented-rejected",
+  "finding": "gcc/gcc-c-omp60-undocumented-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-c-omp60-undocumented-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-omp60-undocumented-rejected",
+  "finding": "gcc/gcc-omp60-undocumented-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-omp60-undocumented-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-c-uses-allocators-traits-unimplemented",
+  "finding": "gcc/gcc-c-uses-allocators-traits-unimplemented.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-c-uses-allocators-traits-unimplemented.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-uses-allocators-traits-unimplemented",
+  "finding": "gcc/gcc-uses-allocators-traits-unimplemented.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-uses-allocators-traits-unimplemented.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-declare-mapper-rejected",
+  "finding": "gcc/gcc-declare-mapper-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-declare-mapper-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-c-motion-mapper-rejected",
+  "finding": "gcc/gcc-c-motion-mapper-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-c-motion-mapper-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-loop-bind-default-none-rejected",
+  "finding": "gcc/gcc-loop-bind-default-none-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-loop-bind-default-none-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-init-set-shutdown-rejected",
+  "finding": "gcc/gcc-acc-init-set-shutdown-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-init-set-shutdown-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-bind-device-type-rejected",
+  "finding": "gcc/gcc-acc-bind-device-type-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-bind-device-type-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-c-bind-device-type-rejected",
+  "finding": "gcc/gcc-acc-c-bind-device-type-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-c-bind-device-type-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-link-in-routine-rejected",
+  "finding": "gcc/gcc-acc-link-in-routine-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-link-in-routine-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-c-link-in-routine-rejected",
+  "finding": "gcc/gcc-acc-c-link-in-routine-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-c-link-in-routine-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-use-device-allocatable-rejected",
+  "finding": "gcc/gcc-acc-use-device-allocatable-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-use-device-allocatable-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-gang-dim-collapse-force-rejected",
+  "finding": "gcc/gcc-acc-gang-dim-collapse-force-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-gang-dim-collapse-force-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-gcc--gcc-acc-c-gang-dim-rejected",
+  "finding": "gcc/gcc-acc-c-gang-dim-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/gcc/gcc-acc-c-gang-dim-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--gcc-c-strided-section-rejected",
+  "finding": "harvest/gcc-c-strided-section-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/harvest/gcc-c-strided-section-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--gcc-c-target-data-two-maps-ice",
+  "finding": "harvest/gcc-c-target-data-two-maps-ice.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/harvest/gcc-c-target-data-two-maps-ice.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--gcc-c-target-data-struct-pointer-section-ice",
+  "finding": "harvest/gcc-c-target-data-struct-pointer-section-ice.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/harvest/gcc-c-target-data-struct-pointer-section-ice.c",
+  "derived": true,
+  "control": "../../findings/harvest/controls/gcc-c-target-data-struct-pointer-section-control.c",
+  "control_what": "the pointer member listed before its array section",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--gcc-teams-simd-matmul-allocatable-ice",
+  "finding": "harvest/gcc-teams-simd-matmul-allocatable-ice.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/harvest/gcc-teams-simd-matmul-allocatable-ice.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--gcc-c-same-item-two-maps-rejected",
+  "finding": "harvest/gcc-c-same-item-two-maps-rejected.c",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/harvest/gcc-c-same-item-two-maps-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--gcc-same-item-two-maps-rejected",
+  "finding": "harvest/gcc-same-item-two-maps-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/harvest/gcc-same-item-two-maps-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-harvest--gcc-acc-declare-create-allocatable-not-mapped",
+  "finding": "harvest/gcc-acc-declare-create-allocatable-not-mapped.f90",
+  "symptom": "crash:",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/harvest/gcc-acc-declare-create-allocatable-not-mapped.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-stress--gcc-declare-target-allocatable-component-ice",
+  "finding": "stress/gcc-declare-target-allocatable-component-ice.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/stress/gcc-declare-target-allocatable-component-ice.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-apps--gcc-acc-c-tile-partial-tiles-wrong",
+  "finding": "apps/gcc-acc-c-tile-partial-tiles-wrong.c",
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/apps/gcc-acc-c-tile-partial-tiles-wrong.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-apps--gcc-acc-tile-partial-tiles-wrong",
+  "finding": "apps/gcc-acc-tile-partial-tiles-wrong.f90",
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/apps/gcc-acc-tile-partial-tiles-wrong.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-declare-reduction-module-not-found",
+  "finding": "fuzz/gcc-declare-reduction-module-not-found.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/fuzz/gcc-declare-reduction-module-not-found.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-strided-target-update-rejected",
+  "finding": "fuzz/gcc-strided-target-update-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/fuzz/gcc-strided-target-update-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-target-simd-map-nontemporal-rejected",
+  "finding": "fuzz/gcc-target-simd-map-nontemporal-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/fuzz/gcc-target-simd-map-nontemporal-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-select-type-guard-not-taken",
+  "finding": "oop/cce-select-type-guard-not-taken.f90",
+  "symptom": "wrong",
+  "expect": "out:r1= 10",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-select-type-guard-not-taken.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-polymorphic-dispatch-device-link",
+  "finding": "oop/cce-polymorphic-dispatch-device-link.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-polymorphic-dispatch-device-link.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-class-is-device-link",
+  "finding": "oop/cce-class-is-device-link.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-class-is-device-link.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-udr-derived-type-unsupported",
+  "finding": "oop/cce-udr-derived-type-unsupported.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-udr-derived-type-unsupported.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-pdt-default-mapper-rejected",
+  "finding": "oop/cce-pdt-default-mapper-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-pdt-default-mapper-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-copy-alloc-component-section-fault",
+  "finding": "oop/cce-copy-alloc-component-section-fault.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-copy-alloc-component-section-fault.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-copy-second-member-section-lost",
+  "finding": "oop/cce-copy-second-member-section-lost.f90",
+  "symptom": "wrong",
+  "expect": "out:r2= 36",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-copy-second-member-section-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-element-component-map-lost",
+  "finding": "oop/cce-element-component-map-lost.f90",
+  "symptom": "wrong",
+  "expect": "out:r1= 74",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20"
+  ],
+  "repro": "../../findings/oop/cce-element-component-map-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce21-element-component-map-lost",
+  "finding": "oop/cce21-element-component-map-lost.f90",
+  "symptom": "wrong",
+  "expect": "out:r1= 74",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce21-element-component-map-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-copy-parent-to-component-tofrom-lost",
+  "finding": "oop/cce-copy-parent-to-component-tofrom-lost.f90",
+  "symptom": "wrong",
+  "expect": "out:r1= 2528",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-copy-parent-to-component-tofrom-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-section-of-element-component-overlap",
+  "finding": "oop/cce-section-of-element-component-overlap.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-section-of-element-component-overlap.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--cce-final-dealloc-device-abort",
+  "finding": "oop/cce-final-dealloc-device-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/oop/cce-final-dealloc-device-abort.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--afar-pdt-length-parameter-not-implemented",
+  "finding": "oop/afar-pdt-length-parameter-not-implemented.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar"
+  ],
+  "repro": "../../findings/oop/afar-pdt-length-parameter-not-implemented.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--gcc-vtab-not-marked-for-offload",
+  "finding": "oop/gcc-vtab-not-marked-for-offload.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/oop/gcc-vtab-not-marked-for-offload.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--gcc-polymorphic-dispatch-abort",
+  "finding": "oop/gcc-polymorphic-dispatch-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/oop/gcc-polymorphic-dispatch-abort.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--gcc-pdt-length-parameter-abort",
+  "finding": "oop/gcc-pdt-length-parameter-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/oop/gcc-pdt-length-parameter-abort.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--gcc-acc-parent-and-member-data-rejected",
+  "finding": "oop/gcc-acc-parent-and-member-data-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/oop/gcc-acc-parent-and-member-data-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--afar-final-dealloc-device-link",
+  "finding": "oop/afar-final-dealloc-device-link.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar"
+  ],
+  "repro": "../../findings/oop/afar-final-dealloc-device-link.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--nvhpc-copy-alloc-component-illegal-address",
+  "finding": "oop/nvhpc-copy-alloc-component-illegal-address.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/oop/nvhpc-copy-alloc-component-illegal-address.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--nvhpc-copy-pdt-length-parameter-illegal-address",
+  "finding": "oop/nvhpc-copy-pdt-length-parameter-illegal-address.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/oop/nvhpc-copy-pdt-length-parameter-illegal-address.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--nvhpc-type-bound-call-rejected",
+  "finding": "oop/nvhpc-type-bound-call-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/oop/nvhpc-type-bound-call-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--nvhpc-polymorphism-runtime-unsupported",
+  "finding": "oop/nvhpc-polymorphism-runtime-unsupported.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/oop/nvhpc-polymorphism-runtime-unsupported.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--nvhpc-polymorphic-dispatch-translate-failure",
+  "finding": "oop/nvhpc-polymorphic-dispatch-translate-failure.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/oop/nvhpc-polymorphic-dispatch-translate-failure.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--nvhpc-udr-derived-type-rejected",
+  "finding": "oop/nvhpc-udr-derived-type-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/oop/nvhpc-udr-derived-type-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-oop--nvhpc-named-mapper-rejected",
+  "finding": "oop/nvhpc-named-mapper-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/oop/nvhpc-named-mapper-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-malloc--afar-device-malloc-in-kernel-corrupts-records",
+  "finding": "malloc/afar-device-malloc-in-kernel-corrupts-records.c",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "afar"
+  ],
+  "repro": "../../findings/malloc/afar-device-malloc-in-kernel-corrupts-records.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-depend-implicit-map-illegal-address",
+  "finding": "fuzz/nvhpc-depend-implicit-map-illegal-address.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-depend-implicit-map-illegal-address.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-num-threads-reduction-identity-lost",
+  "finding": "fuzz/nvhpc-num-threads-reduction-identity-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-num-threads-reduction-identity-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-target-parallel-firstprivate-translate-failure",
+  "finding": "fuzz/nvhpc-target-parallel-firstprivate-translate-failure.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-target-parallel-firstprivate-translate-failure.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-target-parallel-single-hang",
+  "finding": "fuzz/nvhpc-target-parallel-single-hang.f90",
+  "symptom": "runhang",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-target-parallel-single-hang.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-distribute-parallel-num-threads-writes-lost",
+  "finding": "fuzz/nvhpc-distribute-parallel-num-threads-writes-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-distribute-parallel-num-threads-writes-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-defaultmap-to-scalar-reduction-lost",
+  "finding": "fuzz/nvhpc-defaultmap-to-scalar-reduction-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-defaultmap-to-scalar-reduction-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-map-always-after-map-to-not-copied-back",
+  "finding": "fuzz/nvhpc-map-always-after-map-to-not-copied-back.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-map-always-after-map-to-not-copied-back.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-allocatable-component-implicit-map-illegal-address",
+  "finding": "fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-end-distribute-simd-rejected",
+  "finding": "fuzz/nvhpc-end-distribute-simd-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-end-distribute-simd-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-target-simd-collapse-translate-failure",
+  "finding": "fuzz/nvhpc-target-simd-collapse-translate-failure.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-target-simd-collapse-translate-failure.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-defaultmap-firstprivate-lastprivate-ice",
+  "finding": "fuzz/nvhpc-defaultmap-firstprivate-lastprivate-ice.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-defaultmap-firstprivate-lastprivate-ice.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-loop-character-achar-unsupported",
+  "finding": "fuzz/nvhpc-loop-character-achar-unsupported.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-loop-character-achar-unsupported.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-default-none-reduction-lastprivate-fort1-crash",
+  "finding": "fuzz/nvhpc-default-none-reduction-lastprivate-fort1-crash.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-default-none-reduction-lastprivate-fort1-crash.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-target-simd-no-end-directive-rejected",
+  "finding": "fuzz/nvhpc-target-simd-no-end-directive-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-target-simd-no-end-directive-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--nvhpc-assumed-length-character-dummy-map-ice",
+  "finding": "fuzz/nvhpc-assumed-length-character-dummy-map-ice.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "nvhpc"
+  ],
+  "repro": "../../findings/fuzz/nvhpc-assumed-length-character-dummy-map-ice.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--afar-cce-c-update-struct-and-member-rejected",
+  "finding": "nested/afar-cce-c-update-struct-and-member-rejected.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/nested/afar-cce-c-update-struct-and-member-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--afar-flang-pointer-root-allocatable-component-enter-data-fault",
+  "finding": "nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar"
+  ],
+  "repro": "../../findings/nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--cce-c-struct-and-nested-pointee-sections-ice",
+  "finding": "nested/cce-c-struct-and-nested-pointee-sections-ice.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/nested/cce-c-struct-and-nested-pointee-sections-ice.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--cce-fortran-nested-allocatable-component-copy-fault",
+  "finding": "nested/cce-fortran-nested-allocatable-component-copy-fault.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce20"
+  ],
+  "repro": "../../findings/nested/cce-fortran-nested-allocatable-component-copy-fault.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-acc-c-parent-and-shared-pointee-one-directive",
+  "finding": "nested/gcc-acc-c-parent-and-shared-pointee-one-directive.c",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-acc-c-parent-and-shared-pointee-one-directive.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs",
+  "finding": "nested/gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs.c",
+  "symptom": "runhang",
+  "expect": "ok",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault",
+  "finding": "nested/nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault.c",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/nested/nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer",
+  "finding": "nested/cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce21_4"
+  ],
+  "repro": "../../findings/nested/cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-c-declare-mapper-pointer-member-section-gpu-fault",
+  "finding": "nested/gcc-c-declare-mapper-pointer-member-section-gpu-fault.c",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-c-declare-mapper-pointer-member-section-gpu-fault.c",
+  "derived": true,
+  "devices": {
+   "gcc_g90": "all"
+  },
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-c-always-on-pointer-member-section-ice",
+  "finding": "nested/gcc-c-always-on-pointer-member-section-ice.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-c-always-on-pointer-member-section-ice.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--nvhpc-c-update-from-structure-overwrites-attached-pointer-segv",
+  "finding": "nested/nvhpc-c-update-from-structure-overwrites-attached-pointer-segv.c",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "repro": "../../findings/nested/nvhpc-c-update-from-structure-overwrites-attached-pointer-segv.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object",
+  "finding": "nested/cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce21_4"
+  ],
+  "repro": "../../findings/nested/cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--afar-cce-c-call-result-member-in-target-rejected",
+  "finding": "nested/afar-cce-c-call-result-member-in-target-rejected.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "repro": "../../findings/nested/afar-cce-c-call-result-member-in-target-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-fortran-pointer-component-alloc-bounds-lost",
+  "finding": "nested/gcc-fortran-pointer-component-alloc-bounds-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-fortran-pointer-component-alloc-bounds-lost.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-fortran-root-and-element-pointer-components-ice",
+  "finding": "nested/gcc-fortran-root-and-element-pointer-components-ice.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-fortran-root-and-element-pointer-components-ice.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-c-from-struct-and-pointee-section-rejected",
+  "finding": "nested/gcc-c-from-struct-and-pointee-section-rejected.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-c-from-struct-and-pointee-section-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-nested--gcc-acc-c-struct-and-member-array-one-directive",
+  "finding": "nested/gcc-acc-c-struct-and-member-array-one-directive.c",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "c",
+  "model": "acc",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/nested/gcc-acc-c-struct-and-member-array-one-directive.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-hecbench--gcc-c-float16-array-in-target-lto-ice",
+  "finding": "hecbench/gcc-c-float16-array-in-target-lto-ice.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90",
+   "gcc_sm80"
+  ],
+  "repro": "../../findings/hecbench/gcc-c-float16-array-in-target-lto-ice.c",
+  "derived": true,
+  "control": "../../findings/hecbench/controls/f16-ctl-float-array.c",
+  "control_what": "one change from the finding; correct on gcc_g90, gcc_sm80",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-hecbench--gcc-c-swar-popcount-assembler-error",
+  "finding": "hecbench/gcc-c-swar-popcount-assembler-error.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "gcc_g90"
+  ],
+  "repro": "../../findings/hecbench/gcc-c-swar-popcount-assembler-error.c",
+  "derived": true,
+  "control": "../../findings/hecbench/controls/pc-ctl-shift-sum.c",
+  "control_what": "one change from the finding; correct on gcc_g90",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--par-s1-2082-gcc_g90",
+  "finding": "fuzz/par-s1-2082-gcc_g90.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc_g90"
+  ],
+  "repro": "../../findings/fuzz/par-s1-2082-gcc_g90.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ }
+]

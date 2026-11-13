@@ -1,0 +1,113 @@
+{
+ "finding": "stress/cce-acc-declare-create-scalar-serial-firstprivate.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "g is a module variable with declare create, so it has a device copy for the whole program. update device copies 101 to it, the serial region operates on the device copy (g is present, so no implicit firstprivate copy), and update self returns 203. Module declaration sections permit create. No race. A result of 101 means the update or the device write did not take effect."
+  },
+  {
+   "run": "run-20261112/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "g appears in a declare create in the module, which is a visible data clause at the serial construct, so the implicit firstprivate for scalars does not apply and the device copy of g is used. update device sets it to 101, the serial region computes 203, update self returns it."
+  },
+  {
+   "run": "run-v2-20261113/batch-105",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "g is in a declare create in the module, which is a visible data clause for the serial construct. Implicit data attributes are only determined for variables that do not appear in a visible data clause, so g is not implicitly firstprivate. It is the device copy that the update device set to 101, so the serial region makes it 203, and update self copies 203 back. Printing 101 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-19",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "g is a module variable with declare create, so device storage exists for the whole program and update device(g) copies 101 to it. The serial region updates the present copy to 203 and update self(g) copies it back. Printing 101 means the device update or the copy back was skipped, which the specification does not allow.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9d1afc9d16f985203fbcee5db4a602473c09ba3d655797de8e98051873e8381c",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "afar-xnack1-target-is-present.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "omp_target_is_present returns true when device_num is the host or ptr has corresponding storage on the device. After target enter data map(to: a) the storage is mapped (or the device is the host), so present must be nonzero; observed 0 is wrong. After exit data release the reference count drops to zero, so 0 is correct on a non-host device. c_loc of a target array is valid."
+  },
+  {
+   "run": "run-20261112/batch-34",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target enter data map(to: a) creates corresponding storage in the device data environment of the default device, so omp_target_is_present must return true (nonzero) afterwards; it also returns true if the device is the host. After exit data release the reference count drops to zero and the storage is removed, so 0 is correct only for that second print. Observed 0 after enter data is therefore wrong. c_loc of a target array of interoperable type is valid Fortran 2008, and the explicit interface comes from omp_lib."
+  },
+  {
+   "run": "run-v2-20261113/batch-51",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(to: a) on target enter data is a map-entering construct on a variable with no corresponding storage, so a corresponding storage block is created (it may share storage with the original under unified memory, but it is still created and present). omp_target_is_present must then return true after enter data, so present=0 is wrong. After exit data with release the reference count drops to zero and it is removed.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-49",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-92",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "After target enter data map(to: a) the array has corresponding storage in the device data environment, so omp_target_is_present must return true. No requires unified_shared_memory is present, so the mapping is not elided. Reporting 0 after enter data is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-10",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "8071cec64b2222dd8789f1de3f4372d0537863020dfbff1faec69003ac368995",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

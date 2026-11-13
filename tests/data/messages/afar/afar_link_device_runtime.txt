@@ -1,0 +1,34 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-21.
+# source: amdflang -fopenmp --offload-arch=gfx942 -L/usr/lib/gcc/x86_64-redhat-linux/8 -O2 on fuzz seed 11 (fuzz-3, base group declare: module derived types, declare target, declare reduction)
+# exit status: 1
+==== verbatim output below ====
+ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*, ...)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(std::__1::__throw_bad_variant_access[abi:nqn240000](char const*))
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(std::__1::__throw_bad_variant_access[abi:nqn240000](char const*))
+
+ld.lld: error: undefined symbol: Fortran::runtime::io::descr::DescriptorIoTicket<(Fortran::runtime::io::Direction)1>::Begin(Fortran::runtime::WorkQueue&)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+
+ld.lld: error: undefined symbol: Fortran::runtime::io::descr::DescriptorIoTicket<(Fortran::runtime::io::Direction)0>::Begin(Fortran::runtime::WorkQueue&)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+
+ld.lld: error: undefined symbol: Fortran::runtime::io::descr::DerivedIoTicket<(Fortran::runtime::io::Direction)1>::Continue(Fortran::runtime::WorkQueue&)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+
+ld.lld: error: undefined symbol: Fortran::runtime::io::descr::DerivedIoTicket<(Fortran::runtime::io::Direction)0>::Continue(Fortran::runtime::WorkQueue&)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+
+ld.lld: error: undefined symbol: Fortran::runtime::io::descr::DescriptorIoTicket<(Fortran::runtime::io::Direction)1>::Continue(Fortran::runtime::WorkQueue&)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+
+ld.lld: error: undefined symbol: Fortran::runtime::io::descr::DescriptorIoTicket<(Fortran::runtime::io::Direction)0>::Continue(Fortran::runtime::WorkQueue&)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+>>> referenced by <site>/e11.out.amdgpu9.42.gfx942-267fea.img.lto.o:(_FortranAInitialize)
+clang: error: ld.lld command failed with exit code 1 (use -v to see invocation)
+<site>/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c/lib/llvm/bin/clang-linker-wrapper: error: 'clang' failed
+flang-24: error: linker command failed with exit code 1 (use -v to see invocation)

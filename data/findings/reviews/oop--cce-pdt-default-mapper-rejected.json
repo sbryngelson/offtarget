@@ -1,0 +1,191 @@
+{
+ "finding": "oop/cce-pdt-default-mapper-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A parameterized derived type with a len parameter is Fortran 2003 base language; the error is reported at the type definition in the module, before any OpenMP construct. The specification has no restriction on mapping such a type, and states the device copy keeps the type parameters. A conforming Fortran compiler must accept the module and program."
+  },
+  {
+   "run": "run-20261113/batch-69",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Parameterized derived types with a len parameter are standard Fortran 2003. The OpenMP 5.2 text has no restriction on mapping such a variable; the only derived-type restriction concerns type-bound procedures, which are not used here. The map(tofrom: x) maps a scalar variable of known length; x%m reads 16 and sum of squares 1..16 is 1496. The refusal is at the type definition in the module, a base-language construct, so a conforming Fortran compiler must accept it."
+  },
+  {
+   "run": "run-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A parameterized derived type with a len parameter is Fortran 2003, a base language the specification names. The type lv(16) variable x is mapped tofrom and x%a has fixed extent 16; sums give r1=16, r2=1496. No OpenMP rule is violated. The refusal is at the module's type declaration, a base-language feature, not an OpenMP construct; whether OpenMP requires acceptance of every base-language feature is not stated, so uncertain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-75",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is valid Fortran 2003 (parameterized derived type with a len parameter and a component a(m)). OpenMP 5.2 states no restriction against mapping such a variable, and a type parameter inquiry such as x%m in a construct is treated as a reference to the designator, so x is mapped tofrom. The failure is an error on the type definition in the module, a base-language feature, not an OpenMP rule; the specification only refers to the base language supported by the implementation, so whether OpenMP requires acceptance is unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-14",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The program is valid Fortran 2003 and breaks no OpenMP restriction. The error is on the module's parameterized type definition, a base-language feature. The specification does not require an implementation to support a construct its base-language implementation lacks, so the refusal violates no requirement.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree. A parameterized derived type is Fortran 2003 base-language syntax. OpenMP 5.2 treats a type parameter inquiry in a construct as a reference to its designator, so x%m is covered by the tofrom map of x. The refusal is at the module's type definition, a base-language feature, so what OpenMP requires of the compiler there is not clear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-68",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is valid Fortran 2003 and breaks no OpenMP restriction. The error is on the module's parameterized type definition, a base-language feature. The specification does not require an implementation to support a construct its base-language implementation lacks, so the refusal violates no requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

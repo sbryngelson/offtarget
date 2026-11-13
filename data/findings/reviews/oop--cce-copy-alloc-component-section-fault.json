@@ -1,0 +1,217 @@
+{
+ "finding": "oop/cce-copy-alloc-component-section-fault.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "x is a derived type with an allocatable component. It is referenced in the target, so it is implicitly mapped tofrom as a non-scalar, while x%a(9:40) is also an explicit map list item. The specification does not say clearly how the implicit map of x combines with an explicit section of its allocatable component and descriptor. Whether x%a(i) is valid on the device therefore depends on that unclear interaction, and a conforming compiler may fault."
+  },
+  {
+   "run": "run-20261113/batch-56",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Array section x%a(9:40) of an allocatable component is a legal map list item; x is implicitly mapped via references to structure elements, and only the explicitly mapped parts get device storage. The specification does not say how the descriptor of the allocatable component x%a is made available on the device when only a section is mapped, so whether the device access x%a(i) is required to work is unclear. The host-side result (34080, 8) is otherwise as expected."
+  },
+  {
+   "run": "run-v2-20261113/batch-107",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Only the section x%a(9:40) of an allocatable component is mapped and only elements 9..40 are accessed, so referencing is within the mapped part. The specification explicitly covers base pointers only for Fortran data pointers, not allocatable descriptors, so how the allocatable component is made accessible on the device is not spelled out. Legal, but the required handling is not fully specified.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-59",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "x is implicitly mapped, but only the explicitly mapped part x%a(9:40) gets storage; the loop touches only elements 9..40 of x%a and no other element of x, satisfying the structure-element restriction. Iterations write distinct elements. The spec does not state how the allocatable descriptor of the component is made available on the device for an implicitly mapped parent, so whether a fault is a compiler error is not clearly settled.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-35",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ab075e0a3a549b3aa6a4740d064446fefe3230c7391cfc966cd3b77299c665ce",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Only x%a is referenced in the region, and it is a list item of the map clause, so the structure-element restriction (other referenced elements must be mapped) is met; x%n is not referenced. The allocatable-component restrictions are not violated (no reallocation).",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Reading A's doubt about legality fails: x%a(9:40) is a valid Fortran list item and x is implicitly mapped because references to structure elements count as references to the structure. Legality holds. Whether the descriptor of the allocatable component is available on the device when a section is mapped alongside the implicitly mapped parent is not specified, so the required result is unclear; Reading B is closer."
+  },
+  {
+   "run": "adj-20261113/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Reading A's doubt about legality fails: x%a(9:40) is a valid array-section list item of a structure element, and the only other structure element referenced is x%a itself, so the structure-element restriction holds. The specification text is silent on whether the descriptor of an allocatable component is available on the device when only a section is mapped, and on how an implicit map of x combines with the explicit section. Reading B is right that the required result is unclear, so the fault is not shown to be a violation."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Only x%a is referenced in the region, and it is a list item of the map clause, so the structure-element restriction (other referenced elements must be mapped) is met; x%n is not referenced. The allocatable-component restrictions are not violated (no reallocation). The specification does not spell out how the component's descriptor reaches the device for a section of an allocatable component whose parent is not itself mapped, so neither reading proves a required result; uncertain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-27",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings reach the same conclusion. Only x%a(9:40) is mapped and only those elements are referenced. The text does not say how the descriptor of an allocatable component reaches the device when x is also implicitly mapped, and it does not settle whether x is implicitly mapped at all once x%a is explicit. The fault is therefore not shown to violate a requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-10",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

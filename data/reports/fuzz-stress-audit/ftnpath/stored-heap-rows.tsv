@@ -1,0 +1,89 @@
+STRESS	s1-g1	kernels-omp-860-1	cce20	1	O2	ice	33.81	'free(): invalid'	-
+STRESS	s1-g1	kernels-omp-860-1	cce20	0	O2	ice	33.81	'free(): invalid'	-
+STRESS	s1-g1	kernels-omp-1720-1	cce20	1	O2	ice	17.8	'free(): invalid'	-
+STRESS	s1-g1	kernels-omp-1720-1	cce20	0	O2	ice	17.8	'free(): invalid'	-
+STRESS	s1-g1	kernels-omp-4300-1	cce20	1	O2	ice	11.31	'free(): invalid'	-
+STRESS	s1-g1	kernels-omp-4300-1	cce20	0	O2	ice	11.31	'free(): invalid'	-
+STRESS	s1-g1	kernels-omp-1024-1	cce20	1	O2	ice	27.88	'double free or corruption'	-
+STRESS	s1-g1	kernels-omp-1024-1	cce20	0	O2	ice	27.88	'double free or corruption'	-
+STRESS	s1-g1	calls-omp-32-1	cce19	1	O2	ice	3.99	'double free or corruption'	-
+STRESS	s1-g1	calls-omp-32-1	cce19	0	O2	ice	3.99	'double free or corruption'	-
+STRESS	s1-g1	calls-omp-64-1	cce19	1	O2	ice	7.98	'double free or corruption'	-
+STRESS	s1-g1	calls-omp-64-1	cce19	0	O2	ice	7.98	'double free or corruption'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce19	1	O2	ice	3.09	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce19	0	O2	ice	3.09	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce20	1	O2	ice	3.13	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce20	0	O2	ice	3.13	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce21	1	O2	ice	3.11	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce21	0	O2	ice	3.11	'free(): invalid'	-
+STRESS	s1-g4	tu.plain-omp-30-1	cce19	1	O2	ice	3.55	'free(): invalid'	-
+STRESS	s1-g4	tu.plain-omp-30-1	cce19	0	O2	ice	3.55	'free(): invalid'	-
+STRESS	s1-g4	tu.plain-omp-32-1	cce19	1	O2	ice	3.48	'free(): invalid'	-
+STRESS	s1-g4	tu.plain-omp-32-1	cce19	0	O2	ice	3.48	'free(): invalid'	-
+STRESS	s1-g4	tu.submodule-omp-30-1	cce19	1	O2	ice	3.33	'free(): invalid'	-
+STRESS	s1-g4	tu.submodule-omp-30-1	cce19	0	O2	ice	3.33	'free(): invalid'	-
+STRESS	s1-g5	exprs.spec-omp-1024-1	cce20	1	O2	ice	4.62	'free(): invalid'	-
+STRESS	s1-g5	exprs.spec-omp-1024-1	cce20	0	O2	ice	4.62	'free(): invalid'	-
+STRESS	s1-g5	exprs.spec-omp-2048-1	cce20	1	O2	ice	5.4	'free(): invalid'	-
+STRESS	s1-g5	exprs.spec-omp-2048-1	cce20	0	O2	ice	5.4	'free(): invalid'	-
+STRESS	s1-acc	kernels-acc-1024-1	cce20	1	O2	ice	25.05	'free(): invalid'	-
+STRESS	s1-acc	kernels-acc-1024-1	cce20	0	O2	ice	25.05	'free(): invalid'	-
+STRESS	s1-acc	kernels-acc-860-1	cce20	1	O2	ice	32.15	'free(): invalid'	-
+STRESS	s1-acc	kernels-acc-860-1	cce20	0	O2	ice	32.15	'free(): invalid'	-
+STRESS	s1-acc	kernels-acc-4300-1	cce20	1	O2	ice	17.19	'double free or corruption'	-
+STRESS	s1-acc	kernels-acc-4300-1	cce20	0	O2	ice	17.19	'double free or corruption'	-
+STRESS	s1-acc	kernels-acc-1720-1	cce20	1	O2	ice	20.63	'free(): invalid'	-
+STRESS	s1-acc	kernels-acc-1720-1	cce20	0	O2	ice	20.63	'free(): invalid'	-
+STRESS	s1-acc	calls-acc-32-1	cce19	1	O2	ice	4.13	'double free or corruption'	-
+STRESS	s1-acc	calls-acc-32-1	cce19	0	O2	ice	4.13	'double free or corruption'	-
+STRESS	s1-acc	calls-acc-64-1	cce19	1	O2	ice	7.22	'double free or corruption'	-
+STRESS	s1-acc	calls-acc-64-1	cce19	0	O2	ice	7.22	'double free or corruption'	-
+STRESS	s1-acc	kernels-acc-512-1	cce20	1	O2	ice	523.83	'double free or corruption'	-
+STRESS	s1-acc	kernels-acc-512-1	cce20	0	O2	ice	523.83	'double free or corruption'	-
+STRESS	s1-acc	tu.plain-acc-12-1	cce19	1	O2	ice	2.97	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-12-1	cce19	0	O2	ice	2.97	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-12-1	cce20	1	O2	ice	3.05	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-12-1	cce20	0	O2	ice	3.05	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-12-1	cce21	1	O2	ice	3.02	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-12-1	cce21	0	O2	ice	3.02	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-30-1	cce19	1	O2	ice	3.39	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-30-1	cce19	0	O2	ice	3.39	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-32-1	cce19	1	O2	ice	3.61	'free(): invalid'	-
+STRESS	s1-acc	tu.plain-acc-32-1	cce19	0	O2	ice	3.61	'free(): invalid'	-
+STRESS	s1-acc	tu.submodule-acc-30-1	cce19	1	O2	ice	3.39	'free(): invalid'	-
+STRESS	s1-acc	tu.submodule-acc-30-1	cce19	0	O2	ice	3.39	'free(): invalid'	-
+STRESS	s1-acc	exprs.spec-acc-1024-1	cce20	1	O2	ice	4.76	'free(): invalid'	-
+STRESS	s1-acc	exprs.spec-acc-1024-1	cce20	0	O2	ice	4.76	'free(): invalid'	-
+STRESS	s1-acc	exprs.spec-acc-2048-1	cce20	1	O2	ice	5.79	'free(): invalid'	-
+STRESS	s1-acc	exprs.spec-acc-2048-1	cce20	0	O2	ice	5.79	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce19	1	O3	ice	3.13	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce19	0	O3	ice	3.13	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce19	1	staticlib	ice	3.1	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce19	0	staticlib	ice	3.1	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce20	1	O3	ice	3.1	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce20	0	O3	ice	3.1	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce20	1	staticlib	ice	3.08	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce20	0	staticlib	ice	3.08	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce21	1	O3	ice	3.01	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce21	0	O3	ice	3.01	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce21	1	staticlib	ice	3.1	'free(): invalid'	-
+STRESS	s1-var	tu.plain-omp-12-1	cce21	0	staticlib	ice	3.1	'free(): invalid'	-
+STRESS	f1-omp	clauses-omp-28-1	cce19	1	O2	ice	9.62	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-28-1-n7b5lw20
+STRESS	f1-omp	clauses-omp-28-1	cce19	0	O2	ice	9.62	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-28-1-n7b5lw20
+STRESS	f1-omp	clauses-omp-52-1	cce20	1	O2	ice	9.35	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-52-1-sx5hmfaw
+STRESS	f1-omp	clauses-omp-52-1	cce20	0	O2	ice	9.35	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-52-1-sx5hmfaw
+STRESS	f1-omp	clauses-omp-28-1	cce20	1	O2	ice	10.69	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-28-1-b9wiw55c
+STRESS	f1-omp	clauses-omp-28-1	cce20	0	O2	ice	10.69	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-28-1-b9wiw55c
+STRESS	f1-omp	clauses-omp-26-1	cce20	1	O2	ice	10.82	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-26-1-fizt32aj
+STRESS	f1-omp	clauses-omp-26-1	cce20	0	O2	ice	10.82	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-26-1-fizt32aj
+STRESS	f1-omp	clauses-omp-64-1	cce20	1	O2	ice	10.98	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-64-1-0wjs1odf
+STRESS	f1-omp	clauses-omp-64-1	cce20	0	O2	ice	10.98	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-64-1-0wjs1odf
+STRESS	f1-omp	clauses-omp-256-1	cce20	1	O2	ice	6.22	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-256-1-jdk5helo
+STRESS	f1-omp	clauses-omp-256-1	cce20	0	O2	ice	6.22	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-256-1-jdk5helo
+STRESS	f1-omp	clauses-omp-256-1	cce19	1	O2	ice	6.52	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-256-1-7111f5_4
+STRESS	f1-omp	clauses-omp-256-1	cce19	0	O2	ice	6.52	'free(): invalid'	/tmp/<user>-stress/st-clauses-omp-256-1-7111f5_4
+arm1-stress	arm1-stress	exprs.spec-omp-1024-5022	cce20	0	O2	ice	4.88	'free(): invalid'	-
+arm1-stress	arm1-stress	exprs.spec-omp-2048-5112	cce20	0	O2	ice	5.56	'free(): invalid'	-
+arm1-stress	arm1-stress	kernels-omp-1720-5133	cce20	0	O2	ice	18.31	'double free or corruption'	-
+arm1-stress	arm1-stress	kernels-omp-4300-5174	cce20	0	O2	ice	13.76	'free(): invalid'	-
+arm1-stress	arm1-stress	exprs.spec-omp-1024-5260	cce20	0	O2	ice	4.4	'free(): invalid'	-

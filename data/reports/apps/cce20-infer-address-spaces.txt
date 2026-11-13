@@ -1,0 +1,81 @@
+# apps/cce20-device-link-infer-address-spaces-crash.f90 (f1 = the finding; f1-ctl-inline = controls/cbc-inline.f90; f1-ctl-integers = controls/cbc-integers.f90; g1/g2 = controls/cbc-only-*.f90)
+# 2026-10-25. Trimmed to the result lines; build directories node-local; -O2 unless stated; probe_amd.sh: MI300A = HSA_XNACK x1 and x0, MI250X = x0; NVHPC: -gpu=mem:separate/managed.
+## MI300A, first runs (the last line: CCE 20 at -O0)
+f1 afar gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 afar gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 cce19 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 cce19 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 cce20 gfx942 build rc=1: PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace. Stack dump: 0.	Program arguments: /opt/cray/pe/cce/20.0.2/cce-clang/x86_64/bin/lld -flavor gnu --no-undefined -shared -plugin-opt=mcpu=gf
+f1 cce21 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 cce21 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline afar gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline afar gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce19 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce19 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce20 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce20 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce21 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce21 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers afar gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers afar gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce19 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce19 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce20 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce20 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce21 gfx942 x1: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce21 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 cce20 gfx942 x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+## MI300A, (tools: link_crash.sh = ftn -fopenmp -O2 compile and link, rc and the crashing pass)
+host tuolumne1026 2026-10-25T18:53:42-07:00
+== reproducer build 1 (ftn -fopenmp -O2)
+cce20 rc=1 Running pass 'Infer address spaces' on function '@"cce20_infer_address_spaces_$ck_L116_3"'
+== reproducer build 2 (ftn -fopenmp -O2)
+cce20 rc=1 Running pass 'Infer address spaces' on function '@"cce20_infer_address_spaces_$ck_L116_3"'
+== reproducer build 3 (ftn -fopenmp -O2)
+cce20 rc=1 Running pass 'Infer address spaces' on function '@"cce20_infer_address_spaces_$ck_L116_3"'
+== reproducer -O0, run XNACK 0
+cce20 rc=0 
+bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00
+== controls/cbc-inline.f90 -O2, run XNACK 0
+cce20 rc=0 
+bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00
+== controls/cbc-inline.f90 -O2 -hipa0
+cce20 rc=1 Running pass 'Infer address spaces' on function '@"cce20_infer_address_spaces_$ck_L71_3"'
+== controls/cbc-integers.f90 -O2, run XNACK 0
+cce20 rc=0 
+bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00
+== g1-only-density -O2, run XNACK 0
+cce20 rc=0 
+bad= 128 out(:,1)=    0.00    9.50   11.00    0.00    0.00
+== g2-only-velocity -O2, run XNACK 0
+cce20 rc=0 
+bad= 128 out(:,1)=    0.00    0.00    0.00    6.00    8.00
+## the lld abort, build 1 (excerpt)
+PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace.
+0.	Program arguments: /opt/cray/pe/cce/20.0.2/cce-clang/x86_64/bin/lld -flavor gnu --no-undefined -shared -plugin-opt=mcpu=gfx942 -plugin-opt=-disable-promote-alloca-to-lds -plugin-opt=defaults=cray -
+1.	Running pass 'Function Pass Manager' on module 'ld-temp.o'.
+2.	Running pass 'Infer address spaces' on function '@"cce20_infer_address_spaces_$ck_L116_3"'
+malloc_consolidate(): unaligned fastbin chunk detected
+## MI250X
+f1 afar gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 cce19 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 cce20 gfx90a build rc=1: PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace. Stack dump: 0.	Program arguments: /opt/cray/pe/cce/20.0.2/cce-clang/x86_64/bin/lld -flavor gnu --no-undefined -shared -plugin-opt=mcpu=gf
+f1 cce21 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline afar gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce19 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce20 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline cce21 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers afar gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce19 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce20 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-integers cce21 gfx90a x0: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+cce20 rc=1 Running pass 'Infer address spaces' on function '@"cce20_infer_address_spaces_$ck_L116_3"'
+## A100
+f1 nvhpc25.11 separate: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 nvhpc25.11 managed: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 nvhpc26.9 separate: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1 nvhpc26.9 managed: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline nvhpc25.11 separate: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline nvhpc25.11 managed: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline nvhpc26.9 separate: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 
+f1-ctl-inline nvhpc26.9 managed: bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00 

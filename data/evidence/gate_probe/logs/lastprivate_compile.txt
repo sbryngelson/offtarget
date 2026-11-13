@@ -1,0 +1,39 @@
+# CCE's compile output for data/evidence/gate_probe/lastprivate/*.f90 (results/t48/batch5),
+# the warning lines only (ftn-7256), per program, toolchain and XNACK; '-' = no warning.
+lp/collapsent2/cce19/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/collapsent2/cce19/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/collapsent2/cce20/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/collapsent2/cce20/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/collapsent2/cce21/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/collapsent2/cce21/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/ifpar/cce19/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/ifpar/cce19/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/ifpar/cce20/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/ifpar/cce20/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/ifpar/cce21/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/ifpar/cce21/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/nont/cce19/0 -
+lp/nont/cce19/1 -
+lp/nont/cce20/0 -
+lp/nont/cce20/1 -
+lp/nont/cce21/0 -
+lp/nont/cce21/1 -
+lp/nt2/cce19/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/nt2/cce19/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/nt2/cce20/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/nt2/cce20/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/nt2/cce21/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/nt2/cce21/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/simdnt2/cce19/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/simdnt2/cce19/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/simdnt2/cce20/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/simdnt2/cce20/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/simdnt2/cce21/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+lp/simdnt2/cce21/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 10 | An OpenMP parallel construct in a target region is limited to a single thread.
+# the finding file itself as first committed (results/t48/batch9 lpfind; its directive was then on line 44):
+lpfind/cce19/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 44 | An OpenMP parallel construct in a target region is limited to a single thread.
+lpfind/cce21/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 44 | An OpenMP parallel construct in a target region is limited to a single thread.
+lpfind/cce21/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 44 | An OpenMP parallel construct in a target region is limited to a single thread.
+lpfind/cce20/0 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 44 | An OpenMP parallel construct in a target region is limited to a single thread.
+lpfind/cce20/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 44 | An OpenMP parallel construct in a target region is limited to a single thread.
+lpfind/cce19/1 ftn-7256 ftn: WARNING P, File = lp.f90, Line = 44 | An OpenMP parallel construct in a target region is limited to a single thread.

@@ -1,0 +1,8 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.gen omp50-clause-linear (OpenMP/OpenACC version 50), compile sweep
+# exit status: 2
+==== verbatim output below ====
+NVFORTRAN-W-0547-OpenMP feature, LINEAR, not yet implemented in this version of the compiler. (<tmpdir>/p.f90: 30)
+NVFORTRAN-W-0547-OpenMP feature, LINEAR, not yet implemented in this version of the compiler. (<tmpdir>/p.f90: 30)
+NVFORTRAN-S-0155-x must appear in a SHARED or PRIVATE clause (<tmpdir>/p.f90: 32)
+  0 inform,   2 warnings,   1 severes, 0 fatal for gen_prog

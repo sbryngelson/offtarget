@@ -1,0 +1,140 @@
+model,directive,min_ver,max_ver,n_repos,repos
+omp,allocate,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,allocators,0,,3,gcc;llvm;omp_examples
+omp,assume,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,assumes,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,atomic,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,barrier,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,begin assumes,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,begin declare target,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,begin declare variant,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,cancel,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,cancellation point,60,,3,gcc;llvm;omp_examples
+omp,critical,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,declare induction,0,,2,gcc;omp_examples
+omp,declare mapper,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,declare reduction,60,,4,aomp;gcc;llvm;omp_examples
+omp,declare simd,60,,4,aomp;gcc;llvm;omp_examples
+omp,declare target,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,declare variant,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,depobj,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,dispatch,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,distribute,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,distribute parallel do,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,distribute parallel do simd,0,,4,aomp;gcc;llvm;omp_examples
+omp,distribute parallel for,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,distribute parallel for simd,0,,3,gcc;llvm;omp_examples
+omp,distribute simd,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,do,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,do simd,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,end assumes,0,,0,
+omp,end declare target,60,,0,
+omp,end declare variant,60,,0,
+omp,error,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,flatten,0,,1,llvm
+omp,flush,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,for,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,for simd,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,fuse,0,,3,llvm;omp_examples;omp_vv
+omp,groupprivate,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,interchange,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,interop,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,loop,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,masked,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,masked taskloop,0,,3,gcc;llvm;omp_examples
+omp,masked taskloop simd,0,,3,gcc;llvm;omp_examples
+omp,master,0,,4,aomp;gcc;llvm;omp_vv
+omp,master taskloop,0,,3,gcc;llvm;omp_vv
+omp,master taskloop simd,0,,3,gcc;llvm;omp_vv
+omp,metadirective,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,nothing,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,ordered,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,parallel,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,parallel do,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,parallel do simd,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,parallel for,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,parallel for simd,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,parallel loop,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,parallel masked,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,parallel masked taskloop,0,,3,gcc;llvm;omp_examples
+omp,parallel masked taskloop simd,0,,3,gcc;llvm;omp_examples
+omp,parallel master,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,parallel master taskloop,0,,3,gcc;llvm;omp_vv
+omp,parallel master taskloop simd,0,,3,gcc;llvm;omp_vv
+omp,parallel sections,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,parallel workshare,0,,2,gcc;llvm
+omp,requires,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,reverse,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,scan,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,scope,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,section,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,sections,0,,4,aomp;gcc;llvm;omp_examples
+omp,simd,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,single,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,split,0,,2,llvm;omp_examples
+omp,stripe,0,,2,llvm;omp_examples
+omp,target,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target data,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target enter data,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target exit data,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target loop,0,,2,llvm;omp_examples
+omp,target parallel,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target parallel do,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target parallel do simd,0,,2,gcc;llvm
+omp,target parallel for,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target parallel for simd,0,,3,aomp;gcc;llvm
+omp,target parallel loop,0,,4,aomp;gcc;llvm;omp_vv
+omp,target simd,0,,3,gcc;llvm;omp_vv
+omp,target teams,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target teams distribute,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target teams distribute parallel do,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target teams distribute parallel do simd,0,,4,aomp;gcc;llvm;omp_vv
+omp,target teams distribute parallel for,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target teams distribute parallel for simd,0,,4,aomp;gcc;llvm;omp_vv
+omp,target teams distribute simd,0,,3,aomp;gcc;llvm
+omp,target teams loop,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,target teams workdistribute,0,,3,llvm;omp_examples;omp_vv
+omp,target update,60,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,task,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,taskgraph,0,,3,llvm;omp_examples;omp_vv
+omp,taskgroup,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,taskloop,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,taskloop simd,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,taskwait,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,taskyield,0,,3,gcc;llvm;omp_examples
+omp,teams,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,teams distribute,0,,4,aomp;gcc;llvm;omp_vv
+omp,teams distribute parallel do,0,,4,aomp;gcc;llvm;omp_vv
+omp,teams distribute parallel do simd,0,,2,gcc;llvm
+omp,teams distribute parallel for,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,teams distribute parallel for simd,0,,4,aomp;gcc;llvm;omp_vv
+omp,teams distribute simd,0,,2,gcc;llvm
+omp,teams loop,0,,3,aomp;gcc;llvm
+omp,teams workdistribute,0,,1,llvm
+omp,threadprivate,0,,5,aomp;gcc;llvm;omp_examples;omp_vv
+omp,tile,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,unknown,0,,0,
+omp,unroll,0,,4,gcc;llvm;omp_examples;omp_vv
+omp,workdistribute,0,,1,llvm
+omp,workshare,0,,3,gcc;llvm;omp_examples
+acc,atomic,0,,3,acc_vv;gcc;llvm
+acc,cache,0,,2,gcc;llvm
+acc,data,0,,4,acc_vv;aomp;gcc;llvm
+acc,declare,0,,4,acc_vv;aomp;gcc;llvm
+acc,enter data,0,,3,acc_vv;gcc;llvm
+acc,exit data,0,,3,acc_vv;gcc;llvm
+acc,host data,0,,3,acc_vv;gcc;llvm
+acc,init,0,,3,acc_vv;gcc;llvm
+acc,kernels,0,,4,acc_vv;aomp;gcc;llvm
+acc,kernels loop,0,,3,acc_vv;gcc;llvm
+acc,loop,0,,4,acc_vv;aomp;gcc;llvm
+acc,parallel,0,,4,acc_vv;aomp;gcc;llvm
+acc,parallel loop,0,,4,acc_vv;aomp;gcc;llvm
+acc,routine,0,,4,acc_vv;aomp;gcc;llvm
+acc,serial,0,,3,acc_vv;gcc;llvm
+acc,serial loop,0,,3,acc_vv;gcc;llvm
+acc,set,0,,3,acc_vv;gcc;llvm
+acc,shutdown,0,,3,acc_vv;gcc;llvm
+acc,unknown,0,,0,
+acc,update,0,,4,acc_vv;aomp;gcc;llvm
+acc,wait,0,,3,acc_vv;gcc;llvm

@@ -1,0 +1,605 @@
+# What a scorer of data/bench/harvest2-holdout reads beside the seal. The sealed files
+# are not changed; this file is outside the seal. Sealed ids only.
+#
+# excluded: never scored. Each case's code or provenance can be read from dev material:
+#   - exposed_history: the case was a dev program (its code, upstream source and pre-run verdict at a dev path,
+#     under its dev id) in this branch's first cut (by text), committed and pushed for about 13 hours before the
+#     split was redone by code; the implementer had also seen the hand programs' NVHPC compile results and the
+#     rules-witness verdicts of that cut. The history was rebuilt without it, but it was readable.
+#   - near_copy: a dev program has shingle Jaccard >= 0.9 with the case (the measure); its dev rows
+#     predict the case's labels. The similar lists are top-5 and one-directional, so this is a lower bound.
+# scored_modes: copy only (the rule for the 49a harvest, applied here): AMD HSA_XNACK=0
+#   and NVHPC separate memory. Unified (HSA_XNACK=1) and managed rows stay in outcomes.csv and are not scored: the
+#   copy-only list (catalog/harvest2_copy_only.yaml) covers dev programs only, and many upstream tests assume
+#   separate host and device storage.
+# not_run: every MI250X (Tioga, *_g90) cell is not_run by design: the holdout was never copied to Tioga. The seal
+#   allows missing cells on Tioga only (tools/campaigns/harvest.py seal --allow-missing-machine tioga).
+# outcomes: outcomes.csv's `outcome` column is offload.engine.gate.outcome_class of the cell (correct_on_device,
+#   wrong_answer, crash, run_error, timeout, rejected, ice, accepted_ignored, fell_back_to_host, harness_error),
+#   plus refused (the pre-run check refused the program), not_applicable (a mode the program's expected result
+#   does not hold in, or a model the toolchain does not compile: OpenACC on AFAR, C OpenACC on CCE) and not_run.
+#   The `gate` column holds the gate's verdict for a failing row (confirmed, nondeterministic, environment,
+#   not_reproduced). Treat harness_error as no label, refused, not_applicable and not_run as not scored, and a
+#   failing row as a failure only when gate is confirmed.
+# gate_environments: the gate column of outcomes.csv was sealed when the AMD gates (Tuolumne) had run (c),
+#   "another node", on (a)'s node: an AMD verdict there rests on three environments (a, b, d). (c) was rerun on
+#   other compute nodes afterwards (results/harvest2/main, not in the seal); wingtip's (c) ran on another GPU.
+#   A scorer that needs four-environment AMD verdicts re-derives them from results/harvest2 (offload.engine.gate).
+# grounds: near_copy_only lists the near copies not already in exposed_history (30 of the 41 near copies are).
+excluded:
+- harvest2-holdout-001
+- harvest2-holdout-002
+- harvest2-holdout-003
+- harvest2-holdout-004
+- harvest2-holdout-005
+- harvest2-holdout-006
+- harvest2-holdout-007
+- harvest2-holdout-008
+- harvest2-holdout-009
+- harvest2-holdout-010
+- harvest2-holdout-011
+- harvest2-holdout-012
+- harvest2-holdout-014
+- harvest2-holdout-015
+- harvest2-holdout-016
+- harvest2-holdout-017
+- harvest2-holdout-018
+- harvest2-holdout-019
+- harvest2-holdout-021
+- harvest2-holdout-022
+- harvest2-holdout-023
+- harvest2-holdout-024
+- harvest2-holdout-025
+- harvest2-holdout-026
+- harvest2-holdout-027
+- harvest2-holdout-028
+- harvest2-holdout-029
+- harvest2-holdout-030
+- harvest2-holdout-031
+- harvest2-holdout-032
+- harvest2-holdout-033
+- harvest2-holdout-035
+- harvest2-holdout-036
+- harvest2-holdout-037
+- harvest2-holdout-039
+- harvest2-holdout-040
+- harvest2-holdout-041
+- harvest2-holdout-042
+- harvest2-holdout-043
+- harvest2-holdout-044
+- harvest2-holdout-046
+- harvest2-holdout-048
+- harvest2-holdout-050
+- harvest2-holdout-053
+- harvest2-holdout-054
+- harvest2-holdout-056
+- harvest2-holdout-057
+- harvest2-holdout-058
+- harvest2-holdout-059
+- harvest2-holdout-060
+- harvest2-holdout-061
+- harvest2-holdout-063
+- harvest2-holdout-064
+- harvest2-holdout-065
+- harvest2-holdout-067
+- harvest2-holdout-069
+- harvest2-holdout-070
+- harvest2-holdout-072
+- harvest2-holdout-073
+- harvest2-holdout-075
+- harvest2-holdout-076
+- harvest2-holdout-077
+- harvest2-holdout-078
+- harvest2-holdout-079
+- harvest2-holdout-081
+- harvest2-holdout-082
+- harvest2-holdout-085
+- harvest2-holdout-086
+- harvest2-holdout-087
+- harvest2-holdout-088
+- harvest2-holdout-089
+- harvest2-holdout-090
+- harvest2-holdout-091
+- harvest2-holdout-092
+- harvest2-holdout-093
+- harvest2-holdout-094
+- harvest2-holdout-095
+- harvest2-holdout-097
+- harvest2-holdout-099
+- harvest2-holdout-100
+- harvest2-holdout-101
+- harvest2-holdout-102
+- harvest2-holdout-106
+- harvest2-holdout-107
+- harvest2-holdout-108
+- harvest2-holdout-109
+- harvest2-holdout-110
+- harvest2-holdout-111
+- harvest2-holdout-112
+- harvest2-holdout-114
+- harvest2-holdout-115
+- harvest2-holdout-116
+- harvest2-holdout-118
+- harvest2-holdout-119
+- harvest2-holdout-122
+- harvest2-holdout-124
+- harvest2-holdout-125
+- harvest2-holdout-126
+- harvest2-holdout-129
+- harvest2-holdout-130
+- harvest2-holdout-131
+- harvest2-holdout-132
+- harvest2-holdout-133
+- harvest2-holdout-134
+- harvest2-holdout-135
+- harvest2-holdout-138
+- harvest2-holdout-140
+- harvest2-holdout-142
+- harvest2-holdout-143
+- harvest2-holdout-144
+- harvest2-holdout-147
+- harvest2-holdout-148
+- harvest2-holdout-149
+- harvest2-holdout-150
+- harvest2-holdout-151
+- harvest2-holdout-152
+- harvest2-holdout-153
+- harvest2-holdout-156
+- harvest2-holdout-157
+- harvest2-holdout-158
+- harvest2-holdout-159
+- harvest2-holdout-160
+- harvest2-holdout-161
+- harvest2-holdout-162
+- harvest2-holdout-163
+- harvest2-holdout-164
+- harvest2-holdout-165
+- harvest2-holdout-166
+- harvest2-holdout-167
+- harvest2-holdout-168
+- harvest2-holdout-169
+- harvest2-holdout-170
+- harvest2-holdout-171
+- harvest2-holdout-176
+- harvest2-holdout-177
+- harvest2-holdout-178
+- harvest2-holdout-179
+- harvest2-holdout-180
+- harvest2-holdout-181
+- harvest2-holdout-182
+- harvest2-holdout-184
+- harvest2-holdout-185
+- harvest2-holdout-188
+- harvest2-holdout-189
+- harvest2-holdout-190
+- harvest2-holdout-191
+- harvest2-holdout-192
+- harvest2-holdout-193
+- harvest2-holdout-197
+- harvest2-holdout-198
+- harvest2-holdout-199
+- harvest2-holdout-201
+- harvest2-holdout-204
+- harvest2-holdout-205
+- harvest2-holdout-206
+- harvest2-holdout-208
+- harvest2-holdout-209
+- harvest2-holdout-210
+- harvest2-holdout-211
+- harvest2-holdout-213
+- harvest2-holdout-214
+- harvest2-holdout-215
+- harvest2-holdout-216
+- harvest2-holdout-217
+- harvest2-holdout-218
+- harvest2-holdout-219
+- harvest2-holdout-220
+- harvest2-holdout-221
+- harvest2-holdout-222
+- harvest2-holdout-223
+- harvest2-holdout-224
+- harvest2-holdout-225
+- harvest2-holdout-226
+- harvest2-holdout-227
+- harvest2-holdout-228
+- harvest2-holdout-229
+- harvest2-holdout-230
+- harvest2-holdout-231
+- harvest2-holdout-232
+- harvest2-holdout-233
+- harvest2-holdout-234
+- harvest2-holdout-235
+- harvest2-holdout-236
+- harvest2-holdout-237
+- harvest2-holdout-238
+- harvest2-holdout-239
+- harvest2-holdout-240
+- harvest2-holdout-241
+- harvest2-holdout-244
+- harvest2-holdout-246
+- harvest2-holdout-247
+- harvest2-holdout-248
+- harvest2-holdout-249
+- harvest2-holdout-250
+- harvest2-holdout-251
+- harvest2-holdout-252
+- harvest2-holdout-253
+- harvest2-holdout-254
+- harvest2-holdout-255
+- harvest2-holdout-256
+- harvest2-holdout-257
+- harvest2-holdout-258
+- harvest2-holdout-259
+- harvest2-holdout-260
+- harvest2-holdout-262
+- harvest2-holdout-264
+- harvest2-holdout-265
+- harvest2-holdout-266
+- harvest2-holdout-268
+- harvest2-holdout-269
+- harvest2-holdout-272
+- harvest2-holdout-273
+- harvest2-holdout-274
+- harvest2-holdout-275
+- harvest2-holdout-276
+- harvest2-holdout-278
+- harvest2-holdout-279
+- harvest2-holdout-280
+- harvest2-holdout-282
+- harvest2-holdout-283
+- harvest2-holdout-284
+- harvest2-holdout-286
+- harvest2-holdout-287
+- harvest2-holdout-289
+- harvest2-holdout-290
+- harvest2-holdout-291
+- harvest2-holdout-292
+- harvest2-holdout-293
+- harvest2-holdout-294
+- harvest2-holdout-295
+- harvest2-holdout-297
+- harvest2-holdout-298
+- harvest2-holdout-299
+- harvest2-holdout-301
+- harvest2-holdout-302
+- harvest2-holdout-303
+- harvest2-holdout-304
+- harvest2-holdout-305
+- harvest2-holdout-306
+- harvest2-holdout-307
+- harvest2-holdout-309
+- harvest2-holdout-311
+- harvest2-holdout-312
+- harvest2-holdout-313
+- harvest2-holdout-314
+- harvest2-holdout-316
+- harvest2-holdout-318
+- harvest2-holdout-321
+- harvest2-holdout-323
+- harvest2-holdout-325
+- harvest2-holdout-326
+- harvest2-holdout-327
+- harvest2-holdout-328
+- harvest2-holdout-329
+- harvest2-holdout-331
+- harvest2-holdout-332
+- harvest2-holdout-333
+- harvest2-holdout-335
+- harvest2-holdout-339
+- harvest2-holdout-341
+- harvest2-holdout-342
+- harvest2-holdout-343
+- harvest2-holdout-344
+- harvest2-holdout-345
+- harvest2-holdout-346
+- harvest2-holdout-347
+- harvest2-holdout-349
+- harvest2-holdout-350
+- harvest2-holdout-351
+- harvest2-holdout-352
+- harvest2-holdout-353
+- harvest2-holdout-354
+- harvest2-holdout-355
+- harvest2-holdout-356
+- harvest2-holdout-357
+- harvest2-holdout-358
+- harvest2-holdout-359
+- harvest2-holdout-361
+- harvest2-holdout-363
+- harvest2-holdout-364
+- harvest2-holdout-365
+- harvest2-holdout-367
+grounds:
+  exposed_history:
+  - harvest2-holdout-001
+  - harvest2-holdout-002
+  - harvest2-holdout-003
+  - harvest2-holdout-004
+  - harvest2-holdout-007
+  - harvest2-holdout-008
+  - harvest2-holdout-009
+  - harvest2-holdout-010
+  - harvest2-holdout-011
+  - harvest2-holdout-012
+  - harvest2-holdout-014
+  - harvest2-holdout-015
+  - harvest2-holdout-017
+  - harvest2-holdout-018
+  - harvest2-holdout-021
+  - harvest2-holdout-022
+  - harvest2-holdout-023
+  - harvest2-holdout-024
+  - harvest2-holdout-025
+  - harvest2-holdout-026
+  - harvest2-holdout-027
+  - harvest2-holdout-028
+  - harvest2-holdout-029
+  - harvest2-holdout-030
+  - harvest2-holdout-031
+  - harvest2-holdout-032
+  - harvest2-holdout-035
+  - harvest2-holdout-036
+  - harvest2-holdout-037
+  - harvest2-holdout-039
+  - harvest2-holdout-040
+  - harvest2-holdout-041
+  - harvest2-holdout-042
+  - harvest2-holdout-043
+  - harvest2-holdout-044
+  - harvest2-holdout-046
+  - harvest2-holdout-048
+  - harvest2-holdout-050
+  - harvest2-holdout-053
+  - harvest2-holdout-054
+  - harvest2-holdout-056
+  - harvest2-holdout-057
+  - harvest2-holdout-058
+  - harvest2-holdout-059
+  - harvest2-holdout-060
+  - harvest2-holdout-061
+  - harvest2-holdout-063
+  - harvest2-holdout-064
+  - harvest2-holdout-065
+  - harvest2-holdout-067
+  - harvest2-holdout-069
+  - harvest2-holdout-070
+  - harvest2-holdout-072
+  - harvest2-holdout-073
+  - harvest2-holdout-075
+  - harvest2-holdout-076
+  - harvest2-holdout-077
+  - harvest2-holdout-078
+  - harvest2-holdout-079
+  - harvest2-holdout-081
+  - harvest2-holdout-082
+  - harvest2-holdout-085
+  - harvest2-holdout-086
+  - harvest2-holdout-088
+  - harvest2-holdout-089
+  - harvest2-holdout-090
+  - harvest2-holdout-091
+  - harvest2-holdout-092
+  - harvest2-holdout-093
+  - harvest2-holdout-094
+  - harvest2-holdout-095
+  - harvest2-holdout-097
+  - harvest2-holdout-099
+  - harvest2-holdout-100
+  - harvest2-holdout-101
+  - harvest2-holdout-102
+  - harvest2-holdout-106
+  - harvest2-holdout-107
+  - harvest2-holdout-108
+  - harvest2-holdout-110
+  - harvest2-holdout-111
+  - harvest2-holdout-112
+  - harvest2-holdout-114
+  - harvest2-holdout-115
+  - harvest2-holdout-116
+  - harvest2-holdout-118
+  - harvest2-holdout-119
+  - harvest2-holdout-122
+  - harvest2-holdout-124
+  - harvest2-holdout-125
+  - harvest2-holdout-126
+  - harvest2-holdout-129
+  - harvest2-holdout-130
+  - harvest2-holdout-131
+  - harvest2-holdout-132
+  - harvest2-holdout-133
+  - harvest2-holdout-134
+  - harvest2-holdout-135
+  - harvest2-holdout-138
+  - harvest2-holdout-140
+  - harvest2-holdout-142
+  - harvest2-holdout-143
+  - harvest2-holdout-144
+  - harvest2-holdout-147
+  - harvest2-holdout-148
+  - harvest2-holdout-149
+  - harvest2-holdout-150
+  - harvest2-holdout-151
+  - harvest2-holdout-152
+  - harvest2-holdout-153
+  - harvest2-holdout-156
+  - harvest2-holdout-158
+  - harvest2-holdout-159
+  - harvest2-holdout-160
+  - harvest2-holdout-161
+  - harvest2-holdout-162
+  - harvest2-holdout-163
+  - harvest2-holdout-164
+  - harvest2-holdout-165
+  - harvest2-holdout-166
+  - harvest2-holdout-167
+  - harvest2-holdout-168
+  - harvest2-holdout-169
+  - harvest2-holdout-170
+  - harvest2-holdout-171
+  - harvest2-holdout-176
+  - harvest2-holdout-177
+  - harvest2-holdout-178
+  - harvest2-holdout-179
+  - harvest2-holdout-180
+  - harvest2-holdout-181
+  - harvest2-holdout-182
+  - harvest2-holdout-184
+  - harvest2-holdout-185
+  - harvest2-holdout-188
+  - harvest2-holdout-189
+  - harvest2-holdout-190
+  - harvest2-holdout-191
+  - harvest2-holdout-192
+  - harvest2-holdout-193
+  - harvest2-holdout-197
+  - harvest2-holdout-198
+  - harvest2-holdout-199
+  - harvest2-holdout-201
+  - harvest2-holdout-204
+  - harvest2-holdout-205
+  - harvest2-holdout-206
+  - harvest2-holdout-208
+  - harvest2-holdout-209
+  - harvest2-holdout-210
+  - harvest2-holdout-211
+  - harvest2-holdout-213
+  - harvest2-holdout-214
+  - harvest2-holdout-215
+  - harvest2-holdout-216
+  - harvest2-holdout-217
+  - harvest2-holdout-218
+  - harvest2-holdout-219
+  - harvest2-holdout-220
+  - harvest2-holdout-221
+  - harvest2-holdout-222
+  - harvest2-holdout-223
+  - harvest2-holdout-224
+  - harvest2-holdout-225
+  - harvest2-holdout-226
+  - harvest2-holdout-227
+  - harvest2-holdout-228
+  - harvest2-holdout-229
+  - harvest2-holdout-230
+  - harvest2-holdout-231
+  - harvest2-holdout-232
+  - harvest2-holdout-233
+  - harvest2-holdout-234
+  - harvest2-holdout-235
+  - harvest2-holdout-236
+  - harvest2-holdout-237
+  - harvest2-holdout-238
+  - harvest2-holdout-239
+  - harvest2-holdout-240
+  - harvest2-holdout-241
+  - harvest2-holdout-244
+  - harvest2-holdout-246
+  - harvest2-holdout-247
+  - harvest2-holdout-248
+  - harvest2-holdout-249
+  - harvest2-holdout-250
+  - harvest2-holdout-251
+  - harvest2-holdout-252
+  - harvest2-holdout-253
+  - harvest2-holdout-254
+  - harvest2-holdout-255
+  - harvest2-holdout-256
+  - harvest2-holdout-257
+  - harvest2-holdout-258
+  - harvest2-holdout-259
+  - harvest2-holdout-260
+  - harvest2-holdout-262
+  - harvest2-holdout-264
+  - harvest2-holdout-265
+  - harvest2-holdout-266
+  - harvest2-holdout-268
+  - harvest2-holdout-269
+  - harvest2-holdout-272
+  - harvest2-holdout-273
+  - harvest2-holdout-274
+  - harvest2-holdout-275
+  - harvest2-holdout-276
+  - harvest2-holdout-278
+  - harvest2-holdout-279
+  - harvest2-holdout-280
+  - harvest2-holdout-282
+  - harvest2-holdout-283
+  - harvest2-holdout-284
+  - harvest2-holdout-286
+  - harvest2-holdout-287
+  - harvest2-holdout-289
+  - harvest2-holdout-290
+  - harvest2-holdout-291
+  - harvest2-holdout-292
+  - harvest2-holdout-293
+  - harvest2-holdout-294
+  - harvest2-holdout-295
+  - harvest2-holdout-298
+  - harvest2-holdout-299
+  - harvest2-holdout-301
+  - harvest2-holdout-302
+  - harvest2-holdout-303
+  - harvest2-holdout-304
+  - harvest2-holdout-305
+  - harvest2-holdout-306
+  - harvest2-holdout-309
+  - harvest2-holdout-311
+  - harvest2-holdout-312
+  - harvest2-holdout-313
+  - harvest2-holdout-314
+  - harvest2-holdout-316
+  - harvest2-holdout-318
+  - harvest2-holdout-321
+  - harvest2-holdout-323
+  - harvest2-holdout-325
+  - harvest2-holdout-326
+  - harvest2-holdout-327
+  - harvest2-holdout-328
+  - harvest2-holdout-329
+  - harvest2-holdout-331
+  - harvest2-holdout-332
+  - harvest2-holdout-333
+  - harvest2-holdout-335
+  - harvest2-holdout-339
+  - harvest2-holdout-341
+  - harvest2-holdout-342
+  - harvest2-holdout-343
+  - harvest2-holdout-344
+  - harvest2-holdout-345
+  - harvest2-holdout-346
+  - harvest2-holdout-347
+  - harvest2-holdout-350
+  - harvest2-holdout-351
+  - harvest2-holdout-352
+  - harvest2-holdout-353
+  - harvest2-holdout-354
+  - harvest2-holdout-355
+  - harvest2-holdout-356
+  - harvest2-holdout-357
+  - harvest2-holdout-358
+  - harvest2-holdout-359
+  - harvest2-holdout-361
+  - harvest2-holdout-363
+  - harvest2-holdout-364
+  - harvest2-holdout-365
+  - harvest2-holdout-367
+  near_copy_only:
+  - harvest2-holdout-005
+  - harvest2-holdout-006
+  - harvest2-holdout-016
+  - harvest2-holdout-019
+  - harvest2-holdout-033
+  - harvest2-holdout-087
+  - harvest2-holdout-109
+  - harvest2-holdout-157
+  - harvest2-holdout-297
+  - harvest2-holdout-307
+  - harvest2-holdout-349
+scored_modes:
+- copy
+not_run_by_design:
+- afar_g90
+- cce19_g90
+- cce20_g90
+- cce21_g90
+sealed_cases: 367
+unexposed_cases: 85

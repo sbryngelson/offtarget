@@ -1,0 +1,394 @@
+# The reproducer runs of data/evidence/gate_probe/reduce/ and of the fuzz x0-alloc:197 kernel removals
+# (Tuolumne MI300A, -O2, OMP_TARGET_OFFLOAD=mandatory; results/t48/batch7-17, 2026-10-26). id: outcome x runs.
+# ids: redc/redcv/fc64 C reductions (N/toolchain/XNACK); redcafar AFAR break point; redacc/acci8/accv/fi8 OpenACC
+# reductions (default kind, integer(8), with copy); acc81s the stress program with its sums printed; alloc 2**31/2**32
+# and iter_32; unh/x197/x197v/x197d/inred/inh/inh2 the x0-alloc:197 reduction; lpfind the rewritten lastprivate finding.
+acc81s/cce19/0 {'RESULT checksum=356456632 ran_on_host=0': 3}
+acc81s/cce20/0 {'RESULT checksum=-117006471 ran_on_host=0': 1, 'RESULT checksum=-1142595946 ran_on_host=0': 1, 'RESULT checksum=1604219336 ran_on_host=0': 1}
+acc81s/cce20/1 {'RESULT checksum=-539224904 ran_on_host=0': 1, 'RESULT checksum=-1270579358 ran_on_host=0': 1, 'RESULT checksum=98822964 ran_on_host=0': 1}
+acc81s/cce21/0 {'RESULT checksum=641897253 ran_on_host=0': 1, 'RESULT checksum=1516735794 ran_on_host=0': 1, 'RESULT checksum=976869653 ran_on_host=0': 1}
+acc81s/cce21/1 {'RESULT checksum=1200326391 ran_on_host=0': 1, 'RESULT checksum=468528752 ran_on_host=0': 1, 'RESULT checksum=678310118 ran_on_host=0': 1}
+acci8/10/cce19/0 {'bad= 0 first= -1 s1= 105 s10= 150': 2}
+acci8/10/cce20/0 {'bad= 0 first= -1 s1= 105 s10= 150': 2}
+acci8/10/cce21/0 {'bad= 0 first= -1 s1= 105 s10= 150': 2}
+acci8/100/cce19/0 {'bad= 0 first= -1 s1= 105 s100= 600': 2}
+acci8/100/cce20/0 {'bad= 0 first= -1 s1= 105 s100= 600': 2}
+acci8/100/cce21/0 {'bad= 0 first= -1 s1= 105 s100= 600': 2}
+acci8/125/cce19/0 {'bad= 0 first= -1 s1= 105 s125= 725': 2}
+acci8/125/cce20/0 {'bad= 0 first= -1 s1= 105 s125= 725': 2}
+acci8/125/cce21/0 {'bad= 0 first= -1 s1= 105 s125= 725': 2}
+acci8/150/cce19/0 {'bad= 0 first= -1 s1= 105 s150= 850': 2}
+acci8/150/cce20/0 {'bad= 0 first= -1 s1= 105 s150= 850': 2}
+acci8/150/cce21/0 {'bad= 0 first= -1 s1= 105 s150= 850': 2}
+acci8/175/cce19/0 {'bad= 0 first= -1 s1= 105 s175= 975': 2}
+acci8/175/cce20/0 {'bad= 0 first= -1 s1= 105 s175= 975': 2}
+acci8/175/cce21/0 {'bad= 0 first= -1 s1= 105 s175= 975': 2}
+acci8/180/cce20/0 {'bad= 1 first= 105 s1= 105 s180= 1000': 2}
+acci8/180/cce21/0 {'bad= 1 first= 105 s1= 105 s180= 1000': 2}
+acci8/190/cce20/0 {'bad= 4 first= 160 s1= 105 s190= 1050': 2}
+acci8/190/cce21/0 {'bad= 5 first= 102 s1= 105 s190= 1050': 2}
+acci8/20/cce19/0 {'bad= 0 first= -1 s1= 105 s20= 200': 2}
+acci8/20/cce20/0 {'bad= 0 first= -1 s1= 105 s20= 200': 2}
+acci8/20/cce21/0 {'bad= 0 first= -1 s1= 105 s20= 200': 2}
+acci8/25/cce19/0 {'bad= 0 first= -1 s1= 105 s25= 225': 2}
+acci8/25/cce20/0 {'bad= 0 first= -1 s1= 105 s25= 225': 2}
+acci8/25/cce21/0 {'bad= 0 first= -1 s1= 105 s25= 225': 2}
+acci8/30/cce19/0 {'bad= 0 first= -1 s1= 105 s30= 250': 2}
+acci8/30/cce20/0 {'bad= 0 first= -1 s1= 105 s30= 250': 2}
+acci8/30/cce21/0 {'bad= 0 first= -1 s1= 105 s30= 250': 2}
+acci8/40/cce19/0 {'bad= 0 first= -1 s1= 105 s40= 300': 2}
+acci8/40/cce20/0 {'bad= 0 first= -1 s1= 105 s40= 300': 2}
+acci8/40/cce21/0 {'bad= 0 first= -1 s1= 105 s40= 300': 2}
+acci8/50/cce19/0 {'bad= 0 first= -1 s1= 105 s50= 350': 2}
+acci8/50/cce20/0 {'bad= 0 first= -1 s1= 105 s50= 350': 2}
+acci8/50/cce21/0 {'bad= 0 first= -1 s1= 105 s50= 350': 2}
+acci8/75/cce19/0 {'bad= 0 first= -1 s1= 105 s75= 475': 2}
+acci8/75/cce20/0 {'bad= 0 first= -1 s1= 105 s75= 475': 2}
+acci8/75/cce21/0 {'bad= 0 first= -1 s1= 105 s75= 475': 2}
+accv/i8/cce20/0 {'bad= 17 first= 18 s1= 105 s200= 1100': 3}
+accv/i8/cce20/1 {'bad= 17 first= 18 s1= 105 s200= 1100': 3}
+accv/i8/cce21/0 {'bad= 14 first= 18 s1= 105 s200= 1100': 3}
+accv/i8/cce21/1 {'bad= 14 first= 18 s1= 105 s200= 1100': 2, 'bad= 13 first= 18 s1= 105 s200= 1100': 1}
+accv/i8copy/cce20/0 {'bad= 17 first= 18 s1= 105 s200= 1100': 3}
+accv/i8copy/cce20/1 {'bad= 16 first= 18 s1= 105 s200= 1100': 2, 'bad= 17 first= 18 s1= 105 s200= 1100': 1}
+accv/i8copy/cce21/0 {'bad= 13 first= 18 s1= 105 s200= 1100': 1, 'bad= 14 first= 18 s1= 105 s200= 1100': 2}
+accv/i8copy/cce21/1 {'bad= 13 first= 18 s1= 105 s200= 1100': 1, 'bad= 14 first= 18 s1= 105 s200= 1100': 2}
+alloc/alloc_31.f90/afar/0 {'s= 1082331768994': 2}
+alloc/alloc_31.f90/afar/1 {'s= 1082331768994': 2}
+alloc/alloc_31.f90/cce19/0 {'TIMEOUT': 2}
+alloc/alloc_31.f90/cce20/0 {'TIMEOUT': 2}
+alloc/alloc_31.f90/cce20/1 {'TIMEOUT': 2}
+alloc/alloc_31.f90/cce21/0 {'s= 1082331768994': 2}
+alloc/alloc_31.f90/cce21/1 {'s= 1082331768994': 2}
+alloc/alloc_32.f90/afar/0 {'s= 2164663527981': 2}
+alloc/alloc_32.f90/afar/1 {'s= 2164663527981': 2}
+alloc/alloc_32.f90/cce19/0 {'rc-6  | ss fault by GPU node-4 (Agent handle: 0x8004c7920) on address 0x153127800000. Reason: Write access to a read-only page. ': 1, 'rc-6  | ss fault by GPU node-4 (Agent handle: 0x8004c7920) on address 0x15312780c000. Reason: Write access to a read-only page. ': 1}
+alloc/alloc_32.f90/cce20/0 {'rc-6  | > cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x8004c7ff0) on address 0x15312780c000. Reason: Unknown. ': 2}
+alloc/alloc_32.f90/cce20/1 {'rc-6  | ss fault by GPU node-4 (Agent handle: 0x8004c7ff0) on address 0xfffc004c1000. Reason: Write access to a read-only page. ': 1, 'rc-6  | ss fault by GPU node-4 (Agent handle: 0x8004c7ff0) on address 0xfffc005cb000. Reason: Write access to a read-only page. ': 1}
+alloc/alloc_32.f90/cce21/0 {'s= 2164663393401': 2}
+alloc/alloc_32.f90/cce21/1 {'s= 2164663393401': 2}
+alloc/iter_32.f90/afar/0 {'s= 2164663527981': 2}
+alloc/iter_32.f90/cce20/0 {'TIMEOUT': 2}
+alloc/iter_32.f90/cce20/1 {'TIMEOUT': 2}
+alloc/iter_32.f90/cce21/0 {'s= 2164663527981': 4}
+alloc/iter_32.f90/cce21/1 {'s= 2164663527981': 4}
+fc64/afar/0 {"rc-6  | upted by hardware trap instruction Use 'OFFLOAD_TRACK_NUM_KERNEL_LAUNCH_TRACES=1' to show the stack trace of the kernel ": 3}
+fc64/afar/1 {"rc-6  | upted by hardware trap instruction Use 'OFFLOAD_TRACK_NUM_KERNEL_LAUNCH_TRACES=1' to show the stack trace of the kernel ": 3}
+fc64/cce19/0 {'bad= 1 first= 11 (value 620, expected 155) s1= 105 s64= 420': 3}
+fc64/cce19/1 {'bad= 1 first= 11 (value 620, expected 155) s1= 105 s64= 420': 3}
+fc64/cce20/0 {'bad= 0 first= -1 (value 0, expected 0) s1= 105 s64= 420': 3}
+fc64/cce20/1 {'bad= 0 first= -1 (value 0, expected 0) s1= 105 s64= 420': 3}
+fc64/cce21/0 {'bad= 0 first= -1 (value 0, expected 0) s1= 105 s64= 420': 3}
+fc64/cce21/1 {'bad= 0 first= -1 (value 0, expected 0) s1= 105 s64= 420': 3}
+fi8/cce19/0 {'bad= 0 first= -1 s1= 105 s200= 1100': 5}
+fi8/cce19/1 {'bad= 0 first= -1 s1= 105 s200= 1100': 5}
+fi8/cce20/0 {'bad= 17 first= 18 s1= 105 s200= 1100': 5}
+fi8/cce20/1 {'bad= 12 first= 18 s1= 105 s200= 1100': 1, 'bad= 17 first= 18 s1= 105 s200= 1100': 4}
+fi8/cce21/0 {'bad= 14 first= 18 s1= 105 s200= 1100': 3, 'bad= 7 first= 166 s1= 105 s200= 1100': 1, 'bad= 13 first= 18 s1= 105 s200= 1100': 1}
+fi8/cce21/1 {'bad= 14 first= 18 s1= 105 s200= 1100': 3, 'bad= 13 first= 18 s1= 105 s200= 1100': 2}
+inh/inred_host/afar/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host/afar/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host/cce19/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host/cce19/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host/cce20/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host/cce20/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host/cce21/0 {'r= 3 h= 1 y(16)= 0': 3}
+inh/inred_host/cce21/1 {'r= 3 h= 1 y(16)= 0': 3}
+inh/inred_host_explicit/afar/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_explicit/afar/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_explicit/cce19/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_explicit/cce19/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_explicit/cce20/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_explicit/cce20/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_explicit/cce21/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_explicit/cce21/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noh/afar/0 {'r= 3 h= 0 y(16)= 32': 3}
+inh/inred_host_noh/afar/1 {'r= 3 h= 0 y(16)= 32': 3}
+inh/inred_host_noh/cce19/0 {'r= 3 h= 0 y(16)= 32': 3}
+inh/inred_host_noh/cce19/1 {'r= 3 h= 0 y(16)= 32': 3}
+inh/inred_host_noh/cce20/0 {'r= 3 h= 0 y(16)= 32': 3}
+inh/inred_host_noh/cce20/1 {'r= 3 h= 0 y(16)= 32': 3}
+inh/inred_host_noh/cce21/0 {'r= 3 h= 0 y(16)= 0': 3}
+inh/inred_host_noh/cce21/1 {'r= 3 h= 0 y(16)= 0': 3}
+inh/inred_host_noinred/afar/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noinred/afar/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noinred/cce19/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noinred/cce19/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noinred/cce20/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noinred/cce20/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noinred/cce21/0 {'r= 3 h= 1 y(16)= 32': 3}
+inh/inred_host_noinred/cce21/1 {'r= 3 h= 1 y(16)= 32': 3}
+inh2/inred_host_idx/afar/0 {'r= 3 h= 1 y(16)= 12': 2}
+inh2/inred_host_idx/cce19/0 {'r= 3 h= 1 y(16)= 12': 2}
+inh2/inred_host_idx/cce20/0 {'r= 3 h= 1 y(16)= 12': 2}
+inh2/inred_host_idx/cce21/0 {'r= 3 h= 1 y(16)= 0': 2}
+inh2/inred_host_idx3/afar/0 {'r= 3 h= 1 y(16)= 12': 2}
+inh2/inred_host_idx3/cce19/0 {'r= 3 h= 1 y(16)= 12': 2}
+inh2/inred_host_idx3/cce20/0 {'r= 3 h= 1 y(16)= 12': 2}
+inh2/inred_host_idx3/cce21/0 {'r= 3 h= 1 y(16)= 0': 2}
+inred/inred_assumed/afar/0 {'r= 139 y(16)= 32': 3}
+inred/inred_assumed/afar/1 {'r= 139 y(16)= 32': 3}
+inred/inred_assumed/cce19/0 {'r= 139 y(16)= 32': 3}
+inred/inred_assumed/cce19/1 {'r= 139 y(16)= 32': 3}
+inred/inred_assumed/cce20/0 {'r= 139 y(16)= 32': 3}
+inred/inred_assumed/cce20/1 {'r= 139 y(16)= 32': 3}
+inred/inred_assumed/cce21/0 {'COMPILE rc1 n1_t48_f3gNLR9mQweo >>> referenced 5 more times ': 1}
+inred/inred_assumed/cce21/1 {'COMPILE rc1 n1_t48_f3gNLR9mQweo >>> referenced 5 more times ': 1}
+inred/inred_explicit/afar/0 {'r= 139 y(16)= 32': 3}
+inred/inred_explicit/afar/1 {'r= 139 y(16)= 32': 3}
+inred/inred_explicit/cce19/0 {'r= 139 y(16)= 32': 3}
+inred/inred_explicit/cce19/1 {'r= 139 y(16)= 32': 3}
+inred/inred_explicit/cce20/0 {'r= 139 y(16)= 32': 3}
+inred/inred_explicit/cce20/1 {'r= 139 y(16)= 32': 3}
+inred/inred_explicit/cce21/0 {'COMPILE rc1 1_t48_f3gNLR9mQweo >>> referenced 5 more times ': 1}
+inred/inred_explicit/cce21/1 {'COMPILE rc1 1_t48_f3gNLR9mQweo >>> referenced 5 more times ': 1}
+inred/inred_none/afar/0 {'r= 139 y(16)= 32': 3}
+inred/inred_none/afar/1 {'r= 139 y(16)= 32': 3}
+inred/inred_none/cce19/0 {'r= 139 y(16)= 32': 3}
+inred/inred_none/cce19/1 {'r= 139 y(16)= 32': 3}
+inred/inred_none/cce20/0 {'r= 139 y(16)= 32': 3}
+inred/inred_none/cce20/1 {'r= 139 y(16)= 32': 3}
+inred/inred_none/cce21/0 {'r= 139 y(16)= 32': 3}
+inred/inred_none/cce21/1 {'r= 139 y(16)= 32': 3}
+lpfind/cce19/0 {'lp= 189': 6, 'lp= 0': 4}
+lpfind/cce19/1 {'lp= 61': 1, 'lp= 189': 3, 'lp= 0': 2, 'lp= 125': 4}
+lpfind/cce20/0 {'lp= 0': 7, 'lp= 189': 3}
+lpfind/cce20/1 {'lp= 61': 3, 'lp= 0': 2, 'lp= 125': 2, 'lp= 189': 3}
+lpfind/cce21/0 {'lp= 189': 1, 'lp= 0': 8, 'lp= 125': 1}
+lpfind/cce21/1 {'lp= 61': 5, 'lp= 0': 1, 'lp= 189': 2, 'lp= 125': 2}
+redacc/100/cce19/0 {'bad= 0 first= -1 s1= 105 s100= 600': 3}
+redacc/100/cce19/1 {'bad= 0 first= -1 s1= 105 s100= 600': 3}
+redacc/100/cce20/0 {'bad= 0 first= -1 s1= 105 s100= 600': 3}
+redacc/100/cce20/1 {'bad= 0 first= -1 s1= 105 s100= 600': 3}
+redacc/100/cce21/0 {'bad= 0 first= -1 s1= 105 s100= 600': 3}
+redacc/100/cce21/1 {'bad= 0 first= -1 s1= 105 s100= 600': 3}
+redacc/125/cce19/0 {'bad= 0 first= -1 s1= 105 s125= 725': 3}
+redacc/125/cce19/1 {'bad= 0 first= -1 s1= 105 s125= 725': 3}
+redacc/125/cce20/0 {'bad= 0 first= -1 s1= 105 s125= 725': 3}
+redacc/125/cce20/1 {'bad= 0 first= -1 s1= 105 s125= 725': 3}
+redacc/125/cce21/0 {'bad= 0 first= -1 s1= 105 s125= 725': 3}
+redacc/125/cce21/1 {'bad= 0 first= -1 s1= 105 s125= 725': 3}
+redacc/150/cce19/0 {'bad= 0 first= -1 s1= 105 s150= 850': 3}
+redacc/150/cce19/1 {'bad= 0 first= -1 s1= 105 s150= 850': 3}
+redacc/150/cce20/0 {'bad= 0 first= -1 s1= 105 s150= 850': 3}
+redacc/150/cce20/1 {'bad= 0 first= -1 s1= 105 s150= 850': 3}
+redacc/150/cce21/0 {'bad= 0 first= -1 s1= 105 s150= 850': 3}
+redacc/150/cce21/1 {'bad= 0 first= -1 s1= 105 s150= 850': 3}
+redacc/175/cce19/0 {'bad= 0 first= -1 s1= 105 s175= 975': 3}
+redacc/175/cce19/1 {'bad= 0 first= -1 s1= 105 s175= 975': 3}
+redacc/175/cce20/0 {'bad= 0 first= -1 s1= 105 s175= 975': 3}
+redacc/175/cce20/1 {'bad= 0 first= -1 s1= 105 s175= 975': 3}
+redacc/175/cce21/0 {'bad= 0 first= -1 s1= 105 s175= 975': 3}
+redacc/175/cce21/1 {'bad= 0 first= -1 s1= 105 s175= 975': 3}
+redacc/200/cce19/0 {'bad= 0 first= -1 s1= 105 s200= 1100': 3}
+redacc/200/cce19/1 {'bad= 0 first= -1 s1= 105 s200= 1100': 3}
+redacc/200/cce20/0 {'bad= 0 first= -1 s1= 105 s200= 1100': 3}
+redacc/200/cce20/1 {'bad= 0 first= -1 s1= 105 s200= 1100': 3}
+redacc/200/cce21/0 {'bad= 0 first= -1 s1= 105 s200= 1100': 3}
+redacc/200/cce21/1 {'bad= 0 first= -1 s1= 105 s200= 1100': 3}
+redacc/25/cce19/0 {'bad= 0 first= -1 s1= 105 s25= 225': 3}
+redacc/25/cce19/1 {'bad= 0 first= -1 s1= 105 s25= 225': 3}
+redacc/25/cce20/0 {'bad= 0 first= -1 s1= 105 s25= 225': 3}
+redacc/25/cce20/1 {'bad= 0 first= -1 s1= 105 s25= 225': 3}
+redacc/25/cce21/0 {'bad= 0 first= -1 s1= 105 s25= 225': 3}
+redacc/25/cce21/1 {'bad= 0 first= -1 s1= 105 s25= 225': 3}
+redacc/50/cce19/0 {'bad= 0 first= -1 s1= 105 s50= 350': 3}
+redacc/50/cce19/1 {'bad= 0 first= -1 s1= 105 s50= 350': 3}
+redacc/50/cce20/0 {'bad= 0 first= -1 s1= 105 s50= 350': 3}
+redacc/50/cce20/1 {'bad= 0 first= -1 s1= 105 s50= 350': 3}
+redacc/50/cce21/0 {'bad= 0 first= -1 s1= 105 s50= 350': 3}
+redacc/50/cce21/1 {'bad= 0 first= -1 s1= 105 s50= 350': 3}
+redacc/75/cce19/0 {'bad= 0 first= -1 s1= 105 s75= 475': 3}
+redacc/75/cce19/1 {'bad= 0 first= -1 s1= 105 s75= 475': 3}
+redacc/75/cce20/0 {'bad= 0 first= -1 s1= 105 s75= 475': 3}
+redacc/75/cce20/1 {'bad= 0 first= -1 s1= 105 s75= 475': 3}
+redacc/75/cce21/0 {'bad= 0 first= -1 s1= 105 s75= 475': 3}
+redacc/75/cce21/1 {'bad= 0 first= -1 s1= 105 s75= 475': 3}
+redc/16/cce19/0 {'bad= 0 first= -1 s1= 105 s16= 180': 3}
+redc/16/cce19/1 {'bad= 0 first= -1 s1= 105 s16= 180': 3}
+redc/16/cce20/0 {'bad= 0 first= -1 s1= 105 s16= 180': 3}
+redc/16/cce20/1 {'bad= 0 first= -1 s1= 105 s16= 180': 3}
+redc/16/cce21/0 {'bad= 0 first= -1 s1= 105 s16= 180': 3}
+redc/16/cce21/1 {'bad= 0 first= -1 s1= 105 s16= 180': 3}
+redc/24/cce19/0 {'bad= 0 first= -1 s1= 105 s24= 220': 3}
+redc/24/cce19/1 {'bad= 0 first= -1 s1= 105 s24= 220': 3}
+redc/24/cce20/0 {'bad= 0 first= -1 s1= 105 s24= 220': 3}
+redc/24/cce20/1 {'bad= 0 first= -1 s1= 105 s24= 220': 3}
+redc/24/cce21/0 {'bad= 0 first= -1 s1= 105 s24= 220': 3}
+redc/24/cce21/1 {'bad= 0 first= -1 s1= 105 s24= 220': 3}
+redc/32/cce19/0 {'bad= 0 first= -1 s1= 105 s32= 260': 3}
+redc/32/cce19/1 {'bad= 0 first= -1 s1= 105 s32= 260': 3}
+redc/32/cce20/0 {'bad= 0 first= -1 s1= 105 s32= 260': 3}
+redc/32/cce20/1 {'bad= 0 first= -1 s1= 105 s32= 260': 3}
+redc/32/cce21/0 {'bad= 0 first= -1 s1= 105 s32= 260': 3}
+redc/32/cce21/1 {'bad= 0 first= -1 s1= 105 s32= 260': 3}
+redc/40/cce19/0 {'bad= 0 first= -1 s1= 105 s40= 300': 3}
+redc/40/cce19/1 {'bad= 0 first= -1 s1= 105 s40= 300': 3}
+redc/40/cce20/0 {'bad= 0 first= -1 s1= 105 s40= 300': 3}
+redc/40/cce20/1 {'bad= 0 first= -1 s1= 105 s40= 300': 3}
+redc/40/cce21/0 {'bad= 0 first= -1 s1= 105 s40= 300': 3}
+redc/40/cce21/1 {'bad= 0 first= -1 s1= 105 s40= 300': 3}
+redc/48/cce19/0 {'bad= 0 first= -1 s1= 105 s48= 340': 3}
+redc/48/cce19/1 {'bad= 0 first= -1 s1= 105 s48= 340': 3}
+redc/48/cce20/0 {'bad= 0 first= -1 s1= 105 s48= 340': 3}
+redc/48/cce20/1 {'bad= 0 first= -1 s1= 105 s48= 340': 3}
+redc/48/cce21/0 {'bad= 0 first= -1 s1= 105 s48= 340': 3}
+redc/48/cce21/1 {'bad= 0 first= -1 s1= 105 s48= 340': 3}
+redc/56/cce19/0 {'bad= 0 first= -1 s1= 105 s56= 380': 3}
+redc/56/cce19/1 {'bad= 0 first= -1 s1= 105 s56= 380': 3}
+redc/56/cce20/0 {'bad= 0 first= -1 s1= 105 s56= 380': 3}
+redc/56/cce20/1 {'bad= 0 first= -1 s1= 105 s56= 380': 3}
+redc/56/cce21/0 {'bad= 0 first= -1 s1= 105 s56= 380': 3}
+redc/56/cce21/1 {'bad= 0 first= -1 s1= 105 s56= 380': 3}
+redc/64/cce19/0 {'bad= 1 first= 11 s1= 105 s64= 420': 3}
+redc/64/cce19/1 {'bad= 1 first= 11 s1= 105 s64= 420': 3}
+redc/64/cce20/0 {'bad= 0 first= -1 s1= 105 s64= 420': 3}
+redc/64/cce20/1 {'bad= 0 first= -1 s1= 105 s64= 420': 3}
+redc/64/cce21/0 {'bad= 0 first= -1 s1= 105 s64= 420': 3}
+redc/64/cce21/1 {'bad= 0 first= -1 s1= 105 s64= 420': 3}
+redc/8/cce19/0 {'bad= 0 first= -1 s1= 105 s8= 140': 3}
+redc/8/cce19/1 {'bad= 0 first= -1 s1= 105 s8= 140': 3}
+redc/8/cce20/0 {'bad= 0 first= -1 s1= 105 s8= 140': 3}
+redc/8/cce20/1 {'bad= 0 first= -1 s1= 105 s8= 140': 3}
+redc/8/cce21/0 {'bad= 0 first= -1 s1= 105 s8= 140': 3}
+redc/8/cce21/1 {'bad= 0 first= -1 s1= 105 s8= 140': 3}
+redcafar/10/afar/0 {'bad= 0 first= -1 s1= 105 s10= 150': 2}
+redcafar/11/afar/0 {'bad= 0 first= -1 s1= 105 s11= 155': 2}
+redcafar/12/afar/0 {'bad= 0 first= -1 s1= 105 s12= 160': 2}
+redcafar/13/afar/0 {'bad= 0 first= -1 s1= 105 s13= 165': 2}
+redcafar/14/afar/0 {'bad= 0 first= -1 s1= 105 s14= 170': 2}
+redcafar/15/afar/0 {'bad= 0 first= -1 s1= 105 s15= 175': 2}
+redcafar/16/afar/0 {'bad= 0 first= -1 s1= 105 s16= 180': 2}
+redcafar/17/afar/0 {'bad= 0 first= -1 s1= 105 s17= 185': 2}
+redcafar/18/afar/0 {'bad= 0 first= -1 s1= 105 s18= 190': 2}
+redcafar/19/afar/0 {'bad= 0 first= -1 s1= 105 s19= 195': 2}
+redcafar/20/afar/0 {'bad= 0 first= -1 s1= 105 s20= 200': 2}
+redcafar/21/afar/0 {'bad= 0 first= -1 s1= 105 s21= 205': 2}
+redcafar/22/afar/0 {'bad= 0 first= -1 s1= 105 s22= 210': 2}
+redcafar/23/afar/0 {'bad= 0 first= -1 s1= 105 s23= 215': 2}
+redcafar/24/afar/0 {'bad= 0 first= -1 s1= 105 s24= 220': 2}
+redcafar/25/afar/0 {'bad= 0 first= -1 s1= 105 s25= 225': 2}
+redcafar/26/afar/0 {'bad= 0 first= -1 s1= 105 s26= 230': 2}
+redcafar/27/afar/0 {'bad= 0 first= -1 s1= 105 s27= 235': 2}
+redcafar/28/afar/0 {'bad= 0 first= -1 s1= 105 s28= 240': 2}
+redcafar/29/afar/0 {'bad= 0 first= -1 s1= 105 s29= 245': 2}
+redcafar/30/afar/0 {'bad= 0 first= -1 s1= 105 s30= 250': 2}
+redcafar/31/afar/0 {'bad= 0 first= -1 s1= 105 s31= 255': 2}
+redcafar/32/afar/0 {'bad= 0 first= -1 s1= 105 s32= 260': 2}
+redcafar/33/afar/0 {'bad= 0 first= -1 s1= 105 s33= 265': 2}
+redcafar/34/afar/0 {'bad= 0 first= -1 s1= 105 s34= 270': 2}
+redcafar/35/afar/0 {'bad= 0 first= -1 s1= 105 s35= 275': 2}
+redcafar/36/afar/0 {'bad= 0 first= -1 s1= 105 s36= 280': 2}
+redcafar/37/afar/0 {'bad= 0 first= -1 s1= 105 s37= 285': 2}
+redcafar/38/afar/0 {'bad= 0 first= -1 s1= 105 s38= 290': 2}
+redcafar/39/afar/0 {'bad= 0 first= -1 s1= 105 s39= 295': 2}
+redcafar/40/afar/0 {'bad= 0 first= -1 s1= 105 s40= 300': 2}
+redcafar/41/afar/0 {'bad= 0 first= -1 s1= 105 s41= 305': 2}
+redcafar/42/afar/0 {'bad= 0 first= -1 s1= 105 s42= 310': 2}
+redcafar/43/afar/0 {'bad= 0 first= -1 s1= 105 s43= 315': 2}
+redcafar/44/afar/0 {'bad= 0 first= -1 s1= 105 s44= 320': 2}
+redcafar/45/afar/0 {'bad= 0 first= -1 s1= 105 s45= 325': 2}
+redcafar/46/afar/0 {'bad= 0 first= -1 s1= 105 s46= 330': 2}
+redcafar/47/afar/0 {'bad= 0 first= -1 s1= 105 s47= 335': 2}
+redcafar/48/afar/0 {'bad= 0 first= -1 s1= 105 s48= 340': 2}
+redcafar/49/afar/0 {'bad= 0 first= -1 s1= 105 s49= 345': 2}
+redcafar/50/afar/0 {'bad= 0 first= -1 s1= 105 s50= 350': 2}
+redcafar/51/afar/0 {'bad= 0 first= -1 s1= 105 s51= 355': 2}
+redcafar/52/afar/0 {'bad= 0 first= -1 s1= 105 s52= 360': 2}
+redcafar/53/afar/0 {'bad= 0 first= -1 s1= 105 s53= 365': 2}
+redcafar/54/afar/0 {'bad= 0 first= -1 s1= 105 s54= 370': 2}
+redcafar/55/afar/0 {'bad= 0 first= -1 s1= 105 s55= 375': 2}
+redcafar/56/afar/0 {'bad= 0 first= -1 s1= 105 s56= 380': 2}
+redcafar/57/afar/0 {'bad= 0 first= -1 s1= 105 s57= 385': 2}
+redcafar/58/afar/0 {'bad= 0 first= -1 s1= 105 s58= 390': 2}
+redcafar/59/afar/0 {'bad= 0 first= -1 s1= 105 s59= 395': 2}
+redcafar/60/afar/0 {'bad= 0 first= -1 s1= 105 s60= 400': 2}
+redcafar/61/afar/0 {'bad= 0 first= -1 s1= 105 s61= 405': 2}
+redcafar/62/afar/0 {'bad= 0 first= -1 s1= 105 s62= 410': 2}
+redcafar/63/afar/0 {"rc-6  | upted by hardware trap instruction Use 'OFFLOAD_TRACK_NUM_KERNEL_LAUNCH_TRACES=1' to show the stack trace of the kernel ": 2}
+redcafar/64/afar/0 {"rc-6  | upted by hardware trap instruction Use 'OFFLOAD_TRACK_NUM_KERNEL_LAUNCH_TRACES=1' to show the stack trace of the kernel ": 2}
+redcafar/8/afar/0 {'bad= 0 first= -1 s1= 105 s8= 140': 2}
+redcafar/9/afar/0 {'bad= 0 first= -1 s1= 105 s9= 145': 2}
+redcv/57/cce19/0 {'fv= 0 bad= 0 first= -1 s1= 105 s57= 385': 2}
+redcv/58/cce19/0 {'fv= 0 bad= 0 first= -1 s1= 105 s58= 390': 2}
+redcv/59/cce19/0 {'fv= 0 bad= 0 first= -1 s1= 105 s59= 395': 2}
+redcv/60/cce19/0 {'fv= 0 bad= 0 first= -1 s1= 105 s60= 400': 2}
+redcv/61/cce19/0 {'fv= 0 bad= 0 first= -1 s1= 105 s61= 405': 2}
+redcv/62/cce19/0 {'fv= 0 bad= 0 first= -1 s1= 105 s62= 410': 2}
+redcv/63/cce19/0 {'fv= 580 bad= 1 first= 3 s1= 105 s63= 415': 2}
+redcv/64/cce19/0 {'fv= 620 bad= 1 first= 11 s1= 105 s64= 420': 2}
+unh/k1/afar/0 {'r1a= 243 r1b= 0': 2}
+unh/k1/cce19/0 {'r1a= 243 r1b= 0': 2}
+unh/k1/cce20/0 {'r1a= 243 r1b= 0': 2}
+unh/k1/cce21/0 {'r1a= 243 r1b= 0': 2}
+unh/k2/afar/0 {'r= -2': 2}
+unh/k2/cce19/0 {'r= -2': 2}
+unh/k2/cce20/0 {'r= -2': 2}
+unh/k2/cce21/0 {'COMPILE rc1  >>> referenced 1 more times ': 1}
+unh/k3/afar/0 {'r3a= 0 r3b= 242 ref3b= 242': 2}
+unh/k3/cce19/0 {'r3a= 0 r3b= 242 ref3b= 242': 2}
+unh/k3/cce20/0 {'r3a= 0 r3b= 242 ref3b= 242': 2}
+unh/k3/cce21/0 {'r3a= 0 r3b= 242 ref3b= 242': 2}
+unh/k4/afar/0 {'r= 139': 2}
+unh/k4/cce19/0 {'r= 139': 2}
+unh/k4/cce20/0 {'r= 139': 2}
+unh/k4/cce21/0 {'COMPILE rc1 ngelson1_t48_f3gN1dh1VcWb >>> referenced 5 more times ': 1}
+x197/full/cce20/0 {'rc-6  |   Unhandled Reduction!!!  Memory access fault by GPU node-4 (Agent handle: 0x4d2110) on address (nil). Reason: Unknown. ': 2}
+x197/k1k2k3/cce20/0 {'RESULT checksum=1454245699 ran_on_host=0': 2}
+x197/k1k4/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x4cd110) on address (nil). Reason: Unknown. ': 2}
+x197/k1only/cce20/0 {'RESULT checksum=1773510952 ran_on_host=0': 2}
+x197/k4only/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x563840) on address (nil). Reason: Unknown. ': 2}
+x197/nok1/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x568160) on address (nil). Reason: Unknown. ': 2}
+x197/nok2/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x4cf110) on address (nil). Reason: Unknown. ': 2}
+x197/nok3/cce20/0 {'rc-6  |   Unhandled Reduction!!!  Memory access fault by GPU node-4 (Agent handle: 0x4cf110) on address (nil). Reason: Unknown. ': 2}
+x197/nok4/cce20/0 {'RESULT checksum=1454245699 ran_on_host=0': 2}
+x197d/d_as1/cce19/0 {'rc-6  | 0 => cray-libsci/25.03.0  Memory access fault by GPU node-4 (Agent handle: 0x56fe50) on address (nil). Reason: Unknown. ': 2}
+x197d/d_as1/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x562490) on address (nil). Reason: Unknown. ': 2}
+x197d/d_hf4/cce19/0 {'RESULT checksum=422935079 ran_on_host=0': 2}
+x197d/d_hf4/cce20/0 {'RESULT checksum=422935079 ran_on_host=0': 2}
+x197d/d_ib/cce19/0 {'rc-6  | 0 => cray-libsci/25.03.0  Memory access fault by GPU node-4 (Agent handle: 0x56fdf0) on address (nil). Reason: Unknown. ': 2}
+x197d/d_ib/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x5624a0) on address (nil). Reason: Unknown. ': 2}
+x197d/d_ic/cce19/0 {'rc-6  | 0 => cray-libsci/25.03.0  Memory access fault by GPU node-4 (Agent handle: 0x56fe40) on address (nil). Reason: Unknown. ': 2}
+x197d/d_ic/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x562480) on address (nil). Reason: Unknown. ': 2}
+x197d/d_o3/cce19/0 {'RESULT checksum=251306334 ran_on_host=0': 2}
+x197d/d_o3/cce20/0 {'RESULT checksum=251306334 ran_on_host=0': 2}
+x197v/explicit/cce19/0 {'RESULT checksum=986866641 ran_on_host=0': 2}
+x197v/explicit/cce20/0 {'RESULT checksum=986866641 ran_on_host=0': 2}
+x197v/explicit/cce21/0 {'COMPILE rc1 t48_f3gNKWRWJTou >>> referenced 1 more times ': 1}
+x197v/noinred/cce19/0 {'RESULT checksum=1158495386 ran_on_host=0': 2}
+x197v/noinred/cce20/0 {'RESULT checksum=1158495386 ran_on_host=0': 2}
+x197v/noinred/cce21/0 {'RESULT checksum=1158495386 ran_on_host=0': 2}
+x197v/nor4a/cce19/0 {'rc-6  | 0 => cray-libsci/25.03.0  Memory access fault by GPU node-4 (Agent handle: 0x56fe50) on address (nil). Reason: Unknown. ': 2}
+x197v/nor4a/cce20/0 {'rc-6  | cce/20.0.0 => cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x562490) on address (nil). Reason: Unknown. ': 2}
+x197v/nor4a/cce21/0 {"rc1  | hw_amd.h:254 CRAY_ACC_ERROR -  hipGetDevice returned hipErrorIllegalAddress: 'an illegal memory access was encountered' ": 2}
+# second pass (results/t48/batch18, batch19; the 2**32 localization one run at a time; the in_reduction program without h and its one-change controls):
+r2/alloc_32/cce19/1 {'rc-6  | ss fault by GPU node-4 (Agent handle: 0x8004c7920) on address 0xfffc004a1000. Reason: Write access to a read-only page. ': 1}
+r2/fill_check_32/cce20/0 {'rc-6  | > cce/20.0.2  Memory access fault by GPU node-4 (Agent handle: 0x8004c7000) on address 0x153127803000. Reason: Unknown. ': 1}
+r2/fill_check_32/cce21/0 {'s= 2164663393401 wrong= 256 big(nn)= 0 big(nn-256)= 814': 1}
+r2/fill_check_32/cce21/1 {'s= 2164663393145 wrong= 256 big(nn)= -1 big(nn-256)= 814': 1}
+r2/hostfill_reduce_32/cce21/0 {'s= 2164663527981': 1}
+r2/hostfill_reduce_32/cce21/1 {'s= 2164663527981': 1}
+r2/inred_noh/afar/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh/afar/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh/cce19/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh/cce19/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh/cce20/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh/cce20/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh/cce21/0 {'r= 3 y(16)= 0': 3}
+r2/inred_noh/cce21/1 {'r= 3 y(16)= 0': 3}
+r2/inred_noh_explicit/afar/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_explicit/afar/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_explicit/cce19/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_explicit/cce19/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_explicit/cce20/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_explicit/cce20/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_explicit/cce21/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_explicit/cce21/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/afar/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/afar/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/cce19/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/cce19/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/cce20/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/cce20/1 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/cce21/0 {'r= 3 y(16)= 32': 3}
+r2/inred_noh_noinred/cce21/1 {'r= 3 y(16)= 32': 3}

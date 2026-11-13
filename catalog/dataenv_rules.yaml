@@ -1,0 +1,2057 @@
+# The data-environment rule table. The spec's data-sharing, mapping and residency rules for
+# OpenMP 5.0, 5.2 and 6.0 and OpenACC 3.4, one row per rule. Read by offload.engine.dataenv_rules (schema,
+# vocabularies, citation check) for the program generator (offload.engine.dataenv_gen).
+#
+# Row fields (offload/engine/dataenv_rules.py docstring):
+#   id, model (omp|acc), versions, languages (f90, c: the languages the generator writes the rule in)
+#   spec       citations, one or more per version: {version, section, page, lines, quote}; page is the
+#              PRINTED page read from the page footer (the text above a footer is on that footer's page),
+#              lines are the margin numbers (OpenMP: per page; OpenACC: through the document); every quote
+#              is checked against results/spec_cache/ (tools/dataenv/dataenv.py cite; tests/dataenv/test_dataenv.py)
+#   subject    what the rule decides
+#   construct, variable_kind, attribute, clauses_present, memory_mode: the axes (dataenv_rules.AXES)
+#   expected   dsa, map_type, copy_back, source (40d's Binding vocabulary); residency when the memory
+#              mode changes it. copy_back: whether the region's write reaches the original list item when
+#              the construct ends. For OpenACC, source declare_target is a visible declare directive and
+#              map_type present an item present by a visible data clause; n/a: the rule decides no such
+#              attribute
+#   observable how a program shows the expected result on the host
+#   template   the generator template (offload.engine.dataenv_gen.TEMPLATES)
+#
+# memory_mode: any = the expected value holds whether or not an original and its corresponding item share
+# storage (both modes). It says nothing about detection: where a rule copies an array back, shared storage
+# shows the region's writes on the host with or without a copy-back, so a unified-memory pass is no evidence
+# of the copy-back (the oracle audit's map(to:) mutants survive there). copy =
+# the expected value holds only where they do not share storage (discrete device memory: HSA_XNACK=0, NVHPC
+# -gpu=mem:separate); unified = it needs shared storage (HSA_XNACK=1, NVHPC managed memory).
+# OpenMP 5.2 §5.8.3 p.153 l.26-28 and 6.0 §7.9.6 p.284 l.13-15: the original and corresponding list items
+# "may share storage"; OpenACC 3.4 §2.7 p.48 l.1654-1660: an implementation "may avoid the memory
+# allocation and data movement and simply share the data in local memory".
+#
+# Expected values come from the rule text; nothing here names a compiler or a measured result.
+
+rules:
+
+# --- OpenMP: implicit data-sharing and mapping in a target construct ---------------------------------
+
+  - id: omp-target-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a scalar without the TARGET, ALLOCATABLE or POINTER attribute, referenced in a target construct with no clause for it, is not mapped: it is firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101 on the host; the region copies v to rd (map from) and sets v = 2*v + 1: rd = 101, and v stays 101 on the host (the write is to the private copy)"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.1.1", page: 272, lines: "25-26", quote: "In a target construct, variables that are not mapped after applying data-mapping attribute rules"}
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.1.1", page: 99, lines: "19-20", quote: "In a target construct, variables that are not mapped after applying data-mapping attribute rules"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.1.1", page: 213, lines: "22-23", quote: "In a target construct, variables that are not mapped after applying data-mapping attribute rules"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-target-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array referenced in a target construct with no clause for it is mapped tofrom"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i on the host; the region sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-scalar-target-attr
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "a Fortran scalar with the TARGET attribute referenced in a target construct is mapped tofrom, not firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [target]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v = 203 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "7-8", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it has appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "6-7", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "17-18", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-scalar-allocatable
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "an allocated Fortran allocatable scalar referenced in a target construct is mapped tofrom"
+    construct: target
+    variable_kind: scalar
+    attribute: [allocatable]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v = 203 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "7-8", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it has appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "6-7", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "17-18", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-scalar-pointer
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "an associated Fortran scalar pointer referenced in a target construct is mapped tofrom, with its target"
+    construct: target
+    variable_kind: scalar
+    attribute: [pointer]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "p => t, t = 101; the region copies p to rd and sets p = 2*p + 1: rd = 101 and t = 203 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "7-8", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it has appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 317, lines: "22-24", quote: "If a list item in a map clause is an associated pointer and the pointer is not the base pointer of another list item in a map clause on the same construct, then it is treated as if its pointer target is implicitly mapped in the same clause"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "6-7", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 152, lines: "1-3", quote: "If a list item in a map clause is an associated pointer and the pointer is not the base pointer of another list item in a map clause on the same construct, then it is treated as if its pointer target is implicitly mapped in the same clause"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "17-18", quote: "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-array-allocatable
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "an allocated Fortran allocatable array referenced in a target construct is mapped tofrom"
+    construct: target
+    variable_kind: array
+    attribute: [allocatable]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; the region sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-array-pointer
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "an associated Fortran array pointer referenced in a target construct is mapped tofrom, with its target"
+    construct: target
+    variable_kind: array
+    attribute: [pointer]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "p => t, t(i) = i; the region sets p(i) = 2*p(i) + 1: the host sees t(i) = 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 317, lines: "22-24", quote: "If a list item in a map clause is an associated pointer and the pointer is not the base pointer of another list item in a map clause on the same construct, then it is treated as if its pointer target is implicitly mapped in the same clause"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 152, lines: "1-3", quote: "If a list item in a map clause is an associated pointer and the pointer is not the base pointer of another list item in a map clause on the same construct, then it is treated as if its pointer target is implicitly mapped in the same clause"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-struct-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a derived-type (struct) variable referenced through its components in a target construct is mapped tofrom as a whole"
+    construct: target
+    variable_kind: derived_type
+    attribute: [component]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "x%c1 = 101, x%c2 = 0; the region copies x%c1 to rd and sets x%c2 = 2*x%c1 + 1: rd = 101 and x%c2 = 203 on the host"
+    template: struct_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 148, lines: "6-7", quote: "References to structure elements or array elements are treated as references to the structure or array"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 276, lines: "8-9", quote: "References to structure elements or array elements are treated as references to the structure or array"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-c-pointer-attach
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [c]
+    subject: "a C pointer referenced in a target construct is the base pointer of a zero-length array section: it is attached to its pointee mapped by an enclosing target data construct"
+    construct: target
+    variable_kind: c_pointer
+    attribute: [enclosing_data]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: alloc, copy_back: "yes", source: enclosing_data}
+    observable: "p points to a(0:n-1), mapped tofrom by target data; the region sets p[i] = 2*p[i] + 1: after the target data region the host sees 2*i + 1"
+    template: c_pointer_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "1-2", quote: "A variable that is of type pointer is treated as if it is the base pointer of a zero-length array section that appeared as a list item in a map clause"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 317, lines: "30-31", quote: "The corresponding pointer variable is assigned an address such that the corresponding list item can be accessed through the pointer in a target region"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 148, lines: "30-31", quote: "is treated as if it is the base pointer of a zero-length array section that had appeared as a list item in a map clause"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 152, lines: "9-10", quote: "The corresponding pointer variable is assigned an address such that the corresponding list item can be accessed through the pointer in a target region"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "6-7", quote: "A variable that is of type pointer, but is neither a pointer to function nor (for C++) a pointer to a member function, is treated as if it is the array base of a zero-offset assumed-size array"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "10-11", quote: "pointer attachment is performed and the corresponding pointer becomes an attached pointer to the corresponding list item"}
+
+  - id: omp-target-module-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a module (C: file-scope) scalar that is not declare target, referenced in a target construct, is firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-target-module-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a module (C: file-scope) array that is not declare target, referenced in a target construct, is mapped tofrom"
+    construct: target
+    variable_kind: array
+    attribute: [module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; the region sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-common-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "a scalar in a common block, referenced in a target construct, is firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [common]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-target-common-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "an array in a common block, referenced in a target construct, is mapped tofrom"
+    construct: target
+    variable_kind: array
+    attribute: [common]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; the region sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-target-value-dummy-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a VALUE dummy argument (C: a by-value parameter) referenced in a target construct inside the procedure is firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [value_argument]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "the procedure is called with 101; its region copies v to rd and sets v = 2*v + 1; the procedure returns rd and v: 101 and 101"
+    template: value_arg
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-struct-pointer-member-attach
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a pointer component (C: pointer member) mapped together with its structure is attached: the region reaches the mapped pointee through it"
+    construct: target
+    variable_kind: derived_type
+    attribute: [component, pointer]
+    clauses_present: ["map(to)", "map(tofrom)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: explicit}
+    observable: "s%p => t(1:n), t(i) = i; target map(to: s) map(tofrom: s%p(1:n)) sets s%p(i) = 2*s%p(i) + 1: the host sees t(i) = 2*i + 1"
+    template: struct_ptr_member
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 317, lines: "30-31", quote: "The corresponding pointer variable is assigned an address such that the corresponding list item can be accessed through the pointer in a target region"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 318, lines: "4", quote: "The corresponding pointer variable becomes an attached pointer for the corresponding list item"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 152, lines: "9-10", quote: "The corresponding pointer variable is assigned an address such that the corresponding list item can be accessed through the pointer in a target region"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 152, lines: "14", quote: "The corresponding pointer variable becomes an attached pointer for the corresponding list item"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "10-11", quote: "pointer attachment is performed and the corresponding pointer becomes an attached pointer to the corresponding list item"}
+
+# --- OpenMP: declare target, residency and reference counts --------------------------------------------
+
+  - id: omp-declare-target-scalar-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a declare target (enter/to) variable referenced in a target construct is treated as map(tofrom); its list item is never removed (infinite reference count), so the region reads and writes the device copy"
+    construct: target
+    variable_kind: scalar
+    attribute: [declare_target, module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "g = 101, target update to(g); the region copies g to rd and sets g = 2*g + 1; target update from(g): rd = 101, g = 203"
+    template: declare_target_roundtrip
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "12-13", quote: "If a variable appears in a to or link clause on a declare target directive then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.0", section: "2.12.7", page: 182, lines: "21-22", quote: "The list item is never removed from those device data environments as if its reference count is initialized to positive infinity"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 148, lines: "9-11", quote: "If a variable appears in an enter or link clause on a declare target directive that does not have a device_type clause with the nohost device-type-description then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.4", page: 159, lines: "13-14", quote: "The list item is never removed from those device data environments as if its reference count was initialized to positive infinity"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 276, lines: "13-14", quote: "a device_type clause with the nohost device-type-description then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.7", page: 289, lines: "23-24", quote: "The list item is never removed from those device data environments, as if its reference count was initialized to positive infinity"}
+
+  - id: omp-declare-target-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a declare target (enter/to) array referenced in a target construct is treated as map(tofrom) and is never removed: the region works on the device copy"
+    construct: target
+    variable_kind: array
+    attribute: [declare_target, module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "g(i) = i, target update to(g); the region sets g(i) = 2*g(i) + 1; target update from(g): g(i) = 2*i + 1"
+    template: declare_target_roundtrip
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "12-13", quote: "If a variable appears in a to or link clause on a declare target directive then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.0", section: "2.12.7", page: 182, lines: "21-22", quote: "The list item is never removed from those device data environments as if its reference count is initialized to positive infinity"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 148, lines: "9-11", quote: "If a variable appears in an enter or link clause on a declare target directive that does not have a device_type clause with the nohost device-type-description then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.4", page: 159, lines: "13-14", quote: "The list item is never removed from those device data environments as if its reference count was initialized to positive infinity"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 276, lines: "13-14", quote: "a device_type clause with the nohost device-type-description then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.7", page: 289, lines: "23-24", quote: "The list item is never removed from those device data environments, as if its reference count was initialized to positive infinity"}
+
+  - id: omp-declare-target-no-transfer
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "the infinite reference count of a declare target (enter/to) variable: a map on a target construct transfers nothing on entry or exit"
+    construct: target
+    variable_kind: scalar
+    attribute: [declare_target, module]
+    clauses_present: []
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: declare_target, residency: {copy: declare_target}}
+    observable: "g = 5, target update to(g), then g = 101 on the host only; the region copies g to rd and sets g = 77: rd = 5 (the device copy) and the host g stays 101"
+    template: declare_target_no_transfer
+    spec:
+      - {version: "OpenMP 5.0", section: "2.12.7", page: 182, lines: "21-22", quote: "The list item is never removed from those device data environments as if its reference count is initialized to positive infinity"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.4", page: 159, lines: "13-14", quote: "The list item is never removed from those device data environments as if its reference count was initialized to positive infinity"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.7", page: 289, lines: "23-24", quote: "The list item is never removed from those device data environments, as if its reference count was initialized to positive infinity"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+
+  - id: omp-declare-target-link-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a declare target link variable is not mapped by the directive; referenced in a target construct it is mapped tofrom by the implicit rules, with ordinary reference counting (transfers on entry and exit)"
+    construct: target
+    variable_kind: scalar
+    attribute: [declare_target_link, module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: declare_target}
+    observable: "g = 101 on the host; the region copies g to rd and sets g = 2*g + 1 (no update directives): rd = 101 and g = 203 on the host"
+    template: declare_target_link
+    spec:
+      - {version: "OpenMP 5.0", section: "2.12.7", page: 182, lines: "24-25", quote: "The list items are not mapped by the declare target directive. Instead, they are mapped according to the data mapping rules"}
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "12-13", quote: "If a variable appears in a to or link clause on a declare target directive then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.5", page: 159, lines: "26-27", quote: "does not map the list items. Instead, they are mapped according to the data-mapping rules described in Section 5.8"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 148, lines: "9-11", quote: "If a variable appears in an enter or link clause on a declare target directive that does not have a device_type clause with the nohost device-type-description then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.8", page: 291, lines: "6-7", quote: "does not map the list items. Instead, they are mapped according to the data-mapping rules described in Section 7.9.3"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 276, lines: "13-14", quote: "a device_type clause with the nohost device-type-description then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-declare-target-procedure-global
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a declare target procedure called in a target region reads and writes the device copy of a declare target variable"
+    construct: target
+    variable_kind: scalar
+    attribute: [declare_target, module, device_procedure]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "g = 101, target update to(g); the region calls bump(rd), which copies g to rd and sets g = 2*g + 1; target update from(g): rd = 101, g = 203"
+    template: declare_target_routine
+    spec:
+      - {version: "OpenMP 5.0", section: "2.12.7", page: 182, lines: "2-3", quote: "The declare target directive ensures that procedures and global variables can be executed or accessed on a device"}
+      - {version: "OpenMP 5.0", section: "2.12.7", page: 182, lines: "21-22", quote: "The list item is never removed from those device data environments as if its reference count is initialized to positive infinity"}
+      - {version: "OpenMP 5.2", section: "7.8", page: 204, lines: "16-17", quote: "Declare target directives apply to procedures and/or variables to ensure that they can be executed or accessed on a device"}
+      - {version: "OpenMP 5.2", section: "5.8.4", page: 159, lines: "13-14", quote: "The list item is never removed from those device data environments as if its reference count was initialized to positive infinity"}
+      - {version: "OpenMP 6.0", section: "9.9", page: 345, lines: "2", quote: "Declare target directives apply to procedures and/or variables to ensure that they can be executed or"}
+      - {version: "OpenMP 6.0", section: "7.9.7", page: 289, lines: "23-24", quote: "The list item is never removed from those device data environments, as if its reference count was initialized to positive infinity"}
+
+  - id: omp-target-data-nested-no-transfer
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "inside a target data region that maps an array, a target construct's map of it finds the array present with a reference count above one: no transfer on entry or exit"
+    construct: target
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: []
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: enclosing_data, residency: {copy: device_copy}}
+    observable: "target data map(tofrom: a) with a(i) = i; the region sets a(i) = 2*a(i) + 1; before the end of the target data region the host still sees i"
+    template: nested_data_inside
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-target-data-end-transfer
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "the target data region that mapped an array tofrom copies it back on exit, when its reference count drops to zero, with the writes of the target regions inside it"
+    construct: target data
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["map(tofrom)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: explicit}
+    observable: "target data map(tofrom: a) with a(i) = i; a region inside sets a(i) = 2*a(i) + 1; after the target data region the host sees 2*i + 1"
+    template: nested_data_after
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-enter-data-target-no-transfer
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "after target enter data map(to) of an array, a target construct finds it present (reference count above one): the host's later changes are not transferred on entry"
+    construct: target
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: []
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: enter_data, residency: {copy: device_copy}}
+    observable: "a(i) = i, target enter data map(to: a), then a(i) = 100*i on the host only; the region copies a to b (map from): b(i) = i"
+    template: enter_data_stale
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+
+  - id: omp-enter-data-refcount-two-exits
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array entered twice by target enter data has reference count two: the first target exit data map(from) decrements it to one and transfers nothing"
+    construct: target exit data
+    variable_kind: array
+    attribute: [enter_data, enter_data_twice]   # (table change): the axes of omp-exit-data-from-transfer otherwise
+    clauses_present: ["map(from)"]
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: from, copy_back: "no", source: enter_data, residency: {copy: device_copy}}
+    observable: "a(i) = i, two target enter data map(to: a); a region sets a(i) = 2*a(i) + 1; after one target exit data map(from: a) the host still sees i"
+    template: enter_exit_refcount
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "6-7", quote: "If the map-type is not delete and the reference count of the corresponding storage block is finite then the reference count is decremented by one"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-exit-data-from-transfer
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "target exit data map(from) of an array entered once transfers it back (its reference count reaches zero)"
+    construct: target exit data
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: ["map(from)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: from, copy_back: "yes", source: enter_data}
+    observable: "a(i) = i, target enter data map(to: a); a region sets a(i) = 2*a(i) + 1; after target exit data map(from: a) the host sees 2*i + 1"
+    template: enter_exit_once
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-exit-data-delete-zero
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "target exit data map(delete) sets a finite reference count to zero and removes the array, whatever its count: the next target enter data map(to) creates it anew and transfers the host values"
+    construct: target exit data
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: ["map(delete)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: none, copy_back: "no", source: enter_data}
+    observable: "a(i) = i, two target enter data map(to: a), target exit data map(delete: a); then a(i) = 3*i on the host, target enter data map(to: a); the region copies a to b: b(i) = 3*i"
+    template: exit_delete_reenter
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "27", quote: "If the map-type is delete and the corresponding list item’s reference count is finite then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "8-9", quote: "If the map-type is delete and the reference count of the corresponding storage block is finite then the reference count is set to zero"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "29-30", quote: "If the delete-modifier is present and the reference count of the corresponding storage block is finite then the reference count is set to zero"}
+
+  - id: omp-always-to
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "the always map-type-modifier transfers on entry even when the array is already present (reference count above one)"
+    construct: target
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: ["map(always, to)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: to, copy_back: "no", source: explicit}
+    observable: "target data map(to: a) with a(i) = i; then a(i) = 3*i on the host; target map(always, to: a) copies a to b: b(i) = 3*i"
+    template: always_to
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+
+  - id: omp-always-from
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "the always map-type-modifier transfers back on exit even when the array stays present (reference count above one)"
+    construct: target
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: ["map(always, from)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: from, copy_back: "yes", source: explicit}
+    observable: "target data map(to: a) with a(i) = i; target map(always, from: a) sets a(i) = 2*a(i) + 1 (the present copy holds i); before the end of the target data region the host sees 2*i + 1"
+    template: always_from
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-present-modifier
+    model: omp
+    versions: ["5.2", "6.0"]
+    languages: [f90, c]
+    subject: "map(present, tofrom) of an array that an enclosing target data region mapped: no error, and the writes reach the host when the target data region ends"
+    construct: target
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: ["map(present, tofrom)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "yes", source: enclosing_data}
+    observable: "target data map(tofrom: a) with a(i) = i; target map(present, tofrom: a) sets a(i) = 2*a(i) + 1; after the target data region the host sees 2*i + 1"
+    template: present_mod
+    spec:
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 152, lines: "25-27", quote: "If a map clause with a present map-type-modifier appears on a construct and on entry to the region the corresponding list item is not present in the device data environment, runtime error termination is performed"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "6", quote: "If a map clause with a present-modifier appears on a construct and on entry to the region the"}
+
+  - id: omp-close-modifier
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "the close map-type-modifier is a hint only: map(close, tofrom) behaves as map(tofrom)"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["map(close, tofrom)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: explicit}
+    observable: "a(i) = i; target map(close, tofrom: a) sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 321, lines: "12", quote: "The close map-type-modifier is a hint to the runtime to allocate memory close to the target device"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 155, lines: "12", quote: "The close map-type-modifier is a hint to the runtime to allocate memory close to the target device"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 285, lines: "22", quote: "The close-modifier is a hint that the corresponding storage should be close to the target device"}
+
+# --- OpenMP: defaultmap per category --------------------------------------------------------------------
+
+  - id: omp-defaultmap-tofrom-scalar
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(tofrom: scalar) maps a scalar tofrom instead of making it firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["defaultmap(tofrom: scalar)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: defaultmap}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v = 203 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "20-21", quote: "If a defaultmap clause is present for the category of the variable and specifies an implicit behavior other than default, the data-mapping attribute is determined by that clause"}
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "9-10", quote: "If variable-category is scalar, all scalar variables of non-pointer type or all non-pointer non-allocatable scalar variables"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "4-5", quote: "If implicit-behavior is the name of a map type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map type"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "14-15", quote: "If implicit-behavior corresponds to a map-type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map-type"}
+
+  - id: omp-defaultmap-to-scalar
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(to: scalar) maps a scalar to: the region's write is not transferred back"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["defaultmap(to: scalar)"]
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: to, copy_back: "no", source: defaultmap, residency: {copy: device_copy}}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "9-10", quote: "If variable-category is scalar, all scalar variables of non-pointer type or all non-pointer non-allocatable scalar variables"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "4-5", quote: "If implicit-behavior is the name of a map type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map type"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "14-15", quote: "If implicit-behavior corresponds to a map-type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map-type"}
+
+  - id: omp-defaultmap-from-scalar
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(from: scalar) maps a scalar from: the region's write reaches the host"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["defaultmap(from: scalar)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: from, copy_back: "yes", source: defaultmap}
+    observable: "v = 101; the region sets v = 77 (it does not read v): v = 77 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "9-10", quote: "If variable-category is scalar, all scalar variables of non-pointer type or all non-pointer non-allocatable scalar variables"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "4-5", quote: "If implicit-behavior is the name of a map type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map type"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "14-15", quote: "If implicit-behavior corresponds to a map-type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map-type"}
+
+  - id: omp-defaultmap-default-scalar
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(default: scalar) has no effect: the scalar stays firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["defaultmap(default: scalar)"]
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "26-28", quote: "If implicit-behavior is default, then the clause has no effect for the variables in the category specified by variable-category"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "10-11", quote: "If implicit-behavior is default then the clause has no effect"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "23", quote: "implicit-behavior is default then the clause has no effect"}
+
+  - id: omp-defaultmap-firstprivate-aggregate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(firstprivate: aggregate) makes an array firstprivate: the region's writes go to its private copy"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["defaultmap(firstprivate: aggregate)"]
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: defaultmap}
+    observable: "a(i) = i; the region copies a to b (map from) and sets a(i) = 2*a(i) + 1: b(i) = i and the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "12", quote: "If variable-category is aggregate or allocatable, all aggregate or allocatable variables"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "5-6", quote: "If implicit-behavior is firstprivate, the attribute is a data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "1-2", quote: "The aggregate variable-category specifies variables of aggregate type (arrays or structures)"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "15-16", quote: "If implicit-behavior is firstprivate, the attribute is a data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "11-12", quote: "The aggregate variable-category specifies aggregate variables"}
+
+  - id: omp-defaultmap-alloc-aggregate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(alloc: aggregate) maps an array alloc: nothing is transferred in or out"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["defaultmap(alloc: aggregate)"]
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: alloc, copy_back: "no", source: defaultmap, residency: {copy: device_copy}}
+    observable: "a(i) = i; the region sets a(i) = 7*i (it does not read a): the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "12", quote: "If variable-category is aggregate or allocatable, all aggregate or allocatable variables"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "4-5", quote: "If implicit-behavior is the name of a map type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map type"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "14-15", quote: "If implicit-behavior corresponds to a map-type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map-type"}
+
+  - id: omp-defaultmap-present-aggregate
+    model: omp
+    versions: ["5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(present: aggregate) maps an array as alloc with the present modifier: inside a target data region that mapped it, the region uses the present copy, which the target data region copies back"
+    construct: target
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: ["defaultmap(present: aggregate)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "yes", source: defaultmap}
+    observable: "target data map(tofrom: a) with a(i) = i; the region sets a(i) = 2*a(i) + 1; after the target data region the host sees 2*i + 1"
+    template: nested_data_after
+    spec:
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "6-8", quote: "If implicit-behavior is present, the attribute is a data-mapping attribute determined by an implicit map clause with the map-type of alloc and map-type-modifier of present"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "16-18", quote: "If implicit-behavior is present, the attribute is a data-mapping attribute determined by an implicit map clause with a map-type of storage and the present-modifier"}
+
+  - id: omp-defaultmap-firstprivate-allocatable
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "defaultmap(firstprivate: allocatable) makes an allocatable array firstprivate"
+    construct: target
+    variable_kind: array
+    attribute: [allocatable]
+    clauses_present: ["defaultmap(firstprivate: allocatable)"]
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: defaultmap}
+    observable: "a(i) = i; the region copies a to b and sets a(i) = 2*a(i) + 1: b(i) = i and the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "12", quote: "If variable-category is aggregate or allocatable, all aggregate or allocatable variables"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 161, lines: "21", quote: "The allocatable variable-category specifies variables with the ALLOCATABLE attribute"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "5-6", quote: "If implicit-behavior is firstprivate, the attribute is a data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "10", quote: "allocatable variable-category specifies variables with the ALLOCATABLE attribute"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "15-16", quote: "If implicit-behavior is firstprivate, the attribute is a data-sharing attribute of firstprivate"}
+
+  - id: omp-defaultmap-firstprivate-all
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(firstprivate) without a category applies to all variables: an array becomes firstprivate"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["defaultmap(firstprivate)"]
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: defaultmap}
+    observable: "a(i) = i; the region copies a to b and sets a(i) = 2*a(i) + 1: b(i) = i and the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "20-21", quote: "If no variable-category is specified in the clause then implicit-behavior specifies the implicitly determined data-mapping or data-sharing attribute for all variables referenced in the construct"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 161, lines: "17-18", quote: "If no variable-category is specified in the clause then the effect is as if all was specified for the variable-category"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "5-7", quote: "If no variable-category is specified in the clause then the effect is as if all was specified for the variable-category"}
+
+# --- OpenMP: clauses on combined constructs --------------------------------------------------------------
+
+  - id: omp-combined-lastprivate-tpd
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "lastprivate on target parallel do (for): the list item is also mapped tofrom, so the sequentially last iteration's value reaches the host"
+    construct: target parallel do
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["lastprivate"]
+    memory_mode: any
+    expected: {dsa: lastprivate, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "lp = -1; each iteration i = 1..n sets lp = 3*i: lp = 3*n on the host"
+    template: combined_lastprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 219, lines: "18-20", quote: "If the target construct is among the constituent constructs and the list item is not specified in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "29-30", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "12-13", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-lastprivate-ttd
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "lastprivate on target teams distribute: the list item is also mapped tofrom, so the sequentially last iteration's value reaches the host"
+    construct: target teams distribute
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["lastprivate"]
+    memory_mode: any
+    expected: {dsa: lastprivate, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "lp = -1; each iteration i = 1..n sets lp = 3*i: lp = 3*n on the host"
+    template: combined_lastprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 219, lines: "18-20", quote: "If the target construct is among the constituent constructs and the list item is not specified in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "29-30", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "12-13", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-lastprivate-ttdpd
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "lastprivate on target teams distribute parallel do (for): the list item is also mapped tofrom, so the sequentially last iteration's value reaches the host"
+    construct: target teams distribute parallel do
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["lastprivate"]
+    memory_mode: any
+    expected: {dsa: lastprivate, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "lp = -1; each iteration i = 1..n sets lp = 3*i: lp = 3*n on the host"
+    template: combined_lastprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 219, lines: "18-20", quote: "If the target construct is among the constituent constructs and the list item is not specified in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "29-30", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "12-13", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-lastprivate-ttdpds-collapse
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "lastprivate on target teams distribute parallel do (for) simd collapse(2): mapped tofrom, the value of the sequentially last iteration of the collapsed nest reaches the host"
+    construct: target teams distribute parallel do simd
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["lastprivate", "collapse(2)"]
+    memory_mode: any
+    expected: {dsa: lastprivate, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "lp = -1; iteration (i, j), i = 1..16, j = 1..8, sets lp = i*j: lp = 128 on the host"
+    template: combined_lastprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 219, lines: "18-20", quote: "If the target construct is among the constituent constructs and the list item is not specified in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "29-30", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "12-13", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-firstprivate-target
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "firstprivate on target teams distribute parallel do (for) applies to the target construct (the item is in no lastprivate or map clause): every iteration reads the host value"
+    construct: target teams distribute parallel do
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["firstprivate"]
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: explicit}
+    observable: "f = 7; each iteration sets b(i) = f + i (b mapped from): b(i) = 7 + i"
+    template: combined_firstprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 218, lines: "27-28", quote: "To the target construct if it is among the constituent constructs and the same list item does not appear in a lastprivate or map clause"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "12-14", quote: "To the target construct if it is among the constituent constructs and the same list item neither appears in a lastprivate clause nor is the base variable or base pointer of a list item that appears in a map clause"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 528, lines: "32", quote: "To the target construct if it is among the constituent constructs and the same list item"}
+
+  - id: omp-combined-first-lastprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "firstprivate and lastprivate on the same item of target parallel do (for): firstprivate is not applied to target, lastprivate maps it tofrom; the loop starts from the host value and the last iteration's value returns"
+    construct: target parallel do
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["firstprivate", "lastprivate"]
+    memory_mode: any
+    expected: {dsa: lastprivate, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "lp = 7; iteration n sets lp = lp + 100 (the others only read it into b): lp = 107 on the host"
+    template: combined_first_lastprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 218, lines: "27-28", quote: "To the target construct if it is among the constituent constructs and the same list item does not appear in a lastprivate or map clause"}
+      - {version: "OpenMP 5.0", section: "2.14", page: 219, lines: "18-20", quote: "If the target construct is among the constituent constructs and the list item is not specified in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "12-14", quote: "To the target construct if it is among the constituent constructs and the same list item neither appears in a lastprivate clause nor is the base variable or base pointer of a list item that appears in a map clause"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "29-30", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 528, lines: "33", quote: "neither appears in a lastprivate clause nor is the base variable or base pointer of a list"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "12-13", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-reduction-ttdpd
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target teams distribute parallel do (for) is also mapped tofrom: the host receives the combined value"
+    construct: target teams distribute parallel do
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; each iteration i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-reduction-ttd
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target teams distribute is also mapped tofrom: the host receives the combined value of the teams"
+    construct: target teams distribute
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; each iteration i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-defaultmap-tofrom-scalar-reduction
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(tofrom: scalar) on a combined target construct with a reduction: the reduction item and the loop bound are both mapped tofrom; the host receives the combined value"
+    construct: target teams distribute parallel do
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["defaultmap(tofrom: scalar)", "reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000, n = 64; each iteration i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.2", page: 325, lines: "9-10", quote: "If variable-category is scalar, all scalar variables of non-pointer type or all non-pointer non-allocatable scalar variables"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 148, lines: "12-14", quote: "If a variable is the base variable of a list item in a reduction, lastprivate or linear clause on a combined target construct then the list item is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "4-5", quote: "If implicit-behavior is the name of a map type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map type"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 276, lines: "15", quote: "If a variable is the base variable of a list item in a reduction, lastprivate or linear"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "14-15", quote: "If implicit-behavior corresponds to a map-type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map-type"}
+
+# --- OpenMP: unified shared memory --------------------------------------------------------------------
+
+  - id: omp-usm-map-optional
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "with requires unified_shared_memory, a heap array is reached in a target region without a map clause and the region's writes are seen by the host"
+    construct: target
+    variable_kind: array
+    attribute: [allocatable]
+    clauses_present: ["requires unified_shared_memory"]
+    memory_mode: unified
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit, residency: {unified: unified}}
+    observable: "an allocated (C: malloc'd) a(i) = i; the region sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: usm_array
+    spec:
+      - {version: "OpenMP 5.0", section: "2.4", page: 62, lines: "10", quote: "The unified_shared_memory clause makes the map clause optional on target constructs"}
+      - {version: "OpenMP 5.2", section: "8.2.1", page: 212, lines: "35", quote: "The unified_shared_memory clause makes map clauses optional on target constructs"}
+      - {version: "OpenMP 6.0", section: "10.5.1.5", page: 360, lines: "21-22", quote: "The implementation must guarantee that storage locations in memory are accessible to threads on all accessible devices"}
+
+  - id: omp-usm-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "with requires unified_shared_memory, a scalar referenced in a target construct is still firstprivate"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["requires unified_shared_memory"]
+    memory_mode: unified
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; the region copies v to rd and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: usm_scalar
+    spec:
+      - {version: "OpenMP 5.0", section: "2.4", page: 62, lines: "12-13", quote: "Scalar variables are still firstprivate by default when referenced inside target constructs"}
+      - {version: "OpenMP 5.2", section: "8.2.1", page: 213, lines: "1-2", quote: "Scalar variables are still firstprivate by default when referenced inside target constructs"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+# --- OpenACC 3.4: implicit data attributes ---------------------------------------------------------------
+
+  - id: acc-parallel-aggregate-copy
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "an array used in a parallel construct with no data clause and no default(present) is treated as in a copy clause"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; the parallel loop sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1388", quote: "An aggregate variable will be treated as if it appears either"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1391", quote: "In a copy clause otherwise"}
+
+  - id: acc-serial-aggregate-copy
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "an array used in a serial construct with no data clause is treated as in a copy clause"
+    construct: serial
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; the serial region sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1388", quote: "An aggregate variable will be treated as if it appears either"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1391", quote: "In a copy clause otherwise"}
+
+  - id: acc-kernels-aggregate-copy
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "an array used in a kernels construct with no data clause is treated as in a copy clause"
+    construct: kernels
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; the kernels region sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1388", quote: "An aggregate variable will be treated as if it appears either"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1391", quote: "In a copy clause otherwise"}
+
+  - id: acc-parallel-scalar-firstprivate
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a scalar used in a parallel construct with no data clause is treated as firstprivate"
+    construct: parallel
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; a one-gang parallel region copies v to rd (copyout) and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1392", quote: "A scalar variable will be treated as if it appears either"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1394", quote: "In a firstprivate clause otherwise"}
+
+  - id: acc-serial-scalar-firstprivate
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a scalar used in a serial construct with no data clause is treated as firstprivate"
+    construct: serial
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; the serial region copies v to rd and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1392", quote: "A scalar variable will be treated as if it appears either"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1394", quote: "In a firstprivate clause otherwise"}
+
+  - id: acc-kernels-scalar-copy
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a scalar used in a kernels construct with no data clause is treated as in a copy clause"
+    construct: kernels
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "v = 101; the kernels region copies v to rd and sets v = 2*v + 1: rd = 101 and v = 203 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1392", quote: "A scalar variable will be treated as if it appears either"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1393", quote: "In a copy clause if the compute construct is a kernels construct"}
+
+  - id: acc-reduction-copy
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a variable in a reduction clause of a parallel loop and in no data clause is treated as in a copy clause: the host receives the reduced value"
+    construct: parallel loop
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; each iteration i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1381-1382", quote: "if a variable appears in a reduction clause but no other data clause, it is treated as if it also appears in a copy clause"}
+
+  - id: acc-component-aggregate-copy
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "an access to a derived-type (struct) component in a serial construct is an access to the variable, an aggregate: the variable is treated as in a copy clause"
+    construct: serial
+    variable_kind: derived_type
+    attribute: [component]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "x%c1 = 101, x%c2 = 0; the serial region copies x%c1 to rd and sets x%c2 = 2*x%c1 + 1: rd = 101, x%c2 = 203 on the host"
+    template: struct_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1374-1375", quote: "Exposed variable access: Any access to the data or address of a variable at a point within the compute construct"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1391", quote: "In a copy clause otherwise"}
+      - {version: "OpenACC 3.4", section: "6", page: 159, lines: "5796", quote: "Aggregate variables – a variable of any non-scalar datatype, including array or composite variables"}
+
+  - id: acc-default-present-aggregate
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "with default(present) on the compute construct, an array is treated as in a present clause: inside a data region that copies it the loop uses the present copy, copied back when the data region ends"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: ["default(present)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "yes", source: enclosing_data}
+    observable: "data copy(a) with a(i) = i; parallel loop default(present) sets a(i) = 2*a(i) + 1; after the data region the host sees 2*i + 1"
+    template: nested_data_after
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1389", quote: "In a present clause if there is a default(present) clause visible at the compute con"}
+      - {version: "OpenACC 3.4", section: "2.7.7", page: 54, lines: "1883-1884", quote: "If both structured and dynamic reference counters are now zero or if an always or alwaysout modifier appears, a transfer out action is performed"}
+
+  - id: acc-default-present-scalar-firstprivate
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "default(present) applies only to aggregates: a scalar in a parallel construct with default(present) is still firstprivate"
+    construct: parallel
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["default(present)"]
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; a one-gang parallel default(present) region copies v to rd and sets v = 2*v + 1: rd = 101 and v stays 101 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1396-1397", quote: "any default(present) clause visible at the compute construct applies only to aggregate variables"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1394", quote: "In a firstprivate clause otherwise"}
+
+  - id: acc-default-present-from-data
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a default(present) clause on a lexically enclosing data construct is visible at the compute construct: an array is treated as in a present clause"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: ["data default(present)"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "yes", source: enclosing_data}
+    observable: "enter data copyin(a) with a(i) = i; data default(present) around a parallel loop that sets a(i) = 2*a(i) + 1; exit data copyout(a): the host sees 2*i + 1"
+    template: acc_default_present_data
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1370-1371", quote: "Visible default clause: The nearest default clause appearing on the compute construct or on a lexically enclosing data construct that has the same parent compute scope"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1389", quote: "In a present clause if there is a default(present) clause visible at the compute con"}
+
+# --- OpenACC 3.4: declare, routine and reference counts --------------------------------------------------
+
+  - id: acc-declare-create-scalar-serial
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a module (C: global) scalar in declare create has a visible data clause, so it gets no implicit attribute in a serial construct: the region uses the device copy, which update directives move"
+    construct: serial
+    variable_kind: scalar
+    attribute: [declare_create, module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "g = 101, update device(g); the serial region copies g to rd and sets g = 2*g + 1; update self(g): rd = 101, g = 203"
+    template: acc_declare_roundtrip
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1372-1373", quote: "Visible data clause: Any data clause on the compute construct, on a lexically enclosing data construct that has the same parent compute scope, or on a visible declare directive"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1387", quote: "The variable does not appear in a data clause visible at the compute construct"}
+      - {version: "OpenACC 3.4", section: "2.13.2", page: 83, lines: "3051-3052", quote: "If the declare directive appears in a global context, then the data in var-list is statically allocated in device memory and the structured reference counter is set to one"}
+
+  - id: acc-declare-create-scalar-parallel
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a module (C: global) scalar in declare create gets no implicit attribute in a parallel construct: the region uses the device copy"
+    construct: parallel
+    variable_kind: scalar
+    attribute: [declare_create, module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "g = 101, update device(g); a one-gang parallel region copies g to rd and sets g = 2*g + 1; update self(g): rd = 101, g = 203"
+    template: acc_declare_roundtrip
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1372-1373", quote: "Visible data clause: Any data clause on the compute construct, on a lexically enclosing data construct that has the same parent compute scope, or on a visible declare directive"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1387", quote: "The variable does not appear in a data clause visible at the compute construct"}
+      - {version: "OpenACC 3.4", section: "2.13.2", page: 83, lines: "3051-3052", quote: "If the declare directive appears in a global context, then the data in var-list is statically allocated in device memory and the structured reference counter is set to one"}
+
+  - id: acc-declare-create-array-parallel-loop
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a module (C: global) array in declare create gets no implicit attribute in a parallel loop: the loop uses the device copy"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [declare_create, module]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "g(i) = i, update device(g); the loop sets g(i) = 2*g(i) + 1; update self(g): g(i) = 2*i + 1"
+    template: acc_declare_roundtrip
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1372-1373", quote: "Visible data clause: Any data clause on the compute construct, on a lexically enclosing data construct that has the same parent compute scope, or on a visible declare directive"}
+      - {version: "OpenACC 3.4", section: "2.13.2", page: 83, lines: "3051-3052", quote: "If the declare directive appears in a global context, then the data in var-list is statically allocated in device memory and the structured reference counter is set to one"}
+
+  - id: acc-declare-create-allocatable-module
+    model: acc
+    versions: ["3.4"]
+    languages: [f90]
+    subject: "an allocatable module array in declare create is allocated in device memory too at its ALLOCATE statement: the loop uses that device copy"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [declare_create, module, allocatable]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "allocate(g(n)), g(i) = i, update device(g); the loop sets g(i) = 2*g(i) + 1; update self(g): g(i) = 2*i + 1"
+    template: acc_declare_roundtrip
+    spec:
+      - {version: "OpenACC 3.4", section: "2.13.2", page: 83, lines: "3056-3057", quote: "memory will be allocated in both local memory as well as in the current device memory and the dynamic reference counter will be set to one"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1372-1373", quote: "Visible data clause: Any data clause on the compute construct, on a lexically enclosing data construct that has the same parent compute scope, or on a visible declare directive"}
+
+  - id: acc-declare-copyin-procedure
+    model: acc
+    versions: ["3.4"]
+    languages: [f90]
+    subject: "declare copyin of a procedure's array copies it in when the procedure's implicit data region begins: a compute construct in the procedure finds it present with those values"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [declare_copyin]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "no", source: enclosing_data}
+    observable: "the procedure gets a(i) = i and has declare copyin(a); its loop sets b(i) = 2*a(i) + 1 (b in copyout): b(i) = 2*i + 1"
+    template: acc_declare_copyin
+    spec:
+      - {version: "OpenACC 3.4", section: "2.13", page: 81, lines: "2965", quote: "be allocated in device memory for the duration of the implicit data region of a function, subroutine"}
+      - {version: "OpenACC 3.4", section: "2.7.8", page: 55, lines: "1900", quote: "If var is not present or if an always or alwaysin modifier appears, a transfer in"}
+
+  - id: acc-routine-declare-create-global
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a module (C: global) variable used in an acc routine must be in a declare create (or copyin, device_resident, link) clause; the routine uses its device copy"
+    construct: routine
+    variable_kind: scalar
+    attribute: [declare_create, module, device_procedure]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "no", source: declare_target, residency: {copy: declare_target, unified: declare_target}}
+    observable: "g = 101, update device(g); a serial region calls a routine seq bump(rd) that copies g to rd and sets g = 2*g + 1; update self(g): rd = 101, g = 203"
+    template: acc_routine_global
+    spec:
+      - {version: "OpenACC 3.4", section: "2.15.2", page: 98, lines: "3623-3624", quote: "Fortran module or common block variables or arrays, that are used in accelerator routines must appear in a declare directive in a create"}
+      - {version: "OpenACC 3.4", section: "2.13.2", page: 83, lines: "3051-3052", quote: "If the declare directive appears in a global context, then the data in var-list is statically allocated in device memory and the structured reference counter is set to one"}
+
+  - id: acc-enter-exit-dynamic-refcount
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "an array entered twice by enter data copyin has dynamic reference count two: the first exit data copyout decrements it and transfers nothing"
+    construct: exit data
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: ["copyout"]
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: from, copy_back: "no", source: enter_data, residency: {copy: device_copy}}
+    observable: "a(i) = i, two enter data copyin(a); a parallel loop sets a(i) = 2*a(i) + 1; after one exit data copyout(a) the host still sees i"
+    template: enter_exit_refcount
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.7", page: 47, lines: "1613-1614", quote: "The dynamic reference counter is decremented for each exit data copyout or delete clause when no finalize clause appears"}
+      - {version: "OpenACC 3.4", section: "2.7.9", page: 56, lines: "1951-1952", quote: "If both structured and dynamic reference counters are now zero or an always or alwaysout modifier appears, a transfer out action is performed"}
+
+  - id: acc-exit-data-finalize
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "exit data copyout with finalize sets the dynamic reference counter to zero: the array is transferred back although it was entered twice"
+    construct: exit data
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: ["copyout", "finalize"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: from, copy_back: "yes", source: enter_data}
+    observable: "a(i) = i, two enter data copyin(a); a parallel loop sets a(i) = 2*a(i) + 1; after exit data copyout(a) finalize the host sees 2*i + 1"
+    template: enter_exit_finalize
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.6", page: 46, lines: "1589-1590", quote: "If a finalize clause appears, the exit data directive will set the dynamic reference counters to zero for vars appearing in copyout and delete clauses"}
+      - {version: "OpenACC 3.4", section: "2.7.9", page: 56, lines: "1951-1952", quote: "If both structured and dynamic reference counters are now zero or an always or alwaysout modifier appears, a transfer out action is performed"}
+
+  - id: acc-enter-data-compute-no-transfer
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "after enter data copyin, a compute construct's implicit copy finds the array present: the host's later changes are not transferred"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: []
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: enter_data, residency: {copy: device_copy}}
+    observable: "a(i) = i, enter data copyin(a), then a(i) = 100*i on the host only; the loop copies a to b (copyout): b(i) = i"
+    template: enter_data_stale
+    spec:
+      - {version: "OpenACC 3.4", section: "2.7.7", page: 54, lines: "1869", quote: "If var is not present or if an always or alwaysin modifier appears, a transfer in"}
+      - {version: "OpenACC 3.4", section: "2.6.2", page: 41, lines: "1391", quote: "In a copy clause otherwise"}
+
+  - id: acc-data-nested-no-transfer
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "inside a data region that copies an array, a compute construct's implicit copy finds it present: no transfer on entry or exit"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: []
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "no", source: enclosing_data, residency: {copy: device_copy}}
+    observable: "data copy(a) with a(i) = i; the loop sets a(i) = 2*a(i) + 1; before the end of the data region the host still sees i"
+    template: nested_data_inside
+    spec:
+      - {version: "OpenACC 3.4", section: "2.7.7", page: 54, lines: "1883-1884", quote: "If both structured and dynamic reference counters are now zero or if an always or alwaysout modifier appears, a transfer out action is performed"}
+      - {version: "OpenACC 3.4", section: "2.6.7", page: 47, lines: "1601-1602", quote: "The structured reference counter for a section of memory keeps track of how many nested data regions have been entered for"}
+
+  - id: acc-data-end-transfer
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "a data region with copy(a) copies the array back when it ends, with the writes of the compute constructs inside it"
+    construct: data
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["copy"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: tofrom, copy_back: "yes", source: explicit}
+    observable: "data copy(a) with a(i) = i; a loop inside sets a(i) = 2*a(i) + 1; after the data region the host sees 2*i + 1"
+    template: nested_data_after
+    spec:
+      - {version: "OpenACC 3.4", section: "2.7.7", page: 54, lines: "1883-1884", quote: "If both structured and dynamic reference counters are now zero or if an always or alwaysout modifier appears, a transfer out action is performed"}
+
+  - id: acc-copyin-no-copyback
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "copyin(a) on a parallel loop: the loop's writes to the device copy are not transferred back"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["copyin"]
+    memory_mode: copy
+    expected: {dsa: n/a, map_type: to, copy_back: "no", source: explicit, residency: {copy: device_copy}}
+    observable: "a(i) = i; parallel loop copyin(a) copyout(b) sets b(i) = a(i) and a(i) = 2*a(i) + 1: b(i) = i and the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenACC 3.4", section: "2.7.8", page: 55, lines: "1915", quote: "If both structured and dynamic reference counters are now zero, a deallocate memory"}
+      - {version: "OpenACC 3.4", section: "2.7", page: 48, lines: "1657-1658", quote: "a program that uses and assigns data on the host and uses and assigns the same data on the accelerator within a data region without update directives"}
+
+  - id: acc-present-clause-enclosing-data
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "present(a) on a parallel loop inside a data region that copies a: the loop uses the present copy, copied back when the data region ends"
+    construct: parallel loop
+    variable_kind: array
+    attribute: [enclosing_data]
+    clauses_present: ["present"]
+    memory_mode: any
+    expected: {dsa: n/a, map_type: present, copy_back: "yes", source: enclosing_data}
+    observable: "data copy(a) with a(i) = i; parallel loop present(a) sets a(i) = 2*a(i) + 1; after the data region the host sees 2*i + 1"
+    template: present_mod
+    spec:
+      - {version: "OpenACC 3.4", section: "2.7.6", page: 53, lines: "1840-1841", quote: "The present clause specifies that vars in var-list are in shared memory or are already present in the current device memory"}
+      - {version: "OpenACC 3.4", section: "2.7.7", page: 54, lines: "1883-1884", quote: "If both structured and dynamic reference counters are now zero or if an always or alwaysout modifier appears, a transfer out action is performed"}
+
+# --- Rows asked for (constructs of their own, plain explicit maps, private,
+# is_device_ptr, unmapped C pointers, loop variables, OpenACC update, defaultmap(present) after enter data) ---
+
+  - id: omp-ttl-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a scalar without the TARGET, ALLOCATABLE or POINTER attribute referenced in target teams loop with no clause for it is firstprivate (the implicit rules of the target leaf)"
+    construct: target teams loop
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; every iteration sets b(i) = v + i (b mapped from): b(i) = 101 + i, and the host v stays 101"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-ttl-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array referenced in target teams loop with no clause for it is mapped tofrom"
+    construct: target teams loop
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; iteration i sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-ttl-reduction
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target teams loop is also mapped tofrom: the host receives the combined value"
+    construct: target teams loop
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-tpl-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a scalar without the TARGET, ALLOCATABLE or POINTER attribute referenced in target parallel loop with no clause for it is firstprivate (the implicit rules of the target leaf)"
+    construct: target parallel loop
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; every iteration sets b(i) = v + i (b mapped from): b(i) = 101 + i, and the host v stays 101"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-tpl-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array referenced in target parallel loop with no clause for it is mapped tofrom"
+    construct: target parallel loop
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; iteration i sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-tpl-reduction
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target parallel loop is also mapped tofrom: the host receives the combined value"
+    construct: target parallel loop
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-ts-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a scalar without the TARGET, ALLOCATABLE or POINTER attribute referenced in target simd with no clause for it is firstprivate (the implicit rules of the target leaf)"
+    construct: target simd
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; every iteration sets b(i) = v + i (b mapped from): b(i) = 101 + i, and the host v stays 101"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-ts-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array referenced in target simd with no clause for it is mapped tofrom"
+    construct: target simd
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; iteration i sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-ts-reduction
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target simd is also mapped tofrom: the host receives the combined value"
+    construct: target simd
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-ttds-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a scalar without the TARGET, ALLOCATABLE or POINTER attribute referenced in target teams distribute simd with no clause for it is firstprivate (the implicit rules of the target leaf)"
+    construct: target teams distribute simd
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; every iteration sets b(i) = v + i (b mapped from): b(i) = 101 + i, and the host v stays 101"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-ttds-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array referenced in target teams distribute simd with no clause for it is mapped tofrom"
+    construct: target teams distribute simd
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; iteration i sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-ttds-reduction
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target teams distribute simd is also mapped tofrom: the host receives the combined value"
+    construct: target teams distribute simd
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-tp-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a scalar without the TARGET, ALLOCATABLE or POINTER attribute referenced in target parallel with no clause for it is firstprivate (the implicit rules of the target leaf)"
+    construct: target parallel
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; in a team of one thread (num_threads(1)) the region copies v to rd and sets v = 2*v + 1: rd = 101, and the host v stays 101"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-tp-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array referenced in target parallel with no clause for it is mapped tofrom"
+    construct: target parallel
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; a team of one thread (num_threads(1)) sets a(i) = 2*a(i) + 1 in a sequential loop: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-tp-reduction
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target parallel is also mapped tofrom: the host receives the combined value"
+    construct: target parallel
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host (a team of one thread (num_threads(1)), a sequential loop)"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-tt-scalar-firstprivate
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a scalar without the TARGET, ALLOCATABLE or POINTER attribute referenced in target teams with no clause for it is firstprivate (the implicit rules of the target leaf)"
+    construct: target teams
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "v = 101; in one team (num_teams(1)) the region copies v to rd and sets v = 2*v + 1: rd = 101, and the host v stays 101"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "9", quote: "If none of the above rules applies then a scalar variable is not mapped"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "8-9", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "22-23", quote: "If the above rules do not apply then a scalar variable is not mapped but instead has an implicitly determined data-sharing attribute of firstprivate"}
+
+  - id: omp-tt-array-tofrom
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an array referenced in target teams with no clause for it is mapped tofrom"
+    construct: target teams
+    variable_kind: array
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "a(i) = i; one team (num_teams(1)) sets a(i) = 2*a(i) + 1 in a sequential loop: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "5-6", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 149, lines: "4-5", quote: "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "15-16", quote: "If a variable is not a scalar variable then it is treated as if it had appeared in a map clause with a map-type of tofrom"}
+
+  - id: omp-tt-reduction
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "a reduction item on target teams is also mapped tofrom: the host receives the combined value"
+    construct: target teams
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["reduction"]
+    memory_mode: any
+    expected: {dsa: reduction, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "s = 1000; i = 1..n adds i: s = 1000 + n*(n+1)/2 on the host (one team (num_teams(1)), a sequential loop)"
+    template: combined_reduction
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 314, lines: "14-16", quote: "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 341, lines: "10-12", quote: "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "28-29", quote: "the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-lastprivate-ts
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "lastprivate on target simd: the list item is also mapped tofrom, so the sequentially last iteration's value reaches the host"
+    construct: target simd
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["lastprivate"]
+    memory_mode: any
+    expected: {dsa: lastprivate, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "lp = -1; each iteration i = 1..n sets lp = 3*i: lp = 3*n on the host"
+    template: combined_lastprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 219, lines: "18-20", quote: "If the target construct is among the constituent constructs and the list item is not specified in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "29-30", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "12-13", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+
+  - id: omp-combined-lastprivate-ttds
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "lastprivate on target teams distribute simd: the list item is also mapped tofrom, so the sequentially last iteration's value reaches the host"
+    construct: target teams distribute simd
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["lastprivate"]
+    memory_mode: any
+    expected: {dsa: lastprivate, map_type: tofrom, copy_back: "yes", source: implicit}
+    observable: "lp = -1; each iteration i = 1..n sets lp = 3*i: lp = 3*n on the host"
+    template: combined_lastprivate
+    spec:
+      - {version: "OpenMP 5.0", section: "2.14", page: 219, lines: "18-20", quote: "If the target construct is among the constituent constructs and the list item is not specified in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 5.2", section: "17.2", page: 340, lines: "29-30", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+      - {version: "OpenMP 6.0", section: "19.2", page: 529, lines: "12-13", quote: "the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"}
+
+  - id: omp-explicit-map-tofrom-array
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an explicit map(tofrom: a) of an array on a target construct: transfers in, transfers back"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["map(tofrom)"]
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: explicit}
+    observable: "a(i) = i; target map(tofrom: a) sets a(i) = 2*a(i) + 1: the host sees 2*i + 1"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-explicit-map-to-array
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an explicit map(to: a) of an array on a target construct: transfers in, no transfer back"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["map(to)"]
+    memory_mode: copy
+    expected: {dsa: "n/a", map_type: to, copy_back: "no", source: explicit, residency: {copy: device_copy}}
+    observable: "a(i) = i; target map(to: a) map(from: b) copies a to b and sets a(i) = 2*a(i) + 1: b(i) = i, the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-explicit-map-from-array
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an explicit map(from: a) of an array on a target construct: no transfer in, transfers back"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["map(from)"]
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: from, copy_back: "yes", source: explicit}
+    observable: "a(i) = i; target map(from: a) sets a(i) = 7*i (it does not read a): the host sees 7*i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-explicit-map-alloc-array
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an explicit map(alloc: a) of an array on a target construct: no transfer in, no transfer back"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["map(alloc)"]
+    memory_mode: copy
+    expected: {dsa: "n/a", map_type: alloc, copy_back: "no", source: explicit, residency: {copy: device_copy}}
+    observable: "a(i) = i; target map(alloc: a) sets a(i) = 7*i (it does not read a): the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-explicit-map-tofrom-scalar
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "an explicit map(tofrom: v) of a scalar on a target construct: the region reads the host value and its write returns"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["map(tofrom)"]
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: tofrom, copy_back: "yes", source: explicit}
+    observable: "v = 101; target map(tofrom: v) copies v to rd and sets v = 2*v + 1: rd = 101 and v = 203 on the host"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "1-2", quote: "reference count is one or the always map-type-modifier is present, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.0", section: "2.19.7.1", page: 319, lines: "29-30", quote: "If the map-type is from or tofrom and if the corresponding list item’s reference count is zero or the always map-type-modifier is present then"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 153, lines: "15-16", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is to or tofrom"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 283, lines: "35", quote: "If the reference count of the corresponding list item is one or if the always-modifier is"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}
+
+  - id: omp-target-private-scalar
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "private(v) on a target construct: the region's v is a new list item, so its write never reaches the host"
+    construct: target
+    variable_kind: scalar
+    attribute: [none]
+    clauses_present: ["private"]
+    memory_mode: any
+    expected: {dsa: private, map_type: none, copy_back: "no", source: explicit}
+    observable: "v = 101; target private(v) sets v = 77 (it does not read v): the host v stays 101"
+    template: scalar_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.4.3", page: 285, lines: "9", quote: "The private clause declares one or more list items to be private to a task or to a SIMD lane"}
+      - {version: "OpenMP 5.2", section: "5.4.3", page: 111, lines: "9", quote: "The private clause specifies that its list items are to be privatized according to Section 5.3"}
+      - {version: "OpenMP 6.0", section: "7.5.3", page: 226, lines: "7", quote: "The private clause specifies that its list items are to be privatized list item according to"}
+
+  - id: omp-target-private-array
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "private(a) on a target construct: the region's a is a new list item, so its writes never reach the host"
+    construct: target
+    variable_kind: array
+    attribute: [none]
+    clauses_present: ["private"]
+    memory_mode: any
+    expected: {dsa: private, map_type: none, copy_back: "no", source: explicit}
+    observable: "a(i) = i; target private(a) sets a(i) = 7*i (it does not read a): the host a stays i"
+    template: array_rw
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.4.3", page: 285, lines: "9", quote: "The private clause declares one or more list items to be private to a task or to a SIMD lane"}
+      - {version: "OpenMP 5.2", section: "5.4.3", page: 111, lines: "9", quote: "The private clause specifies that its list items are to be privatized according to Section 5.3"}
+      - {version: "OpenMP 6.0", section: "7.5.3", page: 226, lines: "7", quote: "The private clause specifies that its list items are to be privatized list item according to"}
+
+  - id: omp-target-is-device-ptr
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [c]
+    subject: "is_device_ptr(d) of storage from omp_target_alloc: the region's d is the device address, used directly"
+    construct: target
+    variable_kind: c_pointer
+    attribute: [none]
+    clauses_present: ["is_device_ptr"]
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "n/a", source: explicit}
+    observable: "d = omp_target_alloc(n); target is_device_ptr(d) sets d[i-1] = 2*i + 1; omp_target_memcpy to h: h[i-1] = 2*i + 1"
+    template: c_is_device_ptr
+    spec:
+      - {version: "OpenMP 5.0", section: "2.12.5", page: 172, lines: "32", quote: "The is_device_ptr clause is used to indicate that a list item is a device pointer already in the"}
+      - {version: "OpenMP 5.2", section: "5.4.7", page: 120, lines: "18-19", quote: "each list item privatized inside the construct and the new list item is initialized to the device address to which the original"}
+      - {version: "OpenMP 6.0", section: "7.5.7", page: 235, lines: "21-22", quote: "is initialized to the device address to which the original list item refers"}
+
+  - id: omp-target-c-pointer-unmapped
+    model: omp
+    versions: ["5.2", "6.0"]
+    languages: [c]
+    subject: "a C pointer to storage that is not mapped, referenced in a target construct: no matching mapped list item is found, so the pointer keeps its host value (firstprivate)"
+    construct: target
+    variable_kind: c_pointer
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: none, copy_back: "no", source: implicit}
+    observable: "p = &x[0] (x not mapped); the region copies p's value to pv (map from): pv equals the host address (same = 1)"
+    template: c_pointer_unmapped
+    spec:
+      - {version: "OpenMP 5.2", section: "5.8.6", page: 160, lines: "32", quote: "If a matching mapped list item is not found, the pointer retains its original value"}
+      - {version: "OpenMP 5.2", section: "5.8.1", page: 148, lines: "30-31", quote: "is treated as if it is the base pointer of a zero-length array section that had appeared as a list item in a map clause"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 281, lines: "17-18", quote: "If a matched candidate is not found then a substitute array section is not formed"}
+      - {version: "OpenMP 6.0", section: "7.9.3", page: 277, lines: "6-7", quote: "A variable that is of type pointer, but is neither a pointer to function nor (for C++) a pointer to a member function, is treated as if it is the array base of a zero-offset assumed-size array"}
+
+  - id: omp-target-c-pointer-unmapped-null
+    model: omp
+    versions: ["5.0"]
+    languages: [c]
+    subject: "OpenMP 5.0: a C pointer to storage that is not mapped, referenced in a target construct, is the base pointer of a zero-length array section that is not present, so it is NULL in the region"
+    construct: target
+    variable_kind: c_pointer
+    attribute: [none]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: firstprivate, map_type: alloc, copy_back: "no", source: implicit}
+    observable: "p = &x[0] (x not mapped); the region copies p's value to pv (map from): pv = 0 (same = 0)"
+    template: c_pointer_unmapped
+    spec:
+      - {version: "OpenMP 5.0", section: "2.12.5", page: 173, lines: "17-18", quote: "If the corresponding storage location is not present in the device data environment, the corresponding private variable is initialized to NULL"}
+      - {version: "OpenMP 5.0", section: "2.19.7", page: 315, lines: "1-2", quote: "A variable that is of type pointer is treated as if it is the base pointer of a zero-length array section that appeared as a list item in a map clause"}
+
+  - id: omp-loop-var-sequential-target-private
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90]
+    subject: "the variable of a sequential DO loop in a target region (a task generating construct) is private in it: the host's variable keeps its value"
+    construct: target
+    variable_kind: scalar
+    attribute: [loop_variable]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: private, map_type: none, copy_back: "no", source: implicit}
+    observable: "k = 5; the region sums k = 1..n into rs (map tofrom): rs = n*(n+1)/2 and the host k stays 5"
+    template: loop_var
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.1.1", page: 271, lines: "6-7", quote: "A loop iteration variable for a sequential loop in a parallel or task generating construct is private in the innermost such construct that encloses the loop"}
+      - {version: "OpenMP 5.2", section: "5.1.1", page: 97, lines: "22-23", quote: "Loop iteration variables inside parallel, teams, or task generating constructs are private in the innermost such construct that encloses the loop"}
+      - {version: "OpenMP 6.0", section: "7.1.1", page: 211, lines: "23", quote: "constructs are private in the innermost such construct that encloses the loop"}
+
+  - id: omp-loop-var-associated-private
+    model: omp
+    versions: ["5.0", "5.2", "6.0"]
+    languages: [f90, c]
+    subject: "the iteration variable of the loop associated with target teams distribute parallel do (for) is private: the host's variable keeps its value"
+    construct: target teams distribute parallel do
+    variable_kind: scalar
+    attribute: [loop_variable]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: private, map_type: none, copy_back: "no", source: implicit}
+    observable: "k = 5; the loop over k sets b(k) = k (b mapped from): b(i) = i and the host k stays 5"
+    template: loop_var
+    spec:
+      - {version: "OpenMP 5.0", section: "2.19.1.1", page: 270, lines: "29-30", quote: "The loop iteration variable(s) in the associated do-loop(s) of a do, parallel do, taskloop, or distribute construct is (are) private"}
+      - {version: "OpenMP 5.2", section: "5.1.1", page: 97, lines: "19-20", quote: "The loop iteration variable in any associated loop of a loop-associated construct is otherwise private"}
+      - {version: "OpenMP 6.0", section: "7.1.1", page: 211, lines: "19-20", quote: "The loop-iteration variable in any affected loop of a loop-nest-associated directive is otherwise private"}
+
+  - id: acc-loop-var-private
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "the variable of a loop associated with a loop directive (parallel loop) is predetermined private: the host's variable keeps its value"
+    construct: parallel loop
+    variable_kind: scalar
+    attribute: [loop_variable]
+    clauses_present: []
+    memory_mode: any
+    expected: {dsa: private, map_type: none, copy_back: "no", source: implicit}
+    observable: "k = 5; the parallel loop over k sets b(k) = k (copyout): b(i) = i and the host k stays 5"
+    template: loop_var
+    spec:
+      - {version: "OpenACC 3.4", section: "2.6.1", page: 40, lines: "1351-1352", quote: "The loop variable in a C for statement or Fortran do statement that is associated with a loop directive is predetermined to be private"}
+
+  - id: acc-update-self
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "update self(a) of an array present by enter data transfers the device copy to the host"
+    construct: update
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: ["self"]
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: from, copy_back: "yes", source: explicit}
+    observable: "a(i) = i, enter data copyin(a); a parallel loop (present) sets a(i) = 2*a(i) + 1; update self(a): the host sees 2*i + 1"
+    template: acc_update_self
+    spec:
+      - {version: "OpenACC 3.4", section: "2.14.4", page: 89, lines: "3249-3250", quote: "When a host or self clause appears, then for each var in the associated var-list an transfer out action is performed"}
+
+  - id: acc-update-device
+    model: acc
+    versions: ["3.4"]
+    languages: [f90, c]
+    subject: "update device(a) of an array present by enter data transfers the host values to the device copy"
+    construct: update
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: ["device"]
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: to, copy_back: "n/a", source: explicit}
+    observable: "a(i) = i, enter data copyin(a), then a(i) = 3*i on the host; update device(a); the loop copies a to b: b(i) = 3*i"
+    template: acc_update_device
+    spec:
+      - {version: "OpenACC 3.4", section: "2.14.4", page: 89, lines: "3247-3248", quote: "When a device clause appears, then for each var in the associated var-list an transfer in action is performed"}
+
+  - id: omp-defaultmap-present-aggregate-enter-data
+    model: omp
+    versions: ["5.2", "6.0"]
+    languages: [f90, c]
+    subject: "defaultmap(present: aggregate) of an array that target enter data mapped: the region uses the present copy, which target exit data map(from) copies back"
+    construct: target
+    variable_kind: array
+    attribute: [enter_data]
+    clauses_present: ["defaultmap(present: aggregate)"]
+    memory_mode: any
+    expected: {dsa: "n/a", map_type: present, copy_back: "yes", source: defaultmap}
+    observable: "a(i) = i, target enter data map(to: a); the region sets a(i) = 2*a(i) + 1; target exit data map(from: a): the host sees 2*i + 1"
+    template: enter_data_after
+    spec:
+      - {version: "OpenMP 5.2", section: "5.8.7", page: 162, lines: "6-8", quote: "If implicit-behavior is present, the attribute is a data-mapping attribute determined by an implicit map clause with the map-type of alloc and map-type-modifier of present"}
+      - {version: "OpenMP 5.2", section: "5.8.3", page: 154, lines: "2-4", quote: "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated"}
+      - {version: "OpenMP 6.0", section: "7.9.9", page: 292, lines: "16-18", quote: "If implicit-behavior is present, the attribute is a data-mapping attribute determined by an implicit map clause with a map-type of storage and the present-modifier"}
+      - {version: "OpenMP 6.0", section: "7.9.6", page: 284, lines: "24-26", quote: "If the reference count of the corresponding list item is one or if the always-modifier or delete-modifier is specified, and if the map type is from, the original list item is updated"}

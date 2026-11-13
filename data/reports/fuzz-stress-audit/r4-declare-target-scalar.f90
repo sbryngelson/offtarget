@@ -1,0 +1,24 @@
+! Audit, candidate 4: a declare target module scalar referenced in a
+! target region is treated as if map(tofrom) (OpenMP 5.0 §2.19.7 p.313-314,
+! 5.2 §5.8.1 p.147): the region writes the device copy, which "target update
+! from" brings back. Expected: g= 203 dev= 1
+module dt_scalar_m
+  implicit none
+  integer(8) :: g
+  !$omp declare target(g)
+end module dt_scalar_m
+program declare_target_scalar
+  use omp_lib
+  use dt_scalar_m
+  implicit none
+  integer :: dev
+  g = 101
+  dev = -1
+  !$omp target update to(g)
+  !$omp target map(tofrom: dev)
+    g = 2 * g + 1
+    dev = merge(0, 1, omp_is_initial_device())
+  !$omp end target
+  !$omp target update from(g)
+  print '(a,i0,a,i0)', 'g= ', g, ' dev= ', dev
+end program declare_target_scalar

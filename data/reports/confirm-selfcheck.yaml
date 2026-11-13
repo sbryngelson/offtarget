@@ -1,0 +1,153 @@
+# 15 validation disagreements sampled (stratified by
+# source, rule and explanation; seed 31) and checked by hand against the
+# stored rows, results/expected and the rulings.
+checked:
+- case_id: catalog:omp60-clause-defaultmap-self:cce21:gfx942:copy
+  source: expected
+  hand: needs_human
+  rule_verdict: needs_unified_memory
+  rule: R07-needs-unified-memory
+  explanation: 'explained: finer class: the hand label says only ''no expected value''; the registry entries
+    RUL-NEEDS-ZERO-COPY, RUL-NO-FIXED-VALUE-SELF name the class (needs_unified_memory)'
+  check: 'correct: mode_differences class needs_unified_memory for the self modifier in copy mode;
+    the 27a ruling leaves the value open'
+- case_id: catalog:omp60-directive-target-hostdev:afar_g90:gfx90a:copy
+  source: finding_programs
+  hand: compiler_bug
+  rule_verdict: flaky
+  rule: R09-flaky
+  explanation: 'explained: intermittent: some repeats pass and some fail (1/3); the hand verdict calls
+    the failure a bug, the rules call it intermittent'
+  check: 'correct: repeats wrong, correct, correct; arch_entries class intermittent (race)'
+- case_id: catalog:omp50-clause-schedule:cce19:gfx942:unified
+  source: finding_programs
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (RUL-DERIVED-NEEDS-EXECUTION): sources derivation, model agree on
+    check=pass but no run shows it in this memory mode; failing elsewhere: afar/copy, afar/unified, cce19/copy,
+    cce19_g90/copy, cce20/copy, cce20/unified, cce21/copy, cce21/unified; withdrawn: afar, cce19'
+  check: 'verdict correct; explanation was incomplete: it said ''withdrawn:
+    none'', but catalog/expected_triage.yaml withdraws afar and cce19 for this program, and the triage
+    did not reach the confirmer (results/expected/catalog.jsonl has no record for the 5.0/6.0 schedule
+    programs); the triage now reaches it and the explanation lists the withdrawal'
+- case_id: catalog:omp52-directive-target-hostdev:cce20_g90:gfx90a:copy
+  source: finding_programs
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (rule): one independent source (model); missing a second:
+    elision inapplicable (runtime routine omp_is_initial_device (line 35)); derivation none (no derivation
+    in the program header); metamorphic not run (offline)'
+  check: 'correct: host+device program, outside the expected set (ruling); elision inapplicable
+    (omp_is_initial_device); the C port''s pass is a hint only'
+- case_id: fuzz:b4:86:cce19:gfx942:unified
+  source: fuzz_findings
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (rule): one independent source (model); missing a second:
+    elision inapplicable (declare mapper; declare target variable; iterator or mapper modifier; module
+    variables (de); derivation none (no derivation in the program header); metamorphic not run (offline)'
+  check: 'correct: elision inapplicable (declare mapper, module variables); the fuzz model is the only
+    source; the minimized finding was judged against another compiler''s host run'
+- case_id: catalog:omp60-c-clause-map-iterator:afar:gfx942:copy
+  source: mode_differences
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (RUL-DERIVED-NEEDS-EXECUTION): sources derivation, model agree on
+    check=pass but no run shows it in this memory mode; failing elsewhere: afar/copy (port), afar/unified
+    (port), afar_g90/copy, cce19/copy, cce19/copy (port), cce19/unified, cce19/unified (port), cce20/copy,
+    cce20/copy (port), cce20/unified, cce20/unified (port), cce21/copy, cce21/copy (port), cce21/unified,
+    cce21/unified (port); withdrawn: none'
+  check: 'correct: matches the ruling (iterator programs derived in copy mode; the
+    only correct run is AFAR C at X1)'
+- case_id: catalog:omp60-directive-target-hostdev:cce20:gfx942:copy
+  source: mode_differences
+  hand: copy_mode_failure
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (rule): one independent source (model); missing a second:
+    elision inapplicable (runtime routine omp_is_initial_device (line 35)); derivation none (no derivation
+    in the program header); metamorphic not run (offline)'
+  check: 'correct: as 4 (one source)'
+- case_id: catalog:omp50-clause-schedule:cce19:gfx942:unified
+  source: triage
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (RUL-DERIVED-NEEDS-EXECUTION): sources derivation, model agree on
+    check=pass but no run shows it in this memory mode; failing elsewhere: afar/copy, afar/unified, cce19/copy,
+    cce19_g90/copy, cce20/copy, cce20/unified, cce21/copy, cce21/unified; withdrawn: afar, cce19'
+  check: 'verdict correct; explanation was incomplete: it said ''withdrawn:
+    none'', but catalog/expected_triage.yaml withdraws afar and cce19 for this program, and the triage
+    did not reach the confirmer (results/expected/catalog.jsonl has no record for the 5.0/6.0 schedule
+    programs); the triage now reaches it and the explanation lists the withdrawal'
+- case_id: catalog:omp60-clause-defaultmap-self:cce21_g90:gfx90a:copy
+  source: expected
+  hand: needs_human
+  rule_verdict: needs_unified_memory
+  rule: R07-needs-unified-memory
+  explanation: 'explained: finer class: the hand label says only ''no expected value''; the registry entries
+    RUL-NEEDS-ZERO-COPY, RUL-NO-FIXED-VALUE-SELF name the class (needs_unified_memory)'
+  check: 'correct: as 1 on gfx90a'
+- case_id: catalog:omp50-directive-target-hostdev:afar_g90:gfx90a:copy
+  source: finding_programs
+  hand: compiler_bug
+  rule_verdict: flaky
+  rule: R09-flaky
+  explanation: 'explained: intermittent: some repeats pass and some fail (2/3); the hand verdict calls
+    the failure a bug, the rules call it intermittent'
+  check: 'correct: repeats wrong, wrong, correct (intermittent)'
+- case_id: catalog:omp50-clause-schedule-static:cce19_g90:gfx90a:copy
+  source: finding_programs
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (RUL-DERIVED-NEEDS-EXECUTION): sources derivation, model agree on
+    check=pass but no run shows it in this memory mode; failing elsewhere: afar_g90/copy, cce19/copy,
+    cce19/unified, cce20_g90/copy, cce21_g90/copy; withdrawn: afar, cce19'
+  check: 'verdict correct; explanation was incomplete: it said ''withdrawn:
+    none'', but catalog/expected_triage.yaml withdraws afar and cce19 for this program, and the triage
+    did not reach the confirmer (results/expected/catalog.jsonl has no record for the 5.0/6.0 schedule
+    programs); the triage now reaches it and the explanation lists the withdrawal'
+- case_id: catalog:omp60-c-clause-defaultmap-present:cce21:gfx942:copy
+  source: finding_programs
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (rule): one independent source (model); missing a second:
+    elision inapplicable (Fortran single-file programs only); derivation none (no derivation in the program
+    header); metamorphic inapplicable (a C program: no elision)'
+  check: 'correct: C defaultmap-present has no derivation, no port equivalence entry and no registry reading;
+    one source'
+- case_id: fuzz:b4:39:afar:gfx942:unified
+  source: fuzz_findings
+  hand: compiler_bug
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (rule): one independent source (model); missing a second:
+    elision inapplicable (declare mapper; declare target variable; module variables (declare target visibility);
+    use); derivation none (no derivation in the program header); metamorphic not run (offline)'
+  check: 'correct: elision inapplicable (declare mapper, user-defined reduction); one source'
+- case_id: catalog:omp52-c-clause-from-iterator:afar:gfx942:copy
+  source: mode_differences
+  hand: copy_mode_failure
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (RUL-DERIVED-NEEDS-EXECUTION): sources derivation, model agree on
+    check=pass but no run shows it in this memory mode; failing elsewhere: afar/copy (port), afar/unified
+    (port), afar_g90/copy, cce19/copy, cce19/copy (port), cce19/unified, cce19/unified (port), cce20/copy,
+    cce20/copy (port), cce20/unified, cce20/unified (port), cce21/copy, cce21/copy (port), cce21/unified,
+    cce21/unified (port); withdrawn: none'
+  check: 'correct: as 6'
+- case_id: catalog:omp50-directive-target-hostdev:cce20:gfx942:copy
+  source: mode_differences
+  hand: copy_mode_failure
+  rule_verdict: needs_human
+  rule: R22-expected-weak
+  explanation: 'explained: stricter (rule): one independent source (model); missing a second:
+    elision inapplicable (runtime routine omp_is_initial_device (line 35)); derivation none (no derivation
+    in the program header); metamorphic not run (offline)'
+  check: 'correct: as 4'

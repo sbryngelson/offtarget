@@ -1,0 +1,113 @@
+{
+ "finding": "stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "On the combined construct lastprivate applies to the distribute and worksharing-loop leaves; l is shared on teams and parallel, so no private-in-parallelism restriction is hit. The explicit map(tofrom: l) on the target leaf is allowed (lastprivate adds an implicit tofrom map only if no map clause exists). The last iteration (i=64) assigns 2560 to l, which is copied back. Observed 0 is wrong."
+  },
+  {
+   "run": "run-20261112/batch-29",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate applies to every leaf that permits it (distribute, parallel for); l is shared on teams/parallel and explicitly mapped tofrom on target, so the clause is consistent. Only the last iteration's private copy is assigned to l; no race. The spec requires l to receive the value of the sequentially last iteration (64*40=2560). Observed 0 means the assignment was lost."
+  },
+  {
+   "run": "run-v2-20261113/batch-110",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate on the combined construct applies to the distribute and worksharing-loop leaves; l is explicitly mapped tofrom on target, so lastprivate is not turned into an implicit map. The loop variable is private and only the lastprivate copy is written, so no race. l receives the value of the sequentially last iteration (64*40=2560) and returns to the host. Observed 0 is a wrong answer.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-54",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate on the combined construct applies to the distribute and for leaves, teams gets shared, and the target leaf gets map tofrom for l unless already mapped; here l is explicitly mapped tofrom. Sequentially last iteration assigns 64*40 to l, copied back at target exit. No race: only the lastprivate item is written. Observed l=0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-24",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 4,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9e799e15156f7cbe684fc8c4a5b1ddfcf0d1b6cd8ec257d9924288d39cf25baf",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

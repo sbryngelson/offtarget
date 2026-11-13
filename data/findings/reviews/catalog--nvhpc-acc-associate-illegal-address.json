@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/nvhpc-acc-associate-illegal-address.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-21",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A Fortran ASSOCIATE construct with element associations inside an OpenACC parallel loop is ordinary base-language code; a, b are in copyin/copyout, each iteration writes a distinct b(i), only iteration 1 writes host_flag (copy), so no race. The spec places no restriction on associate in compute regions. The expected check=pass is required; an illegal-address kernel error is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-72",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Fortran associate inside a parallel loop is base-language code the spec does not restrict. Each iteration writes its own b(i); host_flag is written by one iteration only, under a copy clause. acc_on_device is allowed in compute regions. The device fault is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-118",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Fortran associate with array elements inside a parallel loop is ordinary base-language code; a/b are mapped, and each iteration touches distinct elements. host_flag is written only by iteration 1 and not read otherwise, so there is no race. The loop is independent by default in a parallel construct. Nothing in OpenACC 3.4 forbids associate in compute regions, so a conforming compiler must run it; the illegal address is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-68",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-49",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The Fortran ASSOCIATE construct with array-element selectors in a parallel loop is valid base-language code, and OpenACC restricts nothing here. The loop is treated as independent, each iteration writes only its own b(i), and host_flag is written by one iteration. All arrays are in data clauses, so the expected result holds and the illegal address error is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-16",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7851f4784a4a54362e4625e5bb982109bdd87a24e2d735c7ee480acfc911f8dc",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

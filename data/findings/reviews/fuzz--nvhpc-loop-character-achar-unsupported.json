@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-loop-character-achar-unsupported.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-39",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A loop construct is closely nested in teams, so its binding region is teams and it is permitted. Each iteration writes a distinct element of o2, which is mapped from, so there is no race. The expected sum is 16*64+136. Character arrays are mappable. The NVFORTRAN failure is a compiler limitation on device character locals."
+  },
+  {
+   "run": "run-20261113/batch-62",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target teams contains an omp loop that binds to the teams region, which is allowed, and the loop region is strictly nested in teams. The iterations are independent, each writing a distinct o2(i). o2 is mapped from, and the character element assignment is ordinary Fortran. The sum is 16*64+136 as expected. Nothing in the spec excludes character variables on the device, so the compiler failure is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-114",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A loop construct inside target teams binds to the teams region; the mapped array o2 of character(len=4) is assigned per iteration with distinct elements, no race. Character data is a valid mappable type, so a conforming compiler must accept it; the NVFORTRAN crash on a character local is a compiler limitation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-55",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A fixed-length character array is mapped from the device in a target teams region with an omp loop; iterations write distinct elements. No rule restricts character variables in target regions, so a conforming compiler must compile it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-49",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "60885c35d527234742953a4e81649251ae72d67957e9f3a2837e9c08abf238b1",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

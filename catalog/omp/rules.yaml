@@ -1,0 +1,3131 @@
+# Restriction rules for the first slice (OpenMP, Fortran, target offload).
+#
+# Layer 3 of the catalog: restrictions the context-free clause grammar does
+# not express. Read by offload/engine/rules.py (load_rules); the schema is in that
+# module's docstring. In short, each entry is
+#   id         <construct-or-topic>-<kind>-<nnn>; the rule id of version V is
+#              OMP<V>-<id> (OMP52-teams-nesting-001)
+#              (versions 50, 52, 60; a rule without a 50 entry has no 5.0
+#              counterpart, see docs/tooling/omp5-vs-52.md)
+#   check      static (decidable from the source text) or runtime (not; `why`
+#              says why)
+#   status     provisional until the project owner reviews it
+#   predicate  a function in offload/engine/rules.py (null for runtime rules)
+#   example    a small illegal example, for the review document
+#   notes      context: what a single-change illegal variant needs so that
+#              only this rule fires (for the generator), and any narrowing
+#   spec       per version: the citation ("OpenMP <ver> §<sec>, p.<n>", the
+#              printed page where the sentence starts), the spec sentence
+#              verbatim, and optional `also` citations
+#   lang       optional: f90 or c when the rule holds in one
+#              language only (a Fortran-only sentence or construct, or a
+#              C/C++ sentence); absent: both (offload.engine.rules.Rule.lang)
+# Kinds: nesting, placement, loop, map, dsa, clause, storage, body, exec
+# (runtime).
+# The inventory of every restriction sentence of the slice and the rules added for it
+# is in catalog/omp/rules_coverage.yaml.
+
+rules:
+
+# --- nesting and placement --------------------------------------------------------
+
+  - id: teams-nesting-001
+    check: static
+    status: provisional
+    predicate: teams_strictly_nested_in_target
+    example: "!$omp parallel / !$omp teams / ... / !$omp end teams / !$omp end parallel"
+    notes: "Isolation: enclose a teams construct in a parallel (or target data) construct, not inside a target; the teams body holds only statements."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.7, p.85"
+        text: "A teams region can only be strictly nested within the implicit parallel region or a target region."
+      52:
+        citation: "OpenMP 5.2 §10.2, p.232"
+        text: "A teams region must be strictly nested within the implicit parallel region that surrounds the whole OpenMP program or a target region."
+      60:
+        citation: "OpenMP 6.0 §12.2, p.395"
+        text: "A teams region must be a strictly nested region of the implicit parallel region that surrounds the whole OpenMP program or a target region."
+
+  - id: teams-nesting-002
+    check: static
+    status: provisional
+    predicate: target_contains_only_teams
+    example: "!$omp target / x = 1 / !$omp teams / ... / !$omp end teams / !$omp end target"
+    notes: "Isolation: add one statement inside a target construct next to its only nested teams construct."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.7, p.85"
+        text: "If a teams construct is nested within a target construct, that target construct must contain no statements, declarations or directives outside of the teams construct."
+      52:
+        citation: "OpenMP 5.2 §10.2, p.232"
+        text: "If a teams region is nested inside a target region, the corresponding target construct must not contain any statements, declarations or directives outside of the corresponding teams construct."
+      60:
+        citation: "OpenMP 6.0 §12.2, p.395"
+        text: "If a teams region is nested inside a target region, the corresponding target construct must not contain any statements, declarations or directives outside of the corresponding teams construct."
+
+  - id: teams-nesting-003
+    check: static
+    status: provisional
+    predicate: teams_nested_regions
+    example: "!$omp teams / !$omp task / ... / !$omp end task / !$omp end teams"
+    notes: "Isolation: put a task (or single) construct directly in a teams construct that is not nested in a target. A device construct (target update) in a target teams construct also fires target-nesting-001; use a non-device construct."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.7, p.85"
+        text: "distribute, distribute simd, distribute parallel worksharing-loop, distribute parallel worksharing-loop SIMD, parallel regions, including any parallel regions arising from combined constructs, omp_get_num_teams() regions, and omp_get_team_num() regions are the only OpenMP regions that may be strictly nested inside the teams region."
+        also: ["OpenMP 5.0 §2.13.15, p.202", "OpenMP 5.0 §2.9.5, p.131"]
+      52:
+        citation: "OpenMP 5.2 §10.2, p.232"
+        text: "distribute regions, including any distribute regions arising from composite constructs, parallel regions, including any parallel regions arising from combined constructs, loop regions, omp_get_num_teams() regions, and omp_get_team_num() regions are the only OpenMP regions that may be strictly nested inside the teams region."
+      60:
+        citation: "OpenMP 6.0 §12.2, p.396"
+        text: "Only regions that are generated by teams-nestable constructs or teams-nestable routines may be strictly nested regions of teams regions."
+        also: ["OpenMP 6.0 §12.1, p.384", "OpenMP 6.0 §13.7, p.420", "OpenMP 6.0 §13.8, p.423"]
+
+  - id: distribute-nesting-001
+    check: static
+    status: provisional
+    predicate: distribute_strictly_nested_in_teams
+    example: "!$omp parallel / !$omp distribute / do ... / !$omp end parallel"
+    notes: "Isolation: put the distribute in a parallel construct (not in teams). An orphaned distribute is never flagged."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.4.1, p.123"
+        text: "The region corresponding to the distribute construct must be strictly nested inside a teams region."
+      52:
+        citation: "OpenMP 5.2 §11.6, p.255"
+        text: "The region that corresponds to the distribute construct must be strictly nested inside a teams region."
+      60:
+        citation: "OpenMP 6.0 §13.7, p.421"
+        text: "The region that corresponds to the distribute construct must be a strictly nested region of a teams region."
+
+  - id: loop-nesting-001
+    check: static
+    status: provisional
+    predicate: loop_orphan_has_bind
+    example: "!$omp loop / do ... (not nested in any construct, no bind clause)"
+    notes: "Isolation: an orphaned loop directive (not inside any construct) without bind; keep lastprivate off or on the loop variable."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.5, p.131"
+        text: "If a loop construct is not nested inside another OpenMP construct and it appears in a procedure, the bind clause must be present."
+      52:
+        citation: "OpenMP 5.2 §11.7, p.258"
+        text: "If a loop construct is not nested inside another OpenMP construct then the bind clause must be present."
+      60:
+        citation: "OpenMP 6.0 §13.8, p.424"
+        text: "If a loop construct is not nested inside another construct then the bind clause must be present."
+
+  - id: loop-nesting-002
+    check: static
+    status: provisional
+    predicate: loop_bind_teams_in_teams
+    example: "!$omp parallel / !$omp loop bind(teams) / do ... / !$omp end parallel"
+    notes: "Isolation: loop bind(teams) directly inside a parallel construct. An orphaned loop bind(teams) is never flagged."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.5, p.131"
+        text: "If the bind clause is present and binding is teams, the loop region corresponding to the loop construct must be strictly nested inside a teams region."
+      52:
+        citation: "OpenMP 5.2 §11.7.1, p.259"
+        text: "If teams is specified as binding then the corresponding loop region must be strictly nested inside a teams region."
+      60:
+        citation: "OpenMP 6.0 §13.8.1, p.425"
+        text: "If teams is specified as binding then the corresponding loop region must be a strictly nested region of a teams region."
+
+  - id: target-nesting-001
+    check: static
+    status: provisional
+    predicate: device_construct_in_target
+    example: "!$omp target / !$omp target update to(a) / !$omp end target"
+    notes: "Isolation: target update (or target data, enter/exit data) inside a bare target construct. Inside target teams it also fires teams-nesting-003."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "If a target update, target data, target enter data, or target exit data construct is encountered during execution of a target region, the behavior is unspecified."
+        also: ["OpenMP 5.0 §2.20, p.329"]
+      52:
+        citation: "OpenMP 5.2 §13.8, p.286"
+        text: "Device-affecting constructs, other than target constructs for which the ancestor device-modifier is specified, must not be encountered during execution of a target region."
+      60:
+        citation: "OpenMP 6.0 §15.8, p.462"
+        text: "Device-affecting constructs, other than target constructs for which the ancestor device-modifier is specified, must not be encountered during execution of a target region."
+
+  - id: order-nesting-001
+    check: static
+    status: provisional
+    predicate: order_concurrent_nesting
+    example: "!$omp parallel do order(concurrent) / do ... / !$omp task / ... / !$omp end task / end do"
+    notes: "Isolation: a task construct in the loop body of parallel do order(concurrent)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.108"
+        text: "If an order(concurrent) clause is present, all restrictions from the loop construct with an order(concurrent) clause also apply."
+        also: ["OpenMP 5.0 §2.9.5, p.131", "OpenMP 5.0 §2.9.3.1, p.113"]
+      52:
+        citation: "OpenMP 5.2 §10.3, p.234"
+        text: "The only constructs that may be encountered inside a region that corresponds to a construct with an order clause that specifies concurrent are the loop construct, the parallel construct, the simd construct, and combined constructs for which the first construct is a parallel construct."
+      60:
+        citation: "OpenMP 6.0 §12.3, p.398"
+        text: "Only regions that correspond to order-concurrent-nestable constructs or order-concurrent-nestable routines may be strictly nested regions of regions that correspond to constructs on which the order clause is specified with concurrent as the ordering argument."
+        also: ["OpenMP 6.0 §12.1, p.384", "OpenMP 6.0 §12.4, p.399", "OpenMP 6.0 §13.8, p.423", "OpenMP 6.0 §17.8.5, p.494"]
+
+  - id: declaretarget-placement-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declare_target_in_specification_part
+    example: "!$omp target / !$omp declare target (a) / ... / !$omp end target"
+    notes: "Isolation: declare target (a) inside a parallel or target construct (not in teams)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.7, p.184"
+        text: "Any declare target directive with clauses must appear in a specification part of a subroutine subprogram, function subprogram, program or module."
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.206"
+        text: "If an extended list item is a variable name, the directive must appear in the specification part of a subroutine subprogram, function subprogram, program or module."
+        also: ["OpenMP 5.2 §7.8.1, p.206"]
+      60:
+        citation: "OpenMP 6.0 §9.9.1, p.348"
+        text: "If a list item in extended-list is a variable, the directive must appear in the specification part in which the variable is declared."
+        also: ["OpenMP 6.0 §9.9.1, p.348"]
+
+  - id: requires-placement-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: requires_in_specification_part
+    example: "!$omp parallel / !$omp requires atomic_default_mem_order(seq_cst) / !$omp end parallel"
+    notes: "Isolation: requires atomic_default_mem_order(...) inside a parallel construct. At 5.2 a requires with unified_shared_memory, unified_address or reverse_offload inside a target also fires requires-placement-002."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §1.2.2, p.3"
+        text: "An OpenMP directive that may only be placed in a declarative context."
+        also: ["OpenMP 5.0 §2.4, p.60"]
+      52:
+        citation: "OpenMP 5.2 §8.2, p.211"
+        text: "The requires directive must appear in the specification part of a program unit, after any USE statement, any IMPORT statement, and any IMPLICIT statement, unless the directive appears by referencing a module and each clause already appeared with the same arguments in the specification part of the program unit."
+      60:
+        citation: "OpenMP 6.0 §10.5, p.356"
+        text: "The requires directive must appear in the specification part of a program unit, either after all USE statements, IMPORT statements, and IMPLICIT statements or by referencing a module."
+
+  - id: requires-placement-002
+    check: static
+    status: provisional
+    predicate: requires_before_device_constructs
+    example: "!$omp target / ... / !$omp end target / !$omp requires unified_shared_memory"
+    notes: "Isolation: a requires unified_shared_memory at the top of the program unit, after a complete target construct, not nested in a construct (nested also fires requires-placement-001)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.4, p.63"
+        text: "A requires directive with a unified_address, unified_shared_memory, or reverse_offload clause must appear lexically before any device constructs or device routines."
+      52:
+        citation: "OpenMP 5.2 §8.2, p.211"
+        text: "Any requires directive that specifies a reverse_offload, unified_address, or unified_shared_memory requirement must appear lexically before any device constructs or device routines."
+
+# --- loop association --------------------------------------------------------------
+
+  - id: assoc-loop-001
+    check: static
+    status: provisional
+    predicate: loop_nest_follows
+    example: "!$omp parallel do / x = 1"
+    notes: "Isolation: replace the DO loop after a loop directive by a plain statement (and drop its end directive)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.102"
+        text: "Specifically, all associated do-loops must have canonical loop form (see Section 2.9.1 on page 95)."
+        also: ["OpenMP 5.0 §1.2.3, p.8"]
+      52:
+        citation: "OpenMP 5.2 §3.1, p.52"
+        text: "Loop-associated directives are block-associated directives for which the associated structured-block is loop-nest, a canonical loop nest."
+      60:
+        citation: "OpenMP 6.0 §5.1, p.153"
+        text: "Loop-nest-associated directives are block-associated directives for which the associated structured-block is loop-nest, a canonical loop nest."
+
+  - id: collapse-loop-001
+    check: static
+    status: provisional
+    predicate: collapse_within_depth
+    example: "!$omp parallel do collapse(2) / do i = 1, n / ... / end do (a single loop)"
+    notes: "Isolation: collapse(n) with n one more than the DO nest depth; no loop-transforming directive inside the nest (depth unknown, never flagged)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.104"
+        text: "If the value of the parameter in the collapse or ordered clause is larger than the number of nested loops following the construct, the behavior is unspecified."
+        also: ["OpenMP 5.0 §2.9.2, p.107"]
+      52:
+        citation: "OpenMP 5.2 §4.4.3, p.93"
+        text: "n must not evaluate to a value greater than the depth of the associated loop nest."
+      60:
+        citation: "OpenMP 6.0 §6.4.5, p.206"
+        text: "n must not evaluate to a value greater than the loop nest depth."
+
+  - id: loop-dsa-001
+    check: static
+    status: provisional
+    predicate: loop_lastprivate_iteration_variable
+    example: "!$omp loop bind(thread) lastprivate(x) / do i = 1, n / ..."
+    notes: "Isolation: lastprivate of a non-loop variable on a loop construct with bind (or nested in teams/parallel)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.5, p.131"
+        text: "A list item may not appear in a lastprivate clause unless it is the loop iteration variable of a loop that is associated with the construct."
+      52:
+        citation: "OpenMP 5.2 §11.7, p.257"
+        text: "A list item may not appear in a lastprivate clause unless it is the loop iteration variable of a loop that is associated with the construct."
+      60:
+        citation: "OpenMP 6.0 §13.8, p.424"
+        text: "A list item must not appear in a lastprivate clause unless it is the loop-iteration variable of an affected loop."
+
+# --- data mapping --------------------------------------------------------------------
+
+  - id: target-map-001
+    check: static
+    status: provisional
+    predicate: target_map_types
+    example: "!$omp target map(release: a)"
+    notes: "Isolation (5.2): map(release: a) or map(delete: a) on target or a target compound."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "A map-type in a map clause must be to, from, tofrom or alloc."
+      52:
+        citation: "OpenMP 5.2 §13.8, p.286"
+        text: "A map-type in a map clause must be to, from, tofrom or alloc."
+
+  - id: targetdata-map-001
+    check: static
+    status: provisional
+    predicate: target_data_map_types
+    example: "!$omp target data map(delete: a)"
+    notes: "Isolation (5.2): map(release: a) or map(delete: a) on target data."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.2, p.163"
+        text: "A map-type in a map clause must be to, from, tofrom or alloc."
+      52:
+        citation: "OpenMP 5.2 §13.5, p.280"
+        text: "A map-type in a map clause must be to, from, tofrom or alloc."
+
+  - id: targetenterdata-map-001
+    check: static
+    status: provisional
+    predicate: enter_data_map_entering
+    example: "!$omp target enter data map(from: a)"
+    notes: "Isolation: map(from: a) (5.2 also release/delete; 6.0 also release) on target enter data."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.3, p.166"
+        text: "A map-type must be specified in all map clauses and must be either to or alloc."
+      52:
+        citation: "OpenMP 5.2 §13.6, p.281"
+        text: "All map clauses must be map-entering."
+        also: ["OpenMP 5.2 §5.8.3, p.151"]
+      60:
+        citation: "OpenMP 6.0 §15.5, p.455"
+        text: "All map clauses must be map-entering clauses."
+        also: ["OpenMP 6.0 §7.9.1, p.274", "OpenMP 6.0 §7.9.1, p.275"]
+
+  - id: targetexitdata-map-001
+    check: static
+    status: provisional
+    predicate: exit_data_map_exiting
+    example: "!$omp target exit data map(to: a)"
+    notes: "Isolation: map(to: a) (5.2 also alloc; 6.0 also alloc) on target exit data."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.4, p.169"
+        text: "A map-type must be specified in all map clauses and must be either from, release, or delete."
+      52:
+        citation: "OpenMP 5.2 §13.7, p.283"
+        text: "All map clauses must be a map-exiting."
+        also: ["OpenMP 5.2 §5.8.3, p.151"]
+      60:
+        citation: "OpenMP 6.0 §15.6, p.457"
+        text: "All map clauses must be map-exiting clauses."
+        also: ["OpenMP 6.0 §7.9.1, p.274", "OpenMP 6.0 §7.9.1, p.275"]
+
+  - id: mapitem-map-001
+    check: static
+    status: provisional
+    predicate: map_same_item_same_mapper
+    example: "!$omp target map(mapper(m), to: a) map(from: a)"
+    notes: "Isolation: the same item in two map clauses of one construct, one with mapper(m)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.8.3, p.156"
+        text: "If the same list item appears more than once in map clauses on the same construct, the map clauses must specify the same mapper modifier."
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.286"
+        text: "If the same list item appears more than once in map clauses on the same construct, the map clauses must specify the same mapper modifier."
+
+  - id: mapitem-map-002
+    check: static
+    status: provisional
+    predicate: map_whole_and_part
+    example: "!$omp target map(to: a) map(from: a(1:n))"
+    notes: "Context requirement (5.2): the base variable needs a visible non-POINTER declaration in the source, with no USE statement between the directive and the declaration (or in the declaring unit) that may supply the name; for s%c, s must be declared type(t) with t defined in the source (resolved from the unit declaring s; nested components from the unit defining each type) and c non-POINTER. A POINTER, undeclared or possibly use-associated base (or type) never fires. Isolation: real, allocatable :: a(:) then map(to: a) map(from: a(1:n))."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.1, p.323"
+        text: "List items of the map clauses on the same construct must not share original storage unless they are the same variable or array section."
+      52:
+        citation: "OpenMP 5.2 §5.8.3, p.156"
+        text: "Two list items of the map clauses on the same construct must not share original storage unless they are the same list item or unless one is the containing structure of the other."
+
+  - id: mapitem-map-003
+    check: static
+    status: provisional
+    predicate: map_self_consistent
+    example: "!$omp target map(self: a) map(to: a(1:n))"
+    notes: "Isolation (6.0): map(self: a) plus map(to: a(1:n)) without self."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.287"
+        text: "If a list item appears in a map clause with the self-modifier, any other list item in a map clause on the same construct that has the same base variable or base pointer must also be specified with the self-modifier."
+
+  - id: target-dsa-001
+    check: static
+    status: provisional
+    predicate: target_dsa_not_mapped
+    example: "!$omp target map(to: a) firstprivate(a)"
+    notes: "Isolation: firstprivate(a) on a bare target that also maps a."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.1, p.321"
+        text: "A list item cannot appear in both a map clause and a data-sharing attribute clause on the same construct unless the construct is a combined construct."
+      52:
+        citation: "OpenMP 5.2 §13.8, p.286"
+        text: "A list item in a data-sharing attribute clause that is specified on a target construct must not have the same base variable as a list item in a map clause on the construct."
+      60:
+        citation: "OpenMP 6.0 §15.8, p.463"
+        text: "A list item in a data-sharing attribute clause that is specified on a target construct must not have the same base variable as a list item in a map clause on the construct."
+
+  - id: defaultmap-map-001
+    check: static
+    status: provisional
+    predicate: defaultmap_category_once
+    example: "!$omp target defaultmap(tofrom: scalar) defaultmap(firstprivate: scalar)"
+    notes: "Defaultmap may repeat on a construct (spec_overrides.yaml repeatable_clauses), so this rule checks parsed source; tests/engine/test_generators.py."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "At most one defaultmap clause for each category can appear on the directive."
+      52:
+        citation: "OpenMP 5.2 §5.8.7, p.162"
+        text: "A given variable-category may be specified in at most one defaultmap clause on a construct."
+      60:
+        citation: "OpenMP 6.0 §7.9.9, p.292"
+        text: "A given variable-category may be specified in at most one defaultmap clause on a construct."
+
+  - id: defaultmap-map-002
+    check: static
+    status: provisional
+    predicate: defaultmap_all_alone
+    example: "!$omp target defaultmap(tofrom: all) defaultmap(firstprivate: scalar)"
+    notes: "Defaultmap may repeat on a construct (spec_overrides.yaml repeatable_clauses), so this rule checks parsed source; tests/engine/test_generators.py."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.8.7, p.162"
+        text: "If a defaultmap clause specifies the all variable-category, no other defaultmap clause may appear on the construct."
+      60:
+        citation: "OpenMP 6.0 §7.9.9, p.292"
+        text: "If a defaultmap clause specifies the all variable-category, no other defaultmap clause may appear on the construct."
+
+  - id: usedevice-clause-001
+    check: static
+    status: provisional
+    predicate: use_device_no_structure_element
+    example: "!$omp target data map(to: s) use_device_addr(s%a)"
+    notes: "Isolation (5.2): use_device_addr(s%a) on target data (a structure component, not mapped twice)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.4.10, p.124"
+        text: "Each list item must not be a structure element."
+        also: ["OpenMP 5.2 §5.4.8, p.122"]
+
+  - id: usedevice-clause-002
+    check: static
+    status: provisional
+    predicate: use_device_addr_section_base
+    example: "!$omp target data map(to: s) use_device_addr(s%a(1:n))"
+    notes: "Isolation (6.0): use_device_addr(s%a(1:n)) on target data."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.5.10, p.239"
+        text: "If a list item is an array section, the array base must be a base language identifier."
+
+# --- clause arguments --------------------------------------------------------------------
+
+  - id: dnm-clause-001
+    check: static
+    status: provisional
+    predicate: dnm_names_constituent
+    example: "!$omp target teams num_teams(parallel do: 4)   (6.0); !$omp target simd if(parallel: x)"
+    notes: "Isolation: a directive-name modifier naming a directive that is not a constituent (5.2: if(parallel: x) on target simd; 6.0: num_teams(parallel do: 4) on target teams)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §3.4, p.72"
+        text: "The directive-name-modifier must specify the directive-name of the construct or of a constituent construct of the directive-specification on which the if clause appears."
+      60:
+        citation: "OpenMP 6.0 §5.4, p.174"
+        text: "The directive-name-modifier must specify the directive name of either the directive on which the clause appears or a constituent directive of that directive."
+
+  - id: if-clause-001
+    check: static
+    status: provisional
+    predicate: if_once_per_constituent
+    example: "!$omp target teams if(target: x) if(x)"
+    notes: "Isolation: if(target: x) plus if(y) without modifier on target parallel."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.13.25, p.216"
+        text: "If any if clause on the directive includes a directive-name-modifier then all if clauses on the directive must include a directive-name-modifier."
+        also: ["OpenMP 5.0 §2.13.16, p.204", "OpenMP 5.0 §2.13.17, p.206", "OpenMP 5.0 §2.13.18, p.207", "OpenMP 5.0 §2.13.26, p.217", "OpenMP 5.0 §2.6, p.77", "OpenMP 5.0 §2.12.5, p.174"]
+      52:
+        citation: "OpenMP 5.2 §3.4, p.72"
+        text: "At most one if clause can be specified that applies to the semantics of any construct or constituent construct of a directive-specification."
+      60:
+        citation: "OpenMP 6.0 §5.5, p.179"
+        text: "At most one if clause can be specified that applies to the semantics of any construct or constituent construct of a directive-specification."
+
+  - id: threadlimit-clause-001
+    check: static
+    status: provisional
+    predicate: thread_limit_positive
+    example: "!$omp target teams distribute parallel do thread_limit(-1)"
+    notes: "Isolation: thread_limit(0) or a negative literal; a non-literal is never flagged."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.7, p.85"
+        text: "The thread_limit expression must evaluate to a positive integer value."
+      52:
+        citation: "OpenMP 5.2 §3.2, p.60"
+        text: "A positive argument or parameter must be greater than zero; a non-negative argument or parameter must be greater than or equal to zero."
+        also: ["OpenMP 5.2 §13.3, p.277"]
+      60:
+        citation: "OpenMP 6.0 §5.2, p.161"
+        text: "An argument or parameter with the positive property must be greater than zero."
+        also: ["OpenMP 6.0 §15.3, p.452"]
+
+  - id: numteams-clause-001
+    check: static
+    status: provisional
+    predicate: num_teams_positive
+    example: "!$omp teams num_teams(0)"
+    notes: "Isolation: a lower-bound literal 0 below a positive upper-bound (num_teams(0: 4)); num_teams(0) alone also isolates."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.7, p.85"
+        text: "The num_teams expression must evaluate to a positive integer value."
+      52:
+        citation: "OpenMP 5.2 §3.2, p.60"
+        text: "A positive argument or parameter must be greater than zero; a non-negative argument or parameter must be greater than or equal to zero."
+        also: ["OpenMP 5.2 §10.2.1, p.233"]
+      60:
+        citation: "OpenMP 6.0 §5.2, p.161"
+        text: "An argument or parameter with the positive property must be greater than zero."
+        also: ["OpenMP 6.0 §12.2.1, p.397"]
+
+  - id: numteams-clause-002
+    check: static
+    status: provisional
+    predicate: num_teams_bounds_ordered
+    example: "!$omp teams num_teams(8: 4)"
+    notes: "Isolation: num_teams(8: 4) with both literals positive."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §10.2.1, p.233"
+        text: "lower-bound must be less than or equal to upper-bound."
+      60:
+        citation: "OpenMP 6.0 §12.2.1, p.397"
+        text: "lower-bound must be less than or equal to upper-bound."
+
+  - id: distschedule-clause-001
+    check: static
+    status: provisional
+    predicate: dist_schedule_chunk_positive
+    example: "!$omp distribute dist_schedule(static, 0)"
+    notes: "Isolation: dist_schedule(static, 0) on a distribute that is orphaned or in teams."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "chunk_size must be a loop invariant integer expression with a positive value."
+        also: ["OpenMP 5.0 §2.9.4.1, p.122"]
+      52:
+        citation: "OpenMP 5.2 §3.2, p.60"
+        text: "A positive argument or parameter must be greater than zero; a non-negative argument or parameter must be greater than or equal to zero."
+        also: ["OpenMP 5.2 §11.6.1, p.256"]
+      60:
+        citation: "OpenMP 6.0 §5.2, p.161"
+        text: "An argument or parameter with the positive property must be greater than zero."
+        also: ["OpenMP 6.0 §13.7.1, p.422"]
+
+  - id: reduction-clause-001
+    check: static
+    status: provisional
+    predicate: reduction_task_placement
+    example: "!$omp teams reduction(task, +: v)"
+    notes: "Isolation: reduction(task, +: x) on teams (no parallel/worksharing leaf), without nowait."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.4, p.302"
+        text: "A reduction clause with the task reduction-modifier may only appear on a parallel construct, a worksharing construct or a combined or composite construct for which any of the aforementioned constructs is a constituent construct and simd or loop are not constituent constructs."
+      52:
+        citation: "OpenMP 5.2 §5.5.8, p.135"
+        text: "A reduction clause with the task reduction-modifier may only appear on a parallel construct, a worksharing construct or a combined or composite construct for which any of the aforementioned constructs is a constituent construct and neither simd nor loop are constituent constructs."
+      60:
+        citation: "OpenMP 6.0 §7.6.10, p.254"
+        text: "A reduction clause with the task reduction-modifier may only appear on a parallel construct or a worksharing construct, or a compound construct for which any of the aforementioned constructs is a constituent construct and neither simd nor loop are constituent constructs."
+
+  - id: reduction-clause-002
+    check: static
+    status: provisional
+    predicate: reduction_inscan_placement
+    example: "!$omp distribute parallel do reduction(inscan, +: x)"
+    notes: "Isolation: reduction(inscan, +: x) on distribute parallel do, without other reductions, ordered or schedule."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.4, p.302"
+        text: "A reduction clause with the inscan reduction-modifier may only appear on a worksharing-loop construct, a worksharing-loop SIMD construct, a simd construct, a parallel worksharing-loop construct or a parallel worksharing-loop SIMD construct."
+      52:
+        citation: "OpenMP 5.2 §5.5.8, p.136"
+        text: "A reduction clause with the inscan reduction-modifier may only appear on a worksharing-loop construct, a simd construct or a combined or composite construct for which any of the aforementioned constructs is a constituent construct and distribute is not a constituent construct."
+      60:
+        citation: "OpenMP 6.0 §7.6.10, p.254"
+        text: "A reduction clause with the inscan reduction-modifier may only appear on a worksharing-loop construct or a simd construct, or a compound construct for which any of the aforementioned constructs is a constituent construct and neither distribute nor taskloop is a constituent construct."
+
+  - id: reduction-clause-003
+    check: static
+    status: provisional
+    predicate: reduction_inscan_not_mixed
+    example: "!$omp parallel do reduction(inscan, +: x) reduction(+: y)"
+    notes: "Isolation: an inscan reduction plus a plain reduction of another item on parallel do."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.4, p.302"
+        text: "A reduction clause without the inscan reduction-modifier may not appear on a construct on which a reduction clause with the inscan reduction-modifier appears."
+      52:
+        citation: "OpenMP 5.2 §5.5.8, p.135"
+        text: "If the inscan reduction-modifier is specified, a reduction clause without the inscan reduction-modifier must not appear on the same construct."
+      60:
+        citation: "OpenMP 6.0 §7.6.10, p.254"
+        text: "If the inscan reduction-modifier is specified, a reduction clause without the inscan reduction-modifier must not appear on the same construct."
+
+  - id: reduction-clause-004
+    check: static
+    status: provisional
+    predicate: reduction_inscan_no_ordered_schedule
+    example: "!$omp parallel do reduction(inscan, +: x) schedule(static)"
+    notes: "Isolation: schedule(static) added to parallel do reduction(inscan, ...)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "If a reduction clause with the inscan modifier is specified, neither the ordered nor schedule clause may appear on the worksharing-loop directive."
+      52:
+        citation: "OpenMP 5.2 §5.5.8, p.136"
+        text: "The inscan reduction-modifier must not be specified on a construct for which the ordered or schedule clause is specified."
+      60:
+        citation: "OpenMP 6.0 §7.6.10, p.254"
+        text: "The inscan reduction-modifier must not be specified on a construct for which the ordered or schedule clause is specified."
+
+  - id: reduction-clause-005
+    check: static
+    status: provisional
+    predicate: reduction_task_no_nowait
+    example: "!$omp do reduction(task, +: x) / do ... / end do / !$omp end do nowait"
+    notes: "Isolation: nowait on the end do of do reduction(task, ...) (orphaned do)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.4, p.302"
+        text: "The task reduction-modifier may not appear in a reduction clause if the nowait clause is specified on the same construct."
+      52:
+        citation: "OpenMP 5.2 §5.5.8, p.136"
+        text: "The task reduction-modifier must not appear in a reduction clause if the nowait clause is specified on the same construct."
+      60:
+        citation: "OpenMP 6.0 §7.6.10, p.254"
+        text: "The task reduction-modifier must not appear in a reduction clause if the nowait clause is specified on the same construct."
+
+  - id: distribute-dsa-001
+    check: static
+    status: provisional
+    predicate: distribute_firstprivate_lastprivate
+    example: "!$omp teams distribute firstprivate(a, b) lastprivate(b)"
+    notes: "Isolation: the same item in firstprivate and lastprivate on distribute or on any compound with a distribute leaf (teams distribute, distribute parallel do, target teams distribute ...): both clauses land on the distribute leaf, so the rule applies there. On a compound without a distribute leaf (e.g. parallel do) firstprivate plus lastprivate on one item is legal."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.4.1, p.123"
+        text: "A list item may appear in a firstprivate or lastprivate clause but not both."
+      52:
+        citation: "OpenMP 5.2 §11.6, p.255"
+        text: "A list item may appear in a firstprivate or lastprivate clause, but not in both."
+      60:
+        citation: "OpenMP 6.0 §13.7, p.421"
+        text: "A list item may appear in a firstprivate or lastprivate clause, but not in both."
+
+  - id: distribute-clause-001
+    check: static
+    status: provisional
+    predicate: distribute_no_conditional_lastprivate
+    example: "!$omp distribute lastprivate(conditional: x)"
+    notes: "Isolation: lastprivate(conditional: x) on distribute (orphaned or in teams)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.4.3, p.126"
+        text: "The conditional modifier may not appear in a lastprivate clause."
+        also: ["OpenMP 5.0 §2.9.4.1, p.121", "OpenMP 5.0 §2.9.4.2, p.124", "OpenMP 5.0 §2.9.4.4, p.127"]
+      52:
+        citation: "OpenMP 5.2 §11.6, p.255"
+        text: "The conditional lastprivate-modifier must not be specified."
+      60:
+        citation: "OpenMP 6.0 §13.7, p.421"
+        text: "The conditional lastprivate-modifier must not be specified."
+
+  - id: datasharing-dsa-001
+    check: static
+    status: provisional
+    predicate: dsa_list_item_once
+    example: "!$omp parallel do reduction(+: j) reduction(*: k) private(k)"
+    notes: "Checked after the 5.2 §17.2 / 6.0 §19.2 split (rules._dsa_split); implicit clauses created by the split are not counted, and linear only on its innermost leaf. Isolation: two clauses that land on the same leaf, e.g. private(x) firstprivate(x) on parallel do (both on do) or shared(x) private(x) on parallel; shared(x) firstprivate(x) on parallel do is legal."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.14, p.219"
+        text: "The restriction that a list item may not appear in more than one data sharing clause with the exception of specifying a variable in both firstprivate and lastprivate clauses applies after the clauses are split or duplicated per the above rules."
+      52:
+        citation: "OpenMP 5.2 §17.2, p.341"
+        text: "The restriction that a list item may not appear in more than one data sharing clause with the exception of specifying a variable in both firstprivate and lastprivate clauses applies after the clauses are split or duplicated per the above rules."
+        also: ["OpenMP 5.2 §5.4, p.108"]
+      60:
+        citation: "OpenMP 6.0 §19.2, p.530"
+        text: "The restriction that a list item may not appear in more than one data-sharing attribute clause with the exception of specifying a variable in both firstprivate and lastprivate clauses applies after the clauses are split or duplicated per the above rules."
+        also: ["OpenMP 6.0 §7.5, p.222"]
+
+  - id: default-dsa-001
+    check: static
+    status: provisional
+    predicate: default_none_listed
+    example: "!$omp parallel do default(none) shared(a) / do i = 1, n / b(i) = a(i) / end do"
+    notes: "The legality oracle of omp.clause.default.none. Checked on base-language statements in the construct (lexical extent) only: a variable declared in the source and visible from the directive (not a named constant, not a name a USE may supply) that no data-sharing attribute clause on the directive lists; DO variables of loops in the construct are predetermined private. Lenient: references inside nested directives' clauses are not counted. Isolation: drop one variable from the shared list of a default(none) construct whose body references it."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.1, p.283"
+        text: "The default(none) clause requires that each variable that is referenced in the construct, and that does not have a predetermined data-sharing attribute, must have its data-sharing attribute explicitly determined by being listed in a data-sharing attribute clause."
+      52:
+        citation: "OpenMP 5.2 §5.4.1, p.109"
+        text: "If data-sharing-attribute is none, each variable that is referenced in the construct and does not have a predetermined data-sharing attribute must have its data-sharing attribute explicitly determined by being listed in a data-sharing attribute clause."
+      60:
+        citation: "OpenMP 6.0 §7.5.1, p.224"
+        text: "If data-sharing-attribute is none, each variable that is referenced in the construct and does not have a predetermined data-sharing attribute must have an explicitly determined data-sharing attribute."
+
+  - id: listitem-clause-001
+    check: static
+    status: provisional
+    predicate: list_item_not_part_of_variable
+    example: "!$omp declare target to(arr(1:2))   or   !$omp parallel private(a(1))"
+    notes: "Isolation: private(a(1)) on parallel, or declare target to/enter(arr(1:2))."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.3, p.281"
+        text: "A variable that is part of another variable (as an array or structure element) cannot be privatized."
+        also: ["OpenMP 5.0 §2.19.4.2, p.285", "OpenMP 5.0 §2.19.5.1, p.298", "OpenMP 5.0 §2.12.7, p.184", "OpenMP 5.0 §2.19.2, p.278"]
+      52:
+        citation: "OpenMP 5.2 §3.2.1, p.62"
+        text: "Unless otherwise specified, a variable that is part of another variable (as an array element or a structure element) cannot be a variable list item, an extended list item or locator list item."
+      60:
+        citation: "OpenMP 6.0 §5.2.1, p.164"
+        text: "Unless otherwise specified, a variable that is part of an aggregate variable must not be a variable list item or an extended list item."
+
+  - id: device-clause-001
+    check: static
+    status: provisional
+    predicate: device_ancestor_only_on_target
+    example: "!$omp target data device(ancestor: 1) map(a)"
+    notes: "Isolation: device(ancestor: 1) on target data, with requires reverse_offload in the program unit."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §13.2, p.276"
+        text: "The ancestor device-modifier must not appear on the device clause on any directive other than the target construct."
+      60:
+        citation: "OpenMP 6.0 §15.2, p.452"
+        text: "The ancestor device-modifier must not appear on the device clause on any directive other than the target construct."
+
+  - id: device-clause-002
+    check: static
+    status: provisional
+    predicate: device_ancestor_is_one
+    example: "!$omp target device(ancestor: 2) map(a)"
+    notes: "Isolation: device(ancestor: 2) on target with requires reverse_offload in the source (without it device-clause-003 also fires)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "If a device clause in which the ancestor device-modifier appears is present on the construct, then the following restrictions apply: – A requires directive with the reverse_offload clause must be specified; – The device clause expression must evaluate to 1; – Only the device, firstprivate, private, defaultmap, and map clauses may appear on the construct; – No OpenMP constructs or calls to OpenMP API runtime routines are allowed inside the corresponding target region."
+      52:
+        citation: "OpenMP 5.2 §13.2, p.276"
+        text: "If the ancestor device-modifier is specified, the device-description must evaluate to 1 and a requires directive with the reverse_offload clause must be specified;"
+      60:
+        citation: "OpenMP 6.0 §15.2, p.452"
+        text: "If the ancestor device-modifier is specified, the device-description must evaluate to 1 and a requires directive with the reverse_offload clause must be specified;"
+
+  - id: device-clause-003
+    check: static
+    status: provisional
+    predicate: device_ancestor_needs_reverse_offload
+    example: "!$omp target device(ancestor: 1) map(a)   (no !$omp requires reverse_offload in the source)"
+    notes: "Isolation: device(ancestor: 1) on target, no requires reverse_offload anywhere in the source."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "If a device clause in which the ancestor device-modifier appears is present on the construct, then the following restrictions apply: – A requires directive with the reverse_offload clause must be specified; – The device clause expression must evaluate to 1; – Only the device, firstprivate, private, defaultmap, and map clauses may appear on the construct; – No OpenMP constructs or calls to OpenMP API runtime routines are allowed inside the corresponding target region."
+      52:
+        citation: "OpenMP 5.2 §13.2, p.276"
+        text: "If the ancestor device-modifier is specified, the device-description must evaluate to 1 and a requires directive with the reverse_offload clause must be specified;"
+      60:
+        citation: "OpenMP 6.0 §15.2, p.452"
+        text: "If the ancestor device-modifier is specified, the device-description must evaluate to 1 and a requires directive with the reverse_offload clause must be specified;"
+
+  - id: target-clause-001
+    check: static
+    status: provisional
+    predicate: target_ancestor_limits
+    example: "!$omp target device(ancestor: 1) map(a) if(x)"
+    notes: "Isolation: one extra clause (if(x)) on target device(ancestor: 1), with requires reverse_offload."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "If a device clause in which the ancestor device-modifier appears is present on the construct, then the following restrictions apply: – A requires directive with the reverse_offload clause must be specified; – The device clause expression must evaluate to 1; – Only the device, firstprivate, private, defaultmap, and map clauses may appear on the construct; – No OpenMP constructs or calls to OpenMP API runtime routines are allowed inside the corresponding target region."
+      52:
+        citation: "OpenMP 5.2 §13.8, p.286"
+        text: "If a device clause is specified with the ancestor device-modifier, only the device, firstprivate, private, defaultmap, and map clauses may appear on the construct and no OpenMP constructs or calls to OpenMP API runtime routines are allowed inside the corresponding target region."
+      60:
+        citation: "OpenMP 6.0 §15.8, p.463"
+        text: "If a device clause is specified with the ancestor device-modifier, only the device, firstprivate, private, defaultmap, nowait, and map clauses may appear on the construct and no constructs or calls to routines are allowed inside the corresponding target region."
+
+  - id: declaretarget-clause-001
+    check: static
+    status: provisional
+    predicate: declare_target_extended_list_alone
+    example: "!$omp declare target (a) enter(b)"
+    notes: "Isolation: declare target (a) enter(b). At 5.2, declare target (a) device_type(host) also fires declaretarget-clause-002."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.206"
+        text: "If the extended-list argument is specified, no clauses may be specified."
+      60:
+        citation: "OpenMP 6.0 §9.9.1, p.347"
+        text: "If the extended-list argument is specified, no clauses may be specified."
+
+  - id: declaretarget-clause-002
+    check: static
+    status: provisional
+    predicate: declare_target_enter_or_link
+    example: "!$omp declare target device_type(host)"
+    notes: "Isolation (5.2): declare target device_type(host) without an extended list."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.206"
+        text: "If the directive has a clause, it must contain at least one enter clause or at least one link clause."
+
+  - id: declaretarget-clause-003
+    check: static
+    status: provisional
+    predicate: declare_target_nohost_link
+    example: "!$omp declare target link(a) device_type(nohost)"
+    notes: "Isolation: declare target link(a) device_type(nohost)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.206"
+        text: "A variable for which nohost is specified may not appear in a link clause."
+      60:
+        citation: "OpenMP 6.0 §9.9.1, p.347"
+        text: "A variable for which nohost is specified must not appear in a link clause."
+
+  - id: requires-clause-001
+    check: static
+    status: provisional
+    predicate: requires_same_memory_order
+    example: "!$omp requires atomic_default_mem_order(seq_cst) / !$omp requires atomic_default_mem_order(relaxed)"
+    notes: "Isolation: two requires atomic_default_mem_order with different arguments in one program unit, not nested. The 6.0 entry cites the same sentence (6.0 §10.5.1.1)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.4, p.63"
+        text: "At most one requires directive with atomic_default_mem_order clause can appear in a single compilation unit."
+      52:
+        citation: "OpenMP 5.2 §8.2, p.211"
+        text: "All requires directives in the same compilation unit that specify the atomic_default_mem_order requirement must specify the same argument."
+      60:
+        citation: "OpenMP 6.0 §10.5.1.1, p.357"
+        text: "All requires directives in the same compilation unit that specify the atomic_default_mem_order requirement must specify the same argument."
+
+# --- The remaining static restrictions ---
+
+  - id: worksharing-nesting-001
+    check: static
+    status: provisional
+    predicate: worksharing_closely_nested
+    example: "!$omp parallel / !$omp single / !$omp do / do ... / !$omp end single / !$omp end parallel"
+    notes: "5.2 states the static rule. 6.0 states it only in the informative Appendix C ('A team-executed region may not be closely nested inside a partitioned worksharing region, a region that corresponds to a thread-exclusive construct, or a region that corresponds to a task-generating construct that is not a team-generating construct'), as a consequence of the cited 6.0 §13 rule: the inner region is encountered by only some threads of its binding team, so the rule is certain whenever the team has more than one thread; a one-thread team is not excepted (owner point). Isolation: a do construct directly inside a single (or task) construct inside a parallel construct."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.20, p.328"
+        text: "A worksharing region may not be closely nested inside a worksharing, loop, task, taskloop, critical, ordered, atomic, or master region."
+      52:
+        citation: "OpenMP 5.2 §17.1, p.338"
+        text: "A worksharing region may not be closely nested inside a worksharing, task, taskloop, critical, ordered, atomic, or masked region."
+      60:
+        citation: "OpenMP 6.0 §13, p.404"
+        text: "Each work-distribution region must be encountered by all threads in the binding thread set or by none at all unless cancellation has been requested for the innermost enclosing parallel region."
+
+  - id: simd-nesting-001
+    check: static
+    status: provisional
+    predicate: simd_simdizable_only
+    example: "!$omp simd / do ... / !$omp parallel / ... / !$omp end parallel / end do"
+    notes: "SIMDizable: simd, atomic, loop without bind(teams/parallel) (its binding region is then not defined, 6.0 §13.8 p.423), ordered with the simd clause; 6.0 also the loop-transforming constructs. Separating and declarative directives (scan) are not constructs. Isolation: a parallel (or task) construct in the loop body of a simd construct."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.3.1, p.113"
+        text: "The only OpenMP constructs that can be encountered during execution of a simd region are the atomic construct, the loop construct, the simd construct and the ordered construct with the simd clause."
+      52:
+        citation: "OpenMP 5.2 §10.4, p.235"
+        text: "Only simdizable constructs can be encountered during execution of a simd region."
+        also: ["OpenMP 5.2 §17.1, p.338"]
+      60:
+        citation: "OpenMP 6.0 §12.4, p.399"
+        text: "Only SIMDizable constructs may be encountered during execution of a simd region."
+
+  - id: order-nesting-002
+    check: static
+    status: provisional
+    predicate: order_concurrent_no_api_calls
+    example: "!$omp parallel do order(concurrent) / do ... / x = omp_get_thread_num() / end do"
+    notes: "A loop construct without an order clause counts as order(concurrent) (5.2 §11.7, 6.0 §13.8). 6.0: no runtime routine has the order-concurrent-nestable property. Isolation: a call omp_get_thread_num() in the body of parallel do order(concurrent)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.5, p.131"
+        text: "A loop region corresponding to a loop construct may not contain calls to the OpenMP Runtime API."
+        also: ["OpenMP 5.0 §2.9.2, p.108", "OpenMP 5.0 §2.9.3.1, p.113"]
+      52:
+        citation: "OpenMP 5.2 §10.3, p.234"
+        text: "A region that corresponds to a construct with an order clause that specifies concurrent may not contain OpenMP runtime API calls."
+        also: ["OpenMP 5.2 §17.1, p.339"]
+      60:
+        citation: "OpenMP 6.0 §12.3, p.398"
+        text: "The only routines for which a call may be nested inside a region that corresponds to a construct on which the order clause is specified with concurrent as the ordering argument are order-concurrent-nestable routines."
+
+  - id: ordered-nesting-001
+    check: static
+    status: provisional
+    predicate: ordered_threads_in_worksharing_loop
+    example: "!$omp parallel / !$omp ordered / ... / !$omp end ordered / !$omp end parallel"
+    notes: "Block-associated ordered without the simd clause (no clause acts as threads, 5.2 §15.10.2 p.330, 6.0 §17.10.2 p.515). An orphaned ordered construct is not flagged. Isolation: ordered threads directly in a parallel construct."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.20, p.328"
+        text: "An ordered region corresponding to an ordered construct without the simd clause specified must be closely nested inside a worksharing-loop region."
+      52:
+        citation: "OpenMP 5.2 §17.1, p.338"
+        text: "An ordered region that corresponds to an ordered construct without the simd clause specified must be closely nested inside a worksharing-loop region."
+      60:
+        citation: "OpenMP 6.0 §17.10.2, p.516"
+        text: "If the threads parallelization-level clause is specified, the binding region must correspond to a construct for which a worksharing-loop construct is a leaf construct."
+
+  - id: ordered-nesting-002
+    check: static
+    status: provisional
+    predicate: ordered_simd_in_simd
+    example: "!$omp parallel do ordered / do ... / !$omp ordered simd / ... / !$omp end ordered / end do"
+    notes: "Isolation: ordered simd directly in a parallel do (no simd leaf)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.20, p.328"
+        text: "An ordered region corresponding to an ordered construct with the simd clause specified must be closely nested inside a simd or worksharing-loop SIMD region."
+      52:
+        citation: "OpenMP 5.2 §17.1, p.338"
+        text: "An ordered region that corresponds to an ordered construct with the simd clause specified must be closely nested inside a simd or worksharing-loop SIMD region."
+      60:
+        citation: "OpenMP 6.0 §17.10.2, p.516"
+        text: "If the simd parallelization-level clause is specified, the binding region must correspond to a construct for which the simd construct is a leaf construct."
+
+  - id: ordered-clause-001
+    check: static
+    status: provisional
+    predicate: ordered_binding_has_ordered_clause
+    example: "!$omp parallel do / do ... / !$omp ordered / ... / !$omp end ordered / end do"
+    notes: "The construct with the do leaf that the ordered construct binds to needs an ordered clause (5.2: ordered or ordered(1); 6.0: n equal to the collapse value). Isolation: drop the ordered clause of the parallel do."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "The ordered clause must be present on the worksharing-loop construct if any ordered region ever binds to a worksharing-loop region arising from the worksharing-loop construct."
+      52:
+        citation: "OpenMP 5.2 §15.10.2, p.331"
+        text: "An ordered clause with a parameter value equal to one must appear on the construct that corresponds to the binding region."
+      60:
+        citation: "OpenMP 6.0 §17.10.2, p.516"
+        text: "An ordered clause with an argument value equal to the number of collapsed loops must appear on the construct that corresponds to the binding region, if the binding region is not a simd region."
+
+  - id: workdistribute-nesting-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: workdistribute_in_teams
+    example: "!$omp target / !$omp workdistribute / b = a / !$omp end workdistribute / !$omp end target"
+    notes: "6.0 only. Isolation: workdistribute directly in a target (not teams)."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §13.5, p.413"
+        text: "The workdistribute construct must be a closely nested construct inside a teams construct."
+
+  - id: workdistribute-nesting-002
+    lang: f90
+    check: static
+    status: provisional
+    predicate: workdistribute_no_nested_region
+    example: "!$omp teams workdistribute / !$omp parallel / ... / !$omp end parallel / !$omp end teams workdistribute"
+    notes: "6.0 only. Every construct counts as an explicit region here. Isolation: a parallel construct in a teams workdistribute body."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §13.5, p.413"
+        text: "No explicit region may be nested inside a workdistribute region."
+
+  - id: workdistribute-body-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: workdistribute_statements
+    example: "!$omp teams workdistribute / print *, a / !$omp end teams workdistribute"
+    notes: "6.0 only. Checks the statement kind (assignment or CALL); whether an assignment is intrinsic or a called procedure is pure and elemental is not checked. Isolation: an IF or PRINT statement in a workdistribute body."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §13.5, p.413"
+        text: "Base language statements that are encountered inside a workdistribute must consist of only the following: – array assignments; – scalar assignments; and – calls to pure and elemental procedures."
+
+  - id: distribute-clause-002
+    check: static
+    status: provisional
+    predicate: distribute_linear_loop_vars
+    example: "!$omp distribute simd linear(x) / do i = 1, n ..."
+    notes: "On every compound with a distribute leaf and another leaf (the restrictions of each directive-name-B apply recursively, 5.2 §17.4). The ordered part of the 6.0 sentence is enforced by the grammar (ordered is not allowed on compounds with distribute). Isolation: linear(x) of a non-loop variable on distribute simd."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.4.2, p.124"
+        text: "A list item may not appear in a linear clause unless it is the loop iteration variable of a loop that is associated with the construct."
+        also: ["OpenMP 5.0 §2.9.4.4, p.127", "OpenMP 5.0 §2.9.4.3, p.126"]
+      52:
+        citation: "OpenMP 5.2 §17.5, p.344"
+        text: "If directive-name-A is distribute, the linear clause may only be specified for loop iteration variables of loops that are associated with the construct."
+      60:
+        citation: "OpenMP 6.0 §19.3, p.531"
+        text: "If distribute is a constituent-directive name, the linear clause may only be specified for loop-iteration variables of loops that are associated with the construct and the ordered clause must not be specified."
+
+  - id: schedule-clause-001
+    check: static
+    status: provisional
+    predicate: schedule_runtime_auto_no_chunk
+    example: "!$omp do schedule(runtime, 4)"
+    notes: "Isolation: schedule(auto, 4)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "When schedule(runtime) or schedule(auto) is specified, chunk_size must not be specified."
+      52:
+        citation: "OpenMP 5.2 §11.5.3, p.254"
+        text: "If runtime or auto is specified for kind, chunk_size must not be specified."
+      60:
+        citation: "OpenMP 6.0 §13.6.3, p.420"
+        text: "If runtime or auto is specified for kind, chunk_size must not be specified."
+
+  - id: schedule-clause-002
+    check: static
+    status: provisional
+    predicate: schedule_nonmonotonic_no_ordered
+    example: "!$omp do schedule(nonmonotonic: dynamic) ordered"
+    notes: "Isolation: add ordered to do schedule(nonmonotonic: dynamic)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "The nonmonotonic modifier cannot be specified if an ordered clause is specified."
+      52:
+        citation: "OpenMP 5.2 §11.5.3, p.254"
+        text: "The nonmonotonic ordering-modifier cannot be specified if an ordered clause is specified on the same construct."
+      60:
+        citation: "OpenMP 6.0 §13.6.3, p.420"
+        text: "The nonmonotonic ordering-modifier cannot be specified if an ordered clause is specified on the same construct."
+
+  - id: simd-clause-001
+    check: static
+    status: provisional
+    predicate: simdlen_le_safelen
+    example: "!$omp simd simdlen(8) safelen(4)"
+    notes: "Integer literals only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.3.1, p.113"
+        text: "If both simdlen and safelen clauses are specified, the value of the simdlen parameter must be less than or equal to the value of the safelen parameter."
+      52:
+        citation: "OpenMP 5.2 §10.4, p.235"
+        text: "If both simdlen and safelen clauses are specified, the value of the simdlen length must be less than or equal to the value of the safelen length."
+      60:
+        citation: "OpenMP 6.0 §12.4, p.399"
+        text: "If both simdlen and safelen clauses are specified, the value of the simdlen length must be less than or equal to the value of the safelen length."
+
+  - id: simd-clause-002
+    check: static
+    status: provisional
+    predicate: simd_order_concurrent_no_safelen
+    example: "!$omp simd order(concurrent) safelen(4)"
+    notes: "Any directive with a simd leaf (safelen goes to the simd leaf, order to every leaf that takes it)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §10.4, p.235"
+        text: "If an order clause that specifies concurrent appears on a simd directive, the safelen clause may not also appear."
+      60:
+        citation: "OpenMP 6.0 §12.4, p.399"
+        text: "If an order clause that specifies concurrent appears on a simd directive, the safelen clause must not also appear."
+
+  - id: positive-clause-001
+    check: static
+    status: provisional
+    predicate: positive_arguments
+    example: "!$omp parallel num_threads(0)"
+    notes: "The positive arguments of the slice clauses without their own rule: num_threads, safelen, simdlen, schedule chunk_size, the ordered parameter, the aligned alignment (property tables of 5.2 §10.1.2, §10.4.2, §10.4.3, §11.5.3, §4.4.4, §5.11; 6.0 §12.1.2, §12.4.2, §12.4.3, §13.6.3, §6.4.6, §7.12). Integer literals only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.6, p.77"
+        text: "The num_threads expression must evaluate to a positive integer value."
+        also: ["OpenMP 5.0 §2.9.3.1, p.112", "OpenMP 5.0 §2.9.2, p.104", "OpenMP 5.0 §2.9.2, p.107", "OpenMP 5.0 §2.9.3.1, p.113"]
+      52:
+        citation: "OpenMP 5.2 §3.2, p.60"
+        text: "A positive argument or parameter must be greater than zero; a non-negative argument or parameter must be greater than or equal to zero."
+      60:
+        citation: "OpenMP 6.0 §5.2, p.161"
+        text: "An argument or parameter with the positive property must be greater than zero."
+
+  - id: constant-clause-001
+    check: static
+    status: provisional
+    predicate: constant_arguments
+    example: "integer :: k / !$omp simd safelen(k)"
+    notes: "safelen, simdlen and the ordered parameter have the constant property. Flags an argument that is a single name declared in the source as a variable (not a named constant); other expressions are not evaluated."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.3.1, p.112"
+        text: "The parameter of the safelen clause must be a constant positive integer expression."
+        also: ["OpenMP 5.0 §2.9.3.1, p.112", "OpenMP 5.0 §2.9.2, p.104"]
+      52:
+        citation: "OpenMP 5.2 §3.2, p.60"
+        text: "A constant argument or parameter must be a compile-time constant."
+      60:
+        citation: "OpenMP 6.0 §5.2, p.161"
+        text: "An argument or parameter with the constant property must be a compile-time constant."
+
+  - id: clauseset-clause-001
+    check: static
+    status: provisional
+    predicate: clause_set_required
+    example: "!$omp target update"
+    notes: "Clause sets with the required property that the skeleton grammar does not enforce: target update {to, from}, scan {inclusive, exclusive}, depobj {depend, destroy, update} (6.0 {destroy, init, update}; depend still accepted). Isolation: a target update without a motion clause."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.6, p.180"
+        text: "At least one motion-clause must be specified."
+        also: ["OpenMP 5.0 §2.9.6, p.132", "OpenMP 5.0 §2.17.10, p.254"]
+      52:
+        citation: "OpenMP 5.2 §3.2, p.59"
+        text: "If a clause set has the required property, at least one clause in the set must be present on the directive for which the clause set is specified."
+        also: ["OpenMP 5.2 §13.9, p.289"]
+      60:
+        citation: "OpenMP 6.0 §5.2, p.161"
+        text: "If a clause set has the required property, at least one clause in the set must be present on the directive for which the clause set is specified."
+        also: ["OpenMP 6.0 §15.9, p.465"]
+
+  - id: clauseset-clause-002
+    check: static
+    status: provisional
+    predicate: clause_set_exclusive
+    example: "!$omp scan inclusive(x) exclusive(y)"
+    notes: "Exclusive clause sets: scan, depobj (5.2), single (6.0), task, taskloop. 5.2 single has its own sentence (single-clause-001)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.10.1, p.139"
+        text: "If a detach clause appears on the directive, then a mergeable clause cannot appear on the same directive."
+        also: ["OpenMP 5.0 §2.10.2, p.145", "OpenMP 5.0 §2.9.6, p.132", "OpenMP 5.0 §2.17.10, p.254"]
+      52:
+        citation: "OpenMP 5.2 §3.2, p.59"
+        text: "If one clause of a clause set with the exclusive property appears on a directive, no other clauses with a different clause-name in that set may appear on the directive."
+      60:
+        citation: "OpenMP 6.0 §5.2, p.161"
+        text: "If one clause of a clause set with the exclusive property appears on a directive, no other clauses with a different clause-name in that clause set may appear on the directive."
+
+  - id: single-clause-001
+    check: static
+    status: provisional
+    predicate: single_copyprivate_nowait
+    example: "!$omp single copyprivate(x) / ... / !$omp end single nowait"
+    notes: "5.2 only (6.0: clauseset-clause-002)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.8.2, p.91"
+        text: "The copyprivate clause must not be used with the nowait clause."
+      52:
+        citation: "OpenMP 5.2 §11.1, p.241"
+        text: "The copyprivate clause must not be used with the nowait clause."
+
+  - id: listitem-clause-002
+    check: static
+    status: provisional
+    predicate: list_item_directive_wide_unique
+    example: "!$omp target update to(a) from(a)"
+    notes: "Narrowed to what no other sentence specifies otherwise: an item twice in one clause; twice in clauses of the same name, except data-sharing clauses (datasharing-dsa-001 after the split), map and depend (repeats allowed, 5.2 §5.8.3 / §15.9.5); in both to and from; in two of enter/to/link/local. Isolation: to(a) from(a) on target update."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.6, p.310"
+        text: "Clauses may be repeated as needed, but a list item that specifies a given variable may not appear in more than one clause on the same directive."
+        also: ["OpenMP 5.0 §2.9.3.1, p.113", "OpenMP 5.0 §2.12.7, p.183", "OpenMP 5.0 §2.19.4, p.282"]
+      52:
+        citation: "OpenMP 5.2 §3.2.1, p.61"
+        text: "Unless otherwise specified, OpenMP list items must be directive-wide unique, i.e., a list item can only appear once in one OpenMP list of all arguments, clauses, and modifiers of the directive."
+      60:
+        citation: "OpenMP 6.0 §5.2.1, p.163"
+        text: "Unless otherwise specified, OpenMP list items other than parameter list items must be directive-wide unique, i.e., a list item can only appear once in one OpenMP list of all arguments, clauses, and modifiers of the directive."
+
+  - id: linear-clause-001
+    check: static
+    status: provisional
+    predicate: linear_inscan_loop_vars
+    example: "!$omp simd reduction(inscan, +: s) linear(x)"
+    notes: "Isolation: linear(x) of a non-loop variable next to reduction(inscan, ...)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.6, p.292"
+        text: "Only a loop iteration variable of a loop that is associated with the construct may appear as a list-item in a linear clause if a reduction clause with the inscan modifier also appears on the construct."
+      52:
+        citation: "OpenMP 5.2 §5.4.6, p.118"
+        text: "Only a loop iteration variable of a loop that is associated with the construct may appear as a list item in a linear clause if a reduction clause with the inscan modifier also appears on the construct."
+      60:
+        citation: "OpenMP 6.0 §7.5.6, p.233"
+        text: "If a reduction clause with the inscan modifier also appears on the construct, only loop-iteration variables of affected loops may appear as list items in a linear clause."
+
+  - id: linear-clause-002
+    check: static
+    status: provisional
+    predicate: linear_ref_uval_declare_simd
+    example: "!$omp do linear(ref(x))"
+    notes: "Isolation: linear(ref(x)) (5.2) / linear(x: ref) (6.0) on a do construct."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "A modifier may not be specified on a linear clause."
+        also: ["OpenMP 5.0 §2.9.3.1, p.113", "OpenMP 5.0 §2.19.4.6, p.293"]
+      52:
+        citation: "OpenMP 5.2 §5.4.6, p.118"
+        text: "A linear-modifier may be specified as ref or uval only on a declare simd directive."
+      60:
+        citation: "OpenMP 6.0 §7.5.6, p.233"
+        text: "A linear-modifier may be specified as ref or uval only for linear clauses on declare_simd directives."
+
+  - id: linear-clause-003
+    lang: f90
+    check: static
+    status: provisional
+    predicate: linear_not_pointer
+    example: "real, pointer :: p / !$omp simd linear(p)"
+    notes: "Context requirement: the item's POINTER declaration must be visible in the source."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.6, p.293"
+        text: "Variables that have the POINTER attribute and Cray pointers may not appear in a linear clause."
+      52:
+        citation: "OpenMP 5.2 §5.4.6, p.119"
+        text: "List items must not be Cray pointers or variables that have the POINTER attribute. Cray pointer support has been deprecated."
+      60:
+        citation: "OpenMP 6.0 §7.5.6, p.234"
+        text: "List items must not be variables that have the POINTER attribute."
+
+  - id: linear-clause-004
+    lang: f90
+    check: static
+    status: provisional
+    predicate: linear_integer
+    example: "real :: x / !$omp simd linear(x)"
+    notes: "Context requirement: a visible declaration of the item with another type (intrinsic or derived)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.6, p.293"
+        text: "A list-item that appears in a linear clause without the ref modifier must be of type integer."
+      52:
+        citation: "OpenMP 5.2 §5.4.6, p.119"
+        text: "If linear-modifier is not ref, all list items must be of type integer."
+      60:
+        citation: "OpenMP 6.0 §7.5.6, p.234"
+        text: "If linear-modifier is not ref, all list items must be of type integer."
+
+  - id: loopvar-dsa-001
+    check: static
+    status: provisional
+    predicate: loop_var_predetermined_dsa
+    example: "!$omp parallel do firstprivate(i) / do i = 1, n ..."
+    notes: "Checked after the clause split, on the loop leaves only (do, simd, distribute, loop, taskloop): an associated loop's iteration variable in a clause other than private or lastprivate (or linear on a simd leaf with one associated loop, 5.2 §5.1.1 / 6.0 §7.1.1 exceptions; the linear-step is not compared). shared(i) on the parallel leaf of parallel do is not flagged (whether the variable is predetermined on that leaf is not read). Isolation: firstprivate(i) or reduction(+: i) on parallel do."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.1.1, p.271"
+        text: "Variables with predetermined data-sharing attributes may not be listed in data-sharing attribute clauses, except for the cases listed below."
+      52:
+        citation: "OpenMP 5.2 §5.1.1, p.98"
+        text: "Variables with predetermined data-sharing attributes may not be listed in data-sharing attribute clauses, except for the cases listed below."
+      60:
+        citation: "OpenMP 6.0 §7.1.1, p.212"
+        text: "Variables with predetermined data-sharing attributes may not be listed in data-sharing clauses, except for the cases listed below."
+
+  - id: firstprivate-dsa-001
+    check: static
+    status: provisional
+    predicate: firstprivate_private_in_parallel
+    example: "!$omp parallel private(x) / !$omp do firstprivate(x) / ..."
+    notes: "Lexical: the closest enclosing parallel leaf, no other generating leaf (teams, target, task, taskloop) between. private covers private, firstprivate, lastprivate, linear after the split."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.4, p.287"
+        text: "A list item that is private within a parallel region must not appear in a firstprivate clause on a worksharing construct if any of the worksharing regions arising from the worksharing construct ever bind to any of the parallel regions arising from the parallel construct."
+      52:
+        citation: "OpenMP 5.2 §5.4.4, p.113"
+        text: "A list item that is private within a parallel region must not appear in a firstprivate clause on a worksharing construct if any of the worksharing regions that arise from the worksharing construct ever bind to any of the parallel regions that arise from the parallel construct."
+      60:
+        citation: "OpenMP 6.0 §7.5.4, p.228"
+        text: "A list item that is private within a parallel region must not appear in a firstprivate clause on a worksharing construct if any of the worksharing regions that arise from the worksharing construct ever bind to any of the parallel regions that arise from the parallel construct."
+
+  - id: firstprivate-dsa-002
+    check: static
+    status: provisional
+    predicate: firstprivate_private_in_teams
+    example: "!$omp teams private(x) / !$omp distribute firstprivate(x) / ..."
+    notes: "Lexical, as firstprivate-dsa-001."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.4, p.287"
+        text: "A list item that is private within a teams region must not appear in a firstprivate clause on a distribute construct if any of the distribute regions arising from the distribute construct ever bind to any of the teams regions arising from the teams construct."
+      52:
+        citation: "OpenMP 5.2 §5.4.4, p.113"
+        text: "A list item that is private within a teams region must not appear in a firstprivate clause on a distribute construct if any of the distribute regions that arise from the distribute construct ever bind to any of the teams regions that arise from the teams construct."
+      60:
+        citation: "OpenMP 6.0 §7.5.4, p.228"
+        text: "A list item that is private within a teams region must not appear in a firstprivate clause on a distribute construct if any of the distribute regions that arise from the distribute construct ever bind to any of the teams regions that arise from the teams construct."
+
+  - id: firstprivate-dsa-003
+    check: static
+    status: provisional
+    predicate: firstprivate_reduction_in_parallel_ws
+    example: "!$omp parallel reduction(+: x) / !$omp do firstprivate(x) / ..."
+    notes: "5.2 (worksharing, task, taskloop). Lexical."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.4, p.287"
+        text: "A list item that appears in a reduction clause of a parallel construct must not appear in a firstprivate clause on a worksharing, task, or taskloop construct if any of the worksharing or task regions arising from the worksharing, task, or taskloop construct ever bind to any of the parallel regions arising from the parallel construct."
+      52:
+        citation: "OpenMP 5.2 §5.4.4, p.113"
+        text: "A list item that appears in a reduction clause of a parallel construct must not appear in a firstprivate clause on a worksharing, task, or taskloop construct if any of the worksharing or task regions that arise from the worksharing, task, or taskloop construct ever bind to any of the parallel regions that arise from the parallel construct."
+
+  - id: firstprivate-dsa-004
+    check: static
+    status: provisional
+    predicate: firstprivate_reduction_in_parallel_task
+    example: "!$omp parallel reduction(+: x) / !$omp task firstprivate(x) / ..."
+    notes: "6.0 (task, taskloop only). Lexical."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.5.4, p.228"
+        text: "A list item that appears in a reduction clause on a parallel construct must not appear in a firstprivate clause on a task or taskloop construct if any of the task regions that arise from the task or taskloop construct ever bind to any of the parallel regions that arise from the parallel construct."
+
+  - id: firstprivate-dsa-005
+    check: static
+    status: provisional
+    predicate: firstprivate_reduction_in_teams
+    example: "!$omp teams reduction(+: x) / !$omp distribute firstprivate(x) / ..."
+    notes: "5.2 only. Lexical."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.4, p.288"
+        text: "A list item that appears in a reduction clause of a teams construct must not appear in a firstprivate clause on a distribute construct if any of the distribute regions arising from the distribute construct ever bind to any of the teams regions arising from the teams construct."
+      52:
+        citation: "OpenMP 5.2 §5.4.4, p.113"
+        text: "A list item that appears in a reduction clause of a teams construct must not appear in a firstprivate clause on a distribute construct if any of the distribute regions that arise from the distribute construct ever bind to any of the teams regions that arise from the teams construct."
+
+  - id: lastprivate-dsa-001
+    check: static
+    status: provisional
+    predicate: lastprivate_private_in_binding
+    example: "!$omp parallel private(x) / !$omp do lastprivate(x) / ..."
+    notes: "Lexical: a worksharing or loop leaf binds to the closest parallel leaf, a distribute leaf to the closest teams leaf."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.5, p.290"
+        text: "A list item that is private within a parallel region, or that appears in the reduction clause of a parallel construct, must not appear in a lastprivate clause on a worksharing construct if any of the corresponding worksharing regions ever binds to any of the corresponding parallel regions."
+      52:
+        citation: "OpenMP 5.2 §5.4.5, p.116"
+        text: "A list item must not appear in a lastprivate clause on a work-distribution construct if the corresponding region binds to the region of a parallelism-generating construct in which the list item is private."
+      60:
+        citation: "OpenMP 6.0 §7.5.5, p.231"
+        text: "A list item must not appear in a lastprivate clause on a work-distribution construct if the corresponding region binds to the region of a parallelism-generating construct in which the list item is private."
+
+  - id: lastprivate-clause-001
+    check: static
+    status: provisional
+    predicate: lastprivate_conditional_scalar
+    example: "real :: a(10) / !$omp do lastprivate(conditional: a)"
+    notes: "Context requirement: the array declaration must be visible."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.5, p.290"
+        text: "A list item that appears in a lastprivate clause with the conditional modifier must be a scalar variable."
+      52:
+        citation: "OpenMP 5.2 §5.4.5, p.116"
+        text: "A list item that appears in a lastprivate clause with the conditional modifier must be a scalar variable."
+      60:
+        citation: "OpenMP 6.0 §7.5.5, p.231"
+        text: "A list item that appears in a lastprivate clause with the conditional modifier must be a scalar variable."
+
+  - id: reduction-dsa-001
+    check: static
+    status: provisional
+    predicate: reduction_shared_in_parallel
+    example: "!$omp parallel private(x) / !$omp do reduction(+: x) / ..."
+    notes: "5.2 only: 6.0 §7.6.10 allows an original list item that the data-sharing rules make private (original-sharing-modifier default). Lexical."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.4, p.301"
+        text: "A list item that appears in a reduction clause of a worksharing construct must be shared in the parallel region to which a corresponding worksharing region binds."
+      52:
+        citation: "OpenMP 5.2 §5.5.8, p.135"
+        text: "A list item that appears in a reduction clause on a worksharing construct must be shared in the parallel region to which a corresponding worksharing region binds."
+
+  - id: reduction-dsa-002
+    check: static
+    status: provisional
+    predicate: reduction_shared_in_teams
+    example: "!$omp teams private(x) / !$omp distribute reduction(+: x) / ..."
+    notes: "6.0 only. Lexical: distribute or loop in teams."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.6.10, p.254"
+        text: "A list item that appears in a reduction clause on a work-distribution construct for which the corresponding region binds to a teams region must be shared in the teams region."
+
+  - id: reduction-clause-006
+    check: static
+    status: provisional
+    predicate: reduction_section_base
+    example: "!$omp parallel do reduction(+: s%a(1:n))"
+    notes: "Array sections in reduction, in_reduction (6.0: induction) clauses: base not a name; integer literal bounds lb > ub; 5.2 also a literal stride other than 1 (not contiguous)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.1, p.297"
+        text: "If a list item is an array section, it must specify contiguous storage and it cannot be a zero-length array section."
+        also: ["OpenMP 5.0 §2.19.5.1, p.297"]
+      52:
+        citation: "OpenMP 5.2 §5.5.5, p.132"
+        text: "If a list item is an array section, it must specify contiguous storage, it cannot be a zero-length array section and its base expression must be a base language identifier."
+      60:
+        citation: "OpenMP 6.0 §7.6.5, p.247"
+        text: "If a list item is an array section, it must not be a zero-length array section and its array base must be a base language identifier."
+
+  - id: copyin-clause-001
+    check: static
+    status: provisional
+    predicate: copyin_threadprivate
+    example: "real :: x / !$omp parallel copyin(x)"
+    notes: "Context requirement: the item is declared in the source (no USE may supply it) and no threadprivate directive in the source names it."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.6.1, p.311"
+        text: "A list item that appears in a copyin clause must be threadprivate."
+      52:
+        citation: "OpenMP 5.2 §5.7.1, p.145"
+        text: "A list item that appears in a copyin clause must be threadprivate."
+      60:
+        citation: "OpenMP 6.0 §7.8.1, p.272"
+        text: "A list item that appears in a copyin clause must be threadprivate."
+
+  - id: threadprivate-clause-001
+    check: static
+    status: provisional
+    predicate: threadprivate_only_copyin
+    example: "!$omp threadprivate(x) / !$omp parallel private(x)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.2, p.277"
+        text: "A threadprivate variable must not appear in any clause except the copyin, copyprivate, schedule, num_threads, thread_limit, and if clauses."
+      52:
+        citation: "OpenMP 5.2 §5.2, p.103"
+        text: "A threadprivate variable must not appear as the base variable of a list item in any clause except for the copyin and copyprivate clauses."
+      60:
+        citation: "OpenMP 6.0 §7.3, p.217"
+        text: "A threadprivate variable must not appear as the base variable of a list item in any clause except for the copyin and copyprivate clauses."
+
+  - id: threadprivate-placement-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: threadprivate_in_specification_part
+    example: "!$omp parallel / !$omp threadprivate(x) / !$omp end parallel"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.2, p.278"
+        text: "The threadprivate directive must appear in the declaration section of a scoping unit in which the common block or variable is declared."
+      52:
+        citation: "OpenMP 5.2 §5.2, p.104"
+        text: "The threadprivate directive must appear in the declaration section of a scoping unit in which the common block or variable is declared."
+      60:
+        citation: "OpenMP 6.0 §7.3, p.219"
+        text: "The threadprivate directive must appear in the declaration section of a scoping unit in which the common block or variable is declared."
+
+  - id: threadprivate-placement-002
+    lang: f90
+    check: static
+    status: provisional
+    predicate: threadprivate_declaring_scope
+    example: "module m / real, save :: x / contains / subroutine s / !$omp threadprivate(x)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.2, p.278"
+        text: "A variable can only appear in a threadprivate directive in the scope in which it is declared. It must not be an element of a common block or appear in an EQUIVALENCE statement."
+      52:
+        citation: "OpenMP 5.2 §5.2, p.105"
+        text: "A variable may only appear as an argument in a threadprivate directive in the scope in which it is declared. It must not be an element of a common block or appear in an EQUIVALENCE statement."
+      60:
+        citation: "OpenMP 6.0 §7.3, p.219"
+        text: "A variable may only appear as an argument in a threadprivate directive in the scope in which it is declared. It must not be an element of a common block or appear in an EQUIVALENCE statement."
+
+  - id: threadprivate-storage-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: threadprivate_saved
+    example: "subroutine s / real :: x / !$omp threadprivate(x)"
+    notes: "Variables of a main program, module or submodule have SAVE implicitly (Fortran 2008 §5.3.16); an initializer implies SAVE."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.2, p.278"
+        text: "A variable that appears in a threadprivate directive must be declared in the scope of a module or have the SAVE attribute, either explicitly or implicitly."
+      52:
+        citation: "OpenMP 5.2 §5.2, p.105"
+        text: "A variable that appears as an argument in a threadprivate directive must be declared in the scope of a module or have the SAVE attribute, either explicitly or implicitly."
+      60:
+        citation: "OpenMP 6.0 §7.3, p.219"
+        text: "A variable that appears as an argument in a threadprivate directive must be declared in the scope of a module or have the SAVE attribute, either explicitly or implicitly."
+
+  - id: declaretarget-storage-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declare_target_enter_saved
+    example: "subroutine s / real :: x / !$omp declare target enter(x)"
+    notes: "5.2: every variable of the directive; 6.0: enter clause (and the extended list, an implicit enter)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.7, p.184"
+        text: "A variable that appears in a declare target directive must be declared in the Fortran scope of a module or have the SAVE attribute, either explicitly or implicitly."
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.207"
+        text: "A variable that appears in a declare target directive must be declared in the Fortran scope of a module or have the SAVE attribute, either explicitly or implicitly."
+      60:
+        citation: "OpenMP 6.0 §7.9.7, p.290"
+        text: "Each list item must have static storage duration."
+
+  - id: declaretarget-storage-002
+    check: static
+    status: provisional
+    predicate: declare_target_link_saved
+    example: "subroutine s / real :: x / !$omp declare target link(x)"
+    notes: "6.0 only (5.2: declaretarget-storage-001)."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.9.8, p.291"
+        text: "Each list item must have static storage duration."
+
+  - id: declaretarget-placement-002
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declare_target_declaring_scope
+    example: "module m / real :: x / contains / subroutine s / !$omp declare target enter(x)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.7, p.184"
+        text: "A variable can only appear in a declare target directive in the scope in which it is declared. It must not be an element of a common block or appear in an EQUIVALENCE statement."
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.207"
+        text: "A variable can only appear in a declare target directive in the scope in which it is declared. It must not be an element of a common block or appear in an EQUIVALENCE statement."
+      60:
+        citation: "OpenMP 6.0 §9.9.1, p.348"
+        text: "A variable can only appear in a declare_target directive in the scope in which it is declared. It must not be an element of a common block or appear in an EQUIVALENCE statement."
+
+  - id: declaretarget-placement-003
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declare_target_procedure_placement
+    example: "module m / !$omp declare target"
+    notes: "5.2 is read as 'no clauses, or only device_type/indirect' (with an enter, to or link clause the directive names its list items; the literal 5.2 text would also confine 'enter(x) device_type(any)' to subprograms, owner point). 6.0: the declaration-associated form (no extended list, no enter/link/local)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.7, p.184"
+        text: "Any declare target directive without clauses must appear in a specification part of a subroutine subprogram, function subprogram or interface body to which it applies."
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.206"
+        text: "If no clauses are specified or if a device_type clause is specified, the directive must appear in a specification part of a subroutine subprogram, function subprogram or interface body."
+      60:
+        citation: "OpenMP 6.0 §9.9.1, p.348"
+        text: "If the directive is a declaration-associated directive, the directive must appear in the specification part of a subroutine subprogram, function subprogram or interface body."
+
+  - id: declaretarget-clause-004
+    check: static
+    status: provisional
+    predicate: declare_target_enter_link
+    example: "!$omp declare target enter(x) / !$omp declare target link(x)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.7, p.183"
+        text: "The same list item must not explicitly appear in both a to clause on one declare target directive and a link clause on another declare target directive."
+      52:
+        citation: "OpenMP 5.2 §7.8, p.205"
+        text: "The same list item must not explicitly appear in both a enter clause on one declare target directive and a link clause on another declare target directive."
+      60:
+        citation: "OpenMP 6.0 §9.9, p.346"
+        text: "The same list item must not explicitly appear in both an enter clause on one declare target directive and a link or local clause on another declare target directive."
+
+  - id: declaretarget-clause-005
+    check: static
+    status: provisional
+    predicate: declare_target_link_local
+    example: "!$omp declare target link(x) / !$omp declare target local(x)"
+    notes: "6.0 only."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §9.9, p.346"
+        text: "The same list item must not explicitly appear in both a link clause on one declare target directive and a local clause on another declare target directive."
+
+  - id: indirect-clause-001
+    check: static
+    status: provisional
+    predicate: indirect_device_type_any
+    example: "!$omp declare target enter(f) indirect device_type(host)"
+    notes: ""
+    spec:
+      52:
+        citation: "OpenMP 5.2 §7.8.3, p.209"
+        text: "If invoked-by-fptr evaluates to true, a device_type clause must not appear on the same directive unless it specifies any. for its device-type-description."
+      60:
+        citation: "OpenMP 6.0 §9.9.3, p.351"
+        text: "If invoked-by-fptr evaluates to true, a device_type clause must not appear on the same directive unless it specifies any for its device-type-description."
+
+  - id: map-clause-002
+    check: static
+    status: provisional
+    predicate: map_device_local
+    example: "!$omp declare target local(x) / !$omp target map(x)"
+    notes: "6.0 only (groupprivate is outside the slice)."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.286"
+        text: "A variable that is a groupprivate variable or a device-local variable must not appear as a list item in a map clause."
+
+  - id: target-map-002
+    check: static
+    status: provisional
+    predicate: target_map_structure_elements
+    example: "!$omp target map(s%a) / s%b = 1 / !$omp end target"
+    notes: "Lexical extent only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "If a list item in a map clause is a structure element, any other element of that structure that is referenced in the target construct must also appear as a list item in a map clause."
+      52:
+        citation: "OpenMP 5.2 §13.8, p.286"
+        text: "If a list item in a map clause is a structure element, any other element of that structure that is referenced in the target construct must also appear as a list item in a map clause."
+      60:
+        citation: "OpenMP 6.0 §15.8, p.462"
+        text: "If a list item in a map clause is a structure element, any other element of that structure that is referenced in the target construct must also appear as a list item in a map clause."
+
+  - id: defaultmap-map-003
+    check: static
+    status: provisional
+    predicate: defaultmap_none_listed
+    example: "!$omp target defaultmap(none) / b = a / !$omp end target"
+    notes: "Only defaultmap(none) without a category or with all (the categories need types the scanner does not read). As default-dsa-001: lexical, declared variables only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.2, p.325"
+        text: "If implicit-behavior is none, each variable referenced in the construct that does not have a predetermined data-sharing attribute and does not appear in a to or link clause on a declare target directive must be listed in a data-mapping attribute clause, a data-sharing attribute clause (including a data-sharing attribute clause on a combined construct where target is one of the constituent constructs), or an is_device_ptr clause."
+      52:
+        citation: "OpenMP 5.2 §5.8.7, p.162"
+        text: "If implicit-behavior is none, each variable that is specified by variable-category and is referenced in the construct but does not have a predetermined data-sharing and does not appear in an enter or link clause on a declare target directive must be explicitly listed in a data-environment attribute clause on the construct."
+      60:
+        citation: "OpenMP 6.0 §7.9.9, p.292"
+        text: "If implicit-behavior is none, each variable that is specified by variable-category and is referenced in the construct but does not have a predetermined data-sharing attribute and does not appear in an enter or link clause on a declare_target directive must be explicitly listed in a data-environment attribute clause on the construct."
+
+  - id: allocate-clause-001
+    check: static
+    status: provisional
+    predicate: allocate_needs_private_clause
+    example: "!$omp parallel allocate(x)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.11.4, p.159"
+        text: "For any list item that is specified in the allocate clause on a directive, a data-sharing attribute clause that may create a private copy of that list item must be specified on the same directive."
+      52:
+        citation: "OpenMP 5.2 §6.6, p.179"
+        text: "For any list item that is specified in the allocate clause on a directive other than the allocators directive, a data-sharing attribute clause that may create a private copy of that list item must be specified on the same directive."
+      60:
+        citation: "OpenMP 6.0 §8.6, p.313"
+        text: "For any list item that is specified in the allocate clause on a directive other than the allocators directive, a data-sharing attribute clause that may create a private copy of that list item must be specified on the same directive."
+
+  - id: allocate-clause-002
+    check: static
+    status: provisional
+    predicate: allocate_target_allocator
+    example: "!$omp target private(x) allocate(x)"
+    notes: "The same compilation unit is the program unit (Fortran)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.11.4, p.159"
+        text: "allocate clauses that appear on a target construct or on constructs in a target region must specify an allocator expression unless a requires directive with the dynamic_allocators clause is present in the same compilation unit."
+      52:
+        citation: "OpenMP 5.2 §6.6, p.179"
+        text: "allocate clauses that appear on a target construct or on constructs in a target region must specify an allocator-simple-modifier or allocator-complex-modifier unless a requires directive with the dynamic_allocators clause is present in the same compilation unit."
+      60:
+        citation: "OpenMP 6.0 §8.6, p.313"
+        text: "allocate clauses that appear on a target construct or on constructs in a target region must specify an allocator-simple-modifier or allocator-complex-modifier unless a requires directive with the dynamic_allocators clause is present in the same compilation unit."
+
+  - id: usesallocators-clause-001
+    check: static
+    status: provisional
+    predicate: uses_allocators_not_in_other_clauses
+    example: "!$omp target uses_allocators(a) firstprivate(a)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.175"
+        text: "Memory allocators that appear in a uses_allocators clause cannot appear in other data-sharing attribute clauses or data-mapping attribute clauses in the same construct."
+      52:
+        citation: "OpenMP 5.2 §6.8, p.182"
+        text: "The allocator argument must not appear in other data-sharing attribute clauses or data-mapping attribute clauses on the same construct."
+      60:
+        citation: "OpenMP 6.0 §8.8, p.316"
+        text: "The allocator argument must not appear in other data-sharing attribute clauses or data-mapping attribute clauses on the same construct."
+
+  - id: usesallocators-clause-002
+    check: static
+    status: provisional
+    predicate: uses_allocators_predefined_no_modifiers
+    example: "!$omp target uses_allocators(memspace(omp_default_mem_space): omp_default_mem_alloc)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.175"
+        text: "Predefined allocators appearing in a uses_allocators clause cannot have traits specified."
+      52:
+        citation: "OpenMP 5.2 §6.8, p.182"
+        text: "If allocator is a predefined allocator, no modifiers may be specified."
+      60:
+        citation: "OpenMP 6.0 §8.8, p.316"
+        text: "If allocator is an identifier that matches the name of a predefined allocator, no modifiers may be specified."
+
+  - id: usesallocators-clause-003
+    check: static
+    status: provisional
+    predicate: uses_allocators_predefined_memspace
+    example: "!$omp target uses_allocators(memspace(my_space): a)"
+    notes: ""
+    spec:
+      52:
+        citation: "OpenMP 5.2 §6.8, p.182"
+        text: "The memspace-handle argument for the mem-space modifier must be an identifier that matches one of the predefined memory space names."
+      60:
+        citation: "OpenMP 6.0 §8.8, p.317"
+        text: "The memspace-handle argument for the mem-space modifier must be an identifier that matches one of the predefined memory space names."
+
+  - id: usesallocators-clause-004
+    check: static
+    status: provisional
+    predicate: uses_allocators_traits_constant
+    example: "type(omp_alloctrait) :: t(1) / !$omp target uses_allocators(traits(t): a)"
+    notes: "Flags a traits array declared in the source as a variable (not a named constant)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.175"
+        text: "Arrays that contain allocator traits that appear in a uses_allocators clause must be constant arrays, have constant values and be defined in the same scope as the construct in which the clause appears."
+      52:
+        citation: "OpenMP 5.2 §6.8, p.182"
+        text: "The traits argument for the traits-array modifier must be a constant array, have constant values and be defined in the same scope as the construct on which the clause appears."
+      60:
+        citation: "OpenMP 6.0 §8.8, p.317"
+        text: "The traits argument for the traits-array modifier must be a named constant of rank one."
+
+  - id: requires-placement-003
+    check: static
+    status: provisional
+    predicate: requires_mem_order_before_atomic
+    example: "!$omp atomic / x = x + 1 / !$omp requires atomic_default_mem_order(seq_cst)"
+    notes: "Same program unit."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.4, p.63"
+        text: "The requires directive with atomic_default_mem_order clause may not appear lexically after any atomic construct on which memory-order-clause is not specified."
+      52:
+        citation: "OpenMP 5.2 §8.2, p.211"
+        text: "A requires directive that specifies the atomic_default_mem_order requirement must not appear lexically after any atomic construct on which memory-order-clause is not specified."
+      60:
+        citation: "OpenMP 6.0 §10.5.1.1, p.357"
+        text: "Any directive that specifies the atomic_default_mem_order clause must not appear lexically after any atomic construct on which a memory-order clause is not specified."
+
+  - id: requires-placement-004
+    check: static
+    status: provisional
+    predicate: requires_same_in_all_units
+    example: "module m / !$omp declare target enter(x) / end module / program p / !$omp requires unified_shared_memory / ..."
+    notes: "Within one source: the program units (Fortran compilation units) that contain declare target directives or device constructs. A unit inherits the requires of the source's modules that it USEs (5.2 §8.2: 'by referencing a module'). 6.0 device global requirements: reverse_offload, unified_address, unified_shared_memory, self_maps."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.4, p.63"
+        text: "A requires directive with any of the following clauses must appear in all compilation units of a program that contain device constructs or device routines or in none of them: – reverse_offload – unified_address – unified_shared_memory"
+      52:
+        citation: "OpenMP 5.2 §8.2, p.211"
+        text: "Either all compilation units of a program that contain declare target directives, device constructs or device routines or none of them must specify a requires directive that specifies the reverse_offload, unified_address or unified_shared_memory requirement."
+      60:
+        citation: "OpenMP 6.0 §10.5.1, p.356"
+        text: "All compilation units of a program that contain declare target directives, device constructs or device procedures must specify the same set of requirements that are defined by clauses with the device global requirement property in the requirement clause group."
+
+  - id: depend-clause-001
+    check: static
+    status: provisional
+    predicate: depend_all_memory_out_inout
+    example: "!$omp task depend(in: omp_all_memory)"
+    notes: ""
+    spec:
+      52:
+        citation: "OpenMP 5.2 §15.9.5, p.325"
+        text: "The omp_all_memory reserved locator can only be used in a depend clause with an out or inout task-dependence-type."
+      60:
+        citation: "OpenMP 6.0 §17.9.5, p.509"
+        text: "The omp_all_memory reserved locator can only be used in a depend clause with an out or inout task-dependence-type."
+
+  - id: depend-clause-002
+    check: static
+    status: provisional
+    predicate: depend_depobj_no_section
+    example: "!$omp task depend(depobj: o(1:2))"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.17.11, p.258"
+        text: "Array sections cannot be specified in depend clauses with the depobj dependence type."
+      52:
+        citation: "OpenMP 5.2 §15.9.5, p.325"
+        text: "Array sections cannot be specified in depend clauses with the depobj task-dependence-type."
+      60:
+        citation: "OpenMP 6.0 §17.9.5, p.509"
+        text: "Array sections cannot be specified in depend clauses with the depobj task-dependence-type."
+
+  - id: depend-clause-003
+    lang: f90
+    check: static
+    status: provisional
+    predicate: depend_no_common_block
+    example: "!$omp task depend(in: /blk/)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.17.11, p.259"
+        text: "A common block name cannot appear in a depend clause."
+      52:
+        citation: "OpenMP 5.2 §15.9.5, p.325"
+        text: "A common block name cannot appear in a depend clause."
+      60:
+        citation: "OpenMP 6.0 §17.9.5, p.510"
+        text: "A common block name cannot appear in a depend clause."
+
+  - id: depend-clause-004
+    check: static
+    status: provisional
+    predicate: depend_no_zero_length
+    example: "!$omp task depend(in: a(5:4))"
+    notes: "Integer literal bounds only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.17.11, p.258"
+        text: "List items used in depend clauses cannot be zero-length array sections."
+      52:
+        citation: "OpenMP 5.2 §15.9.5, p.325"
+        text: "List items used in depend clauses cannot be zero-length array sections."
+      60:
+        citation: "OpenMP 6.0 §17.9.5, p.509"
+        text: "List items used in depend clauses cannot be zero-length array sections."
+
+  - id: taskwait-clause-001
+    check: static
+    status: provisional
+    predicate: taskwait_no_mutexinoutset
+    example: "!$omp taskwait depend(mutexinoutset: x)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.17.5, p.232"
+        text: "If the dependence-type of a depend clause is depobj then the dependence objects cannot represent dependences of the mutexinoutset dependence type."
+      52:
+        citation: "OpenMP 5.2 §15.5, p.307"
+        text: "The mutexinoutset dependence-type may not appear in a depend clause on a taskwait construct."
+      60:
+        citation: "OpenMP 6.0 §17.5, p.480"
+        text: "The mutexinoutset task-dependence-type may not appear in a depend clause on a taskwait construct."
+
+  - id: taskwait-clause-002
+    check: static
+    status: provisional
+    predicate: taskwait_nowait_needs_depend
+    example: "!$omp taskwait nowait"
+    notes: ""
+    spec:
+      52:
+        citation: "OpenMP 5.2 §15.5, p.308"
+        text: "The nowait clause may only appear on a taskwait directive if the depend clause is present."
+      60:
+        citation: "OpenMP 6.0 §17.5, p.481"
+        text: "The nowait clause may only appear on a taskwait directive if the depend clause is present."
+
+  - id: taskwait-clause-003
+    check: static
+    status: provisional
+    predicate: taskwait_replayable_needs_depend
+    example: "!$omp taskwait replayable"
+    notes: "6.0 only."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §17.5, p.481"
+        text: "The replayable clause may only appear on a taskwait directive if the depend clause is present."
+
+  - id: depobj-clause-001
+    check: static
+    status: provisional
+    predicate: depobj_one_locator
+    example: "!$omp depobj(o) depend(in: a, b)"
+    notes: "5.2 (6.0 replaced depend by init on depobj)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.17.10, p.255"
+        text: "A depend clause on a depobj construct can only specify one locator."
+      52:
+        citation: "OpenMP 5.2 §15.9.4, p.322"
+        text: "A depend clause on a depobj construct must only specify one locator."
+
+  - id: update-clause-001
+    check: static
+    status: provisional
+    predicate: depobj_update_not_depobj
+    example: "!$omp depobj(o) update(depobj)"
+    notes: ""
+    spec:
+      52:
+        citation: "OpenMP 5.2 §15.9.3, p.322"
+        text: "task-dependence-type must not be depobj."
+      60:
+        citation: "OpenMP 6.0 §17.9.4, p.506"
+        text: "task-dependence-type must not be depobj."
+
+  - id: scan-placement-001
+    check: static
+    status: provisional
+    predicate: scan_at_most_one
+    example: "!$omp simd reduction(inscan, +: s) / do ... / !$omp scan inclusive(s) / ... / !$omp scan inclusive(s) / ..."
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.6, p.134"
+        text: "Exactly one scan directive must appear in the loop body of an enclosing worksharing-loop, worksharing-loop SIMD, or simd construct on which a reduction clause with the inscan modifier is present."
+      52:
+        citation: "OpenMP 5.2 §5.6, p.142"
+        text: "A separated construct must have at most one scan directive as a separating directive."
+      60:
+        citation: "OpenMP 6.0 §7.7, p.268"
+        text: "The separated construct must have at most one scan directive with an inclusive or exclusive clause as a separating directive."
+
+  - id: scan-placement-002
+    check: static
+    status: provisional
+    predicate: scan_not_orphaned
+    example: "!$omp scan inclusive(s)   (not in a loop construct)"
+    notes: "A scan directive whose closest enclosing construct has no do or simd leaf (or none)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.6, p.134"
+        text: "Exactly one scan directive must appear in the loop body of an enclosing worksharing-loop, worksharing-loop SIMD, or simd construct on which a reduction clause with the inscan modifier is present."
+        also: ["OpenMP 5.0 §2.9.6, p.132"]
+      52:
+        citation: "OpenMP 5.2 §3.1, p.54"
+        text: "Orphaned separating directives are prohibited. That is, the separating directives must appear within the structured block associated with the same construct with which it is associated and must not be encountered elsewhere in the region of that associated construct."
+      60:
+        citation: "OpenMP 6.0 §5.1, p.155"
+        text: "Orphaned separating directives are prohibited. That is, the separating directives must appear within the structured block associated with the same construct with which it is associated and must not be encountered elsewhere in the region of that separated construct."
+
+  - id: scan-clause-001
+    check: static
+    status: provisional
+    predicate: scan_items_in_inscan_reduction
+    example: "!$omp simd reduction(inscan, +: s) / ... / !$omp scan inclusive(t)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.6, p.134"
+        text: "A list item that appears in the inclusive or exclusive clause must appear in a reduction clause with the inscan modifier on the enclosing worksharing-loop, worksharing-loop SIMD, or simd construct."
+      52:
+        citation: "OpenMP 5.2 §5.6, p.142"
+        text: "Each list item that appears in the inclusive or exclusive clause must appear in a reduction clause with the inscan modifier on the separated construct."
+      60:
+        citation: "OpenMP 6.0 §7.7, p.268"
+        text: "Each list item that appears in the inclusive or exclusive clause must appear in a reduction clause with the inscan modifier on the separated construct."
+
+  - id: scan-clause-002
+    check: static
+    status: provisional
+    predicate: inscan_items_on_scan
+    example: "!$omp simd reduction(inscan, +: s, t) / ... / !$omp scan inclusive(s)"
+    notes: "Also the reduction-clause sentence 5.2 §5.5.8 p.135 / 6.0 §7.6.10 p.254 ('must appear as a list item in an inclusive or exclusive clause on a scan directive enclosed by the construct')."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.4, p.301"
+        text: "A list item that appears in a reduction clause with the inscan reduction-modifier must appear as a list item in an inclusive or exclusive clause on a scan directive enclosed by the construct."
+      52:
+        citation: "OpenMP 5.2 §5.6, p.142"
+        text: "Each list item that appears in a reduction clause with the inscan modifier on the separated construct must appear in a clause on the separating scan directive."
+        also: ["OpenMP 5.2 §5.5.8, p.135"]
+      60:
+        citation: "OpenMP 6.0 §7.7, p.268"
+        text: "Each list item that appears in a reduction clause with the inscan modifier on the separated construct must appear in a clause on the scan separating directive."
+        also: ["OpenMP 6.0 §7.6.10, p.254"]
+
+  - id: scan-loop-001
+    check: static
+    status: provisional
+    predicate: scan_perfectly_nested
+    example: "!$omp do collapse(2) reduction(inscan, +: s) / do i / x = 1 / do j ... !$omp scan ..."
+    notes: ""
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.6, p.142"
+        text: "The loops that are associated with the directive to which the scan directive is associated must all be perfectly nested."
+      60:
+        citation: "OpenMP 6.0 §7.7, p.268"
+        text: "The affected loops of the separated construct must all be perfectly nested loops."
+
+  - id: declaresimd-placement-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declare_simd_in_subprogram
+    example: "program p / !$omp declare simd(f)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.3.3, p.119"
+        text: "Any declare simd directive must appear in the specification part of a subroutine subprogram, function subprogram or interface body to which it applies."
+      52:
+        citation: "OpenMP 5.2 §7.7, p.203"
+        text: "Any declare simd directive must appear in the specification part of a subroutine subprogram, function subprogram, or interface body to which it applies."
+      60:
+        citation: "OpenMP 6.0 §9.8, p.342"
+        text: "Any declare_simd directive must appear in the specification part of a subroutine subprogram, function subprogram, or interface body to which it applies."
+
+  - id: declaremapper-clause-001
+    check: static
+    status: provisional
+    predicate: declare_mapper_no_release_delete
+    example: "!$omp declare mapper(t :: v) map(release: v)"
+    notes: "5.2 only (6.0 has no such sentence; release is a map-type there)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.8.8, p.164"
+        text: "Neither the release or delete map-type may be specified on any map clause."
+
+  - id: declaremapper-clause-002
+    check: static
+    status: provisional
+    predicate: declare_mapper_modifier_default
+    example: "!$omp declare mapper(t :: v) map(mapper(m), tofrom: v)"
+    notes: ""
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.8.8, p.164"
+        text: "If a mapper-modifier is specified for a map clause, its parameter must be default."
+      60:
+        citation: "OpenMP 6.0 §7.9.10, p.294"
+        text: "If a mapper modifier is specified for a map clause, its parameter must be default."
+
+  - id: declaremapper-clause-003
+    check: static
+    status: provisional
+    predicate: declare_mapper_unique
+    example: "!$omp declare mapper(t :: v) map(v) / !$omp declare mapper(t :: w) map(w)"
+    notes: "Same scoping unit, same identifier (default when omitted), same type name."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.3, p.328"
+        text: "A mapper-identifier may not be redeclared in the current scope for the same type or for a type that is compatible according to the base language rules."
+      52:
+        citation: "OpenMP 5.2 §5.8.8, p.164"
+        text: "Multiple declare mapper directives that specify the same mapper-identifier for the same base language type or for compatible base language types, according to the base language rules, may not appear in the same scope."
+      60:
+        citation: "OpenMP 6.0 §7.9.10, p.294"
+        text: "Multiple declare_mapper directives that specify the same mapper-identifier for the same base language type or for compatible base language types, according to the base language rules, must not appear in the same scope."
+
+  - id: declaremapper-clause-004
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declare_mapper_type_not_intrinsic
+    example: "!$omp declare mapper(integer :: v) map(v)"
+    notes: "Fortran: an intrinsic type; an abstract type the source defines (5.0, 5.2, 6.0); a parameterized derived type the source defines (6.0 only)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.3, p.327"
+        text: "The type must be of struct, union or class type in C and C++ or a non-intrinsic type in Fortran."
+        also: ["OpenMP 5.0 §2.19.7.3, p.328"]
+      52:
+        citation: "OpenMP 5.2 §5.8.8, p.164"
+        text: "type must not be an intrinsic type or an abstract type."
+      60:
+        citation: "OpenMP 6.0 §7.9.10, p.295"
+        text: "type must not be an intrinsic type, a parameterized derived type, an enum type, or an enumeration type."
+
+  - id: declaremapper-clause-005
+    check: static
+    status: provisional
+    predicate: declare_mapper_maps_var
+    example: "!$omp declare mapper(t :: v) map(w)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.3, p.327"
+        text: "At least one map clause that maps var or at least one element of var is required."
+      52:
+        citation: "OpenMP 5.2 §5.8.8, p.164"
+        text: "At least one map clause that maps var or at least one element of var is required."
+      60:
+        citation: "OpenMP 6.0 §7.9.10, p.294"
+        text: "At least one map clause that maps var or at least one element of var is required."
+
+  - id: inreduction-clause-001
+    check: static
+    status: provisional
+    predicate: in_reduction_matching_item
+    example: "!$omp taskgroup task_reduction(+: x) / !$omp task in_reduction(*: x)"
+    notes: "Lexical: the closest enclosing construct with the item in task_reduction or reduction(task, ...) must use the same identifier; in a main program (no caller) one must exist."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.6, p.304"
+        text: "A list item that appears in a task_reduction clause or a reduction clause with the task modifier that is specified on a construct that corresponds to a region in which the region of the participating task is closely nested must match each list item. The construct that corresponds to the innermost enclosing region that meets this condition must specify the same reduction-identifier for the matching list item as the in_reduction clause."
+      52:
+        citation: "OpenMP 5.2 §5.5.10, p.139"
+        text: "A list item that appears in a task_reduction clause or a reduction clause with task as the reduction-modifier that is specified on a construct that corresponds to a region in which the region of the participating task is closely nested must match each list item. The construct that corresponds to the innermost enclosing region that meets this condition must specify the same reduction-identifier for the matching list item as the in_reduction clause."
+      60:
+        citation: "OpenMP 6.0 §7.6.12, p.257"
+        text: "For each list item, a matching list item must exist that appears in a task_reduction clause or a reduction clause with the task reduction-modifier that is specified on a construct that corresponds to a region in which the region of the participating task is closely nested. The construct that corresponds to the innermost enclosing region that meets this condition must specify the same reduction-identifier for the matching list item as the in_reduction clause."
+
+  - id: exit-loop-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: exit_from_associated_loop
+    example: "!$omp parallel do / do i = 1, n / if (i > 3) exit / end do"
+    notes: "An EXIT (unnamed: the innermost DO; named: that DO) that terminates one of the associated loops."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.108"
+        text: "No statement in the associated loops other than the DO statements can cause a branch out of the loops."
+        also: ["OpenMP 5.0 §2.9.5, p.131"]
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.91"
+        text: "final-loop-body must not contain any EXIT statement that would cause the termination of the innermost loop."
+        also: ["OpenMP 5.2 §4.4.1, p.87"]
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.201"
+        text: "final-loop-body must not contain any EXIT statement that would cause the termination of the innermost loop."
+        also: ["OpenMP 6.0 §6.4.1, p.198"]
+
+  - id: cycle-loop-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: cycle_in_intervening_code
+    example: "!$omp do collapse(2) / do i / do j / if (j > 2) cycle outer..."
+    notes: "A CYCLE that applies to an associated loop other than the innermost (in intervening code, or branching out of the innermost loop body)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.108"
+        text: "Only an iteration of the innermost associated loop may be curtailed by a CYCLE statement."
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.87"
+        text: "It must not contain loops, array expressions, CYCLE statements or EXIT statements."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.198"
+        text: "A non-empty structured block sequence, referred to as intervening code. It must not contain: • loops; • CYCLE statements; • EXIT statements;"
+
+  - id: loopvar-loop-001
+    check: static
+    status: provisional
+    predicate: loop_var_not_modified
+    example: "!$omp parallel do / do i = 1, n / i = i + 1 / end do"
+    notes: "An assignment statement to an associated iteration variable, or a DO loop on it, in the nest; modification through a call is not seen."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.89"
+        text: "It must not be modified during the execution of intervening-code or loop-body in the loop."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.200"
+        text: "The loop-iteration variable var must not be modified during the execution of intervening-code or loop-body in the loop."
+
+  - id: loopvar-loop-002
+    check: static
+    status: provisional
+    predicate: loop_var_not_threadprivate
+    example: "!$omp threadprivate(i) / ... / !$omp parallel do / do i = 1, n"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "The loop iteration variable may not appear in a threadprivate directive."
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.91"
+        text: "The loop iteration variable may not appear in a threadprivate directive."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.202"
+        text: "The loop-iteration variable may not appear in a threadprivate directive."
+
+  - id: loopvar-loop-003
+    lang: f90
+    check: static
+    status: provisional
+    predicate: loop_var_integer
+    example: "real :: x / !$omp parallel do / do x = 1, 4"
+    notes: "Context requirement: a visible declaration of the DO variable."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.108"
+        text: "The do-loop iteration variable must be of type integer."
+        also: ["OpenMP 5.0 §2.9.3.1, p.114"]
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.89"
+        text: "A scalar variable of integer type."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.200"
+        text: "A scalar variable of integer type."
+
+  - id: nonrect-loop-001
+    check: static
+    status: provisional
+    predicate: nonrect_same_outer_var
+    example: "!$omp do collapse(3) / do i / do j / do k = i, j"
+    notes: "Bounds that reference two outer associated loop variables."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.91"
+        text: "For a non-rectangular loop, if var-outer is referenced in lb and ub then they must both refer to the same iteration variable."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.202"
+        text: "For a non-rectangular loop, if var-outer is referenced in lb and ub then they must both refer to the same loop-iteration variable."
+
+  - id: schedule-loop-001
+    check: static
+    status: provisional
+    predicate: schedule_rectangular
+    example: "!$omp do collapse(2) schedule(static) / do i / do j = i, n"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "The schedule clause must not appear on the worksharing-loop directive if the associated loop(s) form a non-rectangular loop nest."
+      52:
+        citation: "OpenMP 5.2 §11.5.3, p.253"
+        text: "The schedule clause cannot be specified if any of the associated loops are non-rectangular."
+      60:
+        citation: "OpenMP 6.0 §13.6.3, p.420"
+        text: "The schedule clause cannot be specified if any of the collapsed loops is a non-rectangular loop."
+
+  - id: distschedule-loop-001
+    check: static
+    status: provisional
+    predicate: dist_schedule_rectangular
+    example: "!$omp distribute collapse(2) dist_schedule(static) / do i / do j = i, n"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.4.1, p.123"
+        text: "The dist_schedule clause must not appear on the distribute directive if the associated loop(s) form a non-rectangular loop nest."
+      52:
+        citation: "OpenMP 5.2 §11.6.1, p.256"
+        text: "The dist_schedule clause cannot be specified if any of the associated loops are non-rectangular."
+      60:
+        citation: "OpenMP 6.0 §13.7.1, p.423"
+        text: "The dist_schedule clause cannot be specified if any of the collapsed loops is a non-rectangular loop."
+
+  - id: ordered-loop-001
+    check: static
+    status: provisional
+    predicate: ordered_rectangular
+    example: "!$omp do ordered(2) / do i / do j = i, n"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "The ordered clause must not appear on the worksharing-loop directive if the associated loop(s) form a non-rectangular loop nest."
+      52:
+        citation: "OpenMP 5.2 §4.4.4, p.94"
+        text: "None of the associated loops may be non-rectangular loops."
+      60:
+        citation: "OpenMP 6.0 §6.4.6, p.207"
+        text: "None of the doacross-affected loops may be non-rectangular loops."
+
+  - id: linear-loop-001
+    check: static
+    status: provisional
+    predicate: linear_rectangular
+    example: "!$omp do collapse(2) linear(x) / do i / do j = i, n"
+    notes: "6.0 only."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.5.6, p.234"
+        text: "None of the affected loops of a loop-nest-associated construct that has a linear clause may be a non-rectangular loop."
+
+  - id: induction-loop-001
+    check: static
+    status: provisional
+    predicate: induction_rectangular
+    example: "!$omp do collapse(2) induction(...) / do i / do j = i, n"
+    notes: "6.0 only."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.6.13, p.259"
+        text: "None of the affected loops of a loop-nest-associated construct that has an induction clause may be a non-rectangular loop."
+
+  - id: ordered-loop-002
+    check: static
+    status: provisional
+    predicate: ordered_n_within_depth
+    example: "!$omp do ordered(2) / do i = 1, n / end do"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.104"
+        text: "If the value of the parameter in the collapse or ordered clause is larger than the number of nested loops following the construct, the behavior is unspecified."
+      52:
+        citation: "OpenMP 5.2 §4.4.4, p.94"
+        text: "n must not evaluate to a value greater than the depth of the associated loop nest."
+      60:
+        citation: "OpenMP 6.0 §6.4.6, p.207"
+        text: "n must not evaluate to a value greater than the depth of the associated loop nest."
+
+  - id: ordered-loop-003
+    check: static
+    status: provisional
+    predicate: ordered_n_ge_collapse
+    example: "!$omp do collapse(2) ordered(1)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "If both the collapse and ordered clause with a parameter are specified, the parameter of the ordered clause must be greater than or equal to the parameter of the collapse clause."
+      52:
+        citation: "OpenMP 5.2 §4.4.4, p.94"
+        text: "If n is explicitly specified and the collapse clause is also specified for the ordered clause on the same construct, n must be greater than or equal to the n specified for the collapse clause."
+      60:
+        citation: "OpenMP 6.0 §6.4.6, p.207"
+        text: "If n is explicitly specified and the collapse clause is also specified for the ordered clause on the same construct, n must be greater than or equal to the n specified for the collapse clause."
+
+  - id: ordered-loop-004
+    check: static
+    status: provisional
+    predicate: ordered_n_no_linear
+    example: "!$omp do ordered(1) linear(x)"
+    notes: "5.2 only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.108"
+        text: "A linear clause or an ordered clause with a parameter can be specified on a worksharing-loop directive but not both."
+      52:
+        citation: "OpenMP 5.2 §4.4.4, p.94"
+        text: "If n is explicitly specified, a linear clause must not be specified on the same directive."
+
+  - id: ordered-loop-005
+    check: static
+    status: provisional
+    predicate: ordered_n_perfectly_nested
+    example: "!$omp do ordered(2) / do i / x = 1 / do j"
+    notes: "5.2 only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "If the ordered clause is present, all loops associated with the construct must be perfectly nested; that is there must be no intervening code between any two loops."
+      52:
+        citation: "OpenMP 5.2 §4.4.4, p.94"
+        text: "If n is explicitly specified, the associated loops must be perfectly nested."
+
+  - id: loop-clause-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: loop_do_concurrent_clauses
+    example: "!$omp loop private(x) / do concurrent (i = 1:n)"
+    notes: "6.0 only."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §13.8, p.424"
+        text: "If the collapsed loop is a DO CONCURRENT loop, neither the data-sharing attribute clauses nor the collapse clause may be specified."
+
+  - id: aligned-clause-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: aligned_pointer_or_allocatable
+    example: "real :: a(10) / !$omp simd aligned(a)"
+    notes: "5.2 only. Context requirement: a visible plain declaration."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.11, p.170"
+        text: "Each list item must have C_PTR or Cray pointer type or have the POINTER or ALLOCATABLE attribute. Cray pointer support has been deprecated."
+
+  - id: aligned-clause-002
+    lang: f90
+    check: static
+    status: provisional
+    predicate: aligned_array
+    example: "real :: x / !$omp simd aligned(x)"
+    notes: "6.0 only. Context requirement: a visible scalar declaration."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §7.12, p.301"
+        text: "Each list item must be an array."
+
+
+  - id: arraysection-clause-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: section_stride_positive
+    example: "!$omp target update to(a(1:n:0))"
+    notes: "Integer literal strides only; every clause with a list."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.1.5, p.46"
+        text: "If a stride expression is specified, it must be positive."
+      52:
+        citation: "OpenMP 5.2 §3.2.5, p.66"
+        text: "If a stride expression is specified, it must be positive."
+      60:
+        citation: "OpenMP 6.0 §5.2.5, p.168"
+        text: "If a stride expression is specified, it must be positive."
+
+  - id: arraysection-clause-002
+    lang: f90
+    check: static
+    status: provisional
+    predicate: section_last_part_ref
+    example: "!$omp target update to(s(1:n)%c)"
+    notes: ""
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.1.5, p.46"
+        text: "If a list item is an array section, the last part-ref of the list item must have a section subscript list."
+      52:
+        citation: "OpenMP 5.2 §3.2.5, p.66"
+        text: "If a list item is an array section, the last part-ref of the list item must have a section subscript list."
+      60:
+        citation: "OpenMP 6.0 §5.2.5, p.168"
+        text: "If a list item is an array section, the last part-ref of the list item must have a section subscript list."
+
+  - id: map-clause-001
+    check: static
+    status: provisional
+    predicate: map_section_contiguous
+    example: "!$omp target map(a(1:n:2))"
+    notes: "Only an integer literal stride other than 1 is seen as non-contiguous (a section of a non-contiguous pointer is not)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.1, p.322"
+        text: "If a list item is an array section, it must specify contiguous storage."
+      52:
+        citation: "OpenMP 5.2 §5.8.3, p.156"
+        text: "If a list item is an array section, it must specify contiguous storage."
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.286"
+        text: "If a list item is an array or an array section, it must specify contiguous storage."
+
+  - id: reduction-dsa-003
+    check: static
+    status: provisional
+    predicate: task_reduction_item_needs_in_reduction
+    example: "!$omp parallel reduction(+: x) / !$omp task / x = x + 1 / !$omp end task / !$omp end parallel"
+    notes: "Lexical: the task body or clauses reference the item; accesses through calls are not seen."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.4, p.302"
+        text: "A list item that appears in a reduction clause of the innermost enclosing worksharing or parallel construct may not be accessed in an explicit task generated by a construct for which an in_reduction clause over the same list item does not appear."
+      52:
+        citation: "OpenMP 5.2 §5.5.8, p.136"
+        text: "A list item that appears in a reduction clause of the innermost enclosing worksharing or parallel construct must not be accessed in an explicit task generated by a construct for which an in_reduction clause over the same list item does not appear."
+      60:
+        citation: "OpenMP 6.0 §7.6.10, p.254"
+        text: "A list item that appears in a reduction clause of the innermost enclosing worksharing construct or parallel construct must not be accessed in an explicit task generated by a construct unless an in_reduction clause with the same list item appears on that construct."
+
+  - id: ordered-nesting-003
+    check: static
+    status: provisional
+    predicate: ordered_simd_threads_in_worksharing_simd
+    example: "!$omp simd / do ... / !$omp ordered simd threads / ... / !$omp end ordered / end do"
+    notes: "5.2 only (6.0 states the simd and threads cases separately: ordered-nesting-001/002)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.20, p.328"
+        text: "An ordered region corresponding to an ordered construct with both the simd and threads clauses must be closely nested inside a worksharing-loop SIMD region or closely nested inside a worksharing-loop and simd region."
+      52:
+        citation: "OpenMP 5.2 §17.1, p.338"
+        text: "An ordered region that corresponds to an ordered construct with both the simd and threads clauses must be closely nested inside a worksharing-loop SIMD region or closely nested inside a worksharing-loop and simd region."
+
+  - id: declarative-placement-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declarative_after_use
+    example: "!$omp requires unified_shared_memory / use m"
+    notes: "5.2: the requires sentence (requires-placement-001 checks only its 'specification part' half); 6.0: every declarative directive."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §8.2, p.211"
+        text: "The requires directive must appear in the specification part of a program unit, after any USE statement, any IMPORT statement, and any IMPLICIT statement, unless the directive appears by referencing a module and each clause already appeared with the same arguments in the specification part of the program unit."
+      60:
+        citation: "OpenMP 6.0 §5.1, p.156"
+        text: "A declarative directive must be specified in the specification part after all USE, IMPORT and IMPLICIT statements."
+
+  - id: namedconst-clause-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: named_constant_list_item
+    example: "integer, parameter :: k = 4 / !$omp parallel private(k)"
+    notes: "5.2: a named constant is predetermined (the exceptions list allows it only in shared and firstprivate), checked on the data-sharing clauses; 6.0: any clause with a list."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.1.1, p.271"
+        text: "Variables with predetermined data-sharing attributes may not be listed in data-sharing attribute clauses, except for the cases listed below."
+      52:
+        citation: "OpenMP 5.2 §5.1.1, p.98"
+        text: "Variables with predetermined data-sharing attributes may not be listed in data-sharing attribute clauses, except for the cases listed below."
+      60:
+        citation: "OpenMP 6.0 §5.2.1, p.164"
+        text: "A named constant or a procedure pointer can appear as a list item only in clauses where it is explicitly allowed."
+
+
+# --- runtime (not decidable from the source) ---------------------------------------------
+
+  - id: distribute-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "The iteration space depends on loop bounds evaluated at run time in each team."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.4.1, p.122"
+        text: "The distribute construct inherits the restrictions of the worksharing-loop construct."
+        also: ["OpenMP 5.0 §2.9.2, p.107"]
+      52:
+        citation: "OpenMP 5.2 §11.6, p.255"
+        text: "The logical iteration space of the loops associated with the distribute construct must be the same for all teams in the league."
+      60:
+        citation: "OpenMP 6.0 §13.7, p.421"
+        text: "The collapsed iteration space must the same for all teams in the league."
+
+  - id: distschedule-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "chunk_size is an expression whose value per team is known only at run time."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "The value of the chunk_size expression must be the same for all threads in the team."
+        also: ["OpenMP 5.0 §2.9.4.1, p.122"]
+      52:
+        citation: "OpenMP 5.2 §11.6.1, p.256"
+        text: "The value of the chunk_size expression must be the same for all teams in the league."
+      60:
+        citation: "OpenMP 6.0 §13.7.1, p.423"
+        text: "The value of the chunk_size expression must be the same for all teams in the league."
+
+  - id: do-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "The iteration space depends on loop bounds evaluated at run time by each thread."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.2, p.107"
+        text: "The values of the loop control expressions of the loops associated with the worksharing-loop construct must be the same for all threads in the team."
+      52:
+        citation: "OpenMP 5.2 §11.5, p.249"
+        text: "The logical iteration space of the loops associated with the worksharing-loop construct must be the same for all threads in the team."
+      60:
+        citation: "OpenMP 6.0 §13.6, p.415"
+        text: "The collapsed iteration space must be the same for all threads in the team."
+
+  - id: loop-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "Which threads encounter a loop region depends on control flow at run time."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.5, p.131"
+        text: "If a loop region binds to a teams or parallel region, it must be encountered by all threads in the binding thread set or by none of them."
+      52:
+        citation: "OpenMP 5.2 §11.7, p.258"
+        text: "If a loop region binds to a teams or parallel region, it must be encountered by all threads in the binding thread set or by none of them."
+      60:
+        citation: "OpenMP 6.0 §13.8, p.424"
+        text: "If a loop region binds to a teams region or parallel region, it must be encountered by all threads in the binding thread set or by none of them."
+
+  - id: device-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "The device number is a run-time value and the set of conforming device numbers is known only at run time."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.174"
+        text: "The device clause expression must evaluate to a non-negative integer value less than the value of omp_get_num_devices() or to the value of omp_get_initial_device()."
+      52:
+        citation: "OpenMP 5.2 §13.2, p.276"
+        text: "If the device_num device-modifier is specified and target-offload-var is not mandatory, device-description must evaluate to a conforming device number."
+      60:
+        citation: "OpenMP 6.0 §15.2, p.452"
+        text: "If the device_num device-modifier is specified and target-offload-var is not mandatory, device-description must evaluate to a conforming device number."
+
+  - id: map-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "What is present in the device data environment when the construct is encountered depends on earlier executions."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.1, p.322"
+        text: "If any part of the original storage of a list item with an explicit data-mapping attribute has corresponding storage in the device data environment prior to a task encountering the construct associated with the map clause, all of the original storage must have corresponding storage in the device data environment prior to the task encountering the construct."
+      52:
+        citation: "OpenMP 5.2 §5.8.3, p.156"
+        text: "If any part of the original storage of a list item with an explicit data-mapping attribute has corresponding storage in the device data environment prior to a task encountering the construct associated with the map clause, all of the original storage must have corresponding storage in the device data environment prior to the task encountering the construct."
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.286"
+        text: "If any part of the original storage of a list item that is explicitly mapped by a map clause has corresponding storage in the device data environment prior to a task encountering the construct associated with the map clause, all of the original storage must have corresponding storage in the device data environment prior to the task encountering the construct."
+
+  - id: target-exec-001
+    lang: f90
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "Allocation status on entry to and exit from the region is a run-time property."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.1, p.323"
+        text: "If the allocation status of a list item or any subobject of the list item with the ALLOCATABLE attribute is unallocated upon entry to a target region, the list item or any subobject of the corresponding list item must be unallocated upon exit from the region."
+      52:
+        citation: "OpenMP 5.2 §13.8, p.287"
+        text: "If the allocation status of a mapped variable that has the ALLOCATABLE attribute is unallocated on entry to a target region, the allocation status of the corresponding variable in the device data environment must be unallocated upon exiting the region."
+      60:
+        citation: "OpenMP 6.0 §15.8, p.464"
+        text: "If the allocation status of a mapped variable or a list item that appears in a has_device_addr clause that has the ALLOCATABLE attribute is unallocated on entry to a target region, the allocation status of the corresponding variable in the device data environment must be unallocated upon exiting the region."
+
+# --- C: C/C++ restriction sentences, lang: c -------------------------------
+# Predicates in offload/engine/c_rules.py; facts from the C scanner
+# (offload/engine/c_program.py). Unit cases: tests/engine/test_c.py (C_CASES).
+
+  - id: requires-placement-005
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_requires_at_file_scope
+    example: "int main(void) { #pragma omp requires unified_shared_memory ... }"
+    notes: "The C counterpart of requires-placement-001 (Fortran: the specification part of a program unit). Isolation: move a requires directive into main."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.4, p.63"
+        text: "The requires directive may only appear at file scope."
+      52:
+        citation: "OpenMP 5.2 §8.2, p.211"
+        text: "The requires directive may only appear at file scope."
+      60:
+        citation: "OpenMP 6.0 §10.5, p.355"
+        text: "The requires directive must only appear at file scope."
+
+  - id: directive-placement-001
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_directive_substatement
+    example: "if (c) #pragma omp target update to(a)"
+    notes: "Stand-alone (target update, target enter/exit data, taskwait, ...) and declarative directives as the substatement of if/else/switch/for/while/do or after a label (C scanner fact substatement). Isolation: drop the braces around a target update that is the only statement of an if."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.1.3, p.43"
+        text: "A stand-alone directive may not be used in place of the statement following an if, while, do, switch, or label."
+      52:
+        citation: "OpenMP 5.2 §3.1, p.54"
+        text: "Neither a stand-alone directive nor a declarative directive may be used in place of a substatement in a selection statement or iteration statement, or in place of the statement that follows a label."
+      60:
+        citation: "OpenMP 6.0 §5.1, p.156"
+        text: "Neither a stand-alone directive nor a declarative directive may be used in place of a substatement in a selection statement or iteration statement, or in place of the statement that follows a label."
+
+  - id: canonical-loop-001
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_loop_increment_direction_var_left
+    example: "#pragma omp parallel for / for (i = 0; i < n; i--)"
+    notes: "Also the second sentence of the bullet (var relational-op b with > or >=: var must decrease). Checked when the step is an integer literal. Isolation: decrement in a for loop whose test is i <= n."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.1, p.100"
+        text: "If test-expr is of the form var relational-op b and relational-op is < or <= then incr-expr must cause var to increase on each iteration of the loop."
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.90"
+        text: "If test-expr is of the form var relational-op b and relational-op is < or <= then incr-expr must cause var to increase on each iteration of the loop."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.201"
+        text: "If test-expr is of the form var relational-op b and relational-op is < or <= then incr-expr must cause var to increase on each iteration of the loop."
+
+  - id: canonical-loop-002
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_loop_increment_direction_ub_left
+    example: "#pragma omp parallel for / for (i = 0; n > i; i--)"
+    notes: "Also the second sentence of the bullet (ub relational-op var with > or >=: var must increase). Checked when the step is an integer literal."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.1, p.100"
+        text: "If test-expr is of the form b relational-op var and relational-op is < or <= then incr-expr must cause var to decrease on each iteration of the loop."
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.90"
+        text: "If test-expr is of the form ub relational-op var and relational-op is < or <= then incr-expr must cause var to decrease on each iteration of the loop."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.201"
+        text: "If test-expr is of the form ub relational-op var and relational-op is < or <= then incr-expr must cause var to decrease on each iteration of the loop."
+
+  - id: canonical-loop-003
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_loop_ne_unit_step
+    example: "#pragma omp parallel for / for (i = 0; i != n; i += 2)"
+    notes: "A step that is not an integer literal is flagged too (its value is not known to be +-1)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.1, p.100"
+        text: "If relational-op is != and incr-expr is of the form that has incr then incr must be a constant expression and evaluate to -1 or 1."
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.91"
+        text: "If relational-op is != then incr-expr must cause var to always increase by 1 or always decrease by 1 and the increment must be a constant expression."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.201"
+        text: "If relational-op is != then incr-expr must cause var to always increase by 1 or always decrease by 1 and the increment must be a constant expression."
+
+  - id: loopvar-loop-004
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_loop_var_integer_or_pointer
+    example: "#pragma omp parallel for / for (double x = 0; x < 1; x++)"
+    notes: "The C counterpart of loopvar-loop-003 (Fortran: a scalar variable of integer type). var is one of: a variable of a signed or unsigned integer type; (C) a variable of a pointer type (also cited text). _Bool is an unsigned integer type (C11 §6.2.5)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.1, p.96"
+        text: "A variable of a signed or unsigned integer type."
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.88"
+        text: "A variable of a signed or unsigned integer type."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.199"
+        text: "A variable of a signed or unsigned integer type."
+
+  - id: intervening-loop-001
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_intervening_no_iteration_or_jump
+    example: "#pragma omp parallel for collapse(2) / for (i...) { while (0) {} for (j...) ... }"
+    notes: "The C counterpart of cycle-loop-001 (Fortran). Iteration statements in the intervening code of a collapsed nest, and continue/break statements that apply to an associated loop other than the innermost one."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.87"
+        text: "It must not contain iteration statements, continue statements or break statements that apply to the enclosing loop."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.198"
+        text: "It must not contain iteration statements, continue statements or break statements that apply to the enclosing loop."
+
+  - id: finalbody-loop-001
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_final_body_no_break
+    example: "#pragma omp parallel for / for (i...) { if (i == 3) break; }"
+    notes: "The C counterpart of exit-loop-001 (Fortran EXIT). A break inside a switch or an inner loop applies to that statement, not to the associated loop."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §4.4.1, p.91"
+        text: "final-loop-body must not contain any break statement that would cause the termination of the innermost loop."
+      60:
+        citation: "OpenMP 6.0 §6.4.1, p.201"
+        text: "final-loop-body must not contain any break statement that would cause the termination of the innermost loop."
+
+  - id: linear-clause-005
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_linear_integral_or_pointer
+    example: "double x; #pragma omp simd linear(x)"
+    notes: "The C counterpart of linear-clause-004 (Fortran: integer). 'If specified, linear-modifier must be val' (C) is enforced by the C form of the clause grammar."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.4.6, p.292"
+        text: "A list-item that appears in a linear clause must be of integral or pointer type."
+      52:
+        citation: "OpenMP 5.2 §5.4.6, p.119"
+        text: "All list items must be of integral or pointer type."
+      60:
+        citation: "OpenMP 6.0 §7.5.6, p.234"
+        text: "All list items must be of integral or pointer type."
+
+  - id: aligned-clause-003
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_aligned_array_or_pointer
+    example: "int x; #pragma omp simd aligned(x: 64)"
+    notes: "The C counterpart of aligned-clause-001/002 (Fortran)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.9.3.1, p.113"
+        text: "The type of list items appearing in the aligned clause must be array or pointer."
+      52:
+        citation: "OpenMP 5.2 §5.11, p.169"
+        text: "The type of list items must be array or pointer."
+      60:
+        citation: "OpenMP 6.0 §7.12, p.300"
+        text: "The type of each list item must be an array or pointer type."
+
+  - id: isdeviceptr-clause-001
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_is_device_ptr_pointer_or_array
+    example: "int x; #pragma omp target is_device_ptr(x)"
+    notes: "6.0 has no type restriction on is_device_ptr list items (each must be a valid device pointer, a run-time property)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.5, p.175"
+        text: "A list item that appears in an is_device_ptr clause must have a type of pointer or array."
+      52:
+        citation: "OpenMP 5.2 §5.4.7, p.120"
+        text: "Each list item must have a type of pointer or array."
+
+  - id: reduction-clause-007
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_reduction_minmax_arithmetic
+    example: "int *p; #pragma omp parallel for reduction(max: p)"
+    notes: "_Bool is an allowed type (the C _Bool item of the && and || reductions of the slice programs). Checked for pointer, structure and union declarations."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.1, p.298"
+        text: "For a max or min reduction in C, the type of the list item must be an allowed arithmetic data type: char, int, float, double, or _Bool, possibly modified with long, short, signed, or unsigned."
+      52:
+        citation: "OpenMP 5.2 §5.5.5, p.132"
+        text: "For a max or min reduction in C, the type of the list item must be an allowed arithmetic data type: char, int, float, double, or _Bool, possibly modified with long, short, signed, or unsigned."
+      60:
+        citation: "OpenMP 6.0 §7.6.6, p.250"
+        text: "For a max or min reduction, the type of the list item must be an allowed arithmetic data type: char, int, float, double, or _Bool, possibly modified with long, short, signed, or unsigned."
+
+  - id: reduction-clause-008
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_reduction_not_const
+    example: "const int s = 0; #pragma omp parallel for reduction(+: s)"
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.1, p.298"
+        text: "A list item that appears in a reduction clause must not be const-qualified."
+      52:
+        citation: "OpenMP 5.2 §5.5.5, p.132"
+        text: "A list item that appears in a reduction clause must not be const-qualified."
+      60:
+        citation: "OpenMP 6.0 §7.6.5, p.248"
+        text: "A list item that appears in a reduction clause or an induction clause must not be const-qualified."
+
+  - id: privatization-dsa-001
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_privatized_not_const
+    example: "const int t = 1; #pragma omp parallel private(t)"
+    notes: "The class-type exception is C++ only. Clauses checked: private, lastprivate, linear (firstprivate is exempt; the reduction clauses privatize too but have their own rule, reduction-clause-008, so a const reduction item fires that one only)."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.3, p.281"
+        text: "A variable that is privatized must not have a const-qualified type unless it is of class type with a mutable member. This restriction does not apply to the firstprivate clause."
+      52:
+        citation: "OpenMP 5.2 §5.3, p.108"
+        text: "A variable that is privatized must not have a const-qualified type unless it is of class type with a mutable member. This restriction does not apply to the firstprivate clause."
+      60:
+        citation: "OpenMP 6.0 §7.4, p.222"
+        text: "A variable that is privatized must not have a const-qualified type unless it is of class type with a mutable member. This restriction does not apply to the firstprivate clause."
+
+  - id: map-clause-003
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_map_no_bitfield
+    example: "struct s { int f : 3; } v; #pragma omp target map(tofrom: v.f)"
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.1, p.323"
+        text: "A bit-field cannot appear in a map clause."
+      52:
+        citation: "OpenMP 5.2 §5.8.3, p.157"
+        text: "A bit-field cannot appear in a map clause."
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.287"
+        text: "A bit-field cannot appear in a map clause."
+
+  - id: map-clause-004
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_map_no_union_member
+    example: "union u { int i; float f; } v; #pragma omp target map(tofrom: v.i)"
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.1, p.323"
+        text: "A list item cannot be a variable that is a member of a structure with a union type."
+      52:
+        citation: "OpenMP 5.2 §5.8.3, p.157"
+        text: "A list item cannot be a variable that is a member of a structure of a union type."
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.287"
+        text: "A list item cannot be a variable that is a member of a structure of a union type."
+
+  - id: depend-clause-005
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_depend_no_bitfield
+    example: "struct s { int f : 3; } v; #pragma omp task depend(out: v.f)"
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.17.11, p.259"
+        text: "A bit-field cannot appear in a depend clause."
+      52:
+        citation: "OpenMP 5.2 §15.9.5, p.325"
+        text: "A bit-field cannot appear in a depend clause."
+      60:
+        citation: "OpenMP 6.0 §17.9.5, p.510"
+        text: "A bit-field cannot appear in a depend clause."
+
+  - id: declaremapper-clause-006
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_declare_mapper_struct_or_union
+    example: "#pragma omp declare mapper(int v) map(v)"
+    notes: "The C counterpart of declaremapper-clause-004 (Fortran: not an intrinsic or abstract type). A typedef name defined in the source is resolved (a typedef'd struct is not flagged; a typedef of a scalar or pointer type is); a typedef name the source does not define is not flagged."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.7.3, p.327"
+        text: "The type must be of struct, union or class type in C and C++ or a non-intrinsic type in Fortran."
+      52:
+        citation: "OpenMP 5.2 §5.8.8, p.164"
+        text: "type must be a struct or union type."
+      60:
+        citation: "OpenMP 6.0 §7.9.10, p.294"
+        text: "type must be a struct or union type."
+
+  - id: arraysection-clause-003
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_section_base_array_or_pointer
+    example: "int x; #pragma omp target map(to: x[0:4])"
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.1.5, p.46"
+        text: "The base expression of an array section must have an array or pointer type."
+      52:
+        citation: "OpenMP 5.2 §3.2.5, p.66"
+        text: "The base expression of an array section must have an array or pointer type."
+      60:
+        citation: "OpenMP 6.0 §5.2.5, p.168"
+        text: "The array base of an array section must have an array or pointer type."
+
+  - id: arraysection-clause-004
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_section_stride_positive
+    example: "#pragma omp target update to(a[0:4:0])"
+    notes: "The C counterpart of arraysection-clause-001 (Fortran). The sentence is in the C/C++ syntax text of the section, not in its Restrictions."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.1.5, p.44"
+        text: "The stride must evaluate to a positive integer."
+      52:
+        citation: "OpenMP 5.2 §3.2.5, p.64"
+        text: "The stride must evaluate to a positive integer."
+      60:
+        citation: "OpenMP 6.0 §5.2.5, p.166"
+        text: "The stride must evaluate to a positive integer."
+
+  - id: arraysection-clause-005
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_section_length_nonnegative
+    example: "#pragma omp target map(to: a[0:-1])"
+    notes: "The sentence is in the C/C++ syntax text of the section."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.1.5, p.44"
+        text: "The length must evaluate to a non-negative integer."
+      52:
+        citation: "OpenMP 5.2 §3.2.5, p.64"
+        text: "The length must evaluate to a non-negative integer."
+      60:
+        citation: "OpenMP 6.0 §5.2.5, p.166"
+        text: "The length must evaluate to a non-negative integer."
+
+  - id: default-dsa-002
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_default_private_static_listed
+    example: "int g; ... #pragma omp parallel default(firstprivate) { g = 1; }"
+    notes: "File-scope variables (static storage duration) referenced in the construct's statements; references in nested directives' clauses are not counted (lenient)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.4.1, p.109"
+        text: "If data-sharing-attribute is firstprivate or private, each variable with static storage duration that is declared in a namespace or global scope, is referenced in the construct, and does not have a predetermined data-sharing attribute must have its data-sharing attribute explicitly determined by being listed in a data-sharing attribute clause."
+      60:
+        citation: "OpenMP 6.0 §7.5.1, p.224"
+        text: "If data-sharing-attribute is firstprivate or private, each variable with static storage duration that is declared in a namespace or global scope, is referenced in the construct, and does not have a predetermined data-sharing attribute must have an explicitly determined data-sharing attribute."
+
+  - id: declaretarget-placement-004
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_declare_target_same_scope
+    example: "int g; int main(void) { #pragma omp declare target(g) ... }"
+    notes: "6.0 only (5.2 states the scope rule for Fortran only, declaretarget-placement-002)."
+    spec:
+      60:
+        citation: "OpenMP 6.0 §9.9.1, p.347"
+        text: "If the directive is not a declaration-associated directive, it must appear at the same scope as the declaration of every list item in its extended-list or in its data-environment attribute clauses."
+
+  - id: declarereduction-clause-001
+    lang: c
+    check: static
+    status: provisional
+    predicate: c_declare_reduction_type
+    example: "#pragma omp declare reduction(r: const int: omp_out += omp_in)"
+    notes: "Qualified (const, volatile, restrict), array and function type names; a reference type is C++ only."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.7, p.308"
+        text: "A type name in a declare reduction directive cannot be a function type, an array type, a reference type, or a type qualified with const, volatile or restrict."
+      52:
+        citation: "OpenMP 5.2 §5.5.11, p.140"
+        text: "A type name in a declare reduction directive cannot be a function type, an array type, a reference type, or a type qualified with const, volatile or restrict."
+      60:
+        citation: "OpenMP 6.0 §7.6.14, p.261"
+        text: "A type name in a declare_reduction directive must not be a function type, an array type, a reference type, or a type qualified with const, volatile or restrict."
+
+
+  - id: map-clause-005
+    check: static
+    status: provisional
+    predicate: map_iterator_shared_containing_array
+    example: "!$omp target map(iterator(k = 1:2), tofrom: a(k))"
+    notes: "Decided statically when the iterator range has integer literal bounds giving two or more values and the iterator appears only in the subscript applied to a named variable (every instance then has that variable as containing array or base pointer); other forms (computed bounds, the iterator in a base pointer) are not judged. Not generated as a catalog variant (gen.NOT_GENERATABLE): added to judge corpus tests (omp_vv test_target_map_iterators.c)."
+    spec:
+      52:
+        citation: "OpenMP 5.2 §5.8.3, p.156"
+        text: "If an expression that is used to form a list item in a map clause contains an iterator identifier, the list item instances that would result from different values of the iterator must not have the same containing array and must not have base pointers that share original storage."
+      60:
+        citation: "OpenMP 6.0 §7.9.6, p.286"
+        text: "If an expression that is used to form a list item in a map clause contains an iterator identifier that is defined by an iterator modifier, the list item instances that would result from different values of the iterator must not have the same containing array and must not have base pointers that share original storage."
+
+# --- fortran-oop ------------------------------
+
+  - id: typebound-declaretarget-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: type_bound_declare_target
+    example: "type t ... procedure :: get => t_get ... (t_get without declare target) ... !$omp target / r = x%get() / !$omp end target"
+    notes: "Accessed: a binding reference (call x%b, x%b(...)), the specifics of a generic binding, a defined assignment or operator of the type, a final subroutine of a local or INTENT(OUT) object of a device procedure, and the defined assignment (firstprivate) and final subroutines (private, firstprivate) of a target construct's list items. A polymorphic object may invoke every override in an extension. In the region: target constructs and the procedures that run on the device (declare target, referenced from the region, reached as a type-bound procedure). A binding whose procedure is not defined in the source is not judged. The sentence is part of the definition of a mappable type: a list item must have a mappable type (5.2 §5.8.3 p.156). Conservative (it may refuse a conforming program; none in the corpus): a CLASS object needs every override in every extension the source defines, used on the device or not; a derived-type dummy declared without INTENT is read as a finalized local; a procedure also referenced by name in the region (implicitly declare target, 5.2 §13.8 p.285) is still refused when it is accessed as a binding."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §1.2.6, p.16"
+        text: "All type-bound procedures accessed in any target region must appear in a declare target directive."
+      52:
+        citation: "OpenMP 5.2 §1.2.6, p.19"
+        text: "All type-bound procedures accessed in any target region must appear in a declare target directive."
+        also: ["OpenMP 5.2 §5.8.3, p.156"]
+      60:
+        citation: "OpenMP 6.0 §2, p.69"
+        text: "All type-bound procedures accessed in any target region must appear in a declare_target directive."
+        also: ["OpenMP 6.0 §7.9.6, p.287"]
+
+  - id: typename-clause-001
+    lang: f90
+    check: static
+    status: provisional
+    predicate: type_name_list_item
+    example: "!$omp declare reduction(r: class(*): omp_out = omp_in)"
+    notes: "Type-name lists: declare reduction (the abstract type of a declare mapper is declaremapper-clause-004's). Abstract: a type defined in the source with the ABSTRACT attribute."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.19.5.7, p.305"
+        text: "type-list is a list of type specifiers that must not be CLASS(*) and abstract type"
+      52:
+        citation: "OpenMP 5.2 §3.2.1, p.61"
+        text: "A type-name list item is a type specifier that must not be CLASS(*) or an abstract type."
+      60:
+        citation: "OpenMP 6.0 §5.2.1, p.164"
+        text: "A type-name list item must not specify an abstract type or be either CLASS(*) or TYPE(*)."
+
+  - id: declaretarget-clause-006
+    lang: f90
+    check: static
+    status: provisional
+    predicate: declare_target_procedure_name
+    example: "interface gen / module procedure f1 / end interface gen / !$omp declare target enter(gen)"
+    notes: "Generic interface names (interface NAME blocks) and procedure pointers (procedure(...), pointer :: p) of the source; entry and statement function names are not judged."
+    spec:
+      50:
+        citation: "OpenMP 5.0 §2.12.7, p.184"
+        text: "If a list item is a procedure name, it must not be a generic name, procedure pointer or entry name."
+      52:
+        citation: "OpenMP 5.2 §7.8.1, p.206"
+        text: "If a list item is a procedure name, it must not be a generic name, procedure pointer, entry name, or statement function name."
+      60:
+        citation: "OpenMP 6.0 §9.9.1, p.348"
+        text: "If a list item is a procedure name, it must not be a generic name, procedure pointer, entry name, or statement function name."

@@ -1,0 +1,12 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-27.
+# source: GCC 16.2.0 gfortran -fopenmp -foffload=nvptx-none -foffload-options=nvptx-none=-march=sm_80 (gcc_sm80) -O2 on offload.engine.gen omp50-clause-lastprivate-conditional (legal; the compile-only sweep, tools/campaigns/gcc_compile_sweep.py)
+# exit status: 1
+==== verbatim output below ====
+unresolved symbol __atomic_compare_exchange_16
+collect2: error: ld returned 1 exit status
+nvptx mkoffload: fatal error: <site>/gcc-16.2/bin/x86_64-pc-linux-gnu-accel-nvptx-none-gcc returned 1 exit status
+compilation terminated.
+lto-wrapper: fatal error: <site>/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0//accel/nvptx-none/mkoffload returned 1 exit status
+compilation terminated.
+/usr/bin/ld: error: lto-wrapper failed
+collect2: error: ld returned 1 exit status

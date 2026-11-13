@@ -1,0 +1,32 @@
+# The CCE character-map ICE (queue entries 13, 31, 32) compiled in ten build directories of
+# growing name length (results/t48/batch3; Tuolumne, 2026-10-26): full path length, rc, message
+13 cce21 38 1 Unhandled expression type in get base or dv mem
+13 cce21 44 1 Unhandled expression type in get base or dv mem
+13 cce21 50 1 Unhandled expression type in get base or dv mem
+13 cce21 56 1 Unhandled expression type in get base or dv mem
+13 cce21 62 2 optcg killed by signal 11
+13 cce21 68 2 unexpected type in TYPE_DEREF
+13 cce21 74 1 Unhandled expression type in get base or dv mem
+13 cce21 80 1 Unhandled expression type in get base or dv mem
+13 cce21 86 1 Unhandled expression type in get base or dv mem
+13 cce21 92 1 Unhandled expression type in get base or dv mem
+31 cce20 38 1 Unhandled expression type in get base or dv mem
+31 cce20 44 1 Unhandled expression type in get base or dv mem
+31 cce20 50 2 unexpected type in TYPE_DEREF
+31 cce20 56 1 Unhandled expression type in get base or dv mem
+31 cce20 62 1 Unhandled expression type in get base or dv mem
+31 cce20 68 1 Unhandled expression type in get base or dv mem
+31 cce20 74 1 Unhandled expression type in get base or dv mem
+31 cce20 80 1 Unhandled expression type in get base or dv mem
+31 cce20 86 1 Unhandled expression type in get base or dv mem
+31 cce20 92 1 Unhandled expression type in get base or dv mem
+32 cce21 38 2 unexpected type in TYPE_DEREF
+32 cce21 44 2 unexpected type in TYPE_DEREF
+32 cce21 50 1 Unhandled expression type in get base or dv mem
+32 cce21 56 1 Unhandled expression type in get base or dv mem
+32 cce21 62 1 Unhandled expression type in get base or dv mem
+32 cce21 68 1 Unhandled expression type in get base or dv mem
+32 cce21 74 1 Unhandled expression type in get base or dv mem
+32 cce21 80 1 Unhandled expression type in get base or dv mem
+32 cce21 86 1 Unhandled expression type in get base or dv mem
+32 cce21 92 1 Unhandled expression type in get base or dv mem

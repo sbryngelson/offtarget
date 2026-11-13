@@ -1,0 +1,113 @@
+{
+ "finding": "clang-c-linear-directive-name-hang.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-32",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "linear accepts a directive-name-modifier (universal) alongside step complex modifier; for is a constituent of parallel for, as the restriction requires. x increases by 2 per iteration matching step(2). Conforming compilers must accept; hanging/erroring is a bug."
+  },
+  {
+   "run": "run-20261113/batch-79",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 6.0 linear accepts a directive-name-modifier among comma-separated modifiers, and for is a constituent directive of parallel for, as required. step(2) is the step-complex-modifier and matches x += 2 per iteration, satisfying the restriction on the value difference. x is an int. A conforming compiler must accept it (not hang); the hang after parse errors is a defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "linear is a post-modified clause, so linear(x: for, step(2)) uses the form clause-argument-list[: modifier-specification-list]. The directive-name-modifier may name a constituent directive of parallel for, and for permits linear. The program is conforming, so a conforming compiler must accept it; hanging on repeated parse errors is not allowed.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-10",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-107",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The directive-name-modifier is universal and may name a constituent directive of the directive carrying the clause. 'for' is a constituent of 'parallel for', and linear lists directive-name-modifier among its modifiers. A conforming OpenMP 6.0 compiler must accept the clause. The loop writes only b[i] and a private linear x, so there is no race.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-29",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "69c57dac8b816891aae5d1a36e522485ad244195a0639e046e273d3a433daa3f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

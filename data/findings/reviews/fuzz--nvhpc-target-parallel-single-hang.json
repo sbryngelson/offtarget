@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-target-parallel-single-hang.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "single inside a parallel region of target parallel is encountered by all threads of the team; one thread assigns h, then an implied barrier ends the region. No race: only one thread writes h. The specification gives no allowance for a hang. Only the printed host/device value depends on device availability."
+  },
+  {
+   "run": "run-20261113/batch-64",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "target parallel with a single construct is conforming. Exactly one thread writes h, so no race; on the device omp_is_initial_device returns false so h=0 after tofrom, giving check=pass. The single region must complete; a hang is a compiler or runtime bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-15",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "single is lexically inside the parallel region of target parallel, so it binds to that parallel region. One thread executes the block, and h is shared and mapped tofrom, so there is no race. The program is conforming and the result is determined: h=0 on the device. A hang is a compiler or runtime bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-59",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-76",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target parallel with a single construct inside the parallel region is conforming: single is closely nested in the parallel region, one thread writes h, and the implicit barrier at end single orders it before the region ends. No race. The program must terminate; a runtime hang is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4813a91f93f0b01c3d5b51084cb169861cccf868017f1f781c7d18255aff0a3f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

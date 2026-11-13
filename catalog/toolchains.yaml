@@ -1,0 +1,472 @@
+# The toolchain catalog: every compiler release the project measures, where it
+# runs, how it is built and run, and how it is named in the tables, the site
+# and the job scripts. offload/engine/toolchains.py reads it and is the only code
+# that knows the list; everything that cannot read YAML at run time (the job
+# scripts' toolchain table, the site's JavaScript, the docs table) is
+# generated from it by tools/derive/toolchains_gen.py. Adding a compiler release is
+# an entry here plus its canaries (docs/tooling/contributing.md, "Add a compiler").
+#
+# Machines and their memory modes stay in catalog/machines.yaml (a toolchain
+# names its machine and the modes it runs in by the machine's mode names).
+version: 1
+
+# The GPU arches: the device named in result rows, the GPU vendor kind (which
+# machine's columns a toolchain belongs to on the site) and the name suffix
+# of a gfx942 toolchain's twin on that arch (afar -> afar_g90).
+arches:
+  gfx942: {device: "gfx942 (AMD Instinct MI300A)", gpu: amd, twin_suffix: ""}
+  gfx90a: {device: "gfx90a (AMD Instinct MI250X)", gpu: amd, twin_suffix: _g90}
+  gfx950: {device: "gfx950 (AMD Instinct MI350X)", gpu: amd}
+  sm_80: {device: "sm_80 (NVIDIA A100 80GB PCIe)", gpu: nvidia}
+
+# Compiler families: the releases and arch twins of one compiler share bugs,
+# so a toolchain of the same family is never independent evidence
+# (offload.engine.confirm.machines.family_of). File order is the families' order
+# in the support tables and the site data (offload.engine.site.data.FAMILY_NAME).
+families:
+  afar:
+    name: AFAR                      # the short label ("AFAR 24.3.0")
+    long_name: AMD AFAR             # the site's method table
+    site_name: "AMD AFAR (amdflang, amdclang)"   # the issue list's family button
+    vendor: amd                     # the vendor packet (data/vendor/amd)
+    kind: afar                      # the recipe kind (Toolchain.kind)
+    message_table: afar             # offload.engine.harness PATTERNS key (family())
+    compile_s: 8.0                  # the gate's seconds per compile
+    # the fixed compile flags per model and language ({arch}: the toolchain's
+    # arch); a missing (model, lang) is refused with `unsupported`
+    flags:
+      omp:
+        f90: "-fopenmp --offload-arch={arch} -L/usr/lib/gcc/x86_64-redhat-linux/8"
+        c: "-fopenmp --offload-arch={arch}"
+    unsupported:
+      acc: "AFAR (amdflang) does not support OpenACC"
+    # OpenMP version flags (offload.engine.run_matrix.version_flags): Fortran
+    # programs of these versions get the flag; C always gets
+    # -fopenmp-version=<v> on the families with `c_version_flag`
+    version_flags: {50: "-fopenmp-version=50", 60: "-fopenmp-version=60"}
+    c_version_flag: true
+    # the site: the method table's GPU column, and how the install paths of
+    # its command lines read in public ({root}: an install root of the
+    # toolchain, {var}: its site_root_var); the longest template first
+    site_gpus: "MI300A (unified and copy memory), MI250X"
+    site_public: {"{root}/bin/": "${var}/bin/"}
+  cce:
+    name: CCE
+    long_name: Cray CCE
+    site_name: "Cray CCE (ftn, craycc)"
+    vendor: hpe
+    kind: cce
+    message_table: cce19            # every CCE release shares the tables captured from CCE 19
+    compile_s: 30.0
+    # (ruling 2026-10-22): every CCE prelude names its
+    # compiler and ROCm versions, so nothing resolves to the site default,
+    # and unloads cray-mpich (its GPU transport library is linked against
+    # another ROCm's libamdhip64). Lmod is initialised first: a clean shell
+    # has no `module` function. {cce}, {rocm}: the toolchain's `modules`.
+    prelude: |-
+      . /etc/profile >/dev/null 2>&1
+      module load cce/{cce} craype-accel-amd-{arch} rocm/{rocm}
+      module unload cray-mpich
+    fc: ftn
+    cc: craycc
+    cxx: crayCC
+    flags:
+      omp:
+        f90: "-fopenmp"
+        # craycc -fopenmp alone builds a host-only executable; these are the
+        # flags the craype-accel module makes the `cc` wrapper pass (CCE
+        # 21.0.3 rejects --offload-arch)
+        c: "-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march={arch}"
+      acc:
+        f90: "-h acc"
+    unsupported:
+      acc/c: "CCE supports OpenACC for Fortran only"
+    c_version_flag: true
+    site_gpus: "MI300A (unified and copy memory), MI250X"
+  nvhpc:
+    name: NVHPC
+    long_name: NVIDIA HPC SDK
+    site_name: "NVIDIA HPC SDK (nvfortran, nvc)"
+    vendor: nvidia
+    kind: nvhpc
+    message_table: nvhpc            # captured from 25.11
+    compile_s: 15.0
+    # the GPU's compute capability ({cc}: sm_80 -> 80) and the memory
+    # mode's flag (catalog/machines.yaml wingtip modes; Toolchain.for_mode).
+    # NVHPC has no OpenMP version option: every version slice compiles with
+    # the default
+    flags:
+      omp: {f90: "-mp=gpu -gpu=cc{cc}", c: "-mp=gpu -gpu=cc{cc}"}
+      acc: {f90: "-acc=gpu -gpu=cc{cc}", c: "-acc=gpu -gpu=cc{cc}"}
+    # the legality witness configuration of this family's compilers is in
+    # catalog/machines.yaml independent_checkers (witness_only, ruling D)
+    witness: other_families
+    site_gpus: "A100 (separate and managed memory)"
+    # the public command names the compiler bare (NVIDIA's documentation
+    # assumes PATH); the release directory is the placeholder in the
+    # runtime-library line (site_runtime_env: the commands export it)
+    site_public: {"{root}/": "", "{root_grandparent}": "${var}"}
+    site_runtime_env: true
+  gcc:
+    name: GCC
+    long_name: GNU GCC
+    site_name: "GCC (gcc, gfortran)"
+    vendor: null                    # no vendor packet
+    kind: gcc
+    message_table: gcc              # GCC 16.2: one table for both targets
+    compile_s: 2.0
+    # the offload target of the arch and its -march; nvptx also links
+    # libatomic (ruling 2026-10-28: GCC's manual gives
+    # -foffload-options=nvptx-none=-latomic as the typical nvptx line;
+    # without it the offload link leaves GCC's own libatomic calls
+    # unresolved, docs/tooling/wingtip.md). Separate memory is GCC's default (no
+    # mode flag: machines.yaml vendor_flags). No OpenMP version option.
+    flags:
+      omp:
+        f90: "-fopenmp -foffload={target} -foffload-options={target}=-march={arch}{latomic}"
+        c: "-fopenmp -foffload={target} -foffload-options={target}=-march={arch}{latomic}"
+      acc:
+        f90: "-fopenacc -foffload={target} -foffload-options={target}=-march={arch}{latomic}"
+        c: "-fopenacc -foffload={target} -foffload-options={target}=-march={arch}{latomic}"
+    offload_targets: {gfx: amdgcn-amdhsa, sm_: nvptx-none}
+    latomic: {nvptx-none: " -foffload-options=nvptx-none=-latomic"}
+    # the standing rule: never gfortran or gcc -fopenmp/-fopenacc as
+    # a legality witness; GCC is measured as a compiler only
+    # (offload.engine.confirm.machines.under_test_only)
+    under_test_only: >-
+      GCC (gfortran, gcc -fopenmp/-fopenacc) is never a legality witness
+      (ruling, 2026-10-17 and 2026-10-23); it is measured as a compiler only
+    site_public: {"{root}": "${var}"}
+    site_runtime_env: true
+
+# The site: the order of the family buttons (the first is the default) and
+# the GPU/mode columns, named by the target ids of catalog/machines.yaml.
+site:
+  family_order: [cce, afar, nvhpc, gcc]
+
+# The lanes (runner groups a toolchain's `lane` names) and which scripts run
+# them (docs/tooling/toolchains.md; tools/jobs/toolchains.sh lists each lane's toolchains).
+lanes:
+  tuolumne: "the flux (pbatch) scripts, `tools/run_matrix*.sh`, `tools/jobs/run_x0_full.sh`"
+  tioga: "one supervised interactive job at a time, `tools/run_tioga*.sh`"
+  wingtip: "`tools/run_wingtip*.sh` (direct runs inside the cap)"
+  gcc: "`tools/jobs/run_gcc_lane.sh`, `tools/jobs/run_gcc_sweep.sh`"
+  mi300x: "Slurm jobs on the MI300X nodes (`tools/campaigns/run_matrix.py` per set)"
+  mi350x: "Slurm jobs on the MI350X nodes (`tools/campaigns/run_matrix.py` per set)"
+
+# Where a registered campaign's private copy of the tree goes on a remote
+# machine (tools/jobs/campaign_remote.sh, tools/campaign.py lane:
+# <campaign_lanes.<machine>>/<campaign>-lane). 
+campaign_lanes:
+  tioga: offload-lanes
+  wingtip: offload-lanes
+
+# The interactive queue's rules for one foreground campaign job
+# (tools/campaign.py submit --queue pdebug, and every Tioga job): the
+# longest job and, where the queue has them, the nodes it may use.
+pdebug:
+  tuolumne: {max_minutes: 30}
+  tioga: {max_minutes: 60, hosts: "tioga[34-39]"}
+
+# The toolchains. Keys per entry:
+#   family, version        the compiler family and release
+#   machine, arch          where it runs (catalog/machines.yaml) and its GPU
+#   modes                  the machine's memory modes it runs in (names of
+#                          machines.yaml modes; the stored row keys follow)
+#   label                  the support tables' column name (TC_NAME)
+#   site_version           the version label the site shows (default: version)
+#   site_pill              the issue list's version pill (default: site_version)
+#   site_targets           the site's GPU/mode columns it has cells in
+#                          (default: every target of its GPU vendor kind)
+#   site_plan_runs         plan site-matrix runs on a machine the site does
+#                          not otherwise plan for (machines.yaml site_plan_runs)
+#   site_root_var          the public placeholder of its install root in the
+#                          site's command lines ($NVHPC_25_11)
+#   site_gpus              the method table's "GPUs and memory modes" text
+#                          (default: the family's)
+#   merged_key             its column key in the merged result tables (the
+#                          dashboard's atom tables, the can-I-use page, the
+#                          fuzz reports); absent: its
+#                          rows are not in the merged results (GCC: results/gcc)
+#   report_column          false: left out of the support tables on purpose
+#   regression_of          a release measured only by regression mode against
+#                          this headline toolchain (never a column)
+#   twin_of                the toolchain this is the same install of, on another
+#                          GPU: named with the arch's twin_suffix (gfx90a: afar_g90)
+#                          or after its machine (afar_mi300x)
+#   lane                   the runner group: tuolumne (flux pbatch scripts),
+#                          tioga (an interactive queue), wingtip (direct runs),
+#                          gcc (tools/jobs/run_gcc_lane.sh)
+#   canaries               its entry in catalog/canaries.yaml (default: its id)
+#   mention_words          for one release installed on several machines (GCC):
+#                          the words near "GCC 16.2" in a finding header that
+#                          pick this install (offload.engine.finding_header.mentions;
+#                          default: the arch, the machine, the GPU's short name
+#                          and the twin suffix)
+#   install                the install root ({root} in fc, cc, prelude, env):
+#                          default, the environment variable that overrides it
+#                          and, for AFAR, the copy used on a host without the
+#                          default (`fallback`)
+#   fc, cc, prelude, env   the recipe (defaults: the family's)
+#   modules                the module versions of a CCE prelude
+toolchains:
+  afar:
+    family: afar
+    version: 24.3.0
+    machine: tuolumne
+    arch: gfx942
+    modes: [unified, copy]
+    label: AFAR
+    site_version: "AFAR 24.3.0"
+    site_root_var: AFAR
+    merged_key: afar
+    lane: tuolumne
+    install:
+      default: /opt/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
+  cce19:
+    family: cce
+    version: 19.0.0
+    machine: tuolumne
+    arch: gfx942
+    modes: [unified, copy]
+    label: CCE 19
+    merged_key: cce
+    lane: tuolumne
+    modules: {cce: 19.0.0, rocm: 6.4.3}   # rocm/6.4.3: the version every stored CCE 19/20 row recorded
+  cce20:
+    family: cce
+    version: 20.0.2
+    machine: tuolumne
+    arch: gfx942
+    modes: [unified, copy]
+    label: CCE 20
+    merged_key: cce20
+    lane: tuolumne
+    modules: {cce: 20.0.2, rocm: 6.4.3}
+  cce21:
+    family: cce
+    version: 21.0.3
+    machine: tuolumne
+    arch: gfx942
+    modes: [unified, copy]
+    label: CCE 21
+    merged_key: cce21
+    lane: tuolumne
+    modules: {cce: 21.0.3, rocm: 7.2.0}   # CCE 21 needs ROCm 7.0 or newer (its release notes)
+  # Cce/21.0.4 (the Tuolumne site default from 2026-10-22) is
+  # measured by regression mode only (tools/confirm.py regress) against
+  # cce21: never a headline column; its rows go to results/confirm/regress/
+  cce21_4:
+    family: cce
+    version: 21.0.4
+    machine: tuolumne
+    arch: gfx942
+    modes: [unified, copy]
+    label: CCE 21.0.4
+    regression_of: cce21
+    lane: tuolumne
+    modules: {cce: 21.0.4, rocm: 7.2.0}
+  # The gfx90a twins (Tioga, MI250X). XNACK
+  # is not recommended on MI250X, so they run in copy mode (HSA_XNACK=0) only.
+  # AFAR's runtime libraries need LD_LIBRARY_PATH there.
+  afar_g90:
+    family: afar
+    version: 24.3.0
+    machine: tioga
+    arch: gfx90a
+    modes: [copy]
+    twin_of: afar
+    lane: tioga
+    install: {default: /opt/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c}
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
+    env: {LD_LIBRARY_PATH: "{root}/lib:{root}/lib/llvm/lib"}
+  cce19_g90:
+    family: cce
+    version: 19.0.0
+    machine: tioga
+    arch: gfx90a
+    modes: [copy]
+    twin_of: cce19
+    lane: tioga
+    modules: {cce: 19.0.0, rocm: 6.4.3}
+  cce20_g90:
+    family: cce
+    version: 20.0.2
+    machine: tioga
+    arch: gfx90a
+    modes: [copy]
+    twin_of: cce20
+    lane: tioga
+    modules: {cce: 20.0.2, rocm: 6.4.3}
+  cce21_g90:
+    family: cce
+    version: 21.0.3
+    machine: tioga
+    arch: gfx90a
+    modes: [copy]
+    twin_of: cce21
+    lane: tioga
+    modules: {cce: 21.0.3, rocm: 7.2.0}
+  # The discrete MI300X (gfx942) and MI350X (gfx950) of a Slurm cluster:
+  # AFAR 24.3.0's multi-arch release, copy mode only (no XNACK)
+  afar_mi300x:
+    family: afar
+    version: 24.3.0
+    machine: mi300x
+    arch: gfx942
+    modes: [copy]
+    twin_of: afar
+    lane: mi300x
+    install: {default: /opt/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c}
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
+    env: {LD_LIBRARY_PATH: "{root}/lib:{root}/lib/llvm/lib"}
+  afar_mi350x:
+    family: afar
+    version: 24.3.0
+    machine: mi350x
+    arch: gfx950
+    modes: [copy]
+    twin_of: afar
+    lane: mi350x
+    install: {default: /opt/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c}
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
+    env: {LD_LIBRARY_PATH: "{root}/lib:{root}/lib/llvm/lib"}
+  # NVIDIA HPC SDK on wingtip (A100, sm_80; no `module` command
+  # there: the compilers are called by path). Each release's runs set
+  # LD_LIBRARY_PATH to its own runtime (wingtip's login
+  # environment points at 25.11's libraries, which broke 26.9's acc_wait_).
+  nvhpc:
+    family: nvhpc
+    version: "25.11"
+    machine: wingtip
+    arch: sm_80
+    modes: [copy, managed]
+    label: NVHPC 25.11
+    site_root_var: NVHPC_25_11
+    merged_key: nvhpc
+    lane: wingtip
+    install: {default: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin, env: NVHPC_BIN}
+    fc: "{root}/nvfortran"
+    cc: "{root}/nvc"
+    cxx: "{root}/nvc++"
+    env: {LD_LIBRARY_PATH: "{root_dir}/lib"}
+  nvhpc269:
+    family: nvhpc
+    version: "26.9"
+    machine: wingtip
+    arch: sm_80
+    modes: [copy, managed]
+    label: NVHPC 26.9
+    site_root_var: NVHPC_26_9
+    merged_key: nvhpc269
+    lane: wingtip
+    # the latest release
+    install: {default: /opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers/bin, env: NVHPC269_BIN}
+    fc: "{root}/nvfortran"
+    cc: "{root}/nvc"
+    cxx: "{root}/nvc++"
+    env: {LD_LIBRARY_PATH: "{root_dir}/lib"}
+  # GCC 16.2.0 with offloading (tools/jobs/gcc_offload_build.sh; smoke:
+  # tools/jobs/gcc_smoke.sh). Its executables load the release's libgomp and
+  # libgfortran (LD_LIBRARY_PATH; no rpath) and, on AMD, ROCm's HSA runtime.
+  # One release on every GPU: Tioga's install (device libraries for gfx90a and
+  # gfx942) runs Tuolumne's MI300A in both memory modes (measured) and Tioga's
+  # MI250X; a build on the AMD cluster (gfx942 and gfx950) its MI300X and MI350X
+  # (data/vendor/checks/run_checks.py GCC_ROOT); gcc_sm80 is the A100 build.
+  # The support tables and can-use carry GCC's MI250X, MI300X, MI350X and A100
+  # rows; its MI300A rows (results/gcc/gcc) are left out, their failures not
+  # gated. The site's issue pages keep their GCC MI300A cells (site rows).
+  gcc:
+    family: gcc
+    version: 16.2.0
+    machine: tuolumne
+    arch: gfx942
+    modes: [unified, copy]
+    label: GCC 16.2
+    merged_key: gcc
+    site_pill: "16.2 AMD"
+    site_targets: [mi300a-u, mi300a-c, mi250x, mi300x, mi350x]
+    mention_words: [gfx942, Tuolumne, MI300A]
+    # the site plans its MI250X runs (supervised pdebug jobs) although the
+    # site plans no other Tioga run: GCC is the only family with MI250X site runs
+    site_plan_runs: true
+    site_root_var: GCC_16_2
+    site_gpus: "MI300A (unified and copy memory), MI250X, MI300X and MI350X (copy memory)"
+    lane: gcc
+    install: {default: /opt/gcc-16.2, env: GCC_G90_ROOT}
+    fc: "{root}/bin/gfortran"
+    cc: "{root}/bin/gcc"
+    cxx: "{root}/bin/g++"
+    env: {LD_LIBRARY_PATH: "{root}/lib64:/opt/rocm-7.2.1/lib"}
+  gcc_g90:
+    family: gcc
+    version: 16.2.0
+    machine: tioga
+    arch: gfx90a
+    modes: [copy]
+    twin_of: gcc
+    mention_words: [gfx90a, Tioga, MI250X, g90]
+    lane: gcc
+    install: {default: /opt/gcc-16.2, env: GCC_G90_ROOT}
+    fc: "{root}/bin/gfortran"
+    cc: "{root}/bin/gcc"
+    cxx: "{root}/bin/g++"
+    env: {LD_LIBRARY_PATH: "{root}/lib64:/opt/rocm-7.2.1/lib"}
+  gcc_mi300x:
+    family: gcc
+    version: 16.2.0
+    machine: mi300x
+    arch: gfx942
+    modes: [copy]
+    twin_of: gcc
+    mention_words: [MI300X]
+    lane: mi300x
+    install: {default: /opt/gcc-16.2, env: GCC_MI3_ROOT}
+    fc: "{root}/bin/gfortran"
+    cc: "{root}/bin/gcc"
+    cxx: "{root}/bin/g++"
+    env: {LD_LIBRARY_PATH: "{root}/lib64:/opt/rocm-7.2.0/lib"}
+  gcc_mi350x:
+    family: gcc
+    version: 16.2.0
+    machine: mi350x
+    arch: gfx950
+    modes: [copy]
+    twin_of: gcc
+    mention_words: [MI350X, gfx950]
+    lane: mi350x
+    install: {default: /opt/gcc-16.2, env: GCC_MI3_ROOT}
+    fc: "{root}/bin/gfortran"
+    cc: "{root}/bin/gcc"
+    cxx: "{root}/bin/g++"
+    env: {LD_LIBRARY_PATH: "{root}/lib64:/opt/rocm-7.2.0/lib"}
+  gcc_sm80:
+    family: gcc
+    version: 16.2.0
+    machine: wingtip
+    arch: sm_80
+    modes: [copy]
+    label: GCC 16.2
+    merged_key: gcc_sm80
+    site_pill: "16.2 A100"
+    site_targets: [a100-s]
+    mention_words: [sm_80, A100, wingtip, sm80]
+    site_root_var: GCC_16_2
+    site_gpus: "A100 (separate memory)"
+    lane: gcc
+    install: {default: /opt/gcc-16.2, env: GCC_SM80_ROOT}
+    # nvptx-as verifies the PTX with CUDA 13.1's ptxas, which it finds on PATH
+    prelude: "export PATH=/usr/local/cuda/bin:$PATH"
+    fc: "{root}/bin/gfortran"
+    cc: "{root}/bin/gcc"
+    cxx: "{root}/bin/g++"
+    env: {LD_LIBRARY_PATH: "{root}/lib64"}

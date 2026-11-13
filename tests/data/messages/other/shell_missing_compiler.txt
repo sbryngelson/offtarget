@@ -1,0 +1,5 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: bash -c '/nonexistent/bin/amdflang ...' (compiler path missing)
+# exit status: 127
+==== verbatim output below ====
+bash: /nonexistent/bin/amdflang: No such file or directory

@@ -1,0 +1,64 @@
+# Atoms outside the device-offload scope.
+#
+# The project measures device offload only. An atom whose construct of
+# interest can only execute on the host, or whose effect never reaches a
+# target region, is a host test: it is removed from the slice
+# (offload.engine.catalog.slice_atoms leaves it out, so it has no program, no
+# matrix cell, no support-table row and no dashboard row) and recorded here
+# with the reason and the spec sentence that makes it host-only. The
+# support tables list these atoms in their "Out of scope (host execution)"
+# section.
+#
+# Atoms that were host tests but can be judged inside a target region at
+# the spec's level were rewritten instead (the depend family, message and
+# severity, if, the teams/loop nesting variants; see the report),
+# and host constructs that feed a target region in a way people use are
+# kept as host+device patterns (offload.engine.gen.HOST_DEVICE), not listed
+# here.
+#
+# atoms.<atom id>:
+#   versions  the spec versions (50, 52, 60) at which the atom is in the
+#             grammar's slice and is out of scope
+#   langs     f90 and/or c
+#   reason    why the atom has no device-offload test
+#   cite      "OpenMP <ver> §<sec>, p.<n>" per version, and the quoted
+#   quote     sentence (checked verbatim by tests/test_offload.py)
+#   status    provisional until the maintainer reviews it
+atoms:
+  omp.clause.copyin:
+    versions: [50, 52, 60]
+    langs: [f90, c]
+    status: provisional
+    reason: >-
+      copyin copies the primary thread's threadprivate value into the
+      threadprivate copies of a parallel team; the effect of an access to a
+      threadprivate variable in a target region is unspecified, so the
+      clause has a defined effect only in a host parallel region, and that
+      effect never reaches a target region (6.0 also allows copyin on a
+      target compound, where the same restriction leaves it unspecified)
+    spec:
+      50: {cite: "OpenMP 5.0 §2.12.5, p.174", quote: "The effect of an access to a threadprivate variable in a target region is unspecified."}
+      52: {cite: "OpenMP 5.2 §13.8, p.286", quote: "The effect of an access to a threadprivate variable in a target region is unspecified."}
+      60: {cite: "OpenMP 6.0 §15.8, p.462", quote: "The effect of an access to a threadprivate variable in a target region is unspecified."}
+  omp.clause.copyin.directive_name:
+    versions: [60]
+    langs: [f90, c]
+    status: provisional
+    reason: >-
+      the directive-name form of copyin (6.0); out of scope with copyin
+      (its program was the host parallel do of the copyin program)
+    spec:
+      60: {cite: "OpenMP 6.0 §15.8, p.462", quote: "The effect of an access to a threadprivate variable in a target region is unspecified."}
+  omp.clause.device_type.host:
+    versions: [50, 52, 60]
+    langs: [f90, c]
+    status: provisional
+    reason: >-
+      device_type(host) on declare target makes only a host version of the
+      procedure available: the procedure can be called only on the host and
+      never in a target region (its program called it on the host), so
+      there is no device behaviour to judge
+    spec:
+      50: {cite: "OpenMP 5.0 §2.12.7, p.182", quote: "If host is specified only a host version of the procedure is made available."}
+      52: {cite: "OpenMP 5.2 §13.1, p.275", quote: "If host is specified then only a host device version of the procedure or variable is made available."}
+      60: {cite: "OpenMP 6.0 §15.1, p.450", quote: "The host device-type-description specifies the host device."}

@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-flang-reduction-minus-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The minus reduction identifier is deprecated in 5.2 but remains normative and listed as a valid identifier; a deprecated feature is 'normative in the current specification'. task_reduction on taskgroup and in_reduction on a closely nested target with the same identifier satisfy the matching restriction. Private copy of s starts at the minus initializer (0) and copies are combined, so s equals -sum(a). Refusing the program is not allowed. Residual doubt: deprecated features 'may not be fully specified'."
+  },
+  {
+   "run": "run-20261113/batch-81",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The minus operator is only deprecated in 5.2, not removed; it is still a valid reduction identifier (5.5.1) for task_reduction and in_reduction, which accept any OpenMP reduction identifier. target accepts in_reduction and the taskgroup encloses it with the same identifier. The target task's private copy is combined with the taskgroup copy using + (minus combines as addition of partial results), so s equals sref. Refusing the program as 'not supported' contradicts the specification; deprecated features remain conforming."
+  },
+  {
+   "run": "run-v2-20261113/batch-116",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "In OpenMP 5.2 the minus operator is deprecated but still a valid reduction identifier. The identifier list includes it. The task_reduction and in_reduction on the target use the same identifier and a shared s, so the program conforms. Rejecting it as unsupported is non-conforming. The result is deterministic: s = -sum(a).",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-30",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The minus reduction identifier is deprecated in 5.2 but still a valid reduction identifier (Table 5.2, combiner is addition). task_reduction on taskgroup and in_reduction on target are valid with matching identifier. Rejecting it as unsupported contradicts the spec.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7db25c3e23f86df7699e73117e45bbe325bd908b96dea1cc9076dc5a927a40a1",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

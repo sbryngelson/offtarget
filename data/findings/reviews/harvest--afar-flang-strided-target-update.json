@@ -1,0 +1,141 @@
+{
+ "finding": "harvest/afar-flang-strided-target-update.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "Fortran subscript triplet a(1:7:2) is an allowed strided section in target update. Expectation that even elements remain unchanged assumes separate device storage; spec allows original and corresponding variables to share storage, in which case the device writes to a and b reach the host without update (observed all +10). Observed result is permitted; no compiler recorded as passing."
+  },
+  {
+   "run": "run-20261112/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Strided array sections are allowed in target update motion clauses. The data-motion clause assigns only the list item's elements, so a(2),a(4),... and b(5:8) must keep their host values. The target region maps a,b already present (target data), so no copy at its end. The observed result copies the whole array, which is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-103",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Strided array sections are allowed in data-motion clauses, and the section is treated as replaced by each of its elements. target update from(a(1:7:2)) must therefore copy only elements 1,3,5,7 from the device; the even elements keep their host values. a and b are already present from target data, so the target region does not copy them. Copying the contiguous range instead overwrites even elements with 12,14,16,18, which is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 2,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-41",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a(1:7:2) is a Fortran subscript triplet, and data-motion clauses may include array sections with stride expressions. The update from must copy only elements 1,3,5,7 of a to the host, leaving elements 2,4,6,8 at their original host values. The device changes all elements, so the expected output is 11,2,13,4,15,6,17,8. The observed output with all elements updated violates this.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "be1b05e30b7b0090dd46a7c22f52ebe15185dd58501d9d8fd110165b4aeee69c",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The subscript triplet a(1:7:2) is a permitted strided section in a from clause. The expectation that even elements and b(5:8) keep host values assumes separate storage, which the specification does not require: the corresponding variables may share storage, so device writes can be visible on the host and the observed output is permitted. Reading A fails by ignoring this; Reading B holds."
+  },
+  {
+   "run": "adj-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Fortran subscript triplet with stride is allowed in target update from; the list item is treated as replaced by its elements, so only those elements are assigned. a,b,c are present from target data, so the target region copies nothing back. With separate memory (as recorded) other elements must keep host values; whole-array copy-back is a defect. The shared-storage argument does not fit a run recorded as separate memory."
+  }
+ ]
+}

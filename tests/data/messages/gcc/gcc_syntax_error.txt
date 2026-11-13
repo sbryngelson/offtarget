@@ -1,0 +1,14 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran (gcc_g90) on offload.engine.gen omp52-clause-map-iterator (the gcc smoke subset, tools/jobs/run_gcc_lane.sh); flags: -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2
+# exit status: 1
+==== verbatim output below ====
+<tmpdir>/omp52-clause-map-iterator.f90:32:39:
+
+   32 |   !$omp target enter data map(iterator(k = 1:1), to: w(k + 1:n/2))
+      |                                       1
+Error: Syntax error in OpenMP variable list at (1)
+<tmpdir>/omp52-clause-map-iterator.f90:49:38:
+
+   49 |   !$omp target exit data map(iterator(k = 1:1), release: w(k + 1:n/2))
+      |                                      1
+Error: Syntax error in OpenMP variable list at (1)

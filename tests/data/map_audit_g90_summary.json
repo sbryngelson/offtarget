@@ -1,0 +1,61 @@
+{
+ "agree_with_x0": {
+  "differ": 0,
+  "same": 4001
+ },
+ "generated_by": "tools/campaigns/map_audit.py report-g90",
+ "hardening_list": [],
+ "oracle_weakness": [],
+ "oracle_weakness_uninit": [],
+ "status": {
+  "acc|34|cce19_g90|inconclusive": 11,
+  "acc|34|cce19_g90|killed": 113,
+  "acc|34|cce19_g90|survived": 41,
+  "c|52|afar_g90|inconclusive": 30,
+  "c|52|afar_g90|killed": 245,
+  "c|52|afar_g90|survived": 74,
+  "c|52|cce19_g90|inconclusive": 77,
+  "c|52|cce19_g90|killed": 207,
+  "c|52|cce19_g90|survived": 65,
+  "c|60|afar_g90|inconclusive": 70,
+  "c|60|afar_g90|killed": 248,
+  "c|60|afar_g90|survived": 75,
+  "c|60|cce19_g90|inconclusive": 125,
+  "c|60|cce19_g90|killed": 200,
+  "c|60|cce19_g90|survived": 68,
+  "f90|50|afar_g90|inconclusive": 72,
+  "f90|50|afar_g90|killed": 199,
+  "f90|50|afar_g90|survived": 66,
+  "f90|50|cce19_g90|inconclusive": 57,
+  "f90|50|cce19_g90|killed": 206,
+  "f90|50|cce19_g90|survived": 74,
+  "f90|52|afar_g90|inconclusive": 92,
+  "f90|52|afar_g90|killed": 213,
+  "f90|52|afar_g90|survived": 75,
+  "f90|52|cce19_g90|inconclusive": 86,
+  "f90|52|cce19_g90|killed": 211,
+  "f90|52|cce19_g90|survived": 83,
+  "f90|60|afar_g90|inconclusive": 145,
+  "f90|60|afar_g90|killed": 229,
+  "f90|60|afar_g90|survived": 85,
+  "f90|60|cce19_g90|inconclusive": 164,
+  "f90|60|cce19_g90|killed": 208,
+  "f90|60|cce19_g90|survived": 87
+ },
+ "survivors": {
+  "compiler_copies": 6,
+  "covered": 706,
+  "equivalent_implicit": 3,
+  "equivalent_probe": 78,
+  "oracle_weakness": 0,
+  "oracle_weakness_uninit": 0
+ },
+ "uninit_by_toolchain": {
+  "afar|MI300A X0|survived": 375,
+  "afar|MI300A X1|survived": 1380,
+  "afar|gfx90a X0|survived": 375,
+  "cce19|MI300A X0|survived": 418,
+  "cce19|MI300A X1|survived": 1437,
+  "cce19|gfx90a X0|survived": 418
+ }
+}

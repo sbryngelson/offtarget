@@ -1,0 +1,218 @@
+# Machines, their memory modes and how a mode is selected, read by
+# offload/engine/confirm/machines.py. A memory mode is a general axis:
+# `unified` (host and device share memory) or `copy` (separate host and
+# device copies, as on a discrete GPU). A machine lists only the modes it
+# has; a mode it lacks is not_applicable for every rule (never a failure,
+# never missing evidence). `env` selects the mode at run time; `row_key`
+# is the value the result rows store in their `xnack` field (the stored
+# format predates this axis). Toolchains name their machine and the modes
+# they run in (catalog/toolchains.yaml; a machine's measured toolchains and
+# the compiler families are derived from it). Only this file and the
+# toolchains name a vendor mechanism (HSA_XNACK); the rules do not. A mode's
+# `target` is the site's column id for the machine in that mode, with its
+# short and long names (offload.engine.site.matrix TARGETS).
+version: 1
+machines:
+  tuolumne:
+    arch: gfx942
+    device: "AMD Instinct MI300A"
+    access: local
+    scheduler: {kind: local, max_minutes: 60}
+    # Another machine's family is a witness for an AMD-side
+    # defect: the cases are compared with wingtip's NVHPC cells in the
+    # case's mode (stored rows; copy only, wingtip has no unified mode)
+    compare_with: [wingtip]
+    # The headline mode is unified memory with THP
+    headline_mode: unified
+    modes:
+      unified: {env: {HSA_XNACK: "1"}, row_key: 1, target: mi300a-u,
+                target_short: "MI300A unified",
+                target_name: "MI300A (gfx942), unified memory (XNACK 1)"}
+      copy: {env: {HSA_XNACK: "0"}, row_key: 0, target: mi300a-c,
+             target_short: "MI300A copy", target_name: "MI300A (gfx942), copy (XNACK 0)"}
+  tioga:
+    arch: gfx90a
+    device: "AMD Instinct MI250X"
+    # How to reach a machine and which scheduler it has (ssh host, install
+    # root, run prefix, queue) is per user: catalog/local.example.yaml.
+    access: local
+    scheduler: {kind: local, max_minutes: 60}
+    compare_with: [wingtip]    # as tuolumne
+    # the site does not plan runs on this machine (a toolchain's
+    # site_plan_runs overrides this); MI250X cells without runs stay unknown
+    site_plan_runs: false
+    # XNACK is not recommended on MI250X; copy only
+    headline_mode: copy
+    modes:
+      copy: {env: {HSA_XNACK: "0"}, row_key: 0, target: mi250x,
+             target_short: MI250X, target_name: "MI250X (gfx90a), copy (XNACK 0)"}
+  mi300x:
+    # A discrete MI300X (gfx942, the ISA of the MI300A) with its own memory: copy mode only, no XNACK.
+    # Access and scheduler are per user (catalog/local.example.yaml).
+    arch: gfx942
+    device: "AMD Instinct MI300X"
+    access: local
+    scheduler: {kind: local, max_minutes: 60}
+    compare_with: [wingtip]
+    site_plan_runs: false
+    headline_mode: copy
+    modes:
+      copy: {env: {HSA_XNACK: "0"}, row_key: 0, target: mi300x,
+             target_short: MI300X, target_name: "MI300X (gfx942), copy (XNACK 0)"}
+  mi350x:
+    arch: gfx950
+    device: "AMD Instinct MI350X"
+    access: local
+    scheduler: {kind: local, max_minutes: 60}
+    compare_with: [wingtip]
+    site_plan_runs: false
+    # XNACK is not used on this machine: copy memory only
+    headline_mode: copy
+    modes:
+      copy: {env: {HSA_XNACK: "0"}, row_key: 0, target: mi350x,
+             target_short: MI350X, target_name: "MI350X (gfx950), copy (XNACK 0)"}
+  wingtip:
+    # An NVIDIA A100 node with no batch scheduler: runs are direct, one
+    # program per free GPU. Its access settings are per user
+    # (catalog/local.example.yaml).
+    arch: sm_80
+    device: "NVIDIA A100 80GB PCIe"
+    access: local
+    scheduler: {kind: direct, max_minutes: 600, max_compile_jobs: 16}
+    # one shared host: the gate's environment (c), "another node", is
+    # another GPU of the same host (offload.engine.gate.ONE_HOST)
+    one_host: true
+    # its cases are compared with the AMD families' stored cells in the
+    # same mode (copy only: tuolumne has no managed mode); the AMD cases
+    # never read wingtip
+    compare_with: [tuolumne]
+    # Ruling: NVHPC's headline mode is separate
+    # memory (the compiler's default, copy semantics: the discrete-GPU
+    # mode); managed is the second mode. The mode is a compile flag, so
+    # each mode is its own build.
+    headline_mode: copy
+    # A mode's flag can differ by compiler vendor (`vendor_flags`,
+    # Toolchain.kind): GCC's separate memory is its default (no flag). GCC
+    # has no managed mode (no option puts allocated data in CUDA managed
+    # memory; its unified_shared_memory needs pageableMemoryAccess, which
+    # this node has not: measured, tools/jobs/gcc_smoke.sh), so gcc_sm80 runs
+    # copy only.
+    modes:
+      copy: {flags: "-gpu=mem:separate", row_key: 0,
+             vendor_flags: {gcc: ""}, target: a100-s,
+             target_short: "A100 separate", target_name: "A100 (sm_80), separate memory"}
+      managed: {flags: "-gpu=mem:managed", row_key: 2, target: a100-m,
+                target_short: "A100 managed", target_name: "A100 (sm_80), managed memory"}
+    # measured 2026-10-24: -gpu=mem:unified builds, the run aborts
+    not_applicable:
+      unified: >-
+        "Accelerator Fatal Error: The application was compiled with
+        -gpu=unified, but this platform does not support Unified Memory."
+        (nvidia-smi Addressing Mode: None, no HMM on this node)
+
+# Compiler families (membership is data, not a name
+# prefix) are catalog/toolchains.yaml `families` and each toolchain's
+# `family`; the families that are only ever compilers under test (GCC: the
+# the standing rule, never gfortran or gcc -fopenmp as a legality
+# witness) carry `under_test_only` there. The confirmer never collects such
+# a family's cells for another family's case (no compile-phase legality
+# witness, no run witness, no host-run or metamorphic partner, not counted
+# in "every family rejects" or missing families):
+# offload.engine.confirm.machines.under_test_only.
+
+# (registry RUL-PRESENCE-WITNESS): runs that do not
+# enforce the present check, by compiler family and memory mode. A
+# presence or overlap abort of a failing run is never witnessed by such a
+# run (offload.engine.confirm.facts.Facts.witnesses): AFAR at unified memory
+# (HSA_XNACK=1) does not enforce present
+# (data/findings/afar-xnack1-present-not-enforced.f90).
+no_present_check:
+  - {family: afar, mode: unified}
+
+# Front-end legality checkers that are themselves compilers (ruling
+# RUL-NO-SELF-CHECK): `family` names the compiler family they belong to; such
+# a checker is never used for a case of its own family, and for other
+# cases its rejection counts only if another checker or a ruling agrees.
+frontend_checkers:
+  flang: {family: afar, lang: f90}
+  clang: {family: afar, lang: c}
+
+# (amendment of ruling C): legality checkers that
+# are not compilers under test (ruling D: never a toolchain under test),
+# for the "every family rejects" rule (R12a). Results:
+# catalog/legality_witness.yaml (offload.engine.confirm.witness).
+# gfortran -fopenmp and gcc
+# -fopenmp are NOT trusted for offload legality and are withdrawn as
+# witnesses (gfortran is used only as a plain
+# base-language `-std=<level> -fsyntax-only` checker, never -fopenmp).
+# Only another offload compiler that is not
+# under test may witness legality (NVHPC once it runs, or upstream LLVM
+# clang/flang), as an entry flagged `witness_only: true` with
+# `kind: offload_compiler` (offload.engine.confirm.witness.validate; never a
+# toolchain under test, ruling D). Configures NVHPC below, which
+# re-enables R12a for the AMD families. Another one would be e.g.
+#   upstream_flang: {kind: offload_compiler, witness_only: true, lang: f90,
+#     command: "<path>/flang -fopenmp --offload-arch=gfx942 -fsyntax-only",
+#     version: "<path>/flang --version"}
+# (ruling): NVHPC 25.11 on
+# wingtip witnesses the cases of the other families (`family: nvhpc`: never
+# a case of its own family, ruling D). It runs there over ssh (`machine`);
+# "accept" = the compile succeeds without a dropped-feature warning
+# (offload.engine.confirm.witness._check_remote).
+independent_checkers:
+  # NVHPC 26.9 (the newest, ruling 5) first; 25.11 is a second
+  # source of the same family (either one's accept witnesses the case)
+  nvhpc269_f90:
+    kind: offload_compiler
+    witness_only: true
+    family: nvhpc
+    machine: wingtip
+    lang: f90
+    model: omp
+    command: "/opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers/bin/nvfortran -mp=gpu -gpu=cc80 -c -o /dev/null"
+    version: "/opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers/bin/nvfortran --version"
+  nvhpc269_acc:
+    kind: offload_compiler
+    witness_only: true
+    family: nvhpc
+    machine: wingtip
+    lang: f90
+    model: acc
+    command: "/opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers/bin/nvfortran -acc=gpu -gpu=cc80 -c -o /dev/null"
+    version: "/opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers/bin/nvfortran --version"
+  nvhpc269_c:
+    kind: offload_compiler
+    witness_only: true
+    family: nvhpc
+    machine: wingtip
+    lang: c
+    model: omp
+    command: "/opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers/bin/nvc -mp=gpu -gpu=cc80 -c -o /dev/null"
+    version: "/opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers/bin/nvc --version"
+  nvhpc_f90:
+    kind: offload_compiler
+    witness_only: true
+    family: nvhpc
+    machine: wingtip
+    lang: f90
+    model: omp
+    command: "/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran -mp=gpu -gpu=cc80 -c -o /dev/null"
+    version: "/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran --version"
+  nvhpc_acc:
+    kind: offload_compiler
+    witness_only: true
+    family: nvhpc
+    machine: wingtip
+    lang: f90
+    model: acc
+    command: "/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran -acc=gpu -gpu=cc80 -c -o /dev/null"
+    version: "/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran --version"
+  nvhpc_c:
+    kind: offload_compiler
+    witness_only: true
+    family: nvhpc
+    machine: wingtip
+    lang: c
+    model: omp
+    command: "/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvc -mp=gpu -gpu=cc80 -c -o /dev/null"
+    version: "/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvc --version"

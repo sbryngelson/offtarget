@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-depend-implicit-map-illegal-address.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A target task with nowait and depend(inout: a) is legal. The loop runs sequentially inside the target region. a is implicitly mapped tofrom and host is mapped explicitly. taskwait completes the deferred target task before sum(a) is read, so the sum is 2080. An illegal device address is a runtime defect, not allowed by the specification. I found no spec passage that makes it non-conforming."
+  },
+  {
+   "run": "run-20261113/batch-63",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The nowait target is a deferrable target task ordered by depend(inout: a). The array a is implicitly mapped tofrom, host explicitly tofrom. The taskwait waits for the child target task, so the later sum(a) sees 2080. The loop runs sequentially on the device, no race. The illegal-address fault is a compiler or runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-52",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The array a is not scalar and has no explicit map, so it is implicitly mapped tofrom. The target task is nowait with depend(inout: a), and the taskwait completes it before sum(a). All writes complete before the host reads, and sum is 2080. The illegal-address fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-73",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The array a is not a scalar, so it is implicitly mapped tofrom; host is mapped explicitly. The nowait target task is ordered by depend(inout: a) and completed by the taskwait before the host reads a. The loop inside the target region is sequential, so there is no race. The result sum=2080 is required; an illegal address on the device is a compiler or runtime fault.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "47d75fd318016ba6574c26a3f16a3c2486aeed0ee037833c9207e0c925e61e0e",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

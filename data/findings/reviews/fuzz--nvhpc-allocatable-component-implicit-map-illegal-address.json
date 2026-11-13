@@ -1,0 +1,141 @@
+{
+ "finding": "fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dr is implicitly mapped tofrom as a structure. Its allocatable component dr%q is not mapped explicitly, so only the structure storage (the descriptor holding a host address) is mapped; the allocated data has no corresponding storage on the device and is referenced inside the region. Such access to unmapped storage is not given defined behavior; an illegal-address error is permitted when memory is not shared."
+  },
+  {
+   "run": "run-20261113/batch-46",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dr is a non-scalar variable referenced in the target region with no explicit mapping, so it is implicitly mapped tofrom. Its predefined default mapper maps each structure element, including the allocatable component q with its allocated storage attached. Reading dr%q(i) on the device is therefore valid, and the illegal address is a compiler or runtime defect. Some uncertainty about allocatable-component mapping detail."
+  },
+  {
+   "run": "run-v2-20261113/batch-23",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "dr is a non-scalar structure referenced in the target construct, so it is implicitly mapped tofrom. The predefined default mapper maps each structure element with tofrom, which includes the allocated component q. Reading dr%q(i) on the device is therefore defined, and the illegal address is a compiler/runtime error. No race: each iteration writes a distinct o(i).",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-22",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-91",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "dr is not a scalar and has no explicit map, so it is implicitly mapped tofrom. For a structure type the predefined default mapper maps each structure element, including the allocatable component q, so its allocated storage is mapped. The 5.0 and later specification added mapping of allocatable components. The target region reads dr%q(i) on the device and writes only o, which is mapped from. No race or other restriction is broken, so the expected sum of 1360 is required and the illegal-address fault is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-17",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2f06ed10d9460eabb4644a1406316fe20143382dfc47afa8ebf5e38b75b191fe",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading A is right. dr is a non-scalar, so it is implicitly mapped tofrom. Its structure type has a predefined default mapper that maps each structure element tofrom, including the allocatable component q, whose allocated storage is therefore mapped (5.2 added mapping of allocatable components). Reading B's claim that only the descriptor is mapped contradicts the default mapper. q is allocated and unchanged in the region, so the device read is valid and the illegal address is a compiler/runtime defect."
+  },
+  {
+   "run": "adj-20261113/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails: dr is non-scalar, so it is implicitly mapped tofrom, and its predefined default mapper maps each structure element, including the allocatable array dr%q, with tofrom. Mapping dr%q as a list item maps its allocated storage, so dr%q(i) is accessible on the device. The component rules apply only to components not explicit list items; here q is mapped as an element list item with allocated status, so the illegal address is a defect."
+  }
+ ]
+}

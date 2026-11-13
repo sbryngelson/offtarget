@@ -1,0 +1,141 @@
+{
+ "finding": "harvest/cce-c-strided-target-update.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "Strided array sections are allowed in target update motion clauses. The expected outcome that odd elements stay unmodified on the host assumes separate storage; the spec lets the corresponding variable share storage with the original, so device writes can be visible on the host without any update (observed: all elements changed, consistent with shared memory). With sharing, the observed result is permitted. No compiler is recorded as producing the expectation."
+  },
+  {
+   "run": "run-20261112/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "C array sections with stride (a[0:4:2]) are permitted in target update to/from. Only the listed elements are assigned; others must keep host values. The target region finds a,b,c present from target data, so no copy-back at its end. Observed whole-array copy is non-conforming behavior."
+  },
+  {
+   "run": "run-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Stride array sections are allowed in data-motion clauses of target update. a, b, c are present from target data, so the target region's implicit map does not transfer; each update from copies only the specified elements. Copying whole arrays back violates the specified section.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-57",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-95",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Strided array sections are allowed in data-motion clauses, and a, b, c are present from target data. update from(a[0:4:2]) must copy only elements 0,2,4,6 to the host, leaving odd elements at their original values. The observed result shows all elements copied, so it violates the specification.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-40",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "df9d3fc16a2951a565313d23db55704267fbffb1e2921c0e0aa70dfd015548c1",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Strided sections are allowed in from clauses. But the corresponding arrays may share storage with the originals, and the guarantee of sharing is not claimed for the target data case; if they share, the device writes reach the host without any update and the observed all-elements-changed output is permitted. Reading B's claim that the whole-array result is non-conforming ignores the sharing allowance. Reading A holds."
+  },
+  {
+   "run": "adj-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "C array section a[0:4:2] with stride is allowed in target update from; the list item is treated as replaced by its elements, so only those elements are assigned. a,b,c are present from target data, so the target region copies nothing back. With separate memory (as recorded) other elements must keep host values; whole-array copy-back is a defect. The shared-storage argument does not fit a run recorded as separate memory."
+  }
+ ]
+}

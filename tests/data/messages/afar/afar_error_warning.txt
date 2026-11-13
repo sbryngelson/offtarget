@@ -1,0 +1,10 @@
+# Verbatim compile output captured on tuolumne2151, 2026-10-18.
+# source: offload.engine.harness.compile_script(afar, -fopenmp --offload-arch=gfx942 -L/usr/lib/gcc/x86_64-redhat-linux/8 -fopenmp-version=60 -O2) of offload.engine.gen omp60-clause-message (error directive at(compilation), round 1)
+# exit status: 0
+==== verbatim output below ====
+<tmpdir>/omp60-clause-message.f90:16:9: warning: COMPLIANCE_PROBE_MESSAGE
+    !$omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<tmpdir>/omp60-clause-message.f90:16:9: warning: COMPLIANCE_PROBE_MESSAGE
+    !$omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,197 @@
+# Vendor claims about OpenACC support (none recorded; ingested from HPE intro_openacc(7) of each CCE release, the CCE 19.0.0
+# release notes and the OLCF Frontier user guide).
+#
+# Same schema as catalog/omp/claims.yaml (`source` names a document of
+# catalog/vendor_claims.yaml; `tools/derive/claims.py ingest` records a claim for
+# each CCE toolchain whose edition contains the quote and writes
+# catalog/vendor_claims_generic.yaml). The catalog has one OpenACC version,
+# 3.4 (catalog version 34). The OpenACC 2.0 atom list below is this
+# project's reading of OpenACC 2.0 (directives and clauses that exist in
+# 2.0; the 2.5-3.4 additions are listed separately by the vendor).
+# `status: provisional`.
+
+claims:
+  - source: hpe-cce-intro-openacc
+    general: true
+    versions: [34]
+    claim: supported
+    spec_version: "2.0"
+    quote: "CCE supports full OpenACC 2.0 and partial OpenACC 2.x/3.x for Fortran (OpenACC is not supported for C and C++)."
+    note: "Release-level: applied to the atoms that exist in OpenACC 2.0."
+    language: Fortran
+    atoms: &acc20
+      - acc.directive.parallel
+      - acc.directive.kernels
+      - acc.directive.data
+      - acc.directive.enter_data
+      - acc.directive.exit_data
+      - acc.directive.host_data
+      - acc.directive.loop
+      - acc.directive.parallel_loop
+      - acc.directive.kernels_loop
+      - acc.directive.cache
+      - acc.directive.atomic
+      - acc.directive.declare
+      - acc.directive.update
+      - acc.directive.wait
+      - acc.directive.routine
+      - acc.clause.if
+      - acc.clause.async
+      - acc.clause.async.async_argument
+      - acc.clause.wait
+      - acc.clause.num_gangs
+      - acc.clause.num_workers
+      - acc.clause.vector_length
+      - acc.clause.device_type
+      - acc.clause.reduction
+      - acc.clause.reduction.plus
+      - acc.clause.reduction.times
+      - acc.clause.reduction.max
+      - acc.clause.reduction.min
+      - acc.clause.reduction.iand
+      - acc.clause.reduction.ior
+      - acc.clause.reduction.ieor
+      - acc.clause.reduction.and
+      - acc.clause.reduction.or
+      - acc.clause.reduction.eqv
+      - acc.clause.reduction.neqv
+      - acc.clause.copy
+      - acc.clause.copyin
+      - acc.clause.copyout
+      - acc.clause.create
+      - acc.clause.present
+      - acc.clause.deviceptr
+      - acc.clause.private
+      - acc.clause.firstprivate
+      - acc.clause.default
+      - acc.clause.default.none
+      - acc.clause.collapse
+      - acc.clause.gang
+      - acc.clause.gang.num
+      - acc.clause.gang.static
+      - acc.clause.worker
+      - acc.clause.worker.num
+      - acc.clause.vector
+      - acc.clause.vector.length
+      - acc.clause.seq
+      - acc.clause.auto
+      - acc.clause.tile
+      - acc.clause.independent
+      - acc.clause.use_device
+      - acc.clause.host
+      - acc.clause.device
+      - acc.clause.device_resident
+      - acc.clause.link
+      - acc.clause.bind
+      - acc.clause.nohost
+      - acc.clause.delete
+      - acc.clause.read
+      - acc.clause.write
+      - acc.clause.update
+      - acc.clause.capture
+  - source: olcf-frontier-guide
+    general: true
+    versions: [34]
+    claim: supported
+    spec_version: "2.0"
+    quote: "Full support for OpenACC 2.0"
+    note: "Site documentation (Frontier, Cray cce, Fortran, -h acc): same release-level claim."
+    language: Fortran
+    atoms: *acc20
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    quote: "The following accelerator directives are supported in the current release : ATOMIC, CACHE, DATA, ENTER DATA, EXIT DATA, DECLARE, HOST_DATA, KERNELS, KERNELS LOOP, LOOP, PARALLEL, PARALLEL LOOP, Serial, ROUTINE, UPDATE, and WAIT."
+    language: Fortran
+    atoms: [acc.directive.atomic, acc.directive.cache, acc.directive.data, acc.directive.enter_data, acc.directive.exit_data, acc.directive.declare, acc.directive.host_data, acc.directive.kernels, acc.directive.kernels_loop, acc.directive.loop, acc.directive.parallel, acc.directive.parallel_loop, acc.directive.serial, acc.directive.routine, acc.directive.update, acc.directive.wait]
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    spec_version: "2.x/3.x"
+    quote: "The following OpenACC 2.x/3.x features are supported: ... Attach/detach behavior and clauses"
+    language: Fortran
+    atoms: [acc.clause.attach, acc.clause.detach]
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    spec_version: "2.x/3.x"
+    quote: "The following OpenACC 2.x/3.x features are supported: ... default(present) clause"
+    language: Fortran
+    atoms: [acc.clause.default.present]
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    spec_version: "2.x/3.x"
+    quote: "The following OpenACC 2.x/3.x features are supported: ... if_present clause on acc update"
+    language: Fortran
+    atoms: [acc.clause.if_present]
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    spec_version: "2.x/3.x"
+    quote: "The following OpenACC 2.x/3.x features are supported: ... finalize clause on exit data"
+    language: Fortran
+    atoms: [acc.clause.finalize]
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    spec_version: "2.x/3.x"
+    quote: "The following OpenACC 2.x/3.x features are supported: ... no_create clause on structured data and compute constructs"
+    language: Fortran
+    atoms: [acc.clause.no_create]
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    spec_version: "2.x/3.x"
+    quote: "The following OpenACC 2.x/3.x features are supported: ... serial directive"
+    language: Fortran
+    atoms: [acc.directive.serial]
+  - source: hpe-cce-intro-openacc
+    claim: supported
+    spec_version: "2.x/3.x"
+    quote: "The following OpenACC 2.x/3.x features are supported: ... acc init, acc set and acc shutdown directive"
+    language: Fortran
+    atoms: [acc.directive.init, acc.directive.set, acc.directive.shutdown]
+  - source: hpe-cce-release-notes
+    claim: supported
+    quote: "Added the following OpenACC features: ... Support init, shutdown, and set directives"
+    language: Fortran
+    atoms: [acc.directive.init, acc.directive.set, acc.directive.shutdown]
+  - source: hpe-cce-release-notes
+    claim: supported
+    quote: "Added the following OpenACC features: ... Support auto loop clause"
+    language: Fortran
+    atoms: [acc.clause.auto]
+
+# --- NVIDIA HPC SDK 25.11 (nvhpc) -----------------------------------------
+# HPC Compilers User's Guide (25.11 and 26.9), section 6.1.3 OpenACC Support: "most
+# features of OpenACC 2.7" (release-level: the OpenACC 2.0 atoms above and
+# the 2.5/2.6 additions this project reads as part of 2.7: init, set,
+# shutdown, if_present, finalize, default(present) (2.5), serial, attach,
+# detach (2.6)), with the listed 2.7 features not supported (specific
+# claims, which win over the release-level one).
+  - source: nvidia-hpc-ug-openacc
+    toolchains: [nvhpc, nvhpc269]
+    general: true
+    versions: [34]
+    claim: supported
+    spec_version: "2.7"
+    quote: "The NVIDIA HPC Compilers implement most features of OpenACC 2.7 as defined in The OpenACC Application Programming Interface, Version 2.7, November 2018"
+    note: "HPC Compilers User's Guide (25.11 and 26.9), section 6.1.3 OpenACC Support. Release-level: applied to the atoms that exist in OpenACC 2.7 (the 2.0 list and the 2.5/2.6 additions named in the header)."
+    language: Fortran and C/C++
+    version_note: "NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)"
+    status: provisional
+    atoms: [acc.directive.parallel, acc.directive.kernels, acc.directive.data, acc.directive.enter_data, acc.directive.exit_data, acc.directive.host_data, acc.directive.loop, acc.directive.parallel_loop, acc.directive.kernels_loop, acc.directive.cache, acc.directive.atomic, acc.directive.declare, acc.directive.update, acc.directive.wait, acc.directive.routine, acc.clause.if, acc.clause.async, acc.clause.async.async_argument, acc.clause.wait, acc.clause.num_gangs, acc.clause.num_workers, acc.clause.vector_length, acc.clause.device_type, acc.clause.reduction, acc.clause.reduction.plus, acc.clause.reduction.times, acc.clause.reduction.max, acc.clause.reduction.min, acc.clause.reduction.iand, acc.clause.reduction.ior, acc.clause.reduction.ieor, acc.clause.reduction.and, acc.clause.reduction.or, acc.clause.reduction.eqv, acc.clause.reduction.neqv, acc.clause.copy, acc.clause.copyin, acc.clause.copyout, acc.clause.create, acc.clause.present, acc.clause.deviceptr, acc.clause.private, acc.clause.firstprivate, acc.clause.default, acc.clause.default.none, acc.clause.collapse, acc.clause.gang, acc.clause.gang.num, acc.clause.gang.static, acc.clause.worker, acc.clause.worker.num, acc.clause.vector, acc.clause.vector.length, acc.clause.seq, acc.clause.auto, acc.clause.tile, acc.clause.independent, acc.clause.use_device, acc.clause.host, acc.clause.device, acc.clause.device_resident, acc.clause.bind, acc.clause.nohost, acc.clause.delete, acc.clause.read, acc.clause.write, acc.clause.update, acc.clause.capture, acc.directive.init, acc.directive.set, acc.directive.shutdown, acc.clause.if_present, acc.clause.finalize, acc.clause.default.present, acc.directive.serial, acc.directive.serial_loop, acc.clause.attach, acc.clause.detach]
+  - source: nvidia-hpc-ug-openacc
+    toolchains: [nvhpc, nvhpc269]
+    versions: [34]
+    claim: unsupported
+    quote: "declare link"
+    note: "HPC Compilers User's Guide (25.11 and 26.9), section 6.1.3: one of 'the following OpenACC 2.7 features are not supported'."
+    language: Fortran and C/C++
+    version_note: "NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)"
+    status: provisional
+    atoms: [acc.clause.link]
+  - source: nvidia-hpc-ug-openacc
+    toolchains: [nvhpc, nvhpc269]
+    versions: [34]
+    claim: unsupported
+    quote: "The self clause"
+    note: "HPC Compilers User's Guide (25.11 and 26.9), section 6.1.3: one of 'the following OpenACC 2.7 features are not supported' (the 2.7 self clause on compute constructs)."
+    language: Fortran and C/C++
+    version_note: "NVIDIA HPC SDK 25.11 and 26.9 (each claim recorded for a release whose guide has the quote)"
+    status: provisional
+    atoms: [acc.clause.self]

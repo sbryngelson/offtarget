@@ -1,0 +1,17 @@
+# OpenACC atoms outside the device-offload scope; same format as catalog/omp/out_of_scope.yaml. The self
+# clause on update (self(list), data motion to the local memory) is
+# offload machinery and keeps acc.clause.self in the slice: its program is
+# an update self of device-written data (copy mode).
+atoms:
+  acc.clause.self.condition:
+    versions: [34]
+    langs: [f90, c]  # The C slice too
+    status: provisional
+    reason: >-
+      self(condition) on a compute construct selects host execution: when
+      the condition is true the region runs on the local (host) device, when
+      false it runs on the current device exactly as without the clause.
+      Its only separable effect is the host execution, which is not device
+      offload (its program checked a host-executed serial region)
+    spec:
+      34: {cite: "OpenACC 3.4 §2.5.7, p.37", quote: "When the condition evaluates to true, the region will execute on the local device."}

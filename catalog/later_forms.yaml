@@ -1,0 +1,76 @@
+# Forms that a later OpenMP version added to a construct or
+# clause an earlier version already had (or a new clause), as
+# offload/engine/confirm/forms.py matches them against a compile rejection: the
+# diagnostic's message (`message`, a regex over the stored reason) or the
+# directive statement the diagnostic points at (`directive`, a regex over
+# the statement with its continuation lines joined). `atom` is the claim
+# atom the vendor claims are read for (rules.claimed): a general claim of
+# an earlier version's clause (e.g. "full OpenMP 5.0" for
+# omp.clause.thread_limit) does not name these atoms, so only a claim of
+# the form itself counts (RUL-LATER-FORM-UNCLAIMED). `since`: the spec
+# version that added the form; each citation quotes the text that shows
+# it (checked against the spec text on the cited page by
+# tests/confirm/test_confirm.py).
+version: 1
+forms:
+  - id: declare-target-enter
+    atom: omp.clause.enter
+    since: "5.2"
+    what: "the enter clause of declare target (5.2 synonym of to)"
+    directive: '(?i)declare\s+target\b.*\benter\s*\('
+    citations:
+      - {version: "5.2", section: "B.2", page: 627,
+         quote: "The enter clause was added as a synonym for the to clause on the declare target directive"}
+
+  - id: target-thread-limit
+    atom: omp.clause.thread_limit
+    since: "5.1"
+    what: "thread_limit on a target construct that is not combined with teams"
+    message: 'THREAD_LIMIT clause is not allowed with directive !\$OMP TARGET(?! TEAMS)\b'
+    citations:
+      - {version: "5.2", section: "B.3", page: 630,
+         quote: "The thread_limit clause was added to the target construct to control the upper bound on the number of threads in the created contention group"}
+
+  - id: num-teams-lower-bound
+    atom: omp.clause.num_teams
+    since: "5.1"
+    what: "a lower bound in num_teams (num_teams(lower: upper))"
+    directive: '(?i)\bnum_teams\s*\(\s*[^():,]+:'
+    citations:
+      - {version: "5.1", section: "2.7", page: 100,
+         quote: "num_teams([lower-bound:]upper-bound)"}
+      - {version: "5.0", section: "2.7", page: 82,
+         quote: "num_teams(integer-expression)"}
+
+  - id: defaultmap-all
+    atom: omp.clause.defaultmap.all
+    since: "5.2"
+    what: "the all variable category of defaultmap"
+    directive: '(?i)\bdefaultmap\s*\([^)]*:\s*all\s*\)'
+    citations:
+      - {version: "5.2", section: "5.8.7", page: 162,
+         quote: "Finally, the all variable-category specifies all variables."}
+
+  - id: distribute-order
+    atom: omp.clause.order.distribute
+    since: "5.1"
+    what: "the order clause on distribute (not on a composite distribute parallel loop or distribute simd)"
+    message: 'ORDER clause is not allowed with directive !\$OMP (TARGET TEAMS |TEAMS )?DISTRIBUTE\.'
+    citations:
+      - {version: "5.1", section: "2.11.6.1", page: 144,
+         quote: "dist_schedule(kind[, chunk_size]) allocate([allocator :]list) order([ order-modifier :]concurrent)"}
+
+  # (data/bench/fresh fresh-032): CCE 19/20 reject the
+  # teams modifier with ftn-1028 and claim no 5.2 if-on-teams; nvfortran
+  # says "Unknown directive modifier teams"
+  - id: teams-if
+    atom: omp.clause.if.teams
+    since: "5.2"
+    what: "the if clause on the teams construct (if(teams: ...) on a combined target teams)"
+    message: '(may only have "[A-Z ]+" specified as the directive-name-modifier\.\s+The compiler found "TEAMS"|Unknown directive modifier teams)'
+    directive: '(?i)\bif\s*\(\s*teams\s*:'
+    citations:
+      - {version: "6.0", section: "B.3", page: 904,
+         quote: "Allowed the if clause on the teams construct"}
+      - {version: "5.2", section: "10.2", page: 230,
+         quote: "When an if clause is present on a teams construct and the if clause expression evaluates to false, the number of created teams is one."}

@@ -1,0 +1,13 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-clause-allocate (OpenMP/OpenACC version 52), compile sweep
+# exit status: 2
+==== verbatim output below ====
+"<tmpdir>/p.c", line 34: error: invalid text in pragma
+      #pragma omp parallel for default(none) shared(a, b) private(t) allocate(t)
+                                                                     ^
+
+"<tmpdir>/p.c", line 34: error: extra text after expected end of preprocessing directive
+      #pragma omp parallel for default(none) shared(a, b) private(t) allocate(t)
+                                                                             ^
+
+2 errors detected in the compilation of "<tmpdir>/p.c".

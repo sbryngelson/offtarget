@@ -1,0 +1,9 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran (gcc_g90) on offload.engine.gen omp60-clause-severity (the gcc smoke subset, tools/jobs/run_gcc_lane.sh); flags: -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2
+# exit status: 0
+==== verbatim output below ====
+<tmpdir>/omp60-clause-severity.f90:29:15:
+
+   29 |     !$omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+      |               1
+Warning: $OMP ERROR encountered at (1): COMPLIANCE_PROBE_MESSAGE

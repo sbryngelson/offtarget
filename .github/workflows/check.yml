@@ -1,0 +1,34 @@
+# Test and check every change (CONTRIBUTING.md, "Run the tests"). CPU only: the committed data and
+# Python, gfortran for the base-language checker, no GPU, no vendor compiler, nothing git-ignored.
+# Tests that need those skip and name what they miss. Every action is pinned to a commit.
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - name: Install gfortran
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gfortran
+      - name: Install the Python packages
+        run: python3 -m pip install --no-cache-dir -r tools/repo/test_requirements.txt
+      - name: Check the findings against their recorded rows
+        run: python3 -I tools/repo/check_findings.py
+      - name: Run the tests
+        run: python3 -I -m pytest -q -rs -m "not gpu" -n auto

@@ -1,0 +1,164 @@
+{
+ "finding": "harvest/gcc-c-strided-section-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Strided array sections in C are supported since 5.0 and the 5.2 text says target update list items may include array sections with stride expressions. a[0:8:2] names a[0],a[2],...,a[14], and a is already mapped, so the section is present. Only those elements are copied back, odd elements remain -1 on the host. The GCC parse error on the second colon is a missing feature, and a conforming 5.2 compiler must accept it."
+  },
+  {
+   "run": "run-20261113/batch-69",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 5.2 allows array sections with stride in C in motion clauses of target update (new in 5.0). a[0:8:2] designates a[0],a[2],...,a[14], stride is positive. a is present from enter data, so the target region does not remap it; update from copies only even elements, odd stay -1 on the host. Check passes; a 5.2 compiler must accept the syntax."
+  },
+  {
+   "run": "run-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Array sections with a stride are allowed in the from clause of target update in C; 5.2 states list items of data-motion clauses may include array sections with stride expressions (restriction on strides is 'unless otherwise stated'). a[0:8:2] selects a[0],a[2],...,a[14]. a is present from enter data, the target region's implicit map finds it present, so device writes persist and the update copies only even elements; odd elements stay -1. The expected pass follows; rejecting the syntax is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-108",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Section 5.9 says list items of data-motion clauses may include array sections with stride expressions, and the array-section syntax allows lower-bound:length:stride. So from(a[0:8:2]) on target update is allowed in 5.2 and updates a[0], a[2], ..., a[14]. The array a is mapped by the enter data, so the update is valid. A compiler that rejects it is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-37",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Section 5.9 says the list items of the data-motion clauses may include array sections with stride expressions, and 3.2.5 defines the C syntax [lower-bound : length : stride]. a[0:8:2] covers a[0], a[2], ..., a[14] and is a subset of a[16]. a is already mapped by enter data, so the update from copies exactly those elements and the odd ones stay -1. The parser error about ':' is a missing feature, not a spec restriction."
+  },
+  {
+   "run": "run-v2-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 1
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 3.2.5 defines the C array section syntax [lower-bound : length : stride]. Section 13.9 says target update list items may include array sections with stride expressions, which is the stated exception to the stride restriction. The program's a[0:8:2] selects elements 0,2,...,14. A conforming compiler must accept it. The parse error is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113c/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 array sections allow [lower-bound : length : stride] in C, and data-motion clauses may list array sections with stride expressions. a[0:8:2] selects a[0],a[2],...,a[14]. a is present from the enter data, so the update copies those elements back; odd elements keep -1 on the host. Mapping a again in the target region only raises the reference count, so no transfer overwrites the host data. The program is conforming and the strided update must be accepted, so the syntax error is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113d/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 section 5.9 says data-motion clause list items may include array sections with stride expressions, and the restriction on strides in 3.2.5 ('unless otherwise stated') is lifted there. a[0:8:2] selects a[0],a[2],...,a[14] of the 16-element array. a is present from target enter data, so the implicit map in the target region does not transfer. The update copies back only the even elements; odd ones stay -1. No race. A conforming compiler must accept the syntax.",
+   "verifications": [
+    {
+     "run": "verify-20261113e/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "15c79b9ac415a8240c42bf0d63e4dcb92d952d65597fe648f842648b2c98501d",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "No counted independent reading yet."
+}

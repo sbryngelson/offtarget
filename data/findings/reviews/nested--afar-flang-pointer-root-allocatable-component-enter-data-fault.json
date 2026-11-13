@@ -1,0 +1,191 @@
+{
+ "finding": "nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-21",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "In OpenMP 5.2 a map list item that is an associated Fortran pointer has its pointer target implicitly mapped, and the predefined default mapper maps the allocated allocatable component r%a with the target. So enter data map(to: r) makes r%a(:) accessible on the device; the target region finds r present with an attached pointer. No allocation status change, no race (reduction on tot, distinct elements). Expected tot=828 and sum=884 follow. A GPU memory fault is a compiler/runtime defect. Some residual doubt on component mapping detail."
+  },
+  {
+   "run": "run-20261113/batch-70",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r is an associated pointer, so its target is implicitly mapped; the predefined default mapper maps each structure element (including allocatable a) tofrom, so r%a is mapped by map(to: r) and returned by map(from: r). Iterations touch distinct elements; reduction on tot is well defined. Expected tot=828 and sum=884 are required; a GPU memory fault is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(to: r) on the associated pointer r also maps its pointee, and the predefined default mapper for the derived type maps the allocatable component a with its data. Inside the target loop the accesses r%a(q) hit mapped storage; each iteration touches a distinct element, tot is a reduction, and exit data copies back. tot=828 and sum=884 follow. The memory fault is not allowed. Residual doubt: component mapping details.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-71",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-63",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is an associated pointer to a derived type with an allocatable component. Mapping pointer variables and allocatable components is supported in 5.2, but the rules for the predefined default mapper, for the pointer association status, and for attaching the component storage that r%a uses are loose. It is not clear that map(to: r) must make r%a's storage present on the device. Whether the failure is a compiler error cannot be settled from the text.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6bb7031f041de4687923656110b91cb7bc3951eae9cb5d94bab968f421628df7",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: r is an associated pointer in a map clause, so its pointer target is implicitly mapped in the same clause, using the predefined default mapper, which maps each structure element including the allocated component a. The loop touches distinct elements and tot is a reduction, so tot=828 and sum=884 follow. The memory fault is a compiler or runtime defect.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is an associated pointer in a map clause, so its pointer target is implicitly mapped in the same clause, using the predefined default mapper, which maps each structure element including the allocated component a. The loop touches distinct elements and tot is a reduction, so tot=828 and sum=884 follow. Reading A's doubt does not hold, since 5.2 added mapping of allocatable components. The memory fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is an associated pointer in map(to: r), so its pointer target is treated as implicitly mapped. The target type uses the predefined default mapper, which maps each structure element, including the allocated component a, with its storage. The target construct finds r and its component present, and each iteration touches a distinct element with a reduction on tot. No restriction is violated and the map-exiting from copies the results back. Reading A's doubt about the component storage is not supported by the text. The memory fault is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-26",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

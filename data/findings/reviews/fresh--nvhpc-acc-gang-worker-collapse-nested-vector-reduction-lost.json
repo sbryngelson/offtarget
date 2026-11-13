@@ -1,0 +1,113 @@
+{
+ "finding": "fresh/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "sumA is copied, gang/worker collapse(2) loop and inner vector loop both carry reduction(+:sumA), as required for a reduction spanning nested loops. The original is not private, so it is updated by the end of the compute region and read after the region. Ones sum exactly in double precision, so the required result is 1e7; 9988000 is a lost contribution, a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-24",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reduction on sumA appears on both the gang/worker collapse(2) loop and the nested vector loop, as 2.9.11 requires, with the same operator. sumA is copy'd, so the update lands by the end of the compute region. Addends are exact integers in double, so the sum 1e7 is exact in any order. Observed 9988000 is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-40",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "sumA has an explicit copy clause on the parallel construct, and reduction(+:sumA) appears on each of the nested loop directives with the same operator, as required. Gang/worker reduction on the collapsed outer loops plus vector reduction on the inner loop is conforming. All values are exactly representable (sum of 1.0), so the result 1.0e7 is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-52",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-84",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The nesting matches the specification's own example: gang worker loop with reduction(+:sumA) containing a vector loop with reduction(+:sumA); the vector reduction updates the private copy and the outer one updates sumA by the end of the parallel region. Sums of 1.0d0 up to 1e7 are exact in double, so summation order cannot change the value. The result must be 10000000; 9988000 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-39",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2f9a70205a6d003e7bdccac5c2522606f5d14212266e2cd1e1f140f6b4f273d6",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

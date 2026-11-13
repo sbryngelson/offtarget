@@ -1,0 +1,217 @@
+{
+ "finding": "oop/gcc-polymorphic-dispatch-abort.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Abstract type with deferred binding, extended types mapped by tofrom, bindings sq_area/rect_area/area_of each have declare target, called in target region through class(shape) dispatch. The specification requires type-bound procedures accessed in a target region to appear in declare target, which is met for the implementations; the deferred binding and abstract interface carry no directive. The specification says nothing on how type descriptors/dispatch tables reach the device, so it is unclear that dynamic dispatch must work. Map of non-polymorphic variables is fine."
+  },
+  {
+   "run": "run-20261113/batch-53",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "Both type-bound implementations and the dispatching wrapper carry declare target, satisfying the Fortran derived-type restriction. The mapped variables are non-polymorphic, non-allocatable. The specification does not say how dynamic dispatch through a type descriptor works on a device, so whether the device must dispatch correctly is not stated."
+  },
+  {
+   "run": "run-v2-20261113/batch-44",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program calls a deferred type-bound procedure through class(shape) in a target region. The specification requires all type-bound procedures accessed in a target region to appear in a declare target directive. The concrete bindings sq_area and rect_area do, but the deferred binding area has only an abstract interface that cannot carry one. The spec says nothing on how the dynamic-dispatch type information is made available on the device, so a device fault is not clearly a violation of a requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-63",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Type-bound procedures used in a target region must appear in a declare target directive. The specific procedures do, but the deferred binding and the dynamic dispatch through a class(shape) dummy are not specified for devices. The spec does not say how a vtable or type descriptor is made usable on the device. The host descriptor pointer in an unmapped class object may be invalid on the device, so a fault is not shown to be a violation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-49",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The spec requires only that type-bound procedures accessed in a target region appear in a declare target directive. The specific bindings sq_area, rect_area and area_of carry declare target, so that rule is met. Neither reading finds a rule on making the dynamic type information (descriptor or vtable) of a CLASS dummy usable on the device. q and rr are mapped as non-polymorphic objects whose passed class descriptors point to host data.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The only derived-type restriction is that type-bound procedures accessed in a target region appear in declare target; sq_area, rect_area and area_of all do, and the deferred binding has no body. The mapped variables are non-polymorphic, non-allocatable, so map restrictions are met. The specification says nothing on how type descriptors or dispatch tables reach the device, so whether dynamic dispatch must work is unspecified; Reading A's result stands and Reading B's legality doubt lacks a cited rule."
+  },
+  {
+   "run": "adj-20261113/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "The declare-target restriction for derived types is met for the concrete bindings and area_of, but the deferred binding area has no body to mark. Neither reading finds any text requiring dynamic dispatch through a polymorphic dummy to work on a device; the specification is silent for Fortran (the C++ text calls virtual invocation on another device unspecified). A requirement to dispatch correctly is therefore not established, so the device fault is not shown to violate the specification."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The spec requires only that type-bound procedures accessed in a target region appear in a declare target directive. The specific bindings sq_area, rect_area and area_of carry declare target, so that rule is met. Neither reading finds a rule on making the dynamic type information (descriptor or vtable) of a CLASS dummy usable on the device. q and rr are mapped as non-polymorphic objects whose passed class descriptors point to host data. The spec does not define that case, so a device fault is not shown to violate a requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings are right. Only the declare target requirement for type-bound procedures exists in the text. Nothing specifies how a polymorphic descriptor or binding table of a mapped non-polymorphic variable is made valid on the device, so a device memory fault is not shown to violate a requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "fresh/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Module variables Z (scalar, firstprivate) and A (allocatable array, implicitly mapped tofrom as non-scalar) are referenced in target teams loop with a single iteration; the whole-array assignment A = Z is a valid Fortran statement and a loop body has no restriction against it. No race (one iteration). A conforming compiler must compile it; a compiler segfault is a bug. Expected output 7.0."
+  },
+  {
+   "run": "run-20261113/batch-69",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "target teams loop with a single-iteration DO loop whose body is a Fortran whole-array assignment A = Z. A (module allocatable, allocated) and Z are implicitly mapped; no data race, no nested construct, no prohibited statement in a loop region. No restriction forbids the program, so a compiler must compile it; a compiler crash is a bug. The semicolon after the statement is valid free-form Fortran."
+  },
+  {
+   "run": "run-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target teams loop has one iteration, so the whole-array assignment A = Z has no race. A is an allocated allocatable referenced in the region and is implicitly mapped; Z is a scalar, implicitly firstprivate. A = Z with a scalar does not reallocate. The trailing semicolon is a legal Fortran statement terminator. The end directive form is valid. A compiler segfault is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-19",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-89",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A is an allocatable array that is not a scalar, so it is implicitly mapped tofrom; Z is a scalar and is implicitly firstprivate. The single-iteration loop has no race. A semicolon ends the statement legally, and the end directive is allowed. A conforming compiler must compile it, so the crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-36",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d6acd098585d2e25157fb717d55930f4368875b4fafbb300e689ee08a040a41f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,34 @@
+# Semantic atoms: behaviour the spec defines for a clause's subject matter
+# that no syntax form carries, so clauses.yaml cannot produce the atom (one
+# program per atom). A program exercises a
+# semantic atom through its data, not through a clause argument; the
+# generator's "the program carries its atom" check is waived for these atoms
+# only (offload.engine.gen._program).
+#
+# Read by offload/engine/catalog.py (semantic_atoms). Every entry is
+# `status: provisional` until the project owner reviews it.
+#
+# atoms.<atom id>:
+#   clause     the clause whose atom set it joins: the atom is in the slice
+#              at a version exactly when omp.clause.<clause> is
+#   since      first catalog version (50, 52, 60) the behaviour applies to
+#   citations  per version: the spec text that defines the behaviour
+#              ("OpenMP <ver> §<sec>, p.<n>")
+#   behaviour  what the program checks
+#   langs      optional: the languages the atom exists in (f90, c;
+#              default both)
+atoms:
+  omp.clause.defaultmap.character:
+    clause: defaultmap
+    status: provisional
+    since: 50
+    langs: [f90]
+    citations:
+      50: "OpenMP 5.0 §1.2.6, p.12 (scalar variable excludes Fortran character type); §2.19.7, p.315 (a variable that is not a scalar is treated as if it had appeared in a map clause with a map-type of tofrom)"
+      52: "OpenMP 5.2 §1.2.6, p.14 (scalar variable excludes Fortran character type; aggregate variable includes it); §5.8.1, p.148 (a variable that is not a scalar is implicitly mapped tofrom)"
+      60: "OpenMP 6.0 §2 Glossary, pp.20, 94 (aggregate variable includes Fortran character type; scalar variable excludes it); §7.9.3, p.277 (a variable that is not a scalar variable is implicitly mapped tofrom)"
+    behaviour: >-
+      Without a defaultmap clause, a Fortran character variable (length 1 or
+      more) referenced in a target construct is an aggregate, so it is
+      implicitly mapped tofrom: the device's write comes back to the host,
+      unlike an integer scalar, which is firstprivate.

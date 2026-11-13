@@ -1,0 +1,3 @@
+{"file": "data/findings/afar-c-teams-distribute-reduction-first-team.c", "lang": "c", "version": 52, "model": "omp", "rules": true, "rules_reasons": [], "frontend": true, "frontend_reasons": [], "ok": true, "reasons": [], "kind": null, "seconds": 2.4}
+{"file": "data/findings/afar-c-lastprivate-distribute-parallel-for-small-type.c", "lang": "c", "version": 52, "model": "omp", "rules": true, "rules_reasons": [], "frontend": true, "frontend_reasons": [], "ok": true, "reasons": [], "kind": null, "seconds": 0.2}
+{"file": "data/findings/cce-trim-merge-output-one-character.f90", "lang": "f90", "version": 52, "model": "omp", "rules": true, "rules_reasons": [], "frontend": true, "frontend_reasons": [], "ok": true, "reasons": [], "kind": null, "seconds": 1.1}

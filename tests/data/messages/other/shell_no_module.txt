@@ -1,0 +1,6 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: bash --norc --noprofile in env -i: module load cce/19.0.0 ... then ftn (no Lmod initialisation)
+# exit status: 127
+==== verbatim output below ====
+bash: module: command not found
+bash: line 1: ftn: command not found

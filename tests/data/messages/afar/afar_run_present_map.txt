@@ -1,0 +1,11 @@
+# Verbatim run output (stdout then stderr) captured on tuolumne2151, 2026-10-18.
+# source: offload.engine.harness.run_script(afar, xnack=0, mandatory=True) running the afar build of offload.engine.gen omp52-clause-map-present (negative probe: the present modifier names an absent item; ) under HSA_XNACK=0
+# exit status: -6 (subprocess return code: killed by SIGABRT)
+==== verbatim output below ====
+omptarget message: device mapping required by 'present' map type modifier does not exist for host address 0x0000555555b49a80 (256 bytes)
+omptarget error: Call to getTargetPointer returned null pointer ('present' map type modifier).
+omptarget error: Call to targetDataBegin failed, abort target.
+omptarget error: Failed to process data before launching the kernel.
+omptarget error: Consult https://openmp.llvm.org/design/Runtimes.html for debugging options.
+omptarget error: Source location information not present. Compile with -g or -gline-tables-only.
+omptarget fatal error 1: failure of target construct while offloading is mandatory

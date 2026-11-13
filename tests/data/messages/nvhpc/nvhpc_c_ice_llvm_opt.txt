@@ -1,0 +1,7 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-illegal-target-nesting-001 (OpenMP/OpenACC version 52), compile sweep
+# exit status: 2
+==== verbatim output below ====
+/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/share/llvm/bin/opt: <tmpdir>/nvcMRMXYWxrbO0O.ll:354:22: error: use of undefined value '%.b1210in1207$expdev.addr'
+        %37 = load ptr, ptr %.b1210in1207$expdev.addr, align 8, !tbaa !46, !dbg !70
+                            ^

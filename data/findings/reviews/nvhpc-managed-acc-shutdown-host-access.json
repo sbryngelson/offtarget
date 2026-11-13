@@ -1,0 +1,113 @@
+{
+ "finding": "nvhpc-managed-acc-shutdown-host-access.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The shutdown directive is a host-only executable directive with no required prior init; with no clauses all available devices are disconnected. It only frees device resources; host array a is unaffected, so the program must print 'after shutdown' and 'sum 64'. A run-time crash at sum(a) is a compiler/runtime defect. No error condition listed applies."
+  },
+  {
+   "run": "run-20261113/batch-47",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The shutdown directive disconnects devices and ends device data lifetimes only; the allocatable a is host data and print/sum run on the host. Directive is host-only code, legal. Host access after shutdown is not restricted, so the program must print 'sum 64'. The crash at run time is a compiler/runtime defect (under unified memory the host copy remains valid)."
+  },
+  {
+   "run": "run-v2-20261113/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The shutdown directive only ends device data lifetimes and frees runtime resources. Host allocatable a is host memory, so reading it with sum(a) afterwards is valid. The core dump is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-35",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-95",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The shutdown directive ends data lifetimes in device memory only. The array a is host data and is never in a data clause, so host accesses after shutdown are unaffected. The program is conforming and must print the sum; the core dump is a compiler/runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-19",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "136de4d5f18d90ef8baa0b0fa602bf99879dfee08c19447e206dd993c69e075a",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

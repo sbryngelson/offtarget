@@ -1,0 +1,94 @@
+host wingtip-gpu3.cc.gatech.edu start 2026-11-04T00:13:40-05:00
+built finding rc=0
+built control rc=0
+env=a gpu=2 run=1 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=1 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=2 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=2 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=3 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=3 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=4 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=4 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=5 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=5 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=6 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=6 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=7 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=7 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=8 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=8 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=9 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=9 control rc=0 RESULT ran_on_host=0 check=pass
+env=a gpu=2 run=10 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=a gpu=2 run=10 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=1 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=1 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=2 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=2 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=3 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=3 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=4 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=4 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=5 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=5 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=6 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=6 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=7 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=7 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=8 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=8 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=9 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=9 control rc=0 RESULT ran_on_host=0 check=pass
+env=b gpu=2 run=10 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=b gpu=2 run=10 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=1 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=1 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=2 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=2 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=3 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=3 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=4 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=4 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=5 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=5 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=6 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=6 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=7 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=7 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=8 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=8 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=9 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=9 control rc=0 RESULT ran_on_host=0 check=pass
+env=d gpu=2 run=10 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=d gpu=2 run=10 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=1 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=1 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=2 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=2 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=3 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=3 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=4 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=4 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=5 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=5 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=6 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=6 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=7 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=7 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=8 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=8 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=9 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=9 control rc=0 RESULT ran_on_host=0 check=pass
+env=c gpu=3 run=10 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+env=c gpu=3 run=10 control rc=0 RESULT ran_on_host=0 check=pass
+variant=all-gpus-visible run=1 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=2 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=3 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=4 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=5 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=6 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=7 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=8 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=9 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+variant=all-gpus-visible run=10 finding rc=1 libgomp: cuCtxSynchronize error: an illegal memory access was encountered
+done 2026-11-04T00:14:38-05:00

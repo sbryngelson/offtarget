@@ -1,0 +1,204 @@
+{
+ "finding": "stress/cce-c-flto-offload-dropped.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-37",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both target regions are conforming: a[0:64] is mapped from and written on the device, dev is mapped tofrom. No race, no unspecified behavior. The expected output requires target execution; with OMP_TARGET_OFFLOAD=mandatory a target construct whose device is usable must execute there. A run-time abort under -flto is a compiler defect, not permitted behavior."
+  },
+  {
+   "run": "run-20261113/batch-56",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Target teams distribute over independent iterations writing distinct a[i] is conforming; a[0:64] mapped from. The second target sets dev from omp_is_initial_device, 1 on a device. With a device available, the target region must execute there and produce sum=2016 dev=1; failing with OMP_TARGET_OFFLOAD=MANDATORY despite an available device (other compilers run it) is a compiler defect, not allowed behavior."
+  },
+  {
+   "run": "run-20261113b/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Valid C. The target teams distribute loop has independent iterations and the array is fully mapped from. A conforming implementation must execute the target regions on the default device, and with OMP_TARGET_OFFLOAD=MANDATORY a device is required. The expected output follows (2016 = sum 0..63, dev=1 assuming a device exists). The abort under -flto is a compiler or runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-51",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Conforming C: the array a is fully mapped from on a target teams distribute loop, each iteration writes a distinct element, and the second target region reads omp_is_initial_device. With a device available the target region executes there, so sum=2016 and dev=1 follow. A run-time abort is not allowed by the specification.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-29",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-92",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming. Whether it must run on a device depends on device availability. With OMP_TARGET_OFFLOAD=mandatory an unavailable device is treated as omp_invalid_device, so an abort is permitted when no usable device exists. The specification does not say a device must exist, so the crash is not clearly forbidden.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-62",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "757c4ca662c833d0bbdea910c85d765bf2a8fc8a01e4fc4c9f3cc4d6c9abd178",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The program is conforming. The specification says the initial thread may execute on the requested device if it is available and supported, and that with OMP_TARGET_OFFLOAD=mandatory a device that is unavailable or not supported by the implementation is treated as omp_invalid_device. The implementation (here with -flto) may not support offloading the region, so the abort is permitted.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming. Reading B is too strong: with OMP_TARGET_OFFLOAD=mandatory, a device that is unavailable or not supported by the implementation is treated as omp_invalid_device, so an abort is permitted when the implementation does not support the device in this build. Reading A is right that the specification does not force device availability or support for this build, so a crash cannot be shown to violate it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-15",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming. The specification says the initial thread may execute on the requested device if it is available and supported, and that with OMP_TARGET_OFFLOAD=mandatory a device that is unavailable or not supported by the implementation is treated as omp_invalid_device. The implementation (here with -flto) may not support offloading the region, so the abort is permitted. Reading B overclaims; Reading A's uncertainty is resolved toward no.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

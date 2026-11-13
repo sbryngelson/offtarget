@@ -1,0 +1,261 @@
+cell	signature	old_outcome	verdict	inherited	new_outcome	condition	decision	counts
+evidence|metamorphic|007abbbc67225e91|cce20|copy|-O2|mandatory|num_teams_1	cce20|crash|fuzz:s1:12:num_teams_1|SIGABRT	crash|SIGABRT	confirmed	no	c:crash c:timeout b:crash a:crash d:crash		ours	yes
+evidence|metamorphic|013d670d9b188ad6|cce21|unified|-O2|mandatory|enter_exit_data	cce21|wrong_answer|fuzz:s1:6704:enter_exit_data|checksum=1309043318	wrong_answer|checksum=1309043318	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|017c64f8db9fc0ef|cce19|copy|-O2|mandatory|num_teams_3	cce19|wrong_answer|fuzz:n0:764:num_teams_3|checksum=2145676603	wrong_answer|checksum=2145676603	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|01b415951ddf4b62|afar|unified|-O2|mandatory|schedule_dynamic_3	afar|wrong_answer|fuzz:s1:6833:schedule_dynamic_3|checksum=144221997	wrong_answer|checksum=144221997	nondeterministic	no	c:crash c:crash b:crash a:crash d:crash		environment_defect	yes
+evidence|metamorphic|0329a74219d80cdd|cce19|copy|-O2|mandatory|enter_exit_data	cce19|wrong_answer|fuzz:s1:983:enter_exit_data|checksum=411312625	wrong_answer|checksum=411312625	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|0329a74219d80cdd|cce19|unified|-O2|mandatory|enter_exit_data	cce19|wrong_answer|fuzz:s1:983:enter_exit_data|checksum=1217374908	wrong_answer|checksum=1217374908	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|0329a74219d80cdd|cce20|copy|-O2|mandatory|enter_exit_data	cce20|wrong_answer|fuzz:s1:983:enter_exit_data|checksum=2003971403	wrong_answer|checksum=2003971403	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|0329a74219d80cdd|cce20|unified|-O2|mandatory|enter_exit_data	cce20|wrong_answer|fuzz:s1:983:enter_exit_data|checksum=2068055000	wrong_answer|checksum=2068055000	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|0365660dc1829681|afar|unified|-O2|mandatory|schedule_static_1	afar|wrong_answer|fuzz:s1:1920:schedule_static_1|checksum=441712457	wrong_answer|checksum=441712457	nondeterministic	no	c:wrong_answer c:crash b:crash a:crash d:crash		environment_defect	yes
+evidence|metamorphic|04c93df372e5b9d6|cce19|copy|-O2|mandatory|split_combined	cce19|wrong_answer|fuzz:n0:651:split_combined|checksum=428282762	wrong_answer|checksum=428282762	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|06f88645d0c6a50c|cce19|copy|-O2|mandatory|num_teams_1	cce19|wrong_answer|fuzz:n0:415:num_teams_1|checksum=1413900244	wrong_answer|checksum=1413900244	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|metamorphic|0f7f23b0cb91dbc8|cce19|unified|-O2|mandatory|thread_limit_32	cce19|run_error|fuzz:s1:2529:thread_limit_32|exit_status: 1	run_error|exit_status: 1	nondeterministic	no	c:crash c:run_error b:crash a:run_error d:crash		nondeterministic_defect	yes
+evidence|metamorphic|10738bb3b6b816b1|cce19|unified|-O2|mandatory|schedule_static_1	cce19|run_error|fuzz:s1:7606:schedule_static_1|exit_status: 1	run_error|exit_status: 1	nondeterministic	no	c:crash c:run_error b:run_error a:run_error d:crash		nondeterministic_defect	yes
+evidence|metamorphic|6ca14ec4d6792f8d|afar|copy|-O2|mandatory|thread_limit_32	afar|timeout|fuzz:s1:1599:thread_limit_32|compile_timeout	timeout|compile_timeout	nondeterministic	no	c:crash c:crash b:crash a:crash d:crash		ours	yes
+evidence|metamorphic|6dbc6c53abaa2231|afar|copy|-O2|mandatory|schedule_static_1	afar|timeout|fuzz:s1:1478:schedule_static_1|compile_timeout	timeout|compile_timeout	nondeterministic	no	c:crash c:crash b:crash a:crash d:crash		ours	yes
+evidence|metamorphic|d65169693ee99778|cce20|unified|-O2|mandatory|num_teams_1	cce20|crash|fuzz:s1:6164:num_teams_1|SIGSEGV	crash|SIGSEGV	not_reproduced	no	c:correct_on_device c:correct_on_device b:correct_on_device a:correct_on_device d:correct_on_device		undecided	no
+evidence|other_mode|021a08aa48fc3ae0|afar|copy|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:6910:original|checksum=436845114	wrong_answer|checksum=436845114	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|other_mode|02be9c442abb34b9|afar|unified|-O2|mandatory|original	afar|wrong_answer|fuzz:n1:594:original|checksum=103561484	wrong_answer|checksum=103561484	nondeterministic	no	c:wrong_answer c:crash b:crash a:crash d:crash		environment_defect	yes
+evidence|other_mode|0519400803fbd94c|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:900:original|checksum=1820711012	wrong_answer|checksum=1820711012	nondeterministic	no				no
+evidence|other_mode|10f8f25e05a5cf80|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3352:original|checksum=1439933176	wrong_answer|checksum=1439933176	nondeterministic	no				no
+evidence|other_mode|153f1b86bd7a9606|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:25:original|checksum=1638317626	wrong_answer|checksum=1638317626	nondeterministic	no				no
+evidence|other_mode|1bf7022beb80d140|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:415:original|checksum=245382129	wrong_answer|checksum=245382129	nondeterministic	no				no
+evidence|other_mode|1c5cbae4818f1d14|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7564:original|checksum=785133907	wrong_answer|checksum=785133907	nondeterministic	no				no
+evidence|other_mode|1d9589a013e7c3c0|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:9174:original|checksum=690572658	wrong_answer|checksum=690572658	nondeterministic	no				no
+evidence|other_mode|1e44ad4f2a8394ea|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2735:original|checksum=91989364	wrong_answer|checksum=91989364	nondeterministic	no				no
+evidence|other_mode|1e44ad4f2a8394ea|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:2735:original|checksum=823134029	wrong_answer|checksum=823134029	nondeterministic	no				no
+evidence|other_mode|1ec67d1a1318b0d4|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:6899:original|checksum=1040989152	wrong_answer|checksum=1040989152	nondeterministic	no				no
+evidence|other_mode|279b71b460a7b735|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:7737:original|checksum=80385822	wrong_answer|checksum=80385822	nondeterministic	no				no
+evidence|other_mode|286d53c88d2201ef|afar|copy|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:6227:original|checksum=1844980746	wrong_answer|checksum=1844980746	nondeterministic	no				no
+evidence|other_mode|2a384cc65a2c56d9|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:983:original|checksum=1228968328	wrong_answer|checksum=1228968328	nondeterministic	no				no
+evidence|other_mode|333f261be7dbaabb|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5723:original|checksum=1108961867	wrong_answer|checksum=1108961867	nondeterministic	no				no
+evidence|other_mode|333f261be7dbaabb|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5723:original|checksum=984026026	wrong_answer|checksum=984026026	nondeterministic	no				no
+evidence|other_mode|3a58b985f8233bea|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:651:original|checksum=1311635361	wrong_answer|checksum=1311635361	nondeterministic	no				no
+evidence|other_mode|3b15461149d604fa|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:9446:original|checksum=447687691	wrong_answer|checksum=447687691	nondeterministic	no				no
+evidence|other_mode|3b5e0b40b9bbf7e4|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3272:original|checksum=1778177761	wrong_answer|checksum=1778177761	nondeterministic	no				no
+evidence|other_mode|43c63c8b995729fd|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:6567:original|checksum=1157831792	wrong_answer|checksum=1157831792	nondeterministic	no				no
+evidence|other_mode|498416339f10e51d|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:764:original|checksum=716739310	wrong_answer|checksum=716739310	nondeterministic	no				no
+evidence|other_mode|4cb722beb017c07d|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7659:original|checksum=263943620	wrong_answer|checksum=263943620	nondeterministic	no				no
+evidence|other_mode|502c922b6748e2ec|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3045:original|checksum=33560330	wrong_answer|checksum=33560330	nondeterministic	no				no
+evidence|other_mode|502c922b6748e2ec|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:3045:original|checksum=1090161032	wrong_answer|checksum=1090161032	nondeterministic	no				no
+evidence|other_mode|5068fa870bdf3ce1|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:4045:original|checksum=845909630	wrong_answer|checksum=845909630	nondeterministic	no				no
+evidence|other_mode|5068fa870bdf3ce1|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:4045:original|checksum=826945164	wrong_answer|checksum=826945164	nondeterministic	no				no
+evidence|other_mode|5b20188168ba85ae|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:819:original|checksum=135219162	wrong_answer|checksum=135219162	nondeterministic	no				no
+evidence|other_mode|5c1f1fd722d8bfd8|afar|copy|-O2|mandatory|original	afar|crash|fuzz:s1:9026:original|SIGABRT	crash|SIGABRT	nondeterministic	no				no
+evidence|other_mode|6c834a878a0be660|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:9402:original|checksum=1544405095	wrong_answer|checksum=1544405095	nondeterministic	no				no
+evidence|other_mode|6d1fc3af1e2c3c7a|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5150:original|checksum=937806155	wrong_answer|checksum=937806155	nondeterministic	no				no
+evidence|other_mode|6d1fc3af1e2c3c7a|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:5150:original|checksum=787532330	wrong_answer|checksum=787532330	nondeterministic	no				no
+evidence|other_mode|6f0ed525f90742ee|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:34:original|checksum=1165634652	wrong_answer|checksum=1165634652	nondeterministic	no				no
+evidence|other_mode|6ff368d126df9dce|afar|copy|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:7020:original|checksum=1744051888	wrong_answer|checksum=1744051888	nondeterministic	no				no
+evidence|other_mode|706b30f67e55d710|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2538:original|checksum=1292318310	wrong_answer|checksum=1292318310	nondeterministic	no				no
+evidence|other_mode|706b30f67e55d710|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:2538:original|checksum=1027027290	wrong_answer|checksum=1027027290	nondeterministic	no				no
+evidence|other_mode|706b30f67e55d710|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:2538:original|checksum=1348088815	wrong_answer|checksum=1348088815	nondeterministic	no				no
+evidence|other_mode|7092f9068aaac070|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:13:original|checksum=381923929	wrong_answer|checksum=381923929	nondeterministic	no				no
+evidence|other_mode|7162cef49e268d9b|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:9802:original|checksum=1243644107	wrong_answer|checksum=1243644107	nondeterministic	no				no
+evidence|other_mode|7162cef49e268d9b|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:9802:original|checksum=441244181	wrong_answer|checksum=441244181	nondeterministic	no				no
+evidence|other_mode|7162cef49e268d9b|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:9802:original|checksum=441244181	wrong_answer|checksum=441244181	nondeterministic	no				no
+evidence|other_mode|728ce9c2d6522500|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:5305:original|checksum=1838237108	wrong_answer|checksum=1838237108	nondeterministic	no				no
+evidence|other_mode|73c5662236b0b09f|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:188:original|checksum=362883336	wrong_answer|checksum=362883336	nondeterministic	no				no
+evidence|other_mode|73c5662236b0b09f|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:188:original|checksum=1659728608	wrong_answer|checksum=1659728608	nondeterministic	no				no
+evidence|other_mode|73f40b68a8057a37|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7716:original|checksum=1649102363	wrong_answer|checksum=1649102363	nondeterministic	no				no
+evidence|other_mode|74720ea39abe2de8|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:821:original|checksum=1168146272	wrong_answer|checksum=1168146272	nondeterministic	no				no
+evidence|other_mode|74720ea39abe2de8|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:821:original|checksum=1168146272	wrong_answer|checksum=1168146272	nondeterministic	no				no
+evidence|other_mode|770dd620303e42d1|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:517:original|checksum=334499152	wrong_answer|checksum=334499152	nondeterministic	no				no
+evidence|other_mode|8180380543b8b9b1|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:8781:original|checksum=278477747	wrong_answer|checksum=278477747	nondeterministic	no				no
+evidence|other_mode|8180380543b8b9b1|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:8781:original|checksum=1126972887	wrong_answer|checksum=1126972887	nondeterministic	no				no
+evidence|other_mode|81a8c549c3030c6c|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:225:original|checksum=1911785520	wrong_answer|checksum=1911785520	nondeterministic	no				no
+evidence|other_mode|81a8c549c3030c6c|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:225:original|checksum=1268169793	wrong_answer|checksum=1268169793	nondeterministic	no				no
+evidence|other_mode|842e0b5d5a0c8c97|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2909:original|checksum=723108849	wrong_answer|checksum=723108849	nondeterministic	no				no
+evidence|other_mode|842e0b5d5a0c8c97|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:2909:original|checksum=46690446	wrong_answer|checksum=46690446	nondeterministic	no				no
+evidence|other_mode|842e0b5d5a0c8c97|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:2909:original|checksum=46690446	wrong_answer|checksum=46690446	nondeterministic	no				no
+evidence|other_mode|8ccdb27036228e69|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:6086:original|checksum=531846682	wrong_answer|checksum=531846682	nondeterministic	no				no
+evidence|other_mode|901d3d76bf1dcb88|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:7465:original|checksum=17235205	wrong_answer|checksum=17235205	nondeterministic	no				no
+evidence|other_mode|901d3d76bf1dcb88|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:7465:original|checksum=314819553	wrong_answer|checksum=314819553	nondeterministic	no				no
+evidence|other_mode|901d3d76bf1dcb88|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7465:original|checksum=1880679799	wrong_answer|checksum=1880679799	nondeterministic	no				no
+evidence|other_mode|90afd8f6550383d8|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:467:original|checksum=1847410531	wrong_answer|checksum=1847410531	nondeterministic	no				no
+evidence|other_mode|90faf63869d97ca5|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:163:original|checksum=1603501223	wrong_answer|checksum=1603501223	nondeterministic	no				no
+evidence|other_mode|90faf63869d97ca5|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:163:original|checksum=984382261	wrong_answer|checksum=984382261	nondeterministic	no				no
+evidence|other_mode|95d950ee44157b2c|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:6704:original|checksum=1776346193	wrong_answer|checksum=1776346193	nondeterministic	no				no
+evidence|other_mode|977f83e82b9bf930|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:393:original|checksum=846675790	wrong_answer|checksum=846675790	nondeterministic	no				no
+evidence|other_mode|99297a51599b4411|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:8867:original|checksum=1303744537	wrong_answer|checksum=1303744537	nondeterministic	no				no
+evidence|other_mode|99297a51599b4411|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:8867:original|checksum=1881059826	wrong_answer|checksum=1881059826	nondeterministic	no				no
+evidence|other_mode|99297a51599b4411|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:8867:original|checksum=1881059826	wrong_answer|checksum=1881059826	nondeterministic	no				no
+evidence|other_mode|9ab15149da763a91|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:992:original|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+evidence|other_mode|9ab15149da763a91|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:992:original|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+evidence|other_mode|9ab15149da763a91|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:992:original|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+evidence|other_mode|9e9568dd1afaf5f3|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:407:original|checksum=1394291909	wrong_answer|checksum=1394291909	nondeterministic	no				no
+evidence|other_mode|9e9568dd1afaf5f3|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:407:original|checksum=1718558222	wrong_answer|checksum=1718558222	nondeterministic	no				no
+evidence|other_mode|a6cb2cbdef91f0a4|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3667:original|checksum=666312942	wrong_answer|checksum=666312942	nondeterministic	no				no
+evidence|other_mode|a8e1e8bd735b929b|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:3439:original|checksum=1060412531	wrong_answer|checksum=1060412531	nondeterministic	no				no
+evidence|other_mode|aa1b9cce7ce7f314|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:220:original|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+evidence|other_mode|b167a80da00dfaf1|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:9563:original|checksum=352149751	wrong_answer|checksum=352149751	nondeterministic	no				no
+evidence|other_mode|b4c61350b3d34d01|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5921:original|checksum=2089708753	wrong_answer|checksum=2089708753	nondeterministic	no				no
+evidence|other_mode|b4c61350b3d34d01|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5921:original|checksum=1387550718	wrong_answer|checksum=1387550718	nondeterministic	no				no
+evidence|other_mode|b59178700cd2f460|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:9206:original|checksum=1962416845	wrong_answer|checksum=1962416845	nondeterministic	no				no
+evidence|other_mode|b59178700cd2f460|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:9206:original|checksum=648042880	wrong_answer|checksum=648042880	nondeterministic	no				no
+evidence|other_mode|c2c5cb9f1420c08d|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:8133:original|checksum=1135058764	wrong_answer|checksum=1135058764	nondeterministic	no				no
+evidence|other_mode|c5b074c79e08cfe1|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:8632:original|checksum=1852472282	wrong_answer|checksum=1852472282	nondeterministic	no				no
+evidence|other_mode|cc40ffcbe03350ba|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:63:original|checksum=807990467	wrong_answer|checksum=807990467	nondeterministic	no				no
+evidence|other_mode|cc40ffcbe03350ba|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:63:original|checksum=1206980914	wrong_answer|checksum=1206980914	nondeterministic	no				no
+evidence|other_mode|d6b41b6df4be7166|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:349:original|checksum=86	wrong_answer|checksum=86	nondeterministic	no				no
+evidence|other_mode|d7bbe70337add27c|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:7568:original|checksum=2129512909	wrong_answer|checksum=2129512909	nondeterministic	no				no
+evidence|other_mode|d7bbe70337add27c|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:7568:original|checksum=1238476555	wrong_answer|checksum=1238476555	nondeterministic	no				no
+evidence|other_mode|d9c6ced78f4ac219|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:144:original|checksum=1755318121	wrong_answer|checksum=1755318121	nondeterministic	no				no
+evidence|other_mode|df335c39484ac564|cce21_4|copy|-O2|mandatory|original	cce21_4|wrong_answer|fuzz:s1:63:original|checksum=841996183	wrong_answer|checksum=841996183	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|other_mode|e0254d93f0b20e14|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:909:original|checksum=373725969	wrong_answer|checksum=373725969	nondeterministic	no				no
+evidence|other_mode|e0399ba090f04d52|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5481:original|checksum=791816917	wrong_answer|checksum=791816917	nondeterministic	no				no
+evidence|other_mode|e512da7aa0de9c9d|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:4206:original|checksum=1555058216	wrong_answer|checksum=1555058216	nondeterministic	no				no
+evidence|other_mode|e512da7aa0de9c9d|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:4206:original|checksum=1088341034	wrong_answer|checksum=1088341034	nondeterministic	no				no
+evidence|other_mode|e770979394fc8f21|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:60:original|checksum=618860755	wrong_answer|checksum=618860755	nondeterministic	no				no
+evidence|other_mode|e770979394fc8f21|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:60:original|checksum=1665783220	wrong_answer|checksum=1665783220	nondeterministic	no				no
+evidence|other_mode|e831120e9c97c116|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5212:original|checksum=1499154632	wrong_answer|checksum=1499154632	nondeterministic	no				no
+evidence|other_mode|e831120e9c97c116|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5212:original|checksum=1034019442	wrong_answer|checksum=1034019442	nondeterministic	no				no
+evidence|other_mode|e995f52d0f341b6f|cce20|copy|-O2|mandatory|original	cce20|timeout|fuzz:s1:5308:original|timeout	timeout|timeout	nondeterministic	no	c:crash c:crash b:crash a:crash d:crash		nondeterministic_defect	yes
+evidence|other_mode|f70e391daa0aaab6|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:4586:original|checksum=1652725783	wrong_answer|checksum=1652725783	nondeterministic	no				no
+evidence|other_mode|fbde7208422d6585|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:4394:original|checksum=2012145368	wrong_answer|checksum=2012145368	nondeterministic	no				no
+evidence|repeats|021a08aa48fc3ae0|afar|unified|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:6910:original|checksum=1260933521	wrong_answer|checksum=1260933521	nondeterministic	no				no
+evidence|repeats|028b5122758e6555|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:225:original|checksum=1268169793	wrong_answer|checksum=1268169793	nondeterministic	no				no
+evidence|repeats|0310f6c8dda5c90a|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1454:original|checksum=1669303462	wrong_answer|checksum=1669303462	nondeterministic	no				no
+evidence|repeats|0310f6c8dda5c90a|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1454:original|checksum=1779471059	wrong_answer|checksum=1779471059	nondeterministic	no				no
+evidence|repeats|0310f6c8dda5c90a|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:1454:original|checksum=1958538084	wrong_answer|checksum=1958538084	nondeterministic	no				no
+evidence|repeats|0519400803fbd94c|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:900:original|checksum=232794958	wrong_answer|checksum=232794958	nondeterministic	no				no
+evidence|repeats|10f8f25e05a5cf80|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3352:original|checksum=1345095196	wrong_answer|checksum=1345095196	nondeterministic	no				no
+evidence|repeats|12a93644febe1b1c|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:1221:original|checksum=856033308	wrong_answer|checksum=856033308	nondeterministic	no				no
+evidence|repeats|164fba37037372f5|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7454:original|checksum=1911349146	wrong_answer|checksum=1911349146	nondeterministic	no				no
+evidence|repeats|1bf7022beb80d140|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:415:original|checksum=476737949	wrong_answer|checksum=476737949	nondeterministic	no				no
+evidence|repeats|1bf7022beb80d140|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:415:original|checksum=1617629240	wrong_answer|checksum=1617629240	nondeterministic	no				no
+evidence|repeats|1c5cbae4818f1d14|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7564:original|checksum=214834157	wrong_answer|checksum=214834157	nondeterministic	no				no
+evidence|repeats|1d9589a013e7c3c0|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:9174:original|checksum=1986567469	wrong_answer|checksum=1986567469	nondeterministic	no				no
+evidence|repeats|1e44ad4f2a8394ea|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2735:original|checksum=926306489	wrong_answer|checksum=926306489	nondeterministic	no				no
+evidence|repeats|1ec67d1a1318b0d4|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:6899:original|checksum=2099731709	wrong_answer|checksum=2099731709	nondeterministic	no				no
+evidence|repeats|223e75d5a9bd4332|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:234:original|checksum=770242366	wrong_answer|checksum=770242366	nondeterministic	no				no
+evidence|repeats|279b71b460a7b735|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:7737:original|checksum=1669595179	wrong_answer|checksum=1669595179	nondeterministic	no				no
+evidence|repeats|286d53c88d2201ef|afar|unified|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:6227:original|checksum=356342876	wrong_answer|checksum=356342876	nondeterministic	no				no
+evidence|repeats|2a384cc65a2c56d9|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:983:original|checksum=1135643745	wrong_answer|checksum=1135643745	nondeterministic	no				no
+evidence|repeats|333f261be7dbaabb|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5723:original|checksum=247960778	wrong_answer|checksum=247960778	nondeterministic	no				no
+evidence|repeats|333f261be7dbaabb|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5723:original|checksum=2050514970	wrong_answer|checksum=2050514970	nondeterministic	no				no
+evidence|repeats|3a58b985f8233bea|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:651:original|checksum=439893312	wrong_answer|checksum=439893312	nondeterministic	no				no
+evidence|repeats|3abf95ac836fff96|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:925:original|checksum=1893136342	wrong_answer|checksum=1893136342	nondeterministic	no				no
+evidence|repeats|3b15461149d604fa|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:9446:original|checksum=1415510980	wrong_answer|checksum=1415510980	nondeterministic	no				no
+evidence|repeats|3b5e0b40b9bbf7e4|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3272:original|checksum=1581279086	wrong_answer|checksum=1581279086	nondeterministic	no				no
+evidence|repeats|40d8f1f5a9f423f9|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:517:original|checksum=1914157952	wrong_answer|checksum=1914157952	nondeterministic	no				no
+evidence|repeats|42c8d77bbe453bfa|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2077:original|checksum=787110029	wrong_answer|checksum=787110029	nondeterministic	no				no
+evidence|repeats|43c63c8b995729fd|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:6567:original|checksum=1401808502	wrong_answer|checksum=1401808502	nondeterministic	no				no
+evidence|repeats|464cd66fbf3e7acf|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:3625:original|checksum=2110749338	wrong_answer|checksum=2110749338	nondeterministic	no				no
+evidence|repeats|4958fb3cad94e3a4|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:144:original|checksum=340699271	wrong_answer|checksum=340699271	nondeterministic	no				no
+evidence|repeats|4cb722beb017c07d|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7659:original|checksum=1029128199	wrong_answer|checksum=1029128199	nondeterministic	no				no
+evidence|repeats|4cd4817d2f49d9f3|cce21|unified|-O2|mandatory|original	cce21|ice|ICE "Unhandled expression type in get base or dv mem..."	ice|ICE "Unhandled expression type in get base or dv mem..."	confirmed	no	c:ice c:ice b:ice a:ice d:ice		environment_defect	yes
+evidence|repeats|502c922b6748e2ec|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3045:original|checksum=1999547369	wrong_answer|checksum=1999547369	nondeterministic	no				no
+evidence|repeats|502c922b6748e2ec|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:3045:original|checksum=1257131375	wrong_answer|checksum=1257131375	nondeterministic	no				no
+evidence|repeats|5068fa870bdf3ce1|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:4045:original|checksum=30220080	wrong_answer|checksum=30220080	nondeterministic	no				no
+evidence|repeats|5b20188168ba85ae|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:819:original|checksum=135219162	wrong_answer|checksum=135219162	nondeterministic	no				no
+evidence|repeats|5d4f9956de5d85cc|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:983:original|checksum=1429799462	wrong_answer|checksum=1429799462	nondeterministic	no				no
+evidence|repeats|5d4f9956de5d85cc|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:983:original|checksum=443554599	wrong_answer|checksum=443554599	nondeterministic	no				no
+evidence|repeats|5d4f9956de5d85cc|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:983:original|checksum=37224843	wrong_answer|checksum=37224843	nondeterministic	no				no
+evidence|repeats|61c8c9d60c48dd16|cce19|unified|-O2|mandatory|original	cce19|crash|fuzz:s1:7606:original|SIGABRT	crash|SIGABRT	nondeterministic	no				no
+evidence|repeats|6d1fc3af1e2c3c7a|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5150:original|checksum=1255738279	wrong_answer|checksum=1255738279	nondeterministic	no				no
+evidence|repeats|6d1fc3af1e2c3c7a|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5150:original|checksum=954710801	wrong_answer|checksum=954710801	nondeterministic	no				no
+evidence|repeats|6d1fc3af1e2c3c7a|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:5150:original|checksum=706246988	wrong_answer|checksum=706246988	nondeterministic	no				no
+evidence|repeats|706b30f67e55d710|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2538:original|checksum=1250597944	wrong_answer|checksum=1250597944	nondeterministic	no				no
+evidence|repeats|706b30f67e55d710|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:2538:original|checksum=413657376	wrong_answer|checksum=413657376	nondeterministic	no				no
+evidence|repeats|706b30f67e55d710|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:2538:original|checksum=1276894905	wrong_answer|checksum=1276894905	nondeterministic	no				no
+evidence|repeats|7092f9068aaac070|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:13:original|checksum=1004114083	wrong_answer|checksum=1004114083	nondeterministic	no				no
+evidence|repeats|7092f9068aaac070|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:13:original|checksum=222544481	wrong_answer|checksum=222544481	nondeterministic	no				no
+evidence|repeats|7092f9068aaac070|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:13:original|checksum=643921491	wrong_answer|checksum=643921491	nondeterministic	no				no
+evidence|repeats|7162cef49e268d9b|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:9802:original|checksum=1451425187	wrong_answer|checksum=1451425187	nondeterministic	no				no
+evidence|repeats|7162cef49e268d9b|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:9802:original|checksum=636009882	wrong_answer|checksum=636009882	nondeterministic	no				no
+evidence|repeats|73c5662236b0b09f|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:188:original|checksum=513885878	wrong_answer|checksum=513885878	nondeterministic	no				no
+evidence|repeats|73c5662236b0b09f|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:188:original|checksum=1013942967	wrong_answer|checksum=1013942967	nondeterministic	no				no
+evidence|repeats|73f40b68a8057a37|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7716:original|checksum=619250740	wrong_answer|checksum=619250740	nondeterministic	no				no
+evidence|repeats|74720ea39abe2de8|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:821:original|checksum=1146000626	wrong_answer|checksum=1146000626	nondeterministic	no				no
+evidence|repeats|74720ea39abe2de8|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:821:original|checksum=1696712562	wrong_answer|checksum=1696712562	nondeterministic	no				no
+evidence|repeats|770dd620303e42d1|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:517:original|checksum=377921491	wrong_answer|checksum=377921491	nondeterministic	no				no
+evidence|repeats|8180380543b8b9b1|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:8781:original|checksum=1653567157	wrong_answer|checksum=1653567157	nondeterministic	no				no
+evidence|repeats|8180380543b8b9b1|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:8781:original|checksum=1653567157	wrong_answer|checksum=1653567157	nondeterministic	no				no
+evidence|repeats|81a8c549c3030c6c|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n1:225:original|checksum=891656364	wrong_answer|checksum=891656364	nondeterministic	no				no
+evidence|repeats|81a8c549c3030c6c|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:225:original|checksum=1268169793	wrong_answer|checksum=1268169793	nondeterministic	no				no
+evidence|repeats|842e0b5d5a0c8c97|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2909:original|checksum=1907651865	wrong_answer|checksum=1907651865	nondeterministic	no				no
+evidence|repeats|842e0b5d5a0c8c97|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:2909:original|checksum=1790249947	wrong_answer|checksum=1790249947	nondeterministic	no				no
+evidence|repeats|8ccdb27036228e69|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:6086:original|checksum=2051941965	wrong_answer|checksum=2051941965	nondeterministic	no				no
+evidence|repeats|901d3d76bf1dcb88|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:7465:original|checksum=70481842	wrong_answer|checksum=70481842	nondeterministic	no				no
+evidence|repeats|901d3d76bf1dcb88|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:7465:original|checksum=314819553	wrong_answer|checksum=314819553	nondeterministic	no				no
+evidence|repeats|901d3d76bf1dcb88|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7465:original|checksum=1080617473	wrong_answer|checksum=1080617473	nondeterministic	no				no
+evidence|repeats|90faf63869d97ca5|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:163:original|checksum=476737101	wrong_answer|checksum=476737101	nondeterministic	no				no
+evidence|repeats|90faf63869d97ca5|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:163:original|checksum=984382261	wrong_answer|checksum=984382261	nondeterministic	no				no
+evidence|repeats|957aca56a58858a2|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:8424:original|checksum=887640854	wrong_answer|checksum=887640854	nondeterministic	no				no
+evidence|repeats|95d950ee44157b2c|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:6704:original|checksum=142104628	wrong_answer|checksum=142104628	nondeterministic	no				no
+evidence|repeats|99297a51599b4411|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:8867:original|checksum=1959762557	wrong_answer|checksum=1959762557	nondeterministic	no				no
+evidence|repeats|9ab15149da763a91|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:992:original|checksum=2010126649	wrong_answer|checksum=2010126649	nondeterministic	no				no
+evidence|repeats|9ab15149da763a91|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:992:original|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+evidence|repeats|9ab15149da763a91|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:992:original|checksum=1886174243	wrong_answer|checksum=1886174243	nondeterministic	no				no
+evidence|repeats|9e9568dd1afaf5f3|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:407:original|checksum=861212560	wrong_answer|checksum=861212560	nondeterministic	no				no
+evidence|repeats|9e9568dd1afaf5f3|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n0:407:original|checksum=1718558222	wrong_answer|checksum=1718558222	nondeterministic	no				no
+evidence|repeats|9e9568dd1afaf5f3|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:407:original|checksum=1684897878	wrong_answer|checksum=1684897878	nondeterministic	no				no
+evidence|repeats|a6cb2cbdef91f0a4|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:3667:original|checksum=1296663396	wrong_answer|checksum=1296663396	nondeterministic	no				no
+evidence|repeats|a8e1e8bd735b929b|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:3439:original|checksum=1060412531	wrong_answer|checksum=1060412531	nondeterministic	no				no
+evidence|repeats|a916786d11897898|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:821:original|checksum=617434336	wrong_answer|checksum=617434336	nondeterministic	no				no
+evidence|repeats|a916786d11897898|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:821:original|checksum=1707785385	wrong_answer|checksum=1707785385	nondeterministic	no				no
+evidence|repeats|aa1b9cce7ce7f314|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:220:original|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+evidence|repeats|aa1b9cce7ce7f314|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:220:original|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+evidence|repeats|acb48715219ac7de|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:188:original|checksum=8554799	wrong_answer|checksum=8554799	nondeterministic	no				no
+evidence|repeats|acb48715219ac7de|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:188:original|checksum=1262097877	wrong_answer|checksum=1262097877	nondeterministic	no				no
+evidence|repeats|acb48715219ac7de|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:188:original|checksum=2005035886	wrong_answer|checksum=2005035886	nondeterministic	no				no
+evidence|repeats|acb48715219ac7de|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:188:original|checksum=1256823887	wrong_answer|checksum=1256823887	nondeterministic	no				no
+evidence|repeats|b167a80da00dfaf1|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:9563:original|checksum=352149751	wrong_answer|checksum=352149751	nondeterministic	no				no
+evidence|repeats|b2168aa8a26e8b59|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:2064:original|checksum=883368640	wrong_answer|checksum=883368640	nondeterministic	no				no
+evidence|repeats|b44982b9a94af803|afar|unified|-O2|mandatory|original	afar|timeout|fuzz:s1:9661:original|compile_timeout	timeout|compile_timeout	nondeterministic	no	c:crash c:crash b:crash a:crash d:crash		ours	yes
+evidence|repeats|b4c61350b3d34d01|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5921:original|checksum=1425570710	wrong_answer|checksum=1425570710	nondeterministic	no				no
+evidence|repeats|b4c61350b3d34d01|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5921:original|checksum=528919370	wrong_answer|checksum=528919370	nondeterministic	no				no
+evidence|repeats|b59178700cd2f460|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:9206:original|checksum=936442488	wrong_answer|checksum=936442488	nondeterministic	no				no
+evidence|repeats|b59178700cd2f460|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:9206:original|checksum=851418072	wrong_answer|checksum=851418072	nondeterministic	no				no
+evidence|repeats|c03243cd263ef477|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2281:original|checksum=983242939	wrong_answer|checksum=983242939	nondeterministic	no				no
+evidence|repeats|c03243cd263ef477|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2281:original|checksum=1836552137	wrong_answer|checksum=1836552137	nondeterministic	no				no
+evidence|repeats|c2c5cb9f1420c08d|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:8133:original|checksum=1164127334	wrong_answer|checksum=1164127334	nondeterministic	no				no
+evidence|repeats|c5b074c79e08cfe1|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:8632:original|checksum=993376813	wrong_answer|checksum=993376813	nondeterministic	no				no
+evidence|repeats|c84941c84ab3c43f|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7526:original|checksum=1152863792	wrong_answer|checksum=1152863792	nondeterministic	no				no
+evidence|repeats|c90eb482b4a0683c|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1661:original|checksum=1509612606	wrong_answer|checksum=1509612606	nondeterministic	no				no
+evidence|repeats|c939bb08fcb260a6|afar|unified|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:5360:original|checksum=379933202	wrong_answer|checksum=379933202	nondeterministic	no				no
+evidence|repeats|cc40ffcbe03350ba|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:n1:63:original|checksum=1818095146	wrong_answer|checksum=1818095146	nondeterministic	no				no
+evidence|repeats|cc40ffcbe03350ba|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n1:63:original|checksum=1622809443	wrong_answer|checksum=1622809443	nondeterministic	no				no
+evidence|repeats|cc93f6114021435e|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:220:original|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+evidence|repeats|cc93f6114021435e|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:220:original|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+evidence|repeats|cc93f6114021435e|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:220:original|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+evidence|repeats|cc93f6114021435e|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:220:original|checksum=1282544995	wrong_answer|checksum=1282544995	nondeterministic	no				no
+evidence|repeats|d6b41b6df4be7166|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:349:original|checksum=86	wrong_answer|checksum=86	nondeterministic	no				no
+evidence|repeats|d7bbe70337add27c|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:7568:original|checksum=808522386	wrong_answer|checksum=808522386	nondeterministic	no				no
+evidence|repeats|d7bbe70337add27c|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:7568:original|checksum=830318646	wrong_answer|checksum=830318646	nondeterministic	no				no
+evidence|repeats|df335c39484ac564|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:63:original|checksum=1088125684	wrong_answer|checksum=1088125684	nondeterministic	no				no
+evidence|repeats|df335c39484ac564|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:63:original|checksum=2106649404	wrong_answer|checksum=2106649404	nondeterministic	no				no
+evidence|repeats|df335c39484ac564|cce21_4|unified|-O2|mandatory|original	cce21_4|wrong_answer|fuzz:s1:63:original|checksum=1936950376	wrong_answer|checksum=1936950376	nondeterministic	no	c:wrong_answer c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer		nondeterministic_defect	yes
+evidence|repeats|df335c39484ac564|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:63:original|checksum=35596248	wrong_answer|checksum=35596248	nondeterministic	no				no
+evidence|repeats|df335c39484ac564|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:63:original|checksum=773984751	wrong_answer|checksum=773984751	nondeterministic	no				no
+evidence|repeats|e0399ba090f04d52|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5481:original|checksum=791816917	wrong_answer|checksum=791816917	nondeterministic	no				no
+evidence|repeats|e512da7aa0de9c9d|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:4206:original|checksum=1105650773	wrong_answer|checksum=1105650773	nondeterministic	no				no
+evidence|repeats|e675e3aca5b18447|cce19|unified|-O2|mandatory|original	cce19|run_error|fuzz:s1:8213:original|exit_status: 1	run_error|exit_status: 1	nondeterministic	no				no
+evidence|repeats|e770979394fc8f21|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:60:original|checksum=259177832	wrong_answer|checksum=259177832	nondeterministic	no				no
+evidence|repeats|e770979394fc8f21|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:n0:60:original|checksum=967345313	wrong_answer|checksum=967345313	nondeterministic	no				no
+evidence|repeats|e831120e9c97c116|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:5212:original|checksum=2033731595	wrong_answer|checksum=2033731595	nondeterministic	no				no
+evidence|repeats|e831120e9c97c116|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:5212:original|checksum=1801164000	wrong_answer|checksum=1801164000	nondeterministic	no				no
+evidence|repeats|e86a6f451a52d12f|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1514:original|checksum=1242282641	wrong_answer|checksum=1242282641	nondeterministic	no				no
+evidence|repeats|e86a6f451a52d12f|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1514:original|checksum=1775628051	wrong_answer|checksum=1775628051	nondeterministic	no				no
+evidence|repeats|e86a6f451a52d12f|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:1514:original|checksum=737119431	wrong_answer|checksum=737119431	nondeterministic	no				no
+evidence|repeats|e86a6f451a52d12f|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:1514:original|checksum=737119431	wrong_answer|checksum=737119431	nondeterministic	no				no
+evidence|repeats|e8882e0b539c82b2|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2211:original|checksum=255023362	wrong_answer|checksum=255023362	nondeterministic	no				no
+evidence|repeats|e8882e0b539c82b2|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:2211:original|checksum=1850488653	wrong_answer|checksum=1850488653	nondeterministic	no				no
+evidence|repeats|e8882e0b539c82b2|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:2211:original|checksum=891823951	wrong_answer|checksum=891823951	nondeterministic	no				no
+evidence|repeats|e8882e0b539c82b2|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:2211:original|checksum=1213688064	wrong_answer|checksum=1213688064	nondeterministic	no				no
+evidence|repeats|e8882e0b539c82b2|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:2211:original|checksum=2021517811	wrong_answer|checksum=2021517811	nondeterministic	no				no
+evidence|repeats|e8882e0b539c82b2|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:2211:original|checksum=983239485	wrong_answer|checksum=983239485	nondeterministic	no				no
+evidence|repeats|eb892c13c43e312c|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1536:original|checksum=1952580540	wrong_answer|checksum=1952580540	nondeterministic	no				no
+evidence|repeats|ecbbff2c20e3e734|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:n0:710:original|checksum=773895018	wrong_answer|checksum=773895018	nondeterministic	no				no
+evidence|repeats|eecff6c5abd34c60|afar|unified|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:5758:original|checksum=2029786960	wrong_answer|checksum=2029786960	nondeterministic	no				no
+evidence|repeats|f271f59e3b7ae7ee|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:7395:original|checksum=862012352	wrong_answer|checksum=862012352	nondeterministic	no				no
+evidence|repeats|f57085b1363a69f2|cce19|copy|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1012:original|checksum=2028385757	wrong_answer|checksum=2028385757	nondeterministic	no				no
+evidence|repeats|f57085b1363a69f2|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:1012:original|checksum=398241322	wrong_answer|checksum=398241322	nondeterministic	no				no
+evidence|repeats|f57085b1363a69f2|cce20|copy|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:1012:original|checksum=467590639	wrong_answer|checksum=467590639	nondeterministic	no				no
+evidence|repeats|f57085b1363a69f2|cce20|unified|-O2|mandatory|original	cce20|wrong_answer|fuzz:s1:1012:original|checksum=65833640	wrong_answer|checksum=65833640	nondeterministic	no				no
+evidence|repeats|f57085b1363a69f2|cce21|copy|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:1012:original|checksum=869347638	wrong_answer|checksum=869347638	nondeterministic	no				no
+evidence|repeats|f57085b1363a69f2|cce21|unified|-O2|mandatory|original	cce21|wrong_answer|fuzz:s1:1012:original|checksum=65833640	wrong_answer|checksum=65833640	nondeterministic	no				no
+evidence|repeats|fbde7208422d6585|cce19|unified|-O2|mandatory|original	cce19|wrong_answer|fuzz:s1:4394:original|checksum=81432737	wrong_answer|checksum=81432737	nondeterministic	no				no
+evidence|repeats|ff589cbb32065d2d|afar|unified|-O2|mandatory|original	afar|wrong_answer|fuzz:s1:4835:original|checksum=1330575885	wrong_answer|checksum=1330575885	nondeterministic	no				no

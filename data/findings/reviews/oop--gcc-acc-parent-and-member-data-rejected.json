@@ -1,0 +1,141 @@
+{
+ "finding": "oop/gcc-acc-parent-and-member-data-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Per OpenACC 3.4 a derived-type variable in a data clause copies its members, but data behind allocatable members is not copied. copy(x%a) separately allocates and copies the allocatable component, so listing both is the intended way to transfer such data. No rule forbids a member and its parent in the same construct. The gfortran message is an implementation restriction. Some uncertainty about attachment semantics."
+  },
+  {
+   "run": "run-20261113/batch-78",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenACC 3.4 data-clause restrictions do not forbid naming a derived-type variable in copyin and one of its allocatable members in copy on the same directive. Copying x does not copy data reached through an allocatable member, so x%a is separate data. The gfortran message is its own diagnostic. The spec text on overlapping or aliased data is thin, so required acceptance is not certain."
+  },
+  {
+   "run": "run-v2-20261113/batch-18",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "copyin(x) copies the derived type but not the data behind the allocatable member; copy(x%a) then copies that member and attaches it. A member of a derived type may appear in a data clause, and the restrictions only prohibit array notation on a parent. The parallel loop is independent, giving r1=4160. Rejecting the mix of x and x%a is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-85",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Fortran derived type x with an allocatable member. copyin(x) copies the members but not the data behind the allocatable member; copy(x%a) is a separate member var that allocates and attaches that data. OpenACC 3.4 allows composite members in data clauses and has no rule against a variable and its member in the same construct. The gfortran-style error about mixed component and non-component access is not a spec rule, so refusing the program is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "c7d1be751b7b2685167bc8a8214c9198ee9d28557b76453845cc41144a23fb4d",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading A's conclusion holds. Copying x does not copy data reached through the allocatable member, so x%a is separate data. The restrictions in 3.4 forbid subarray notation on a member together with subarray notation on a parent; here no subarray notation is used. No rule forbids a member and its parent in data clauses of one construct. The compiler's mixed-access error is its own limitation. Reading B's doubt is unsupported by any restricting text."
+  },
+  {
+   "run": "adj-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A member of a composite variable is a valid var, and no OpenACC 3.4 restriction forbids a derived-type variable and one of its members in data clauses of the same directive. The array-notation restriction on parents of members is for update and does not apply (no subarray notation here). Copying x does not copy data behind allocatable member a, so copy(x%a) transfers it. The gfortran message is an implementation limit. Reading A is right; Reading B's doubt rests on thin text, not on a rule against it."
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "fresh/cce21-combined-if-runtime-expr-loop-skipped.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "if(on) with a module logical true applies to target and parallel; on is evaluated on the host. Only iteration 1 writes dev, no race. With a true if clause the target region runs on the device (or host fallback if no device is available, so dev=1 itself is not strictly required), but in either case b must be 1..64 and dev must be set, so the observed unchanged b and dev=-1 is a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "on is .true., so the if clause on the combined construct applies to all constituent constructs and the region executes on the device. Only iteration 1 writes dev, so there is no race; b is written per iteration. Observed b=0, dev=-1 means the target region body never ran or results were not returned, which the specification does not permit. dev=1 assumes a device is available."
+  },
+  {
+   "run": "run-v2-20261113/batch-101",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The if clause expression is a module logical evaluated on the host, true here. With no directive-name-modifier the clause applies to all constituents that accept it, and true means offload to the device. Writes are to distinct b(i); dev is written only by iteration 1. The expected output is required; the observed values show the target region did not execute.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-25",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The if clause on the combined target teams distribute parallel do has no modifier, so it applies to all constituent constructs that accept it (target and parallel). Its expression is the module variable on, evaluated on the host as true, so the target region is offloaded and b and dev are copied back. Expected b(1)=1, b(64)=64, dev=1. The iteration i==1 alone writes dev, so there is no race.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-10",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "33b3243a5d4363b0ebd3bb51cb153cd34e81e314665ca442cbefd72726033b77",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

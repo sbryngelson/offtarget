@@ -1,0 +1,30 @@
+start 2026-10-26T03:03:00-04:00 wingtip-gpu3.cc.gatech.edu
+repro 25.11 separate pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 separate pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 separate pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 separate pathlen=84 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 separate pathlen=84 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 separate pathlen=84 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+control 25.11 separate RC 0 RESULT ran_on_host=1 check=pass 
+repro 25.11 managed pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 managed pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 managed pathlen=45 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 managed pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 managed pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 25.11 managed pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+control 25.11 managed RC 0 RESULT ran_on_host=1 check=pass 
+repro 26.9 separate pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 separate pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 separate pathlen=45 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 separate pathlen=84 crash=0 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 separate pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 separate pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+control 26.9 separate RC 0 RESULT ran_on_host=1 check=pass 
+repro 26.9 managed pathlen=45 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 managed pathlen=45 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 managed pathlen=45 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 managed pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 managed pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+repro 26.9 managed pathlen=84 crash=1 RC 2 | S-0155-for must have the ordered clause specified  
+control 26.9 managed RC 0 RESULT ran_on_host=1 check=pass 
+end 2026-10-26T03:03:23-04:00

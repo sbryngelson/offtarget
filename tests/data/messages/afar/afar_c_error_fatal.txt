@@ -1,0 +1,8 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: amdclang -fopenmp --offload-arch=gfx942 -fopenmp-version=60 -O2 (AFAR 24.0.0git) on offload.engine.c_gen omp60-c-clause-severity-fatal (error at(compilation) severity(fatal))
+# exit status: 1
+==== verbatim output below ====
+omp60-c-clause-severity-fatal.c:20:3: error: COMPLIANCE_PROBE_MESSAGE
+   20 |   #pragma omp error at(compilation) severity(fatal) message("COMPLIANCE_PROBE_MESSAGE")
+      |   ^
+1 error generated.

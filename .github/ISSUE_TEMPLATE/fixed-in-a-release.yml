@@ -1,0 +1,35 @@
+name: Fixed in a newer release
+description: A compiler release now runs a catalogued program correctly
+labels: [fixed]
+body:
+  - type: input
+    id: finding
+    attributes:
+      label: Finding
+      description: The finding's name, as in the issue page's address or `offload issues --show NAME`.
+    validations: {required: true}
+  - type: textarea
+    id: compiler
+    attributes:
+      label: The release
+      description: The full `--version` output and the module or container it came from.
+      render: text
+    validations: {required: true}
+  - type: input
+    id: command
+    attributes:
+      label: The command line and the GPU
+      description: The issue page's "Reproduce" section, or the `build:` line of the finding file's header, with your release's paths.
+    validations: {required: true}
+  - type: textarea
+    id: output
+    attributes:
+      label: The output
+      description: What the reproducer printed. Several runs help where the issue is intermittent.
+      render: text
+    validations: {required: true}
+  - type: input
+    id: reference
+    attributes:
+      label: The fix, if public
+      description: A release note, commit or bug-tracker entry.

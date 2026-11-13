@@ -1,0 +1,10 @@
+# Verbatim run output (stdout then stderr) captured on tuolumne2151, 2026-10-17.
+# source: offload.engine.harness.run_script(afar, xnack=0, mandatory=True) running the afar build of offload.engine.gen omp52-clause-unified_shared_memory (requires unified_shared_memory; needs zero_copy) under HSA_XNACK=0
+# exit status: -6 (subprocess return code: killed by SIGABRT)
+==== verbatim output below ====
+AMDGPU message: Running a program that requires XNACK on a system where XNACK is disabled or not supported. If your device supports XNACK, re-run with HSA_XNACK=1. If your device does not support XNACK, remove USM pragma and use map clauses instead. Set OMPX_EAGER_ZERO_COPY_MAPS=1 for optimal zero-copy performance on non-XNACK shared-memory devices.
+Warning: Queue error - HSA_STATUS_ERROR_MEMORY_FAULT
+Display only launched kernel:
+Kernel 'omp target in _QQmain @ 26 (__omp_offloading_14_73ff45b__QQmain_l26)'
+OFFLOAD ERROR: memory access fault by GPU 4 (agent 0x5555556bfe80) at virtual address 0x555555620000. Reasons: Unknown (0)
+Use 'OFFLOAD_TRACK_ALLOCATION_TRACES=true' to track device allocations

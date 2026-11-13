@@ -1,0 +1,195 @@
+  ***********************************************************************************
+  *  Georgia Institute of Technology - Terms of Use                                 *
+  *                                                                                 *
+  *  This computer system is the property of the Georgia Institute of Technology.   *
+  *  Any user of this system must comply with all Institute and Board of Regents    *
+  *  policies, including the Acceptable Use Policy, Cyber Security Policy and Data  *
+  *  Privacy Policy (http://b.gatech.edu/it-policies). Users should have no         *
+  *  expectation of privacy, as any and all files on this system may be             *
+  *  intercepted, monitored, recorded, copied, inspected, and/or disclosed          *
+  *  to authorized personnel in order to meet Institute obligations.                *
+  *                                                                                 *
+  *  By using this system, I acknowledge and consent to these terms.                *
+  ***********************************************************************************
+docs
+list.txt
+tools
+host wingtip-gpu3.cc.gatech.edu 2026-10-26T10:55:10-04:00
+== release /fastscratch/sbryngelson3/nvhpc/Linux_x86_64/26.9
+FILE data/findings/afar-c-lastprivate-distribute-parallel-for-small-type.c RC 0
+"afar-c-lastprivate-distribute-parallel-for-small-type.c", line 37: warning: variable "lp" was set but never used [set_but_not_used]
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+FILE data/findings/afar-c-teams-distribute-reduction-first-team.c RC 0
+FILE data/findings/catalog/afar-c-complex-reduction-link.c RC 0
+FILE data/findings/catalog/afar-c-critical-hint-link.c RC 2
+NVC++-F-1196-OpenMP - omp critical is not supported in GPU region (afar-c-critical-hint-link.c: 44)
+FILE data/findings/catalog/afar-c-ordered-doacross-link.c RC 0
+FILE data/findings/catalog/afar-c-reduction-task-link.c RC 2
+"afar-c-reduction-task-link.c", line 54: error: invalid text in pragma
+"afar-c-reduction-task-link.c", line 54: error: identifier "task" is undefined
+"afar-c-reduction-task-link.c", line 54: error: invalid text in pragma
+3 errors detected in the compilation of "afar-c-reduction-task-link.c".
+FILE data/findings/catalog/afar-flang-absent-optional-target-crash.f90 RC 0
+FILE data/findings/catalog/afar-flang-critical-target-parallel-wrong.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp critical is not supported in GPU region (afar-flang-critical-target-parallel-wrong.f90: 46)
+FILE data/findings/catalog/afar-flang-dist-schedule-chunk.f90 RC 0
+FILE data/findings/catalog/afar-flang-linear-parallel-ice.f90 RC 2
+NVFORTRAN-W-0547-OpenMP feature, LINEAR, not yet implemented in this version of the compiler. (afar-flang-linear-parallel-ice.f90: 44)
+NVFORTRAN-W-0547-OpenMP feature, LINEAR, not yet implemented in this version of the compiler. (afar-flang-linear-parallel-ice.f90: 44)
+NVFORTRAN-S-0155-x must appear in a SHARED or PRIVATE clause (afar-flang-linear-parallel-ice.f90: 46)
+  0 inform,   2 warnings,   1 severes, 0 fatal for gen_prog
+FILE data/findings/catalog/afar-flang-named-critical-link.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp critical is not supported in GPU region (afar-flang-named-critical-link.f90: 45)
+FILE data/findings/catalog/afar-flang-ordered-wrong.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - ordered is not supported in GPU region (afar-flang-ordered-wrong.f90: 47)
+FILE data/findings/catalog/afar-flang-reduction-minus-rejected.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near identifier task_reduction (afar-flang-reduction-minus-rejected.f90: 45)
+NVFORTRAN-S-0034-Syntax error at or near identifier in_reduction (afar-flang-reduction-minus-rejected.f90: 46)
+  0 inform,   0 warnings,   2 severes, 0 fatal for gen_prog
+FILE data/findings/catalog/afar-flang-reduction-task-ice.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near + (afar-flang-reduction-task-ice.f90: 48)
+  0 inform,   0 warnings,   1 severes, 0 fatal for gen_prog
+FILE data/findings/catalog/afar-flang-sections-in-target-ice.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp sections is not supported in GPU region (afar-flang-sections-in-target-ice.f90: 41)
+FILE data/findings/catalog/afar-flang-workdistribute-ice.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near identifier workdistribute (afar-flang-workdistribute-ice.f90: 52)
+NVFORTRAN-S-0034-Syntax error at or near identifier workdistribute (afar-flang-workdistribute-ice.f90: 54)
+  0 inform,   0 warnings,   2 severes, 0 fatal for gen_prog
+FILE data/findings/fuzz/1131-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (1131-afar.f90: 32)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/1540-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (1540-afar.f90: 15)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/158-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (158-afar.f90: 47)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/1936-afar.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp critical is not supported in GPU region (1936-afar.f90: 42)
+FILE data/findings/fuzz/650-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L19_2__F1L21_4 (650-afar.f90: 30)
+FILE data/findings/fuzz/698-afar.f90 RC 2
+NVFORTRAN-S-0155-Unknown PROC_BIND type  (698-afar.f90: 39)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/700-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L18_2__F1L22_4 (700-afar.f90: 30)
+FILE data/findings/fuzz/87-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L18_2__F1L22_4 (87-afar.f90: 31)
+FILE data/findings/fuzz/916-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L18_2__F1L22_4 (916-afar.f90: 33)
+FILE data/findings/fuzz/b1-121-afar.f90 RC 0
+FILE data/findings/fuzz/b1-183-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L28_2__F1L30_4 (b1-183-afar.f90: 37)
+FILE data/findings/fuzz/b1-231-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L23_2__F1L27_4 (b1-231-afar.f90: 38)
+FILE data/findings/fuzz/b1-268-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L17_2__F1L21_4 (b1-268-afar.f90: 30)
+FILE data/findings/fuzz/b2-183-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L29_2__F1L31_4 (b2-183-afar.f90: 39)
+FILE data/findings/fuzz/b2-213-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L32_2__F1L36_4 (b2-213-afar.f90: 45)
+FILE data/findings/fuzz/b2-52-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L26_2__F1L30_4 (b2-52-afar.f90: 40)
+FILE data/findings/fuzz/b2-68-afar.f90 RC 2
+NVFORTRAN-F-1243-GPU target doesn't support 'if' clauses for managing parallel region. (b2-68-afar.f90: 23)
+FILE data/findings/fuzz/b3-54-afar.f90 RC 0
+FILE data/findings/fuzz/b3-94-afar.f90 RC 0
+NVFORTRAN-W-0155-Passing external procedure as argument in OpenACC/OpenMP device routine context - runtime behavior may be unsupported - nvkernel_MAIN__F1L47_2__F1L51_4 (b3-94-afar.f90: 59)
+FILE data/findings/fuzz/b3-9-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near identifier nontemporal (b3-9-afar.f90: 76)
+NVFORTRAN/x86-64 Linux 26.9-0: compilation completed with severe errors
+FILE data/findings/fuzz/b4-39-afar.f90 RC 2
+NVFORTRAN-W-0287-Unrecognized OpenMP directive - declare (b4-39-afar.f90: 22)
+  0 inform,   1 warnings,   0 severes, 0 fatal for fuzz_dmod
+NVFORTRAN-S-0155-Unknown PROC_BIND type  (b4-39-afar.f90: 103)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/s1-4339-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (s1-4339-afar.f90: 41)
+  0 inform,   0 warnings,   1 severes, 0 fatal for kp1
+FILE data/findings/fuzz/s1-9443-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (s1-9443-afar.f90: 47)
+  0 inform,   0 warnings,   1 severes, 0 fatal for p
+== release /opt/nvidia/hpc_sdk/Linux_x86_64/25.11
+FILE data/findings/afar-c-lastprivate-distribute-parallel-for-small-type.c RC 0
+"afar-c-lastprivate-distribute-parallel-for-small-type.c", line 37: warning: variable "lp" was set but never used [set_but_not_used]
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+FILE data/findings/afar-c-teams-distribute-reduction-first-team.c RC 0
+FILE data/findings/catalog/afar-c-complex-reduction-link.c RC 0
+FILE data/findings/catalog/afar-c-critical-hint-link.c RC 2
+NVC++-F-1196-OpenMP - omp critical is not supported in GPU region (afar-c-critical-hint-link.c: 44)
+FILE data/findings/catalog/afar-c-ordered-doacross-link.c RC 0
+FILE data/findings/catalog/afar-c-reduction-task-link.c RC 2
+"afar-c-reduction-task-link.c", line 54: error: invalid text in pragma
+"afar-c-reduction-task-link.c", line 54: error: identifier "task" is undefined
+"afar-c-reduction-task-link.c", line 54: error: invalid text in pragma
+3 errors detected in the compilation of "afar-c-reduction-task-link.c".
+FILE data/findings/catalog/afar-flang-absent-optional-target-crash.f90 RC 0
+FILE data/findings/catalog/afar-flang-critical-target-parallel-wrong.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp critical is not supported in GPU region (afar-flang-critical-target-parallel-wrong.f90: 46)
+FILE data/findings/catalog/afar-flang-dist-schedule-chunk.f90 RC 0
+FILE data/findings/catalog/afar-flang-linear-parallel-ice.f90 RC 2
+NVFORTRAN-W-0547-OpenMP feature, LINEAR, not yet implemented in this version of the compiler. (afar-flang-linear-parallel-ice.f90: 44)
+NVFORTRAN-W-0547-OpenMP feature, LINEAR, not yet implemented in this version of the compiler. (afar-flang-linear-parallel-ice.f90: 44)
+NVFORTRAN-S-0155-x must appear in a SHARED or PRIVATE clause (afar-flang-linear-parallel-ice.f90: 46)
+  0 inform,   2 warnings,   1 severes, 0 fatal for gen_prog
+FILE data/findings/catalog/afar-flang-named-critical-link.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp critical is not supported in GPU region (afar-flang-named-critical-link.f90: 45)
+FILE data/findings/catalog/afar-flang-ordered-wrong.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - ordered is not supported in GPU region (afar-flang-ordered-wrong.f90: 47)
+FILE data/findings/catalog/afar-flang-reduction-minus-rejected.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near identifier task_reduction (afar-flang-reduction-minus-rejected.f90: 45)
+NVFORTRAN-S-0034-Syntax error at or near identifier in_reduction (afar-flang-reduction-minus-rejected.f90: 46)
+  0 inform,   0 warnings,   2 severes, 0 fatal for gen_prog
+FILE data/findings/catalog/afar-flang-reduction-task-ice.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near + (afar-flang-reduction-task-ice.f90: 48)
+  0 inform,   0 warnings,   1 severes, 0 fatal for gen_prog
+FILE data/findings/catalog/afar-flang-sections-in-target-ice.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp sections is not supported in GPU region (afar-flang-sections-in-target-ice.f90: 41)
+FILE data/findings/catalog/afar-flang-workdistribute-ice.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near identifier workdistribute (afar-flang-workdistribute-ice.f90: 52)
+NVFORTRAN-S-0034-Syntax error at or near identifier workdistribute (afar-flang-workdistribute-ice.f90: 54)
+  0 inform,   0 warnings,   2 severes, 0 fatal for gen_prog
+FILE data/findings/fuzz/1131-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (1131-afar.f90: 32)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/1540-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (1540-afar.f90: 15)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/158-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (158-afar.f90: 47)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/1936-afar.f90 RC 2
+NVFORTRAN-F-1196-OpenMP - omp critical is not supported in GPU region (1936-afar.f90: 42)
+FILE data/findings/fuzz/650-afar.f90 RC 0
+FILE data/findings/fuzz/698-afar.f90 RC 2
+NVFORTRAN-S-0155-Unknown PROC_BIND type  (698-afar.f90: 39)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/700-afar.f90 RC 0
+FILE data/findings/fuzz/87-afar.f90 RC 0
+FILE data/findings/fuzz/916-afar.f90 RC 0
+FILE data/findings/fuzz/b1-121-afar.f90 RC 0
+FILE data/findings/fuzz/b1-183-afar.f90 RC 0
+FILE data/findings/fuzz/b1-231-afar.f90 RC 0
+FILE data/findings/fuzz/b1-268-afar.f90 RC 0
+FILE data/findings/fuzz/b2-183-afar.f90 RC 0
+FILE data/findings/fuzz/b2-213-afar.f90 RC 0
+FILE data/findings/fuzz/b2-52-afar.f90 RC 0
+FILE data/findings/fuzz/b2-68-afar.f90 RC 2
+NVFORTRAN-F-1243-GPU target doesn't support 'if' clauses for managing parallel region. (b2-68-afar.f90: 23)
+FILE data/findings/fuzz/b3-54-afar.f90 RC 0
+FILE data/findings/fuzz/b3-94-afar.f90 RC 0
+FILE data/findings/fuzz/b3-9-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near identifier nontemporal (b3-9-afar.f90: 76)
+NVFORTRAN/x86-64 Linux 25.11-0: compilation completed with severe errors
+FILE data/findings/fuzz/b4-39-afar.f90 RC 2
+NVFORTRAN-W-0287-Unrecognized OpenMP directive - declare (b4-39-afar.f90: 22)
+  0 inform,   1 warnings,   0 severes, 0 fatal for fuzz_dmod
+NVFORTRAN-S-0155-Unknown PROC_BIND type  (b4-39-afar.f90: 103)
+  0 inform,   0 warnings,   1 severes, 0 fatal for fuzz_prog
+FILE data/findings/fuzz/s1-4339-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (s1-4339-afar.f90: 41)
+  0 inform,   0 warnings,   1 severes, 0 fatal for kp1
+FILE data/findings/fuzz/s1-9443-afar.f90 RC 2
+NVFORTRAN-S-0034-Syntax error at or near : (s1-9443-afar.f90: 47)
+  0 inform,   0 warnings,   1 severes, 0 fatal for p
+end 2026-10-26T10:55:57-04:00

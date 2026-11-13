@@ -1,0 +1,113 @@
+{
+ "finding": "nested/afar-cce-c-call-result-member-in-target-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-24",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r[0:1], r->nx[0:1] and r->nx->a[0:4] are disjoint storage and the pointers are attached; child is declare target and only dereferences mapped storage. Single-threaded device region, no race. The reported 'map clause' error refers to an expression not in a map clause, so it is a compiler bug."
+  },
+  {
+   "run": "run-20261113/batch-80",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "map(to: r[0:1]), r->nx[0:1] and r->nx->a[0:4] are valid array sections of lvalue base expressions; pointer members are attached. The declare target function only dereferences pointers that are attached in the device environment. tot is updated by a single initial thread, no race. The refusal of the use in the body is not required by the specification."
+  },
+  {
+   "run": "run-v2-20261113/batch-50",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The map clauses name valid array sections (r[0:1], r->nx[0:1], r->nx->a[0:4]) that map the full pointer chain, and child is a declare target function. The expression child(r)->a[q] is only used in the region body, not in a map clause, so the compiler diagnostic is spurious. A conforming compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-20",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-94",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r[0:1], r->nx[0:1] and r->nx->a[0:4] are distinct storage, so no sharing restriction is broken. The pointers are attached on the device and child() is in a declare target region. The accepted call child(r)->a[q] is conforming. The refusal message cites a line the program does not contain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-19",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "338660722abe38ed0b6fb0fa67de69674789cffdaa77f1534cadac228aec86ae",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

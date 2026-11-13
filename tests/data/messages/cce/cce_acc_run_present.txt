@@ -1,0 +1,13 @@
+# Verbatim run output (stdout and stderr merged) captured on tuolumne2151, 2026-10-18.
+# source: offload.engine.harness.run_script(cce19 with model acc, xnack=0) running the cce19 build (ftn -h acc -O2) of offload.engine.gen acc34-clause-present (negative probe: present(t) with t not present; ) under HSA_XNACK=0
+# exit status: 1
+==== verbatim output below ====
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) cray-mpich/9.0.1
+
+The following have been reloaded with a version change:
+  1) cce/20.0.0 => cce/19.0.0     2) cray-libsci/25.09.0 => cray-libsci/25.03.0
+
+ACC:            find_in_present_table failed for 't(:)' (0x408b00-0x408c00) from ../../acc34-clause-present.f90:36
+ACC: libcrayacc/acc_runtime.c:973 CRAY_ACC_ERROR - Variable not found in present table

@@ -1,0 +1,113 @@
+{
+ "finding": "afar-udr-derived-type-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-28",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "declare reduction in a module specification part is valid; combiner and initializer are plain expressions (structure constructors) with no procedure calls, so no declare target is needed. rp is a scalar of the declared type, mapped tofrom, and used in a reduction on the combined construct. The link errors come from flang runtime symbols, a toolchain defect."
+  },
+  {
+   "run": "run-20261113/batch-70",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A module-scope declare reduction for a derived type with an initializer is valid and visible by use association; the loop updates the private copy and each is combined by padd. Result is deterministic (x=2081 plus partial sums). A link failure from missing runtime symbols is an implementation defect; no reviewed rule forbids the program."
+  },
+  {
+   "run": "run-v2-20261113/batch-102",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare reduction names a derived type, with a Fortran combiner assignment and initializer, in a module. Visibility follows module variable rules, so the use in the reduction clause is valid. Nothing in the program breaks a restriction; failing at link time because of missing runtime symbols is a toolchain defect, so a conforming compiler must build it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-54",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-23",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare reduction for the module-defined derived type has a combiner and initializer that are valid Fortran. The reduction variable rp also appears in a map clause, which is allowed. The loop body only updates the private copy, and the combiner merges the copies, so the result is deterministic. A conforming implementation must compile and link it; the undefined runtime symbols are an implementation defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-69",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "3745bdd6038487d1d828e824a75f0c6e372543e11feaa513925f53e895f33ba9",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

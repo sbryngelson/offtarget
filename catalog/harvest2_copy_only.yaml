@@ -1,0 +1,34 @@
+# Dev programs that assume separate host and device storage.
+# Their unified (AMD HSA_XNACK=1) and managed (NVHPC) rows are not applicable: not run, not gated,
+# not confirmed, not counted (tools/campaigns/harvest.py rows and cells). Written by
+# `tools/campaigns/harvest.py copy-only`. Criterion: the copy cell passes on some compiler and every unified or
+# managed cell fails on every compiler that ran one. Caveat: a unified-memory defect shared by every
+# compiler looks the same. Holdout programs are never listed (scored on copy cells only:
+# catalog/harvest_holdout_excluded.yaml scored_modes).
+rows_not_applicable: 160
+programs:
+- h2-aomp-fortran-map-tests-derived-type-member-array-map-3
+- h2-aomp-fortran-map-tests-double-derived-type-double-member-array-map
+- h2-aomp-fortran-map-tests-double-dtype-mem-individual-arr-bounds-map
+- h2-aomp-fortran-map-tests-dtype-allocatable-array-with-bounds-map
+- h2-aomp-fortran-map-tests-dtype-array-of-dtype-member-map-v5
+- h2-aomp-fortran-map-tests-dtype-enter-exit
+- h2-aomp-fortran-map-tests-enter-exit-break-test-2
+- h2-aomp-fortran-map-tests-nested-dtype-allocatable-array-with-bounds-map
+- h2-aomp-fortran-map-tests-parent-member-overlap-test-1
+- h2-aomp-fortran-map-tests-ref-ptr-ptee-alloca-struct-and-children-map-v1
+- h2-aomp-fortran-map-tests-ref-ptr-ptee-alloca-struct-map-v1
+- h2-aomp-fortran-map-tests-swdev-564425
+- h2-aomp-fortran-map-tests-swdev-564425-simple
+- h2-aomp-fortran-map-tests-swdev-564425-v2-alloca-parent
+- h2-aomp-fortran-map-tests-swdev-564425-v2-alloca-parent-and-children
+- h2-aomp-fortran-map-tests-swdev-564425-v3
+- h2-aomp-fortran-map-tests-swdev-564425-v4-alloca-parent
+- h2-gomp-acc-ccc-deep-copy-10
+- h2-gomp-acc-ccc-deep-copy-6
+- h2-gomp-acc-ccc-deep-copy-8
+- h2-gomp-c-target-link-1
+- h2-gomp-ccc-declare-target-indirect-1
+- h2-gomp-ccc-ptr-attach-1
+- h2-gomp-f-declare-target-indirect-3
+- h2-ompex-declare-target-indirect-call-1-f90

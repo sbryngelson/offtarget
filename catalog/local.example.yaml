@@ -1,0 +1,37 @@
+# Settings for your own computers. Copy this file to catalog/local.yaml (git-ignored) or to
+# ~/.config/offload/local.yaml, or point OFFLOAD_LOCAL at it, and keep only what differs from
+# catalog/machines.yaml and catalog/toolchains.yaml. Mappings merge key by key; a null value removes a key.
+# The paths below are placeholders. docs/tooling/setup.md says how to register a machine or a compiler.
+
+machines.yaml:
+  machines:
+    mymachine:                       # an id from catalog/machines.yaml, or a new machine (then give every
+                                     # key that file requires: arch, access, scheduler, headline_mode, modes)
+      access:                        # `local`, or how to reach it from here
+        ssh: myhost                  # an ssh host name
+        root: /home/me/offload       # a checkout of this repository there
+        python: /usr/bin/python3
+        run_prefix: ""               # a prefix for every command run there, e.g. "nice -n 10"
+      scheduler: {kind: slurm, queue: gpu, max_minutes: 60}     # flux, slurm, local or direct
+  independent_checkers:              # compilers that check legality but are not under test
+    nvhpc_f90:
+      command: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran -mp=gpu -gpu=cc80 -c -o /dev/null
+      version: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran --version
+
+toolchains.yaml:
+  families:                          # only to change a family's flags (docs/tooling/setup.md)
+    gcc:
+      flags:
+        omp: {c: "-fopenmp -foffload=nvptx-none", f90: "-fopenmp -foffload=nvptx-none"}
+  toolchains:
+    gcc_sm80:                        # an id from catalog/toolchains.yaml, or a new compiler
+      install: {default: /opt/gcc-16.2, env: GCC_SM80_ROOT}
+  campaign_lanes:                    # where a remote machine keeps a campaign's copy of the tree
+    mymachine: /scratch/me/offload-lanes
+
+wingtip_offline.yaml:                # the offline test lane (tools/lanes/wingtip_offline.sh): where it keeps data and copies
+  data_root: /scratch/me/offload-data
+  lane_root: /home/me/offload-lanes
+
+canaries.yaml:                       # the five canary outcomes of a toolchain you add (see catalog/canaries.yaml)
+  toolchains: {}

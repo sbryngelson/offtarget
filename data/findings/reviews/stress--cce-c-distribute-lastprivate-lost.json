@@ -1,0 +1,113 @@
+{
+ "finding": "stress/cce-c-distribute-lastprivate-lost.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "In target teams distribute lastprivate(l) map(tofrom: l), lastprivate applies to distribute, map to target, and shared to teams. The loop writes only l (lastprivate) and the private iteration variable, so there is no race. The original l receives the value of the sequentially last iteration (64*40=2560) and map tofrom returns it. Zero is not permitted."
+  },
+  {
+   "run": "run-20261112/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate on the distribute leaf of target teams distribute assigns the value from the sequentially last iteration (i=64, 2560) to the original list item; map(tofrom: l) on the target leaf returns it to the host. Loop variable is private, only l is written, no race. Observed l=0 is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-28",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate on the distribute leaf is legal. The loop variable is private, only l is written, and the value from the sequentially last iteration (i = 64, 64*40 = 2560) is assigned to the original l. The map clause on the target leaf brings l back to the host, so l= 2560 is required. 0 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-07",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-82",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate on distribute applies to the distribute leaf and map to the target leaf. Only l is written in the loop, by distinct iterations into private copies, and the last iteration's value is assigned to the original item. The expected l=2560 is required; l=0 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-44",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "fb62f030b0103f7153b97297e41ae6f825f04e60761ab62c2d4cb69d6262fece",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

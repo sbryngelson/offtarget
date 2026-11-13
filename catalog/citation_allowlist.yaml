@@ -1,0 +1,13 @@
+# Texts that offload.engine.citations does not check, because they are
+# not in results/spec_cache (which holds only the OpenMP and OpenACC
+# specifications). Each entry is a regular expression for the text's name;
+# a citation without a spec version of its own whose most recent named
+# source (within 400 characters) is one of these is reported as external.
+# tests/engine/test_citations.py requires every entry to be used and reasoned.
+# The guide's own names only, not any "guide".
+external:
+  - match: "(?i:user's guide)|HPC Compilers|\\b[Tt]he guide(?:'s)?\\b|NVIDIA's guide|\\bits guide\\b"
+    reason: >-
+      the NVIDIA HPC Compilers User's Guide (25.11, 26.9), cited by its own
+      section numbers (§7.4 OpenMP Subset, §5.4, §7): a vendor document,
+      not a specification in results/spec_cache

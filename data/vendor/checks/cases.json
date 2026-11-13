@@ -1,0 +1,5115 @@
+[
+ {
+  "id": "afar-cce19-character-defaultmap",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "afar-cce19-character-defaultmap.f90",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:ch=b s=wxyz k=1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-cce19-character-defaultmap.f90",
+  "control": "src/afar/control/afar-cce19-character-defaultmap-control.f90",
+  "control_what": "ch and s mapped explicitly: map(tofrom: ch, s)"
+ },
+ {
+  "id": "cce19-target-parallel-guarded-loop",
+  "vendor": "hpe",
+  "finding": "cce19-target-parallel-guarded-loop.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:bad=\\s+0\\s*$",
+  "control_opt": "-O0",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce19-target-parallel-guarded-loop.f90",
+  "control": "src/cce/control/cce19-target-parallel-guarded-loop-control.f90",
+  "control_what": "compiled at -O0 instead of -O2"
+ },
+ {
+  "id": "cce19-target-parallel-single-ice",
+  "vendor": "hpe",
+  "finding": "cce19-target-parallel-single-ice.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:unhandled (acc )?construct type",
+  "expect": "outre:bad=\\s+0\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce19-target-parallel-single-ice.f90",
+  "control": "src/cce/control/cce19-target-parallel-single-ice-control.f90",
+  "control_what": "the single construct replaced by a worksharing do construct"
+ },
+ {
+  "id": "afar-cce19-task-in-target-ice",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "afar-cce19-task-in-target-ice.f90",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(createTask|unhandled (acc )?construct type|Segmentation|signal|error)",
+  "expect": "outre:r=\\s+42",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-cce19-task-in-target-ice.f90",
+  "control": "src/afar/control/afar-cce19-task-in-target-ice-control.f90",
+  "control_what": "the task and taskwait constructs removed (the task body kept)"
+ },
+ {
+  "id": "afar-loop-bind-thread-in-teams",
+  "vendor": "amd",
+  "finding": "afar-loop-bind-thread-in-teams.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:BIND\\(TEAMS\\)` must be specified",
+  "expect": "outre:tot=((\\s+64){4}|\\s+4\\*64)\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-loop-bind-thread-in-teams.f90",
+  "control": "src/afar/control/afar-loop-bind-thread-in-teams-control.f90",
+  "control_what": "the loop directive removed (a plain DO loop in each team)"
+ },
+ {
+  "id": "cce21-defaultmap-aggregate-flag",
+  "vendor": "hpe",
+  "finding": "cce21-defaultmap-aggregate-flag.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:A\\s+0\\s+B\\s+0\\s+C\\s+0\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-defaultmap-aggregate-flag.f90",
+  "control": "src/cce/control/cce21-defaultmap-aggregate-flag-control.f90",
+  "control_what": "defaultmap(to: aggregate) removed from regions A and C"
+ },
+ {
+  "id": "multithread-allocatable-section-maps",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "multithread-allocatable-section-maps.f90",
+  "affected": [
+   "afar@0",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:bad=\\s+0\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/multithread-allocatable-section-maps.f90",
+  "control": "src/other/control/multithread-allocatable-section-maps-control.f90",
+  "control_what": "num_threads(1) instead of num_threads(2)"
+ },
+ {
+  "id": "target-update-sections-in-parallel",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "target-update-sections-in-parallel.f90",
+  "affected": [
+   "afar@0",
+   "cce19@0",
+   "cce20@0",
+   "cce21@0"
+  ],
+  "modes": [
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:bad=\\s+0\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/target-update-sections-in-parallel.f90",
+  "control": "src/other/control/target-update-sections-in-parallel-control.f90",
+  "control_what": "the parallel do directive removed (the four updates run one after another)"
+ },
+ {
+  "id": "cce21-in-reduction-taskwait-link",
+  "vendor": "hpe",
+  "finding": "cce21-in-reduction-taskwait-link.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:_cray\\$mt_taskwait",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-in-reduction-taskwait-link.f90",
+  "control": "src/cce/control/cce21-in-reduction-taskwait-link-control.f90",
+  "control_what": "in_reduction(.and.: ls) on the target replaced by map(tofrom: ls), without the enclosing taskgroup"
+ },
+ {
+  "id": "cce-acc-init-set-runtime-assert",
+  "vendor": "hpe",
+  "finding": "cce-acc-init-set-runtime-assert.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:Incorrect device type set",
+  "expect": "outre:ok\\s+2\\s*\\n\\s*ok\\s+(2\\s+2|2\\*2)",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce-acc-init-set-runtime-assert.f90",
+  "control": "src/cce/control/cce-acc-init-set-runtime-assert-control.f90",
+  "control_what": "device_type(radeon) added to the init and set directives"
+ },
+ {
+  "id": "cce-acc-routine-bind-module-ice",
+  "vendor": "hpe",
+  "finding": "cce-acc-routine-bind-module-ice.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:host associated to itself",
+  "expect": "outre:3\\D+5\\D+7\\D+9\\D+11\\D+13\\D+15\\D+17",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce-acc-routine-bind-module-ice.f90",
+  "control": "src/cce/control/cce-acc-routine-bind-module-ice-control.f90",
+  "control_what": "the two functions as external procedures instead of module procedures"
+ },
+ {
+  "id": "cce-uses-allocators-traits-omp50",
+  "vendor": "hpe",
+  "finding": "cce-uses-allocators-traits-omp50.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:ftn-451",
+  "expect": "outre:3\\D+5\\D+7\\D+9\\D+11\\D+13\\D+15\\D+17",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-uses-allocators-traits-omp50.f90",
+  "control": "src/cce/control/cce-uses-allocators-traits-omp50-control.f90",
+  "control_what": "the OpenMP 5.2 spelling uses_allocators(traits(my_traits): my_alloc)"
+ },
+ {
+  "id": "afar-flang-task-reduction-max",
+  "vendor": "amd",
+  "finding": "afar-flang-task-reduction-max.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(no symbol found for|Invalid reduction identifier)",
+  "expect": "outre:r =\\s+10\\s*$",
+  "control_expect": "outre:r =\\s+55\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-task-reduction-max.f90",
+  "control": "src/afar/control/afar-flang-task-reduction-max-control.f90",
+  "control_what": "the reduction identifier + instead of max (r = r + i)"
+ },
+ {
+  "id": "afar-flang-loop-bind-teams-reduction",
+  "vendor": "amd",
+  "finding": "afar-flang-loop-bind-teams-reduction.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:'REDUCTION' clause not allowed",
+  "expect": "outre:r =\\s+55\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-loop-bind-teams-reduction.f90",
+  "control": "src/afar/control/afar-flang-loop-bind-teams-reduction-control.f90",
+  "control_what": "bind(teams) removed (the loop binds to the teams region by default)"
+ },
+ {
+  "id": "afar-flang-thread-limit-target-parallel-do",
+  "vendor": "amd",
+  "finding": "afar-flang-thread-limit-target-parallel-do.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:THREAD_LIMIT clause is not allowed",
+  "expect": "outre:a\\(3\\) =\\s+3\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-thread-limit-target-parallel-do.f90",
+  "control": "src/afar/control/afar-flang-thread-limit-target-parallel-do-control.f90",
+  "control_what": "thread_limit(8) removed"
+ },
+ {
+  "id": "afar-flang-firstprivate-map-two-targets",
+  "vendor": "amd",
+  "finding": "afar-flang-firstprivate-map-two-targets.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:may not appear on both MAP and FIRSTPRIVATE",
+  "expect": "outre:a\\(3\\) =\\s+6\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-firstprivate-map-two-targets.f90",
+  "control": "src/afar/control/afar-flang-firstprivate-map-two-targets-control.f90",
+  "control_what": "map(to: p1) instead of firstprivate(p1) on the first target"
+ },
+ {
+  "id": "afar-nontemporal-assumed-shape-ice",
+  "vendor": "amd",
+  "finding": "afar-nontemporal-assumed-shape-ice.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(verification of lowering to FIR failed|must be variadic of OpenMP-compatible)",
+  "expect": "outre:RESULT checksum=704\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-nontemporal-assumed-shape-ice.f90",
+  "control": "src/afar/control/afar-nontemporal-assumed-shape-ice-control.f90",
+  "control_what": "nontemporal(o1) removed from the simd directive"
+ },
+ {
+  "id": "afar-xnack1-atomic-min-nested-parallel",
+  "vendor": "amd",
+  "finding": "afar-xnack1-atomic-min-nested-parallel.f90",
+  "affected": [
+   "afar@1"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:r=0 s=0",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-xnack1-atomic-min-nested-parallel.f90",
+  "control": "src/afar/control/afar-xnack1-atomic-min-nested-parallel-control.f90",
+  "control_what": "o1 an explicit-shape array instead of an allocatable"
+ },
+ {
+  "id": "afar-udr-derived-type-link",
+  "vendor": "amd",
+  "finding": "afar-udr-derived-type-link.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(flang_rt_verbose_abort|undefined symbol)",
+  "expect": "outre:RESULT checksum=2081066\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-udr-derived-type-link.f90",
+  "control": "src/afar/control/afar-udr-derived-type-link-control.f90",
+  "control_what": "the same reduction on a host parallel do (no target teams distribute)"
+ },
+ {
+  "id": "afar-xnack1-present-not-enforced",
+  "vendor": "amd",
+  "finding": "afar-xnack1-present-not-enforced.f90",
+  "affected": [
+   "afar@1"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "out:reached the end",
+  "expect": "re:^RUN_FAIL",
+  "control_run_env": {
+   "HSA_XNACK": "0"
+  },
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-xnack1-present-not-enforced.f90",
+  "control": "src/afar/control/afar-xnack1-present-not-enforced-control.f90",
+  "control_what": "run at HSA_XNACK=0"
+ },
+ {
+  "id": "afar-xnack1-target-is-present",
+  "vendor": "amd",
+  "finding": "afar-xnack1-target-is-present.f90",
+  "affected": [
+   "afar@1"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:after enter data: present=\\s+1\\s*\\n\\s*after exit data: present=\\s+0",
+  "control_run_env": {
+   "HSA_XNACK": "0"
+  },
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-xnack1-target-is-present.f90",
+  "control": "src/afar/control/afar-xnack1-target-is-present-control.f90",
+  "control_what": "run at HSA_XNACK=0"
+ },
+ {
+  "id": "afar-c-xnack1-target-is-present",
+  "vendor": "amd",
+  "finding": "afar-c-xnack1-target-is-present.c",
+  "affected": [
+   "afar@1"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "outre:after enter data: present= 1\\s*\\n\\s*after exit data: present= 0",
+  "control_run_env": {
+   "HSA_XNACK": "0"
+  },
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-xnack1-target-is-present.c",
+  "control": "src/afar/control/afar-c-xnack1-target-is-present-control.c",
+  "control_what": "run at HSA_XNACK=0"
+ },
+ {
+  "id": "afar-c-error-directive-in-target-link",
+  "vendor": "amd",
+  "finding": "afar-c-error-directive-in-target-link.c",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60",
+   "cce": "-fopenmp-version=60"
+  },
+  "symptom": "compile:__kmpc_error",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-error-directive-in-target-link.c",
+  "control": "src/afar/control/afar-c-error-directive-in-target-link-control.c",
+  "control_what": "the error directive removed"
+ },
+ {
+  "id": "afar-clang-requires-device-safesync-hang",
+  "vendor": "amd",
+  "finding": "afar-clang-requires-device-safesync-hang.c",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60",
+   "cce": "-fopenmp-version=60"
+  },
+  "compile_s": 120,
+  "symptom": "hang",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-clang-requires-device-safesync-hang.c",
+  "control": "src/afar/control/afar-clang-requires-device-safesync-hang-control.c",
+  "control_what": "another requires clause, atomic_default_mem_order(seq_cst)"
+ },
+ {
+  "id": "afar-c-update-iterator-copy-mode",
+  "vendor": "amd",
+  "finding": "afar-c-update-iterator-copy-mode.c",
+  "affected": [
+   "afar@0"
+  ],
+  "modes": [
+   0,
+   1
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:to iterator: bad= 0",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-update-iterator-copy-mode.c",
+  "control": "src/afar/control/afar-c-update-iterator-copy-mode-control.c",
+  "control_what": "to(a[0:n]) instead of to(iterator(k = 0:1): a[k:n - k])"
+ },
+ {
+  "id": "clang-c-shared-declare-target-combined",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "clang-c-shared-declare-target-combined.c",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:b[1]=3 ",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/other/clang-c-shared-declare-target-combined.c",
+  "control": "src/other/control/clang-c-shared-declare-target-combined-control.c",
+  "control_what": "shared(a, b, on_dev) removed from the first target teams loop"
+ },
+ {
+  "id": "cce-c-map-present-assert",
+  "vendor": "hpe",
+  "finding": "cce-c-map-present-assert.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "crash:clang_flags == 0",
+  "expect": "out:ok=1",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-map-present-assert.c",
+  "control": "src/cce/control/cce-c-map-present-assert-control.c",
+  "control_what": "map(to: a) instead of map(present, to: a)"
+ },
+ {
+  "id": "cce-c-parallel-for-in-target",
+  "vendor": "hpe",
+  "finding": "cce-c-parallel-for-in-target.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:static 64 of 64; lastprivate t=63; linear 64 of 64, x=64",
+  "control_expect": "out:static 64 of 64;",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-parallel-for-in-target.c",
+  "control": "src/cce/control/cce-c-parallel-for-in-target-control.c",
+  "control_what": "schedule(static) removed from the first parallel for (the first part of the output only)"
+ },
+ {
+  "id": "cce-c-dist-schedule-segv",
+  "vendor": "hpe",
+  "finding": "cce-c-dist-schedule-segv.c",
+  "affected": [
+   "cce19@1",
+   "cce20@1",
+   "cce21@1"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "crash:.",
+  "expect": "out:64 of 64",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-dist-schedule-segv.c",
+  "control": "src/cce/control/cce-c-dist-schedule-segv-control.c",
+  "control_what": "dist_schedule(static) removed"
+ },
+ {
+  "id": "cce-c-openmp45-device-link",
+  "vendor": "hpe",
+  "finding": "cce-c-openmp45-device-link.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=45",
+   "cce": "-fopenmp-version=45"
+  },
+  "symptom": "compile:undefined symbol: omp_is_initial_device",
+  "expect": "out:on_host=0",
+  "control_flags": {},
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-openmp45-device-link.c",
+  "control": "src/cce/control/cce-c-openmp45-device-link-control.c",
+  "control_what": "built without -fopenmp-version=45 (the default, 5.1)"
+ },
+ {
+  "id": "cce-c-map-delete-refcount",
+  "vendor": "hpe",
+  "finding": "cce-c-map-delete-refcount.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:bad= 0 a_present= 0 b_present= 0",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-map-delete-refcount.c",
+  "control": "src/cce/control/cce-c-map-delete-refcount-control.c",
+  "control_what": "a entered once (reference count 1) instead of twice"
+ },
+ {
+  "id": "cce-mapper-next-map-copy-back",
+  "vendor": "hpe",
+  "finding": "cce-mapper-next-map-copy-back.f90",
+  "affected": [
+   "cce19@0",
+   "cce20@0"
+  ],
+  "modes": [
+   0,
+   1
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:host_flag=\\s+0\\s+b1=\\s+3\\s+sv=\\s+[17]\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-mapper-next-map-copy-back.f90",
+  "control": "src/cce/control/cce-mapper-next-map-copy-back-control.f90",
+  "control_what": "the map(tofrom: host_flag) clause written before the mapper clause"
+ },
+ {
+  "id": "cce-defaultmap-tofrom-explicit-map",
+  "vendor": "hpe",
+  "finding": "cce-defaultmap-tofrom-explicit-map.f90",
+  "affected": [
+   "cce19@0",
+   "cce21@0"
+  ],
+  "modes": [
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "re:^RUN_OK(?![\\s\\S]*unchanged:\\s+(?!64\\b))",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-defaultmap-tofrom-explicit-map.f90",
+  "control": "src/cce/control/cce-defaultmap-tofrom-explicit-map-control.f90",
+  "control_what": "defaultmap(tofrom) removed from regions 2 and 4"
+ },
+ {
+  "id": "fortran-schedule-static-in-target",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "fortran-schedule-static-in-target.f90",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:wrong thread: 0 of 1000 \\(expected 0\\)\\s*\\n.*second chunk of a thread: 0 \\(expected",
+  "control_expect": "out:iterations on the wrong thread: 0 of 1000",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/fortran-schedule-static-in-target.f90",
+  "control": "src/other/control/fortran-schedule-static-in-target-control.f90",
+  "control_what": "schedule(static, 1) and its check (iteration i on thread mod(i - 1, T)) instead of schedule(static, 4)"
+ },
+ {
+  "id": "fortran-loop-bind-thread-in-parallel",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "fortran-loop-bind-thread-in-parallel.f90",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:threads that did not run all 64 iterations: 0 (expected 0)",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/fortran-loop-bind-thread-in-parallel.f90",
+  "control": "src/other/control/fortran-loop-bind-thread-in-parallel-control.f90",
+  "control_what": "the loop directive removed (each thread runs a plain DO loop)"
+ },
+ {
+  "id": "defaultmap-none-loop-variable",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "defaultmap-none-loop-variable.f90",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(DEFAULTMAP\\(NONE\\)|ftn-1964|default map\\(none\\))",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/defaultmap-none-loop-variable.f90",
+  "control": "src/other/control/defaultmap-none-loop-variable-control.f90",
+  "control_what": "defaultmap(none) removed"
+ },
+ {
+  "id": "clang-c-declare-target-to-omp52",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "clang-c-declare-target-to-omp52.c",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:unexpected 'to' clause",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/other/clang-c-declare-target-to-omp52.c",
+  "control": "src/other/control/clang-c-declare-target-to-omp52-control.c",
+  "control_what": "enter(f) instead of to(f)"
+ },
+ {
+  "id": "clang-c-map-iterator-omp51",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "clang-c-map-iterator-omp51.c",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:incorrect map type modifier",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/other/clang-c-map-iterator-omp51.c",
+  "control": "src/other/control/clang-c-map-iterator-omp51-control.c",
+  "control_what": "map(tofrom: a[0:n]) without the iterator modifier"
+ },
+ {
+  "id": "clang-c-linear-directive-name-hang",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "clang-c-linear-directive-name-hang.c",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60",
+   "cce": "-fopenmp-version=60"
+  },
+  "compile_s": 120,
+  "symptom": "hang",
+  "expect": "re:^RUN_",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/other/clang-c-linear-directive-name-hang.c",
+  "control": "src/other/control/clang-c-linear-directive-name-hang-control.c",
+  "control_what": "linear(x: step(2)) without the directive-name modifier"
+ },
+ {
+  "id": "cce21-linear-modifier-default-none",
+  "vendor": "hpe",
+  "finding": "cce21-linear-modifier-default-none.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(ftn-1510|DEFAULT\\(NONE\\))",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-linear-modifier-default-none.f90"
+ },
+ {
+  "id": "s1-2370-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-2370-cce21.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(ftn-1510|ftn-1310)",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-2370-cce21.f90",
+  "control": "src/other/control/s1-2370-cce21-control.f90",
+  "control_what": "firstprivate(i) removed from the parallel do"
+ },
+ {
+  "id": "s1-2592-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-2592-cce21.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:Should never reach this code",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-2592-cce21.f90",
+  "control": "src/other/control/s1-2592-cce21-control.f90",
+  "control_what": "ichar('k') instead of ichar(xs(1:1))"
+ },
+ {
+  "id": "s1-3463-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-3463-cce21.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:Error getting dope vector information",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-3463-cce21.f90",
+  "control": "src/other/control/s1-3463-cce21-control.f90",
+  "control_what": "the map clause dropped from the target construct"
+ },
+ {
+  "id": "s1-4339-afar",
+  "vendor": "amd",
+  "finding": "fuzz/s1-4339-afar.f90",
+  "affected": [
+   "afar@1"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-4339-afar.f90",
+  "control": "src/other/control/s1-4339-afar-control.f90",
+  "control_what": "map(tofrom: ia) without the close modifier"
+ },
+ {
+  "id": "s1-6085-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-6085-cce21.f90",
+  "affected": [
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:(ftn-2116|signal 06|Aborted)",
+  "expect": "re:^RUN_OK",
+  "control_expect": "compile:ftn-7032",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-6085-cce21.f90",
+  "control": "src/other/control/s1-6085-cce21-control.f90",
+  "control_what": "reduction(min: r1a) removed from the first target teams"
+ },
+ {
+  "id": "s1-6760-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-6760-cce20.f90",
+  "affected": [
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:ftn-1725",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-6760-cce20.f90",
+  "control": "src/other/control/s1-6760-cce20-control.f90",
+  "control_what": "declare target to(g), the deprecated spelling, instead of enter(g)"
+ },
+ {
+  "id": "s1-6888-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-6888-cce21.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:ftn-1747",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-6888-cce21.f90",
+  "control": "src/other/control/s1-6888-cce21-control.f90",
+  "control_what": "to(a(1:n)), without the stride (all elements updated)"
+ },
+ {
+  "id": "s1-8634-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-8634-cce21.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(ftn-2116|signal|Unhandled expression|TYPE_DEREF)",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-8634-cce21.f90",
+  "control": "src/other/control/s1-8634-cce21-control.f90",
+  "control_what": "a character array xs(2) instead of a character scalar"
+ },
+ {
+  "id": "s1-91-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-91-cce21.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:ftn-1510",
+  "expect": "re:^RUN_OK",
+  "control_expect": "compile:unhandled (acc )?construct type",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-91-cce21.f90",
+  "control": "src/other/control/s1-91-cce21-control.f90",
+  "control_what": "default(none) removed from the empty parallel construct of kp1 (the ftn-1510 for HF2 goes away; CCE then stops at the masked construct, documented as unsupported in offload regions)"
+ },
+ {
+  "id": "s1-9914-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-9914-cce19.f90",
+  "affected": [
+   "cce19"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "compile_s": 300,
+  "symptom": "hang",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-9914-cce19.f90",
+  "control": "src/other/control/s1-9914-cce19-control.f90",
+  "control_what": "thread_limit(1) removed from the first target"
+ },
+ {
+  "id": "s1-7882-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/s1-7882-cce20.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:Variable not found in present table",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-7882-cce20.f90",
+  "control": "src/other/control/s1-7882-cce20-control.f90",
+  "control_what": "map(tofrom: xc) without the present modifier"
+ },
+ {
+  "id": "s1-9443-afar",
+  "vendor": "amd",
+  "finding": "fuzz/s1-9443-afar.f90",
+  "affected": [
+   "afar@1"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/s1-9443-afar.f90",
+  "control": "src/other/control/s1-9443-afar-control.f90",
+  "control_what": "map(present, to: xk1) without the close modifier"
+ },
+ {
+  "id": "afar-c-complex-reduction-link",
+  "vendor": "amd",
+  "finding": "catalog/afar-c-complex-reduction-link.c",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:undefined symbol: __atomic_load",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-complex-reduction-link.c",
+  "control": "src/afar/control/afar-c-complex-reduction-link-control.c",
+  "control_what": "the same reduction on a host parallel for (target teams distribute and the map clauses removed)"
+ },
+ {
+  "id": "afar-c-critical-hint-link",
+  "vendor": "amd",
+  "finding": "catalog/afar-c-critical-hint-link.c",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_critical_with_hint",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-critical-hint-link.c",
+  "control": "src/afar/control/afar-c-critical-hint-link-control.c",
+  "control_what": "the hint clause removed (a named critical without hint)"
+ },
+ {
+  "id": "afar-c-ordered-doacross-link",
+  "vendor": "amd",
+  "finding": "catalog/afar-c-ordered-doacross-link.c",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_doacross_init",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-ordered-doacross-link.c",
+  "control": "src/afar/control/afar-c-ordered-doacross-link-control.c",
+  "control_what": "the ordered(1) clause removed"
+ },
+ {
+  "id": "afar-c-reduction-task-link",
+  "vendor": "amd",
+  "finding": "catalog/afar-c-reduction-task-link.c",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_taskred_modifier_init",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-reduction-task-link.c",
+  "control": "src/afar/control/afar-c-reduction-task-link-control.c",
+  "control_what": "reduction(+: s) without the task modifier"
+ },
+ {
+  "id": "afar-flang-absent-optional-target-crash",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-absent-optional-target-crash.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-absent-optional-target-crash.f90",
+  "control": "src/afar/control/afar-flang-absent-optional-target-crash-control.f90",
+  "control_what": "the PRESENT(c) branch removed (the absent dummy is not referenced in the region)"
+ },
+ {
+  "id": "afar-flang-critical-target-parallel-wrong",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-critical-target-parallel-wrong.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-critical-target-parallel-wrong.f90",
+  "control": "src/afar/control/afar-flang-critical-target-parallel-wrong-control.f90",
+  "control_what": "an atomic update instead of the critical construct"
+ },
+ {
+  "id": "afar-flang-dist-schedule-chunk",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-dist-schedule-chunk.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-dist-schedule-chunk.f90",
+  "control": "src/afar/control/afar-flang-dist-schedule-chunk-control.f90",
+  "control_what": "num_teams(1) instead of num_teams(4) (every chunk on team 0)"
+ },
+ {
+  "id": "afar-flang-linear-parallel-ice",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-linear-parallel-ice.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(createParallel|Segmentation|signal|error)",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-linear-parallel-ice.f90",
+  "control": "src/afar/control/afar-flang-linear-parallel-ice-control.f90",
+  "control_what": "the same parallel do on the host (the target directive removed)"
+ },
+ {
+  "id": "afar-flang-named-critical-link",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-named-critical-link.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:__kmpc_critical_with_hint",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-named-critical-link.f90",
+  "control": "src/afar/control/afar-flang-named-critical-link-control.f90",
+  "control_what": "the same loop on the host (parallel do instead of target parallel do)"
+ },
+ {
+  "id": "afar-flang-ordered-wrong",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-ordered-wrong.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-ordered-wrong.f90",
+  "control": "src/afar/control/afar-flang-ordered-wrong-control.f90",
+  "control_what": "the same parallel do on the host (the target directive removed)"
+ },
+ {
+  "id": "afar-flang-reduction-minus-rejected",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-reduction-minus-rejected.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(deprecated|not supported)",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-reduction-minus-rejected.f90",
+  "control": "src/afar/control/afar-flang-reduction-minus-rejected-control.f90",
+  "control_what": "the reduction identifier + instead of -"
+ },
+ {
+  "id": "afar-flang-reduction-task-ice",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-reduction-task-ice.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(Call parameter type does not match|signal|error)",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-reduction-task-ice.f90",
+  "control": "src/afar/control/afar-flang-reduction-task-ice-control.f90",
+  "control_what": "reduction(+: s) without the task modifier"
+ },
+ {
+  "id": "afar-flang-sections-in-target-ice",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-sections-in-target-ice.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(Call parameter type does not match|signal|error)",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-sections-in-target-ice.f90",
+  "control": "src/afar/control/afar-flang-sections-in-target-ice-control.f90",
+  "control_what": "the same sections on the host (parallel instead of target parallel)"
+ },
+ {
+  "id": "afar-flang-workdistribute-ice",
+  "vendor": "amd",
+  "finding": "catalog/afar-flang-workdistribute-ice.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60"
+  },
+  "symptom": "compile:(MapInfoOp|signal|error)",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-flang-workdistribute-ice.f90",
+  "control": "src/afar/control/afar-flang-workdistribute-ice-control.f90",
+  "control_what": "a plain target construct around the array assignment instead of target teams workdistribute"
+ },
+ {
+  "id": "c-allocate-const-mem-firstprivate-wrong",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "catalog/c-allocate-const-mem-firstprivate-wrong.c",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/other/c-allocate-const-mem-firstprivate-wrong.c",
+  "control": "src/other/control/c-allocate-const-mem-firstprivate-wrong-control.c",
+  "control_what": "the allocate and uses_allocators clauses removed (x firstprivate only)"
+ },
+ {
+  "id": "defaultmap-present-private-array-abort",
+  "vendor": "amd",
+  "finding": "catalog/defaultmap-present-private-array-abort.f90",
+  "affected": [
+   "afar@0"
+  ],
+  "modes": [
+   0,
+   1
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/defaultmap-present-private-array-abort.f90",
+  "control": "src/other/control/defaultmap-present-private-array-abort-control.f90",
+  "control_what": "defaultmap(present: aggregate) removed"
+ },
+ {
+  "id": "cce-c-allocate-align-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-allocate-align-link.c",
+  "affected": [
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_aligned_alloc",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-allocate-align-link.c",
+  "control": "src/cce/control/cce-c-allocate-align-link-control.c",
+  "control_what": "allocate(omp_default_mem_alloc: t) without the align modifier"
+ },
+ {
+  "id": "cce-c-allocate-allocator-modifier-rejected",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-allocate-allocator-modifier-rejected.c",
+  "affected": [
+   "cce19"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:undeclared function 'allocator'",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-allocate-allocator-modifier-rejected.c",
+  "control": "src/cce/control/cce-c-allocate-allocator-modifier-rejected-control.c",
+  "control_what": "allocate(omp_default_mem_alloc: t), the 5.0 spelling"
+ },
+ {
+  "id": "cce-c-device-type-directive-name-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-device-type-directive-name-ice.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60",
+   "cce": "-fopenmp-version=60"
+  },
+  "symptom": "compile:(PLEASE submit a bug report|signal|crash)",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-device-type-directive-name-ice.c",
+  "control": "src/cce/control/cce-c-device-type-directive-name-ice-control.c",
+  "control_what": "device_type(any) without the directive-name modifier"
+ },
+ {
+  "id": "cce-c-dist-schedule-chunk",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-dist-schedule-chunk.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-dist-schedule-chunk.c",
+  "control": "src/cce/control/cce-c-dist-schedule-chunk-control.c",
+  "control_what": "num_teams(1) instead of num_teams(4) (every chunk on team 0)"
+ },
+ {
+  "id": "cce-c-f-pointer-device-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-f-pointer-device-link.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:_C_F_POINTER",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-c-f-pointer-device-link.f90",
+  "control": "src/cce/control/cce-c-f-pointer-device-link-control.f90",
+  "control_what": "the device loop reads a and writes b directly instead of through c_f_pointer"
+ },
+ {
+  "id": "cce-c-lastprivate-parallel-in-seq-loop-wrong",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-lastprivate-parallel-in-seq-loop-wrong.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-lastprivate-parallel-in-seq-loop-wrong.c"
+ },
+ {
+  "id": "cce-c-long-double-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-long-double-ice.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:(PLEASE submit a bug report|signal|crash)",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-long-double-ice.c",
+  "control": "src/cce/control/cce-c-long-double-ice-control.c",
+  "control_what": "double instead of long double"
+ },
+ {
+  "id": "cce-c-map-iterator-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-map-iterator-ice.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:(PLEASE submit a bug report|signal|crash)",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-map-iterator-ice.c",
+  "control": "src/cce/control/cce-c-map-iterator-ice-control.c",
+  "control_what": "the same sections mapped without the iterator modifier (w[1:n/2 - 2])"
+ },
+ {
+  "id": "cce-c-motion-iterator-rejected",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-motion-iterator-rejected.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:undeclared function 'iterator'",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-motion-iterator-rejected.c",
+  "control": "src/cce/control/cce-c-motion-iterator-rejected-control.c",
+  "control_what": "from(b[0:n]) without the iterator modifier"
+ },
+ {
+  "id": "cce-c-ordered-doacross-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-ordered-doacross-link.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_doacross_init",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-ordered-doacross-link.c",
+  "control": "src/cce/control/cce-c-ordered-doacross-link-control.c",
+  "control_what": "the ordered(1) clause removed"
+ },
+ {
+  "id": "cce-c-ordered-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-ordered-link.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_dispatch_init_4",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-ordered-link.c",
+  "control": "src/cce/control/cce-c-ordered-link-control.c",
+  "control_what": "the same parallel for on the host (the target directive removed)"
+ },
+ {
+  "id": "cce-c-recursive-function-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-recursive-function-ice.c",
+  "affected": [
+   "cce19",
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:(frontend command failed|signal|PLEASE)",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-recursive-function-ice.c",
+  "control": "src/cce/control/cce-c-recursive-function-ice-control.c",
+  "control_what": "sumto computed without recursion (k*(k+1)/2)"
+ },
+ {
+  "id": "cce-c-reduction-inscan-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-reduction-inscan-ice.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:(PLEASE submit a bug report|signal|crash)",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-reduction-inscan-ice.c",
+  "control": "src/cce/control/cce-c-reduction-inscan-ice-control.c",
+  "control_what": "the same scan on the host (the target directive removed)"
+ },
+ {
+  "id": "cce-c-reduction-task-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-reduction-task-link.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_taskred_modifier_init",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-reduction-task-link.c",
+  "control": "src/cce/control/cce-c-reduction-task-link-control.c",
+  "control_what": "reduction(+: s) without the task modifier"
+ },
+ {
+  "id": "cce-c-sections-in-target-wrong",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-sections-in-target-wrong.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-sections-in-target-wrong.c",
+  "control": "src/cce/control/cce-c-sections-in-target-wrong-control.c",
+  "control_what": "the same sections on the host (parallel instead of target parallel)"
+ },
+ {
+  "id": "cce-c-single-masked-task-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-single-masked-task-link.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_single",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-single-masked-task-link.c",
+  "control": "src/cce/control/cce-c-single-masked-task-link-control.c",
+  "control_what": "the same single on the host (parallel instead of target parallel)"
+ },
+ {
+  "id": "cce-c-task-in-target-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-task-in-target-link.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:__kmpc_omp_task_alloc",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-task-in-target-link.c",
+  "control": "src/cce/control/cce-c-task-in-target-link-control.c",
+  "control_what": "the same region on the host (the target directive removed)"
+ },
+ {
+  "id": "cce-c-uses-allocators-traits-rejected",
+  "vendor": "hpe",
+  "finding": "catalog/cce-c-uses-allocators-traits-rejected.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "compile:undeclared function 'traits'",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-uses-allocators-traits-rejected.c"
+ },
+ {
+  "id": "cce19-reduction-task-addrspacecast-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce19-reduction-task-addrspacecast-ice.f90",
+  "affected": [
+   "cce19"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:invalid addrspacecast",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce19-reduction-task-addrspacecast-ice.f90",
+  "control": "src/cce/control/cce19-reduction-task-addrspacecast-ice-control.f90",
+  "control_what": "reduction(+: s) without the task modifier"
+ },
+ {
+  "id": "cce20-c-defaultmap-private-storage-rejected",
+  "vendor": "hpe",
+  "finding": "catalog/cce20-c-defaultmap-private-storage-rejected.c",
+  "affected": [
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60",
+   "cce": "-fopenmp-version=60"
+  },
+  "symptom": "compile:expected 'alloc', 'from'",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce20-c-defaultmap-private-storage-rejected.c",
+  "control": "src/cce/control/cce20-c-defaultmap-private-storage-rejected-control.c",
+  "control_what": "defaultmap(firstprivate) instead of defaultmap(private)"
+ },
+ {
+  "id": "cce20-map-self-rejected",
+  "vendor": "hpe",
+  "finding": "catalog/cce20-map-self-rejected.f90",
+  "affected": [
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:ftn-810",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce20-map-self-rejected.f90",
+  "control": "src/cce/control/cce20-map-self-rejected-control.f90",
+  "control_what": "map(to: a) instead of map(self: a)"
+ },
+ {
+  "id": "cce21-c-declare-target-local-rejected",
+  "vendor": "hpe",
+  "finding": "catalog/cce21-c-declare-target-local-rejected.c",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60",
+   "cce": "-fopenmp-version=60"
+  },
+  "symptom": "compile:unexpected 'local' clause",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce21-c-declare-target-local-rejected.c",
+  "control": "src/cce/control/cce21-c-declare-target-local-rejected-control.c",
+  "control_what": "declare target enter(dv) instead of local(dv)"
+ },
+ {
+  "id": "cce21-c-target-loop-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce21-c-target-loop-ice.c",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=60",
+   "cce": "-fopenmp-version=60"
+  },
+  "symptom": "compile:(PLEASE submit a bug report|signal|crash)",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce21-c-target-loop-ice.c",
+  "control": "src/cce/control/cce21-c-target-loop-ice-control.c",
+  "control_what": "target teams loop instead of target loop"
+ },
+ {
+  "id": "cce-acc-allocate-in-compute-crash",
+  "vendor": "hpe",
+  "finding": "catalog/cce-acc-allocate-in-compute-crash.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce-acc-allocate-in-compute-crash.f90",
+  "control": "src/cce/control/cce-acc-allocate-in-compute-crash-control.f90",
+  "control_what": "w a fixed-size local array (no ALLOCATE/DEALLOCATE)"
+ },
+ {
+  "id": "cce-acc-character-dummy-routine-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-acc-character-dummy-routine-ice.f90",
+  "affected": [
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:Bad cast from fcd",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce-acc-character-dummy-routine-ice.f90",
+  "control": "src/cce/control/cce-acc-character-dummy-routine-ice-control.f90",
+  "control_what": "the routine takes the character's code and length as integers instead of the CHARACTER(len=*) dummy"
+ },
+ {
+  "id": "cce-acc-loop-seq-in-routine-wrong",
+  "vendor": "hpe",
+  "finding": "catalog/cce-acc-loop-seq-in-routine-wrong.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce-acc-loop-seq-in-routine-wrong.f90",
+  "control": "src/cce/control/cce-acc-loop-seq-in-routine-wrong-control.f90",
+  "control_what": "the loop seq directive removed"
+ },
+ {
+  "id": "cce-acc-stop-in-compute-crash",
+  "vendor": "hpe",
+  "finding": "catalog/cce-acc-stop-in-compute-crash.f90",
+  "affected": [
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:(STOP|stopped)",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce-acc-stop-in-compute-crash.f90",
+  "control": "src/cce/control/cce-acc-stop-in-compute-crash-control.f90",
+  "control_what": "the IF with an assignment instead of STOP"
+ },
+ {
+  "id": "cce-allocators-stack-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-allocators-stack-ice.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:Too few arguments on the stack",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-allocators-stack-ice.f90",
+  "control": "src/cce/control/cce-allocators-stack-ice-control.f90",
+  "control_what": "the allocate and uses_allocators clauses removed (t private only)"
+ },
+ {
+  "id": "cce-atomic-default-mem-order-acquire-release-rejected",
+  "vendor": "hpe",
+  "finding": "catalog/cce-atomic-default-mem-order-acquire-release-rejected.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:ftn-1725",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-atomic-default-mem-order-acquire-release-rejected.f90",
+  "control": "src/cce/control/cce-atomic-default-mem-order-acquire-release-rejected-control.f90",
+  "control_what": "atomic_default_mem_order(seq_cst) instead of (release)"
+ },
+ {
+  "id": "cce-flang-allocate-const-mem-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-flang-allocate-const-mem-ice.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:Too few arguments on the stack",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-flang-allocate-const-mem-ice.f90",
+  "control": "src/cce/control/cce-flang-allocate-const-mem-ice-control.f90",
+  "control_what": "the allocate and uses_allocators clauses removed (x firstprivate only)"
+ },
+ {
+  "id": "cce-flang-allocate-in-target-crash",
+  "vendor": "hpe",
+  "finding": "catalog/cce-flang-allocate-in-target-crash.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-flang-allocate-in-target-crash.f90",
+  "control": "src/cce/control/cce-flang-allocate-in-target-crash-control.f90",
+  "control_what": "w a fixed-size local array (no ALLOCATE/DEALLOCATE)"
+ },
+ {
+  "id": "cce-flang-lastprivate-parallel-in-seq-loop-wrong",
+  "vendor": "hpe",
+  "finding": "catalog/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90",
+  "control": "src/cce/control/cce-flang-lastprivate-parallel-in-seq-loop-wrong-control.f90",
+  "control_what": "last also mapped tofrom on the target construct (the sequential loop kept)"
+ },
+ {
+  "id": "cce-flang-stop-in-target-crash",
+  "vendor": "hpe",
+  "finding": "catalog/cce-flang-stop-in-target-crash.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:(STOP|stopped)",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-flang-stop-in-target-crash.f90",
+  "control": "src/cce/control/cce-flang-stop-in-target-crash-control.f90",
+  "control_what": "the IF with an assignment instead of STOP"
+ },
+ {
+  "id": "cce-iterator-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-iterator-link.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:OmpIt\\$k",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-iterator-link.f90",
+  "control": "src/cce/control/cce-iterator-link-control.f90",
+  "control_what": "from(b(1:n)) without the iterator modifier"
+ },
+ {
+  "id": "cce-linear-lastprivate-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-linear-lastprivate-ice.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:barrier/reset/protected last private",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-linear-lastprivate-ice.f90",
+  "control": "src/cce/control/cce-linear-lastprivate-ice-control.f90",
+  "control_what": "the same parallel do on the host (the target directive removed)"
+ },
+ {
+  "id": "cce-reduction-inscan-ice",
+  "vendor": "hpe",
+  "finding": "catalog/cce-reduction-inscan-ice.f90",
+  "affected": [
+   "cce19",
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:analyze_object: unknown object type",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-reduction-inscan-ice.f90",
+  "control": "src/cce/control/cce-reduction-inscan-ice-control.f90",
+  "control_what": "the same scan on the host (the target directive removed)"
+ },
+ {
+  "id": "cce-reduction-task-link",
+  "vendor": "hpe",
+  "finding": "catalog/cce-reduction-task-link.f90",
+  "affected": [
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:_cray\\$mt_taskred_modifier_init",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-reduction-task-link.f90",
+  "control": "src/cce/control/cce-reduction-task-link-control.f90",
+  "control_what": "reduction(+: s) without the task modifier"
+ },
+ {
+  "id": "nvhpc-acc-associate-illegal-address",
+  "vendor": "nvidia",
+  "finding": "catalog/nvhpc-acc-associate-illegal-address.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/nvhpc/nvhpc-acc-associate-illegal-address.f90",
+  "control": "src/nvhpc/control/nvhpc-acc-associate-illegal-address-control.f90",
+  "control_what": "the assignment written without the ASSOCIATE construct"
+ },
+ {
+  "id": "nvhpc-c-function-pointer-kernel-missing",
+  "vendor": "nvidia",
+  "finding": "catalog/nvhpc-c-function-pointer-kernel-missing.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "crash:Failed to find device function",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-function-pointer-kernel-missing.c",
+  "control": "src/nvhpc/control/nvhpc-c-function-pointer-kernel-missing-control.c",
+  "control_what": "the two functions called directly instead of through a function pointer"
+ },
+ {
+  "id": "nvhpc-c-long-double-kernel-missing",
+  "vendor": "nvidia",
+  "finding": "catalog/nvhpc-c-long-double-kernel-missing.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "crash:Failed to find device function",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-long-double-kernel-missing.c",
+  "control": "src/nvhpc/control/nvhpc-c-long-double-kernel-missing-control.c",
+  "control_what": "double instead of long double"
+ },
+ {
+  "id": "nvhpc-c-static-local-kernel-missing",
+  "vendor": "nvidia",
+  "finding": "catalog/nvhpc-c-static-local-kernel-missing.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "crash:Failed to find device function",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-static-local-kernel-missing.c",
+  "control": "src/nvhpc/control/nvhpc-c-static-local-kernel-missing-control.c",
+  "control_what": "cnt a file-scope variable inside the declare target region instead of a static local"
+ },
+ {
+  "id": "nvhpc-c-vla-kernel-missing",
+  "vendor": "nvidia",
+  "finding": "catalog/nvhpc-c-vla-kernel-missing.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "crash:Failed to find device function",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-vla-kernel-missing.c",
+  "control": "src/nvhpc/control/nvhpc-c-vla-kernel-missing-control.c",
+  "control_what": "int t[n] (a constant size) instead of int t[m]"
+ },
+ {
+  "id": "nvhpc-flang-type-bound-kernel-missing",
+  "vendor": "nvidia",
+  "finding": "catalog/nvhpc-flang-type-bound-kernel-missing.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "crash:Failed to find device function",
+  "expect": "out:check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-flang-type-bound-kernel-missing.f90",
+  "control": "src/nvhpc/control/nvhpc-flang-type-bound-kernel-missing-control.f90",
+  "control_what": "tw_impl called directly instead of through the type-bound name op%tw"
+ },
+ {
+  "id": "nvhpc-acc-atomic-update-sum-fort2-crash",
+  "vendor": "nvidia",
+  "finding": "nvhpc-acc-atomic-update-sum-fort2-crash.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "compile:(TERMINATED by signal|Invalid atomic update expression)",
+  "expect": "out:sum=4224",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/nvhpc/nvhpc-acc-atomic-update-sum-fort2-crash.f90",
+  "control": "src/nvhpc/control/nvhpc-acc-atomic-update-sum-fort2-crash-control.f90",
+  "control_what": "b(i) = b(i) + (2*a(i) + 1), the right-hand side in parentheses"
+ },
+ {
+  "id": "nvhpc-c-acc-atomic-update-sum-ice",
+  "vendor": "nvidia",
+  "finding": "nvhpc-c-acc-atomic-update-sum-ice.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "compile:(Internal compiler error|Invalid atomic update expression)",
+  "expect": "out:x=2080",
+  "lang": "c",
+  "model": "acc",
+  "repro": "src/nvhpc/nvhpc-c-acc-atomic-update-sum-ice.c",
+  "control": "src/nvhpc/control/nvhpc-c-acc-atomic-update-sum-ice-control.c",
+  "control_what": "x = x + (v + 1), the right-hand side in parentheses"
+ },
+ {
+  "id": "nvhpc-c-dist-schedule-chunk-compile-hang",
+  "vendor": "nvidia",
+  "finding": "nvhpc-c-dist-schedule-chunk-compile-hang.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "compile_s": 120,
+  "symptom": "hang",
+  "expect": "out:host_flag=0",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-dist-schedule-chunk-compile-hang.c",
+  "control": "src/nvhpc/control/nvhpc-c-dist-schedule-chunk-compile-hang-control.c",
+  "control_what": "dist_schedule(static, 4) removed"
+ },
+ {
+  "id": "nvhpc-c-map-present-ignored",
+  "vendor": "nvidia",
+  "finding": "nvhpc-c-map-present-ignored.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "out:continued after map(present)",
+  "expect": "re:^RUN_FAIL",
+  "control_expect": "out:b[63]=63",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-map-present-ignored.c",
+  "control": "src/nvhpc/control/nvhpc-c-map-present-ignored-control.c",
+  "control_what": "a enclosed in target data map(to: a), so it is present (the run must reach the printf)"
+ },
+ {
+  "id": "nvhpc-c-parallel-for-firstprivate-in-target",
+  "vendor": "nvidia",
+  "finding": "nvhpc-c-parallel-for-firstprivate-in-target.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "compile:Compiler failed to translate OpenMP region",
+  "expect": "out:c=1 every b[i] % 100 == 1: yes",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-parallel-for-firstprivate-in-target.c",
+  "control": "src/nvhpc/control/nvhpc-c-parallel-for-firstprivate-in-target-control.c",
+  "control_what": "private(c) with c set to 1 in each iteration instead of firstprivate(c)"
+ },
+ {
+  "id": "nvhpc-c-parallel-if-in-target-nvvm-ice",
+  "vendor": "nvidia",
+  "finding": "nvhpc-c-parallel-if-in-target-nvvm-ice.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "compile:NVVM_ERROR_COMPILATION",
+  "expect": "out:sum 2080 nthr",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-parallel-if-in-target-nvvm-ice.c",
+  "control": "src/nvhpc/control/nvhpc-c-parallel-if-in-target-nvvm-ice-control.c",
+  "control_what": "the if clause removed"
+ },
+ {
+  "id": "nvhpc-defaultmap-firstprivate-explicit-map",
+  "vendor": "nvidia",
+  "finding": "nvhpc-defaultmap-firstprivate-explicit-map.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:sum\\s+2144\\s+host_flag\\s+0",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-defaultmap-firstprivate-explicit-map.f90",
+  "control": "src/nvhpc/control/nvhpc-defaultmap-firstprivate-explicit-map-control.f90",
+  "control_what": "defaultmap(firstprivate) removed"
+ },
+ {
+  "id": "nvhpc-defaultmap-from-allocatable-indexing",
+  "vendor": "nvidia",
+  "finding": "nvhpc-defaultmap-from-allocatable-indexing.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:b\\(1\\)\\s+1\\s+b\\(64\\)\\s+64\\s+sum\\s+2080",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-defaultmap-from-allocatable-indexing.f90",
+  "control": "src/nvhpc/control/nvhpc-defaultmap-from-allocatable-indexing-control.f90",
+  "control_what": "defaultmap(tofrom) instead of defaultmap(from)"
+ },
+ {
+  "id": "nvhpc-depend-inoutset-ignored",
+  "vendor": "nvidia",
+  "finding": "nvhpc-depend-inoutset-ignored.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:sum\\(b\\)\\s+2080",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-depend-inoutset-ignored.f90",
+  "control": "src/nvhpc/control/nvhpc-depend-inoutset-ignored-control.f90",
+  "control_what": "depend(out: w) instead of depend(inoutset: w)"
+ },
+ {
+  "id": "nvhpc-dist-schedule-chunk-illegal-address",
+  "vendor": "nvidia",
+  "finding": "nvhpc-dist-schedule-chunk-illegal-address.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "crash:(ILLEGAL_ADDRESS|Illegal address)",
+  "expect": "outre:sum\\s+2080",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-dist-schedule-chunk-illegal-address.f90",
+  "control": "src/nvhpc/control/nvhpc-dist-schedule-chunk-illegal-address-control.f90",
+  "control_what": "dist_schedule(static, 4) removed"
+ },
+ {
+  "id": "nvhpc-managed-acc-shutdown-host-access",
+  "vendor": "nvidia",
+  "finding": "nvhpc-managed-acc-shutdown-host-access.f90",
+  "affected": [
+   "nvhpc@2",
+   "nvhpc269@2"
+  ],
+  "modes": [
+   2,
+   0
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:sum\\s+64",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/nvhpc/nvhpc-managed-acc-shutdown-host-access.f90",
+  "control": "src/nvhpc/control/nvhpc-managed-acc-shutdown-host-access-control.f90",
+  "control_what": "the shutdown directive removed"
+ },
+ {
+  "id": "nvhpc-parallel-if-in-target-nvvm-ice",
+  "vendor": "nvidia",
+  "finding": "nvhpc-parallel-if-in-target-nvvm-ice.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "compile:NVVM_ERROR_COMPILATION",
+  "expect": "outre:sum\\s+2080",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-parallel-if-in-target-nvvm-ice.f90",
+  "control": "src/nvhpc/control/nvhpc-parallel-if-in-target-nvvm-ice-control.f90",
+  "control_what": "the if clause removed"
+ },
+ {
+  "id": "cce19-acc-automatic-array-copyout-copy-crash",
+  "vendor": "hpe",
+  "finding": "fresh/cce19-acc-automatic-array-copyout-copy-crash.f90",
+  "affected": [
+   "cce19@0"
+  ],
+  "modes": [
+   0,
+   1
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:s\\s+3150\\.",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce19-acc-automatic-array-copyout-copy-crash.f90",
+  "control": "src/cce/control/cce19-acc-automatic-array-copyout-copy-crash-control.f90",
+  "control_what": "w a fixed-size local array w(20, 5) instead of the automatic w(nb, nl)"
+ },
+ {
+  "id": "cce21-combined-if-runtime-expr-loop-skipped",
+  "vendor": "hpe",
+  "finding": "fresh/cce21-combined-if-runtime-expr-loop-skipped.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:b\\(1\\)\\s+1\\s+b\\(64\\)\\s+64\\s+dev\\s+1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-combined-if-runtime-expr-loop-skipped.f90",
+  "control": "src/cce/control/cce21-combined-if-runtime-expr-loop-skipped-control.f90",
+  "control_what": "if (target: on) instead of if (on)"
+ },
+ {
+  "id": "cce-common-block-name-in-map-rejected",
+  "vendor": "hpe",
+  "finding": "fresh/cce-common-block-name-in-map-rejected.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:ftn-534",
+  "expect": "out:wild-check: pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-common-block-name-in-map-rejected.f90",
+  "control": "src/cce/control/cce-common-block-name-in-map-rejected-control.f90",
+  "control_what": "the members named instead: map(to: A, B, C)"
+ },
+ {
+  "id": "cce-if-stop-in-target-ice",
+  "vendor": "hpe",
+  "finding": "fresh/cce-if-stop-in-target-ice.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:Condition statement not found",
+  "expect": "outre:x\\s+11",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-if-stop-in-target-ice.f90",
+  "control": "src/cce/control/cce-if-stop-in-target-ice-control.f90",
+  "control_what": "the IF with an assignment instead of STOP"
+ },
+ {
+  "id": "cce-if-stop-in-target-ice-one-condition",
+  "vendor": "hpe",
+  "finding": "fresh/cce-if-stop-in-target-ice-one-condition.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:COND PDG 20 with no stmts",
+  "expect": "outre:x\\s+11",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-if-stop-in-target-ice-one-condition.f90",
+  "control": "src/cce/control/cce-if-stop-in-target-ice-one-condition-control.f90",
+  "control_what": "the IF with an assignment instead of STOP"
+ },
+ {
+  "id": "cce-list-directed-print-in-target-copy-crash",
+  "vendor": "hpe",
+  "finding": "fresh/cce-list-directed-print-in-target-copy-crash.f90",
+  "affected": [
+   "cce19@0",
+   "cce20@0"
+  ],
+  "modes": [
+   0,
+   1
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:Hello, world!",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-list-directed-print-in-target-copy-crash.f90",
+  "control": "src/cce/control/cce-list-directed-print-in-target-copy-crash-control.f90",
+  "control_what": "a formatted PRINT, print '(a)', instead of list-directed print *"
+ },
+ {
+  "id": "nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost",
+  "vendor": "nvidia",
+  "finding": "fresh/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:pass\\s+10000000",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/nvhpc/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90",
+  "control": "src/nvhpc/control/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost-control.f90",
+  "control_what": "gang collapse(2) instead of gang worker collapse(2)"
+ },
+ {
+  "id": "nvhpc-teams-loop-module-allocatable-assign-fort2-crash",
+  "vendor": "nvidia",
+  "finding": "fresh/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "compile:TERMINATED by signal",
+  "expect": "outre:^\\s*7\\.0*(\\s|$)",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90",
+  "control": "src/nvhpc/control/nvhpc-teams-loop-module-allocatable-assign-fort2-crash-control.f90",
+  "control_what": "the element assignment A(II) = Z instead of the whole-array assignment A = Z"
+ },
+ {
+  "id": "afar-target-scalar-implicit-firstprivate",
+  "vendor": "amd",
+  "finding": "stress/afar-target-scalar-implicit-firstprivate.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:rd= 101 s= 203 dev= 1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-target-scalar-implicit-firstprivate.f90",
+  "control": "src/afar/control/afar-target-scalar-implicit-firstprivate-control.f90",
+  "control_what": "s mapped explicitly: map(tofrom: rd, dev, s)"
+ },
+ {
+  "id": "nvhpc-target-scalar-implicit-firstprivate",
+  "vendor": "nvidia",
+  "finding": "stress/nvhpc-target-scalar-implicit-firstprivate.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "out:rd= 101 s= 203 dev= 1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-target-scalar-implicit-firstprivate.f90",
+  "control": "src/nvhpc/control/nvhpc-target-scalar-implicit-firstprivate-control.f90",
+  "control_what": "s mapped explicitly: map(tofrom: rd, dev, s)"
+ },
+ {
+  "id": "cce-teams-reduction-many-teams-wrap",
+  "vendor": "hpe",
+  "finding": "stress/cce-teams-reduction-many-teams-wrap.f90",
+  "affected": [
+   "cce19",
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "run_s": 300,
+  "symptom": "wrong",
+  "expect": "out:s= 8455717314",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-teams-reduction-many-teams-wrap.f90",
+  "control": "src/cce/control/cce-teams-reduction-many-teams-wrap-control.f90",
+  "control_what": "num_teams(8192) instead of num_teams(65536)"
+ },
+ {
+  "id": "cce21-declare-target-scalar-map-write-lost",
+  "vendor": "hpe",
+  "finding": "stress/cce21-declare-target-scalar-map-write-lost.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:g= 203 dev= 1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-declare-target-scalar-map-write-lost.f90",
+  "control": "src/cce/control/cce21-declare-target-scalar-map-write-lost-control.f90",
+  "control_what": "g not in the map clause (implicitly tofrom)"
+ },
+ {
+  "id": "nvhpc-declare-target-scalar-write-lost",
+  "vendor": "nvidia",
+  "finding": "stress/nvhpc-declare-target-scalar-write-lost.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "out:g= 203 dev= 1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-declare-target-scalar-write-lost.f90",
+  "control": "src/nvhpc/control/nvhpc-declare-target-scalar-write-lost-control.f90",
+  "control_what": "g mapped explicitly: map(tofrom: dev, g)"
+ },
+ {
+  "id": "cce-lastprivate-num-threads-collapse-simd",
+  "vendor": "hpe",
+  "finding": "stress/cce-lastprivate-num-threads-collapse-simd.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:lp= 128",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-lastprivate-num-threads-collapse-simd.f90",
+  "control": "src/cce/control/cce-lastprivate-num-threads-collapse-simd-control.f90",
+  "control_what": "num_threads(32) removed"
+ },
+ {
+  "id": "cce-c-flto-offload-dropped",
+  "vendor": "hpe",
+  "finding": "stress/cce-c-flto-offload-dropped.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "opt": "-O2 -flto",
+  "symptom": "crash:(OpenMP offload failed|offload)",
+  "expect": "out:sum= 2016 dev= 1",
+  "control_opt": "-O2",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-flto-offload-dropped.c",
+  "control": "src/cce/control/cce-c-flto-offload-dropped-control.c",
+  "control_what": "built without -flto"
+ },
+ {
+  "id": "nvhpc-acc-derived-type-component-not-copied",
+  "vendor": "nvidia",
+  "finding": "stress/nvhpc-acc-derived-type-component-not-copied.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "out:c1= 203",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/nvhpc/nvhpc-acc-derived-type-component-not-copied.f90",
+  "control": "src/nvhpc/control/nvhpc-acc-derived-type-component-not-copied-control.f90",
+  "control_what": "serial copy(xc)"
+ },
+ {
+  "id": "nvhpc-lastprivate-combined-target-not-mapped",
+  "vendor": "nvidia",
+  "finding": "stress/nvhpc-lastprivate-combined-target-not-mapped.f90",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "symptom": "wrong",
+  "expect": "out:l= 2560 dev= 1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-lastprivate-combined-target-not-mapped.f90",
+  "control": "src/nvhpc/control/nvhpc-lastprivate-combined-target-not-mapped-control.f90",
+  "control_what": "map(tofrom: l) added to the target parallel do"
+ },
+ {
+  "id": "cce-acc-declare-create-scalar-serial-firstprivate",
+  "vendor": "hpe",
+  "finding": "stress/cce-acc-declare-create-scalar-serial-firstprivate.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "out:g= 203",
+  "lang": "f90",
+  "model": "acc",
+  "repro": "src/cce/cce-acc-declare-create-scalar-serial-firstprivate.f90",
+  "control": "src/cce/control/cce-acc-declare-create-scalar-serial-firstprivate-control.f90",
+  "control_what": "serial present(g)"
+ },
+ {
+  "id": "nvhpc-c-lastprivate-teams-distribute-parallel-for-lost",
+  "vendor": "nvidia",
+  "finding": "stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c",
+  "affected": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "modes": [
+   0,
+   2
+  ],
+  "arch": [
+   "sm_80"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:l= 2560 dev= 1",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/nvhpc/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c",
+  "control": "src/nvhpc/control/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost-control.c",
+  "control_what": "reduction(max: l) instead of lastprivate(l)"
+ },
+ {
+  "id": "afar-c-lastprivate-combined-target-not-mapped",
+  "vendor": "amd",
+  "finding": "stress/afar-c-lastprivate-combined-target-not-mapped.c",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:l= 2560 dev= 1",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-lastprivate-combined-target-not-mapped.c",
+  "control": "src/afar/control/afar-c-lastprivate-combined-target-not-mapped-control.c",
+  "control_what": "map(tofrom: l) added"
+ },
+ {
+  "id": "cce-c-distribute-lastprivate-lost",
+  "vendor": "hpe",
+  "finding": "stress/cce-c-distribute-lastprivate-lost.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "out:l= 2560 dev= 1",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-distribute-lastprivate-lost.c",
+  "control": "src/cce/control/cce-c-distribute-lastprivate-lost-control.c",
+  "control_what": "reduction(max: l) instead of lastprivate(l)"
+ },
+ {
+  "id": "afar-cce-teams-private-array-nested-parallel-wrong",
+  "vendor": [
+   "amd",
+   "hpe"
+  ],
+  "finding": "apps/afar-cce-teams-private-array-nested-parallel-wrong.f90",
+  "affected": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:bad=\\s*0 dev= 1",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/afar/afar-cce-teams-private-array-nested-parallel-wrong.f90",
+  "control": "src/afar/control/afar-cce-teams-private-array-nested-parallel-wrong-control.f90",
+  "control_what": "the same loops without the two parallel do directives (each team's initial thread runs them)"
+ },
+ {
+  "id": "cce21-private-array-loaded-subscript-wrong",
+  "vendor": "hpe",
+  "finding": "apps/cce21-private-array-loaded-subscript-wrong.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:bad: mapped-subscript 0 declare-target-subscript 0 teams-distribute-parallel-do 0\\s+teams-distribute 0",
+  "control_expect": "outre:bad: mapped-subscript 0 ",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-private-array-loaded-subscript-wrong.f90",
+  "control": "src/cce/control/cce21-private-array-loaded-subscript-wrong-control.f90",
+  "control_what": "in the first region, the constant subscript v(3) instead of v(s(3))"
+ },
+ {
+  "id": "cce20-device-link-infer-address-spaces-crash",
+  "vendor": "hpe",
+  "finding": "apps/cce20-device-link-infer-address-spaces-crash.f90",
+  "affected": [
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "symptom": "compile:(Infer address spaces|LLVM ERROR|Stack dump|signal)",
+  "expect": "outre:bad=\\s*0",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce20-device-link-infer-address-spaces-crash.f90",
+  "control": "src/cce/control/cce20-device-link-infer-address-spaces-crash-control.f90",
+  "control_what": "the !DIR$ INLINENEVER line removed (CCE inlines the two helpers)"
+ },
+ {
+  "id": "cce21-device-link-agpr-copy-mfma-assert",
+  "vendor": "hpe",
+  "finding": "apps/cce21-device-link-agpr-copy-mfma-assert.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942",
+   "gfx90a"
+  ],
+  "compile_s": 900,
+  "symptom": "compile:(Attempt to compare reserved index|AGPR|Assertion)",
+  "expect": "out:bad= 0 stops= 256",
+  "control_opt": "-O0",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-device-link-agpr-copy-mfma-assert.f90",
+  "control": "src/cce/control/cce21-device-link-agpr-copy-mfma-assert-control.f90",
+  "control_what": "built at -O0"
+ },
+ {
+  "id": "fuzz-1131-afar",
+  "vendor": "amd",
+  "finding": "fuzz/1131-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1131-afar.f90"
+ },
+ {
+  "id": "fuzz-1391-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/1391-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:barrier/reset/protected last private",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1391-cce20.f90"
+ },
+ {
+  "id": "fuzz-14-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/14-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=24\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-14-cce20.f90"
+ },
+ {
+  "id": "fuzz-1505-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/1505-cce20.f90",
+  "affected": [
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=1148569567\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1505-cce20.f90"
+ },
+ {
+  "id": "fuzz-1540-afar",
+  "vendor": "amd",
+  "finding": "fuzz/1540-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:SPMD kernel must capture",
+  "expect": "re:^RUN_OK",
+  "control_expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1540-afar.f90",
+  "control": "src/fuzz/control/fuzz-1540-afar-control.f90",
+  "control_what": "lastprivate(lp1) without the conditional modifier"
+ },
+ {
+  "id": "fuzz-158-afar",
+  "vendor": "amd",
+  "finding": "fuzz/158-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-158-afar.f90"
+ },
+ {
+  "id": "fuzz-16-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/16-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=535067391\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-16-cce20.f90"
+ },
+ {
+  "id": "fuzz-1644-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/1644-cce21.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=20085\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1644-cce21.f90"
+ },
+ {
+  "id": "fuzz-165-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/165-cce19.f90",
+  "affected": [
+   "cce19",
+   "afar",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:unhandled operator",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-165-cce19.f90",
+  "control": "src/fuzz/control/fuzz-165-cce19-control.f90",
+  "control_what": "the same parallel do on the host (the target directive removed)"
+ },
+ {
+  "id": "fuzz-1749-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/1749-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=63\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1749-cce20.f90"
+ },
+ {
+  "id": "fuzz-1936-afar",
+  "vendor": "amd",
+  "finding": "fuzz/1936-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=2147483504\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1936-afar.f90"
+ },
+ {
+  "id": "fuzz-1978-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/1978-cce19.f90",
+  "affected": [
+   "cce19"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1879642524\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1978-cce19.f90"
+ },
+ {
+  "id": "fuzz-2014-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/2014-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-2014-cce19.f90"
+ },
+ {
+  "id": "fuzz-2224-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/2224-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:unhandled (acc )?construct type",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-2224-cce19.f90"
+ },
+ {
+  "id": "fuzz-2334-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/2334-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:find an atomic update statement",
+  "expect": "re:^RUN_OK",
+  "control_expect": "outre:RESULT checksum=2147483628\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-2334-cce19.f90",
+  "control": "src/fuzz/control/fuzz-2334-cce19-control.f90",
+  "control_what": "the factor depends on i: merge(-1, 1, mod(i, 13) == 0) (seven sign changes, r1b = 1)"
+ },
+ {
+  "id": "fuzz-536-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/536-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=716289326\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-536-cce19.f90"
+ },
+ {
+  "id": "fuzz-591-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/591-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:Unhandled contexts must be fixed",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-591-cce19.f90",
+  "control": "src/fuzz/control/fuzz-591-cce19-control.f90",
+  "control_what": "nontemporal(o1) removed"
+ },
+ {
+  "id": "fuzz-650-afar",
+  "vendor": "amd",
+  "finding": "fuzz/650-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=649664593\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-650-afar.f90",
+  "control": "src/fuzz/control/fuzz-650-afar-control.f90",
+  "control_what": "firstprivate(i) removed from the parallel construct"
+ },
+ {
+  "id": "fuzz-698-afar",
+  "vendor": "amd",
+  "finding": "fuzz/698-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=260035799\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-698-afar.f90"
+ },
+ {
+  "id": "fuzz-700-afar",
+  "vendor": "amd",
+  "finding": "fuzz/700-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=785543890\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-700-afar.f90"
+ },
+ {
+  "id": "fuzz-775-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/775-cce21.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=255\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-775-cce21.f90"
+ },
+ {
+  "id": "fuzz-87-afar",
+  "vendor": "amd",
+  "finding": "fuzz/87-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=748154768\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-87-afar.f90"
+ },
+ {
+  "id": "fuzz-916-afar",
+  "vendor": "amd",
+  "finding": "fuzz/916-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-916-afar.f90",
+  "control": "src/fuzz/control/fuzz-916-afar-control.f90",
+  "control_what": "the inner parallel region and its do construct removed (the team runs the j loop sequentially)"
+ },
+ {
+  "id": "fuzz-958-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/958-cce20.f90",
+  "affected": [
+   "cce20",
+   "afar",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:Mismatched last induction expression for",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-958-cce20.f90",
+  "control": "src/fuzz/control/fuzz-958-cce20-control.f90",
+  "control_what": "the same loop on the host (parallel do instead of target parallel do)"
+ },
+ {
+  "id": "fuzz-98-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/98-cce19.f90",
+  "affected": [
+   "cce19"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1819295657\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-98-cce19.f90"
+ },
+ {
+  "id": "fuzz-b1-121-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b1-121-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1048575\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b1-121-afar.f90",
+  "control": "src/fuzz/control/fuzz-b1-121-afar-control.f90",
+  "control_what": "firstprivate(p1) removed from the teams construct"
+ },
+ {
+  "id": "fuzz-b1-183-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b1-183-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1123737439\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b1-183-afar.f90"
+ },
+ {
+  "id": "fuzz-b1-22-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/b1-22-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=8\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b1-22-cce20.f90"
+ },
+ {
+  "id": "fuzz-b1-231-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b1-231-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=1450123117\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b1-231-afar.f90"
+ },
+ {
+  "id": "fuzz-b1-268-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b1-268-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=447891769\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b1-268-afar.f90"
+ },
+ {
+  "id": "fuzz-b2-183-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b2-183-afar.f90",
+  "affected": [
+   "afar@1"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b2-183-afar.f90"
+ },
+ {
+  "id": "fuzz-b2-209-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/b2-209-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=16\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b2-209-cce19.f90",
+  "control": "src/fuzz/control/fuzz-b2-209-cce19-control.f90",
+  "control_what": "lp1 also mapped explicitly: map(tofrom: lp1)"
+ },
+ {
+  "id": "fuzz-b2-213-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b2-213-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=797202134\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b2-213-afar.f90"
+ },
+ {
+  "id": "fuzz-b2-52-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b2-52-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1272193681\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b2-52-afar.f90"
+ },
+ {
+  "id": "fuzz-b2-68-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b2-68-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=17631\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b2-68-afar.f90",
+  "control": "src/fuzz/control/fuzz-b2-68-afar-control.f90",
+  "control_what": "lpar = .true. (the parallel region is active)"
+ },
+ {
+  "id": "fuzz-b2-85-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/b2-85-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1901273453\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b2-85-cce20.f90",
+  "control": "src/fuzz/control/fuzz-b2-85-cce20-control.f90",
+  "control_what": "defaultmap(firstprivate: aggregate) removed"
+ },
+ {
+  "id": "fuzz-b3-188-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-188-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:Unexpected schedule",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-188-cce19.f90",
+  "control": "src/fuzz/control/fuzz-b3-188-cce19-control.f90",
+  "control_what": "schedule(dynamic) removed from the distribute parallel do"
+ },
+ {
+  "id": "fuzz-b3-190-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-190-cce21.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "out:RESULT check=pass",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-190-cce21.f90",
+  "control": "src/fuzz/control/fuzz-b3-190-cce21-control.f90",
+  "control_what": "map(to: zopt) removed (the absent dummy is not named in a map clause)"
+ },
+ {
+  "id": "fuzz-b3-197-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-197-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=1030200169\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-197-cce19.f90"
+ },
+ {
+  "id": "fuzz-b3-250-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-250-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1218074569\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-250-cce20.f90"
+ },
+ {
+  "id": "fuzz-b3-278-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-278-cce19.f90",
+  "affected": [
+   "cce19"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=144\\b",
+  "control_expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-278-cce19.f90",
+  "control": "src/fuzz/control/fuzz-b3-278-cce19-control.f90",
+  "control_what": "the device loop reads ib(i) instead of the allocatable component dr%q(i) (dr is not referenced in the region)"
+ },
+ {
+  "id": "fuzz-b3-45-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-45-cce21.f90",
+  "affected": [
+   "cce21",
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-45-cce21.f90"
+ },
+ {
+  "id": "fuzz-b3-54-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b3-54-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-54-afar.f90",
+  "control": "src/fuzz/control/fuzz-b3-54-afar-control.f90",
+  "control_what": "dr removed from the depend clause"
+ },
+ {
+  "id": "fuzz-b3-61-cce20",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-61-cce20.f90",
+  "affected": [
+   "cce20",
+   "cce19",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=234479309\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-61-cce20.f90",
+  "control": "src/fuzz/control/fuzz-b3-61-cce20-control.f90",
+  "control_what": "the taskgroup/task_reduction and the in_reduction clause removed"
+ },
+ {
+  "id": "fuzz-b3-9-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b3-9-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "compile:(verification of lowering to FIR failed|must be variadic)",
+  "expect": "re:^RUN_OK",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-9-afar.f90"
+ },
+ {
+  "id": "fuzz-b3-9-cce21",
+  "vendor": "hpe",
+  "finding": "fuzz/b3-9-cce21.f90",
+  "affected": [
+   "cce21",
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=185626446\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-9-cce21.f90"
+ },
+ {
+  "id": "fuzz-b3-94-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b3-94-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=2012829416\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b3-94-afar.f90"
+ },
+ {
+  "id": "fuzz-b4-39-afar",
+  "vendor": "amd",
+  "finding": "fuzz/b4-39-afar.f90",
+  "affected": [
+   "afar"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=1462161356\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b4-39-afar.f90"
+ },
+ {
+  "id": "fuzz-b4-86-cce19",
+  "vendor": "hpe",
+  "finding": "fuzz/b4-86-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "crash:.",
+  "expect": "outre:RESULT checksum=0\\b",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-b4-86-cce19.f90"
+ },
+ {
+  "id": "afar-c-complex-reduction-latomic",
+  "vendor": "amd",
+  "finding": "catalog/afar-c-complex-reduction-link.c",
+  "only": [
+   "afar"
+  ],
+  "affected": [],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52 -latomic"
+  },
+  "symptom": "compile:undefined symbol: __atomic_load",
+  "expect": "out:check=pass",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/afar/afar-c-complex-reduction-latomic.c"
+ },
+ {
+  "id": "cce-ftn-cif-record-split-abort",
+  "vendor": "hpe",
+  "finding": "stress/cce-ftn-cif-record-split-abort.f90",
+  "filename": "stress.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "build_dir": {
+   "repro": {
+    "a": "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1aa",
+    "b": "/tmp/cce-cif/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB-1BB",
+    "c": "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1aa",
+    "d": "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1aa"
+   },
+   "control": {
+    "a": "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2aa",
+    "b": "/tmp/cce-cif/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB-2BB",
+    "c": "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2aa",
+    "d": "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2aa"
+   }
+  },
+  "symptom": "compile:(free\\(\\): invalid pointer|double free)",
+  "expect": "out:sum=145702",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce-ftn-cif-record-split-abort.f90",
+  "control": "src/cce/control/cce-ftn-cif-record-split-abort-control.f90",
+  "control_what": "the same file in a directory of the same length with -2 in place of -1"
+ },
+ {
+  "id": "cce21-defaultmap-device-probe",
+  "vendor": "hpe",
+  "finding": "cce21-defaultmap-aggregate-flag.f90",
+  "affected": [
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong:x\\s+1\\s+flag\\s+0",
+  "expect": "outre:x\\s+0\\s+flag\\s+0\\s*$",
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/cce/cce21-defaultmap-device-probe.f90"
+ },
+ {
+  "id": "cce-c-parallel-for-in-target-static",
+  "vendor": "hpe",
+  "finding": "cce-c-parallel-for-in-target.c",
+  "filename": "cce-c-parallel-for-in-target-static.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "outre:static 64 of 64\\s*$",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-parallel-for-in-target-static.c",
+  "control": "src/cce/control/cce-c-parallel-for-in-target-static-control.c",
+  "control_what": "schedule(static) removed"
+ },
+ {
+  "id": "cce-c-parallel-for-in-target-lastprivate",
+  "vendor": "hpe",
+  "finding": "cce-c-parallel-for-in-target.c",
+  "filename": "cce-c-parallel-for-in-target-lastprivate.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "outre:lastprivate t=63 c\\[63\\]=64\\s*$",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-parallel-for-in-target-lastprivate.c",
+  "control": "src/cce/control/cce-c-parallel-for-in-target-lastprivate-control.c",
+  "control_what": "reduction(max: t) instead of lastprivate(t)"
+ },
+ {
+  "id": "cce-c-parallel-for-in-target-linear",
+  "vendor": "hpe",
+  "finding": "cce-c-parallel-for-in-target.c",
+  "filename": "cce-c-parallel-for-in-target-linear.c",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "flags": {
+   "afar": "-fopenmp-version=52",
+   "cce": "-fopenmp-version=52"
+  },
+  "symptom": "wrong",
+  "expect": "outre:linear 64 of 64, x=64\\s*$",
+  "lang": "c",
+  "model": "omp",
+  "repro": "src/cce/cce-c-parallel-for-in-target-linear.c"
+ },
+ {
+  "id": "fortran-loop-bind-thread-in-parallel-O0",
+  "vendor": "hpe",
+  "finding": "fortran-loop-bind-thread-in-parallel.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "out:threads that did not run all 64 iterations: 0 (expected 0)",
+  "opt": "-O0",
+  "only": [
+   "cce"
+  ],
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/other/fortran-loop-bind-thread-in-parallel-O0.f90"
+ },
+ {
+  "id": "fuzz-536-cce19-O0",
+  "vendor": "hpe",
+  "finding": "fuzz/536-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=716289326\\b",
+  "opt": "-O0",
+  "only": [
+   "cce"
+  ],
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-536-cce19-O0.f90"
+ },
+ {
+  "id": "fuzz-2014-cce19-O0",
+  "vendor": "hpe",
+  "finding": "fuzz/2014-cce19.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=0\\b",
+  "opt": "-O0",
+  "only": [
+   "cce"
+  ],
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-2014-cce19-O0.f90"
+ },
+ {
+  "id": "fuzz-16-cce20-O0",
+  "vendor": "hpe",
+  "finding": "fuzz/16-cce20.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=535067391\\b",
+  "opt": "-O0",
+  "only": [
+   "cce"
+  ],
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-16-cce20-O0.f90"
+ },
+ {
+  "id": "fuzz-1749-cce20-O0",
+  "vendor": "hpe",
+  "finding": "fuzz/1749-cce20.f90",
+  "affected": [
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "arch": [
+   "gfx942"
+  ],
+  "symptom": "wrong",
+  "expect": "outre:RESULT checksum=63\\b",
+  "opt": "-O0",
+  "only": [
+   "cce"
+  ],
+  "lang": "f90",
+  "model": "omp",
+  "repro": "src/fuzz/fuzz-1749-cce20-O0.f90"
+ }
+]

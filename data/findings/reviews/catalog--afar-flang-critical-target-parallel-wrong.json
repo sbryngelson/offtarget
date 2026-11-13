@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-flang-critical-target-parallel-wrong.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-17",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s is mapped tofrom and only accessed inside critical; t is private; host_flag is written by a single iteration only, so no data race. s must equal n(n+1)/2. Result of check=fail is a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s is updated only inside critical, t is private, host_flag is written by iteration 1 only, and a is read-only. No race, and critical is permitted in a target parallel do. The sum 2080 must result, so the observed fail is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s is mapped tofrom and only accessed inside critical, t is private, and host_flag is written by a single iteration. No race. The target parallel do executes on the device or host with a correct sum of 2080, so check must pass.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-67",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-109",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The critical construct serializes the update of s, t is private and i is the private loop variable, and host_flag is written by one iteration only. s is mapped tofrom, so the sum n(n+1)/2 must be copied back. The failing result is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "cdee32980c1cb3edacc3d46f71023f2f8d9fad591b5eb8f40bc83c34faf2176a",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

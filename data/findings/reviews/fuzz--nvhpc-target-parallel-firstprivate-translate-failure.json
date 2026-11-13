@@ -1,0 +1,191 @@
+{
+ "finding": "fuzz/nvhpc-target-parallel-firstprivate-translate-failure.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-15",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Combined target parallel with a do loop and nowait on the end do: nowait on a worksharing loop is permitted, and the parallel region ends with an implicit barrier, so there is no race on a (each iteration writes a distinct element, k is firstprivate) and a is mapped tofrom. Result sum is deterministic (2272). The observed NVFORTRAN-W-0016 identifier truncation warnings come from the compiler, not the program; a conforming compiler must compile it."
+  },
+  {
+   "run": "run-20261113/batch-54",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Orphan-free worksharing do with nowait inside the parallel region of a combined target parallel is conforming; nowait only removes the barrier before the region end. k is firstprivate, a is mapped tofrom, each iteration writes a distinct element, so no race. Expected sum 2080+192 is determined. The observed outcome is a compiler crash/truncation, so a conforming compiler must accept and compile."
+  },
+  {
+   "run": "run-v2-20261113/batch-54",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target parallel with firstprivate(k) and map(tofrom: a) is permitted; the do loop with end do nowait ends at the end of the parallel region, which has an implicit barrier. Each iteration writes a distinct a(i). The warnings about truncated identifiers and the crash are compiler problems.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-96",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming: a is mapped tofrom, k is firstprivate, and nowait on the do at the end of the parallel region is fine because the region ends with an implicit barrier. A conforming compiler must accept it, but the observed output shows only identifier-truncation warnings, which the specification does not address.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-40",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1b30945dae6c9f8fffe1d1fa3a7dedb323e0f9fd6c9f4702d459fb213ab21b6f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The do construct with nowait ends at the end of the parallel region, which has an implicit barrier, so no race and a(i) writes are distinct. a is mapped tofrom and k firstprivate. The program is conforming and a conforming compiler must accept it; the crash and identifier-truncation warnings are not licensed by the spec.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B is right. The do construct with nowait ends at the end of the parallel region, which has an implicit barrier, so no race and a(i) writes are distinct. a is mapped tofrom and k firstprivate. The program is conforming and a conforming compiler must accept it; the crash and identifier-truncation warnings are not licensed by the spec. Reading A's uncertainty is unwarranted since the observed failure is a compiler crash.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "nowait on the do ends at the end of the parallel region, which has an implicit barrier. Iterations write distinct a(i); a is mapped, k is firstprivate. The program conforms and must be compiled and run; the identifier-truncation diagnostics are compiler problems. Reading A's uncertainty is unwarranted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-06",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

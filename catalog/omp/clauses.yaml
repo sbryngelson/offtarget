@@ -1,0 +1,914 @@
+# Clause argument grammar for the first slice (OpenMP, Fortran and C, target offload).
+#
+# Every entry is `status: provisional` until the project owner reviews it.
+# Read by offload/engine/catalog.py (load_grammar) and offload/engine/grammar.py.
+#
+# clauses.<name>.forms: one form per spec version that changed the syntax.
+#   since     first catalog version (50, 52, 60) the form applies to. A parse at
+#             version V uses the form with the largest `since` <= V; below
+#             every `since`, the earliest form is used.
+#   directives  optional: the form applies only on these directives.
+#   langs     optional: the form applies only in these languages
+#             (f90, c); a clause whose syntax differs by language has one
+#             form per language and version.
+#   citation  the clause's section in the spec ("OpenMP <ver> §<sec>, p.<n>").
+#   syntax    the argument grammar, in this notation:
+#     none            the clause takes no parentheses
+#     list            comma-separated list items (variables, array sections)
+#     expr            one expression
+#     expr_list       comma-separated expressions
+#     enum[a, b]      one keyword argument
+#     modifiers[c, d] comma-separated modifiers from classes c, d
+#     ':'  ','        literal separators
+#     [ ... ]         optional part
+#     x@label         when x is present, it adds the atom omp.clause.<name>.<label>
+#     a | b           alternatives, tried in order
+#   modifiers  the modifier classes the syntax names:
+#     keywords: [..]  the class's keywords (one atom per keyword)
+#     identifier: true  also accept any identifier or .op. (no atom)
+#     complex: name   a complex modifier written name(...) (atom: name)
+#     expr: true      any other expression (atom: the class name)
+#     one_of: true    at most one keyword of the class may appear
+#     required / ultimate (must be last) / exclusive (must appear alone)
+#     wraps_list: true  5.0: a complex modifier whose parentheses hold the
+#                     clause's list (linear's val(x)); atom: the complex name
+#     call: true      5.0: an item written ident(args) (uses_allocators'
+#                     alloc(traits)); atom: the complex name
+#     The class `directive-name` is built in: any directive name in the
+#     skeleton (atom: directive_name). Each keyword may appear at most once.
+#   multiple_specs  several argument specifications separated by ';'.
+#   modifier_commas_optional  modifiers may be separated by blanks (deprecated).
+#   end_clause  the clause may appear on a paired end directive.
+#
+# The spec's overrides of the TableGen skeleton (extra directive spellings,
+# removed or narrowed clause rules) live in spec_overrides.yaml.
+
+clauses:
+  aligned:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.11, p.169"
+        syntax: "list [':' modifiers[alignment]]"
+        modifiers:
+          alignment: {expr: true}
+      - since: 60
+        citation: "OpenMP 6.0 §7.12, p.300"
+        syntax: "list [':' modifiers[alignment, directive-name]]"
+        modifiers:
+          alignment: {expr: true}
+
+  allocate:
+    status: provisional
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.11.4, p.158"
+        notes: "5.0: only the allocator expression; the allocator and align modifiers are 5.1 (5.2 §B.3, p.628)."
+        syntax: "[modifiers[allocator-simple-modifier] ':'] list"
+        modifiers:
+          allocator-simple-modifier: {expr: true, exclusive: true}
+      - since: 52
+        citation: "OpenMP 5.2 §6.6, p.178"
+        syntax: "[modifiers[allocator-complex-modifier, align-modifier, allocator-simple-modifier] ':'] list"
+        modifiers:
+          allocator-complex-modifier: {complex: allocator}
+          align-modifier: {complex: align}
+          allocator-simple-modifier: {expr: true, exclusive: true}
+      - since: 60
+        citation: "OpenMP 6.0 §8.6, p.312"
+        syntax: "[modifiers[allocator-complex-modifier, align-modifier, directive-name, allocator-simple-modifier] ':'] list"
+        modifiers:
+          allocator-complex-modifier: {complex: allocator}
+          align-modifier: {complex: align}
+          allocator-simple-modifier: {expr: true, exclusive: true}
+
+  allocator:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §6.4, p.175"
+        syntax: "expr"
+      - since: 60
+        citation: "OpenMP 6.0 §8.4, p.310"
+        syntax: "[modifiers[directive-name] ':'] expr"
+
+  atomic_default_mem_order:
+    status: provisional
+    notes: "5.2 gives no argument table; the argument is a memory-order clause (seq_cst, acq_rel, release, acquire, relaxed), as the 8.2.1 semantics say."
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.4, p.60"
+        notes: "5.0 and 5.1 list seq_cst, acq_rel and relaxed only (5.1 §2.5.1)."
+        syntax: "enum[acq_rel, relaxed, seq_cst]"
+      - since: 52
+        citation: "OpenMP 5.2 §8.2.1, p.212"
+        syntax: "enum[acq_rel, acquire, relaxed, release, seq_cst]"
+      - since: 60
+        citation: "OpenMP 6.0 §10.5.1.1, p.356"
+        syntax: "[modifiers[directive-name] ':'] enum[acq_rel, acquire, relaxed, release, seq_cst]"
+
+  bind:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §11.7.1, p.258"
+        syntax: "enum[parallel, teams, thread]"
+      - since: 60
+        citation: "OpenMP 6.0 §13.8.1, p.424"
+        syntax: "[modifiers[directive-name] ':'] enum[parallel, teams, thread]"
+
+  collapse:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §4.4.3, p.93"
+        syntax: "expr"
+      - since: 60
+        citation: "OpenMP 6.0 §6.4.5, p.205"
+        syntax: "[modifiers[directive-name] ':'] expr"
+
+  copyin:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.7.1, p.144"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.8.1, p.271"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  default:
+    status: provisional
+    forms:
+      - since: 50
+        langs: [c]
+        citation: "OpenMP 5.0 §2.19.4.1, p.282"
+        notes: "(the C 5.0 slice): in C 5.0 the default clause is default(shared | none); 'Support for private and firstprivate as an argument to the default clause in C and C++ was added' in 5.1 (5.1 §B.2, p.669)."
+        syntax: "enum[none, shared]"
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.1, p.109"
+        syntax: "enum[firstprivate, none, private, shared]"
+      - since: 60
+        langs: [f90]
+        citation: "OpenMP 6.0 §7.5.1, p.223"
+        syntax: "enum[firstprivate, none, private, shared] [':' modifiers[variable-category, directive-name]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, all, allocatable, pointer, scalar], one_of: true}
+      - since: 60
+        langs: [c]
+        citation: "OpenMP 6.0 §7.5.1, p.223"
+        notes: "C: the allocatable variable-category is defined only in the Fortran paragraph ('The allocatable variable-category specifies variables with the ALLOCATABLE attribute', 6.0 §7.5.1 p.224), so the C form omits it (ruling)."
+        syntax: "enum[firstprivate, none, private, shared] [':' modifiers[variable-category, directive-name]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, all, pointer, scalar], one_of: true}
+
+  defaultmap:
+    status: provisional
+    forms:
+      - since: 50
+        langs: [f90]
+        citation: "OpenMP 5.0 §2.19.7.2, p.324"
+        notes: "5.0: no present behaviour (added in 5.1, 5.2 §B.3, p.628) and no all category (first in 5.2)."
+        syntax: "enum[alloc, default, firstprivate, from, none, to, tofrom] [':' modifiers[variable-category]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, allocatable, pointer, scalar], one_of: true}
+      - since: 52
+        langs: [f90]
+        citation: "OpenMP 5.2 §5.8.7, p.161"
+        syntax: "enum[alloc, default, firstprivate, from, none, present, to, tofrom] [':' modifiers[variable-category]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, all, allocatable, pointer, scalar], one_of: true}
+      - since: 50
+        langs: [c]
+        citation: "OpenMP 5.0 §2.19.7.2, p.324"
+        notes: "(the C 5.0 slice): 5.0 has no present behaviour and no all category (as the Fortran 5.0 form); the C/C++ variable-category list is scalar, aggregate, pointer (5.0 §2.19.7.2, p.324; allocatable is Fortran's)."
+        syntax: "enum[alloc, default, firstprivate, from, none, to, tofrom] [':' modifiers[variable-category]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, pointer, scalar], one_of: true}
+      - since: 52
+        langs: [c]
+        citation: "OpenMP 5.2 §5.8.7, p.161"
+        notes: "C: 'The specified variable-category must not be allocatable.' (5.2 §5.8.7, p.162, a C/C++ restriction), enforced by the form."
+        syntax: "enum[alloc, default, firstprivate, from, none, present, to, tofrom] [':' modifiers[variable-category]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, all, pointer, scalar], one_of: true}
+      - since: 60
+        langs: [f90]
+        citation: "OpenMP 6.0 §7.9.9, p.291"
+        notes: "alloc is accepted as a synonym of storage (Additional information)."
+        syntax: "enum[alloc, default, firstprivate, from, none, present, private, self, storage, to, tofrom] [':' modifiers[variable-category, directive-name]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, all, allocatable, pointer, scalar], one_of: true}
+      - since: 60
+        langs: [c]
+        citation: "OpenMP 6.0 §7.9.9, p.291"
+        notes: "C: 'The specified variable-category must not be allocatable.' (6.0 §7.9.9, p.293, a C/C++ restriction), enforced by the form. alloc is accepted as a synonym of storage."
+        syntax: "enum[alloc, default, firstprivate, from, none, present, private, self, storage, to, tofrom] [':' modifiers[variable-category, directive-name]]"
+        modifiers:
+          variable-category: {keywords: [aggregate, all, pointer, scalar], one_of: true}
+
+  depend:
+    status: provisional
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.17.11, p.255"
+        notes: "5.0: no inoutset (added in 5.1, 5.2 §B.3, p.629); the depend-modifier is separated by a comma."
+        syntax: "modifiers[iterator, task-dependence-type] ':' list"
+        modifiers:
+          iterator: {complex: iterator}
+          task-dependence-type: {keywords: [depobj, in, inout, mutexinoutset, out], one_of: true, required: true, ultimate: true}
+      - since: 52
+        citation: "OpenMP 5.2 §15.9.5, p.323"
+        syntax: "modifiers[iterator, task-dependence-type] ':' list"
+        modifiers:
+          iterator: {complex: iterator}
+          task-dependence-type: {keywords: [depobj, in, inout, inoutset, mutexinoutset, out], one_of: true, required: true, ultimate: true}
+      - since: 60
+        citation: "OpenMP 6.0 §17.9.5, p.507"
+        notes: "The 6.0 table gives task-dependence-type only the unique property (not required, not ultimate)."
+        syntax: "[modifiers[iterator, task-dependence-type, directive-name] ':'] list"
+        modifiers:
+          iterator: {complex: iterator}
+          task-dependence-type: {keywords: [depobj, in, inout, inoutset, mutexinoutset, out], one_of: true}
+
+  device:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §13.2, p.276"
+        syntax: "[modifiers[device-modifier] ':'] expr"
+        modifiers:
+          device-modifier: {keywords: [ancestor, device_num], one_of: true}
+      - since: 60
+        citation: "OpenMP 6.0 §15.2, p.451"
+        syntax: "[modifiers[device-modifier, directive-name] ':'] expr"
+        modifiers:
+          device-modifier: {keywords: [ancestor, device_num], one_of: true}
+
+  device_safesync:
+    status: provisional
+    forms:
+      - since: 60
+        citation: "OpenMP 6.0 §10.5.1.7, p.362"
+        syntax: "none | [modifiers[directive-name] ':'] expr@required"
+
+  device_type:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §13.1, p.275"
+        syntax: "enum[any, host, nohost]"
+      - since: 60
+        citation: "OpenMP 6.0 §15.1, p.450"
+        syntax: "[modifiers[directive-name] ':'] enum[any, host, nohost]"
+
+  dist_schedule:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §11.6.1, p.256"
+        syntax: "enum[static] [',' expr@chunk_size]"
+      - since: 60
+        citation: "OpenMP 6.0 §13.7.1, p.422"
+        syntax: "[modifiers[directive-name] ':'] enum[static] [',' expr@chunk_size]"
+
+  dynamic_allocators:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §8.2.1, p.212"
+        syntax: "none"
+      - since: 60
+        citation: "OpenMP 6.0 §10.5.1.2, p.357"
+        syntax: "none | [modifiers[directive-name] ':'] expr@required"
+
+  enter:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.8.4, p.158"
+        syntax: "list"
+      - since: 60
+        langs: [f90]
+        citation: "OpenMP 6.0 §7.9.7, p.289"
+        syntax: "[modifiers[automap-modifier, directive-name] ':'] list"
+        modifiers:
+          automap-modifier: {keywords: [automap]}
+      - since: 60
+        langs: [c]
+        citation: "OpenMP 6.0 §7.9.7, p.289"
+        notes: "C: 'The automap-modifier must not be present.' (6.0 §7.9.7, p.290, a C/C++ restriction), enforced by the form."
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  firstprivate:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.4, p.112"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.4, p.227"
+        syntax: "[modifiers[saved, directive-name] ':'] list"
+        modifiers:
+          saved: {keywords: [saved]}
+
+  from:
+    status: provisional
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.12.6, p.176"
+        notes: "5.0: the mapper modifier only; present and iterator are 5.1 motion-modifiers (5.2 §B.3, p.628)."
+        syntax: "[modifiers[mapper] ':'] list"
+        modifiers:
+          mapper: {complex: mapper}
+      - since: 52
+        citation: "OpenMP 5.2 §5.9.2, p.167"
+        syntax: "[modifiers[expectation, mapper, iterator] ':'] list"
+        modifiers:
+          expectation: {keywords: [present]}
+          mapper: {complex: mapper}
+          iterator: {complex: iterator}
+      - since: 60
+        citation: "OpenMP 6.0 §7.10.2, p.298"
+        syntax: "[modifiers[present-modifier, mapper, iterator, directive-name] ':'] list"
+        modifiers:
+          present-modifier: {keywords: [present]}
+          mapper: {complex: mapper}
+          iterator: {complex: iterator}
+
+  has_device_addr:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.9, p.122"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.9, p.237"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  if:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §3.4, p.72"
+        syntax: "[modifiers[directive-name] ':'] expr"
+      - since: 60
+        citation: "OpenMP 6.0 §5.5, p.179"
+        syntax: "[modifiers[directive-name] ':'] expr"
+
+  in_reduction:
+    status: provisional
+    forms:
+      - since: 52
+        langs: [f90]
+        citation: "OpenMP 5.2 §5.5.10, p.138"
+        syntax: "modifiers[reduction-identifier] ':' list"
+        modifiers:
+          reduction-identifier: {keywords: ['+', '-', '*', '.and.', '.or.', '.eqv.', '.neqv.', max, min, iand, ior, ieor], identifier: true, one_of: true, required: true, ultimate: true}
+      - since: 52
+        langs: [c]
+        citation: "OpenMP 5.2 §5.5.10, p.138"
+        notes: "C reduction identifiers: OpenMP 5.2 §5.5.1, p.124 (an identifier or +, - (deprecated), *, &, |, ^, && and ||); max and min are identifiers implicitly declared for arithmetic types (Table 5.1, p.128)."
+        syntax: "modifiers[reduction-identifier] ':' list"
+        modifiers:
+          reduction-identifier: {keywords: ['+', '-', '*', '&', '|', '^', '&&', '||', max, min], identifier: true, one_of: true, required: true, ultimate: true}
+      - since: 60
+        langs: [f90]
+        citation: "OpenMP 6.0 §7.6.12, p.256"
+        syntax: "modifiers[directive-name, reduction-identifier] ':' list"
+        modifiers:
+          reduction-identifier: {keywords: ['+', '*', '.and.', '.or.', '.eqv.', '.neqv.', max, min, iand, ior, ieor], identifier: true, one_of: true, required: true, ultimate: true}
+      - since: 60
+        langs: [c]
+        citation: "OpenMP 6.0 §7.6.12, p.256"
+        notes: "C reduction identifiers: OpenMP 6.0 §7.6.1, p.239 (an identifier or +, *, &, |, ^, && or ||; no '-'); max and min are implicitly declared identifiers."
+        syntax: "modifiers[directive-name, reduction-identifier] ':' list"
+        modifiers:
+          reduction-identifier: {keywords: ['+', '*', '&', '|', '^', '&&', '||', max, min], identifier: true, one_of: true, required: true, ultimate: true}
+
+  indirect:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §7.8.3, p.209"
+        syntax: "none | expr@invoked_by_fptr"
+      - since: 60
+        citation: "OpenMP 6.0 §9.9.3, p.350"
+        syntax: "none | [modifiers[directive-name] ':'] expr@invoked_by_fptr"
+
+  induction:
+    status: provisional
+    notes: "Fortran induction identifiers: OpenMP 6.0 §7.6.1, p.239 (a base language identifier, a user-defined operator, + or *)."
+    forms:
+      - since: 60
+        citation: "OpenMP 6.0 §7.6.13, p.257"
+        syntax: "modifiers[step-modifier, induction-modifier, directive-name, induction-identifier] ':' list"
+        modifiers:
+          step-modifier: {complex: step, required: true}
+          induction-modifier: {keywords: [relaxed, strict], one_of: true}
+          induction-identifier: {keywords: ['+', '*'], identifier: true, one_of: true, required: true, ultimate: true}
+
+  is_device_ptr:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.7, p.120"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.7, p.235"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  lastprivate:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.5, p.115"
+        syntax: "[modifiers[lastprivate-modifier] ':'] list"
+        modifiers:
+          lastprivate-modifier: {keywords: [conditional]}
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.5, p.229"
+        syntax: "[modifiers[lastprivate-modifier, directive-name] ':'] list"
+        modifiers:
+          lastprivate-modifier: {keywords: [conditional]}
+
+  linear:
+    status: provisional
+    notes: "The deprecated linear-modifier(list) syntax is for declare simd only, which is outside the slice."
+    forms:
+      - since: 50
+        langs: [f90]
+        citation: "OpenMP 5.0 §2.19.4.6, p.290"
+        notes: "5.0: linear(linear-list[ : linear-step]) where linear-list is list or modifier(list); the step is an expression (no step modifier: 5.2 §B.2, p.626). The worksharing-loop and simd constructs forbid a modifier (5.0 §2.9.2, p.107; §2.9.3.1, p.113), so the modifier forms are for declare simd."
+        syntax: "modifiers[val-list, ref-list, uval-list] [':' modifiers[step-simple-modifier]] | list [':' modifiers[step-simple-modifier]]"
+        modifiers:
+          val-list: {complex: val, wraps_list: true, exclusive: true}
+          ref-list: {complex: ref, wraps_list: true, exclusive: true}
+          uval-list: {complex: uval, wraps_list: true, exclusive: true}
+          step-simple-modifier: {expr: true}
+      - since: 52
+        langs: [f90]
+        citation: "OpenMP 5.2 §5.4.6, p.117"
+        syntax: "list [':' modifiers[linear-modifier, step-complex-modifier, step-simple-modifier]]"
+        modifiers:
+          linear-modifier: {keywords: [ref, uval, val], one_of: true}
+          step-complex-modifier: {complex: step}
+          step-simple-modifier: {expr: true, exclusive: true}
+      - since: 50
+        langs: [c]
+        citation: "OpenMP 5.0 §2.19.4.6, p.290"
+        notes: "(the C 5.0 slice): as the Fortran 5.0 form (no step modifier; the step is an expression), with the linear-modifier val only: 'The ref or uval modifier can only be used if the list-item is of a reference type.' (5.0 §2.19.4.6, p.293, C/C++), and C has no reference types."
+        syntax: "modifiers[val-list] [':' modifiers[step-simple-modifier]] | list [':' modifiers[step-simple-modifier]]"
+        modifiers:
+          val-list: {complex: val, wraps_list: true, exclusive: true}
+          step-simple-modifier: {expr: true}
+      - since: 52
+        langs: [c]
+        citation: "OpenMP 5.2 §5.4.6, p.117"
+        notes: "C: 'If specified, linear-modifier must be val.' (5.2 §5.4.6, p.119, a C restriction), enforced by the form."
+        syntax: "list [':' modifiers[linear-modifier, step-complex-modifier, step-simple-modifier]]"
+        modifiers:
+          linear-modifier: {keywords: [val], one_of: true}
+          step-complex-modifier: {complex: step}
+          step-simple-modifier: {expr: true, exclusive: true}
+      - since: 60
+        langs: [f90]
+        citation: "OpenMP 6.0 §7.5.6, p.232"
+        syntax: "list [':' modifiers[linear-modifier, step-complex-modifier, directive-name, step-simple-modifier]]"
+        modifiers:
+          linear-modifier: {keywords: [ref, uval, val], one_of: true}
+          step-complex-modifier: {complex: step}
+          step-simple-modifier: {expr: true, exclusive: true}
+      - since: 60
+        langs: [c]
+        citation: "OpenMP 6.0 §7.5.6, p.232"
+        notes: "C: 'If specified, linear-modifier must be val.' (6.0 §7.5.6, p.234, a C restriction), enforced by the form."
+        syntax: "list [':' modifiers[linear-modifier, step-complex-modifier, directive-name, step-simple-modifier]]"
+        modifiers:
+          linear-modifier: {keywords: [val], one_of: true}
+          step-complex-modifier: {complex: step}
+          step-simple-modifier: {expr: true, exclusive: true}
+
+  link:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.8.5, p.159"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.9.8, p.290"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  local:
+    status: provisional
+    forms:
+      - since: 60
+        citation: "OpenMP 6.0 §7.14, p.303"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  map:
+    status: provisional
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.19.7.1, p.315"
+        notes: "5.0 map-type-modifiers: always, close, mapper; present and iterator are 5.1 (5.1 §2.21.7.1; 5.2 §B.3, p.628). Commas between modifiers are optional."
+        syntax: "[modifiers[map-type-modifier, mapper, map-type] ':'] list"
+        modifier_commas_optional: true
+        modifiers:
+          map-type-modifier: {keywords: [always, close]}
+          mapper: {complex: mapper}
+          map-type: {keywords: [alloc, delete, from, release, to, tofrom], one_of: true, ultimate: true}
+      - since: 52
+        citation: "OpenMP 5.2 §5.8.3, p.150"
+        notes: "Commas between modifiers are optional (deprecated)."
+        syntax: "[modifiers[map-type-modifier, mapper, iterator, map-type] ':'] list"
+        modifier_commas_optional: true
+        modifiers:
+          map-type-modifier: {keywords: [always, close, present]}
+          mapper: {complex: mapper}
+          iterator: {complex: iterator}
+          map-type: {keywords: [alloc, delete, from, release, to, tofrom], one_of: true, ultimate: true}
+      - since: 60
+        langs: [f90]
+        citation: "OpenMP 6.0 §7.9.6, p.279"
+        notes: "alloc (map-entering) and release (map-exiting) are synonyms of storage: OpenMP 6.0 §7.9.1, p.274. delete is now its own modifier."
+        syntax: "[modifiers[always-modifier, close-modifier, present-modifier, self-modifier, ref-modifier, delete-modifier, mapper, iterator, map-type, directive-name] ':'] list"
+        modifiers:
+          always-modifier: {keywords: [always]}
+          close-modifier: {keywords: [close]}
+          present-modifier: {keywords: [present]}
+          self-modifier: {keywords: [self]}
+          ref-modifier: {keywords: [ref_ptee, ref_ptr, ref_ptr_ptee], one_of: true}
+          delete-modifier: {keywords: [delete]}
+          mapper: {complex: mapper}
+          iterator: {complex: iterator}
+          map-type: {keywords: [alloc, from, release, storage, to, tofrom], one_of: true}
+      - since: 60
+        langs: [c]
+        citation: "OpenMP 6.0 §7.9.6, p.279"
+        notes: "C: no ref-modifier: 'A list item that appears in a clause with the ref-modifier must be a referencing variable.' (6.0 §7.9.5, p.279), and a referencing variable is a C++ reference or a Fortran allocatable variable or data pointer (6.0 §2 Glossary, p.90), so C has none; enforced by the form (ruling). alloc and release are synonyms of storage."
+        syntax: "[modifiers[always-modifier, close-modifier, present-modifier, self-modifier, delete-modifier, mapper, iterator, map-type, directive-name] ':'] list"
+        modifiers:
+          always-modifier: {keywords: [always]}
+          close-modifier: {keywords: [close]}
+          present-modifier: {keywords: [present]}
+          self-modifier: {keywords: [self]}
+          delete-modifier: {keywords: [delete]}
+          mapper: {complex: mapper}
+          iterator: {complex: iterator}
+          map-type: {keywords: [alloc, from, release, storage, to, tofrom], one_of: true}
+
+  message:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §8.5.2, p.217"
+        syntax: "expr"
+      - since: 60
+        citation: "OpenMP 6.0 §10.3, p.353"
+        syntax: "[modifiers[directive-name] ':'] expr"
+
+  nogroup:
+    status: provisional
+    forms:
+      - since: 60
+        citation: "OpenMP 6.0 §17.7, p.483"
+        syntax: "none | [modifiers[directive-name] ':'] expr@do_not_synchronize"
+
+  nontemporal:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §10.4.1, p.236"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §12.4.1, p.400"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  nowait:
+    status: provisional
+    end_clause: true
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §15.6, p.308"
+        syntax: "none"
+      - since: 60
+        citation: "OpenMP 6.0 §17.6, p.481"
+        syntax: "none | [modifiers[directive-name] ':'] expr@do_not_synchronize"
+
+  num_teams:
+    status: provisional
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.7, p.82"
+        notes: "5.0: no lower-bound (added in 5.1, 5.1 §2.7)."
+        syntax: "expr"
+      - since: 52
+        citation: "OpenMP 5.2 §10.2.1, p.233"
+        syntax: "[modifiers[lower-bound] ':'] expr"
+        modifiers:
+          lower-bound: {expr: true}
+      - since: 60
+        citation: "OpenMP 6.0 §12.2.1, p.397"
+        syntax: "[modifiers[directive-name, lower-bound] ':'] expr"
+        modifiers:
+          lower-bound: {expr: true}
+
+  num_threads:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §10.1.2, p.227"
+        syntax: "expr"
+      - since: 60
+        citation: "OpenMP 6.0 §12.1.2, p.388"
+        syntax: "[modifiers[prescriptiveness, directive-name] ':'] expr_list"
+        modifiers:
+          prescriptiveness: {keywords: [strict]}
+
+  order:
+    status: provisional
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.9.5, p.128"
+        notes: "5.0: order(concurrent) only; the order-modifiers are 5.1 (5.1 §2.11.3)."
+        syntax: "enum[concurrent]"
+      - since: 52
+        citation: "OpenMP 5.2 §10.3, p.233"
+        syntax: "[modifiers[order-modifier] ':'] enum[concurrent]"
+        modifiers:
+          order-modifier: {keywords: [reproducible, unconstrained], one_of: true}
+      - since: 60
+        citation: "OpenMP 6.0 §12.3, p.397"
+        syntax: "[modifiers[order-modifier, directive-name] ':'] enum[concurrent]"
+        modifiers:
+          order-modifier: {keywords: [reproducible, unconstrained], one_of: true}
+
+  ordered:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §4.4.4, p.94"
+        syntax: "none | expr@n"
+      - since: 60
+        citation: "OpenMP 6.0 §6.4.6, p.206"
+        syntax: "none | [modifiers[directive-name] ':'] expr@n"
+
+  private:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.3, p.111"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.3, p.225"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  proc_bind:
+    status: provisional
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.6, p.74"
+        notes: "5.0: master, close, spread; primary replaced master in 5.1 (5.2 §B.1, p.625)."
+        syntax: "enum[close, master, spread]"
+      - since: 52
+        citation: "OpenMP 5.2 §10.1.4, p.229"
+        notes: "master is deprecated in 5.2 and absent from 6.0."
+        syntax: "enum[close, master, primary, spread]"
+      - since: 60
+        citation: "OpenMP 6.0 §12.1.4, p.392"
+        syntax: "[modifiers[directive-name] ':'] enum[close, primary, spread]"
+
+  reduction:
+    status: provisional
+    notes: "Reduction identifiers: OpenMP 5.2 §5.5.1, p.124 ('-' deprecated); OpenMP 6.0 §7.6.1, p.239 (no '-')."
+    forms:
+      - since: 52
+        langs: [f90]
+        citation: "OpenMP 5.2 §5.5.8, p.134"
+        syntax: "modifiers[reduction-modifier, reduction-identifier] ':' list"
+        modifiers:
+          reduction-modifier: {keywords: [default, inscan, task], one_of: true}
+          reduction-identifier: {keywords: ['+', '-', '*', '.and.', '.or.', '.eqv.', '.neqv.', max, min, iand, ior, ieor], identifier: true, one_of: true, required: true, ultimate: true}
+      - since: 52
+        langs: [c]
+        citation: "OpenMP 5.2 §5.5.8, p.134"
+        notes: "C reduction identifiers: OpenMP 5.2 §5.5.1, p.124 (an identifier or +, - (deprecated), *, &, |, ^, && and ||); max and min are identifiers implicitly declared for arithmetic types (Table 5.1, p.128)."
+        syntax: "modifiers[reduction-modifier, reduction-identifier] ':' list"
+        modifiers:
+          reduction-modifier: {keywords: [default, inscan, task], one_of: true}
+          reduction-identifier: {keywords: ['+', '-', '*', '&', '|', '^', '&&', '||', max, min], identifier: true, one_of: true, required: true, ultimate: true}
+      - since: 60
+        langs: [f90]
+        citation: "OpenMP 6.0 §7.6.10, p.252"
+        syntax: "modifiers[reduction-modifier, original-sharing-modifier, directive-name, reduction-identifier] ':' list"
+        modifiers:
+          reduction-modifier: {keywords: [default, inscan, task], one_of: true}
+          original-sharing-modifier: {complex: original}
+          reduction-identifier: {keywords: ['+', '*', '.and.', '.or.', '.eqv.', '.neqv.', max, min, iand, ior, ieor], identifier: true, one_of: true, required: true, ultimate: true}
+      - since: 60
+        langs: [c]
+        citation: "OpenMP 6.0 §7.6.10, p.252"
+        notes: "C reduction identifiers: OpenMP 6.0 §7.6.1, p.239 (an identifier or +, *, &, |, ^, && or ||; no '-'); max and min are implicitly declared identifiers."
+        syntax: "modifiers[reduction-modifier, original-sharing-modifier, directive-name, reduction-identifier] ':' list"
+        modifiers:
+          reduction-modifier: {keywords: [default, inscan, task], one_of: true}
+          original-sharing-modifier: {complex: original}
+          reduction-identifier: {keywords: ['+', '*', '&', '|', '^', '&&', '||', max, min], identifier: true, one_of: true, required: true, ultimate: true}
+
+  replayable:
+    status: provisional
+    forms:
+      - since: 60
+        citation: "OpenMP 6.0 §14.6, p.440"
+        syntax: "none | [modifiers[directive-name] ':'] expr@replayable_expression"
+
+  reverse_offload:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §8.2.1, p.212"
+        syntax: "none"
+      - since: 60
+        citation: "OpenMP 6.0 §10.5.1.3, p.358"
+        syntax: "none | [modifiers[directive-name] ':'] expr@required"
+
+  safelen:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §10.4.2, p.237"
+        syntax: "expr"
+      - since: 60
+        citation: "OpenMP 6.0 §12.4.2, p.401"
+        syntax: "[modifiers[directive-name] ':'] expr"
+
+  schedule:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §11.5.3, p.252"
+        syntax: "[modifiers[ordering-modifier, chunk-modifier] ':'] enum[auto, dynamic, guided, runtime, static] [',' expr@chunk_size]"
+        modifiers:
+          ordering-modifier: {keywords: [monotonic, nonmonotonic], one_of: true}
+          chunk-modifier: {keywords: [simd]}
+      - since: 60
+        citation: "OpenMP 6.0 §13.6.3, p.418"
+        syntax: "[modifiers[ordering-modifier, chunk-modifier, directive-name] ':'] enum[auto, dynamic, guided, runtime, static] [',' expr@chunk_size]"
+        modifiers:
+          ordering-modifier: {keywords: [monotonic, nonmonotonic], one_of: true}
+          chunk-modifier: {keywords: [simd]}
+
+  self_maps:
+    status: provisional
+    forms:
+      - since: 60
+        citation: "OpenMP 6.0 §10.5.1.6, p.361"
+        syntax: "none | [modifiers[directive-name] ':'] expr@required"
+
+  severity:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §8.5.1, p.217"
+        syntax: "enum[fatal, warning]"
+      - since: 60
+        citation: "OpenMP 6.0 §10.4, p.354"
+        syntax: "[modifiers[directive-name] ':'] enum[fatal, warning]"
+
+  shared:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.2, p.110"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.2, p.224"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  simdlen:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §10.4.3, p.237"
+        syntax: "expr"
+      - since: 60
+        citation: "OpenMP 6.0 §12.4.3, p.401"
+        syntax: "[modifiers[directive-name] ':'] expr"
+
+  thread_limit:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §13.3, p.277"
+        syntax: "expr"
+      - since: 60
+        citation: "OpenMP 6.0 §15.3, p.452"
+        syntax: "[modifiers[directive-name] ':'] expr"
+
+  to:
+    status: provisional
+    notes: "On declare target, to is the deprecated 5.2 synonym of enter; 6.0 removes it there (see spec_overrides.yaml)."
+    forms:
+      - since: 50
+        directives: [declare target]
+        citation: "OpenMP 5.0 §2.12.7, p.180"
+        syntax: "list"
+      - since: 50
+        directives: [target update]
+        citation: "OpenMP 5.0 §2.12.6, p.176"
+        notes: "5.0: the mapper modifier only (present and iterator are 5.1)."
+        syntax: "[modifiers[mapper] ':'] list"
+        modifiers:
+          mapper: {complex: mapper}
+      - since: 52
+        directives: [declare target]
+        citation: "OpenMP 5.2 §5.8.4, p.158"
+        syntax: "list"
+      - since: 52
+        directives: [target update]
+        citation: "OpenMP 5.2 §5.9.1, p.166"
+        syntax: "[modifiers[expectation, mapper, iterator] ':'] list"
+        modifiers:
+          expectation: {keywords: [present]}
+          mapper: {complex: mapper}
+          iterator: {complex: iterator}
+      - since: 60
+        directives: [target update]
+        citation: "OpenMP 6.0 §7.10.1, p.297"
+        syntax: "[modifiers[present-modifier, mapper, iterator, directive-name] ':'] list"
+        modifiers:
+          present-modifier: {keywords: [present]}
+          mapper: {complex: mapper}
+          iterator: {complex: iterator}
+
+  transparent:
+    status: provisional
+    forms:
+      - since: 60
+        citation: "OpenMP 6.0 §17.9.6, p.510"
+        syntax: "none | [modifiers[directive-name] ':'] expr@impex_type"
+
+  unified_address:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §8.2.1, p.212"
+        syntax: "none"
+      - since: 60
+        citation: "OpenMP 6.0 §10.5.1.4, p.359"
+        syntax: "none | [modifiers[directive-name] ':'] expr@required"
+
+  unified_shared_memory:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §8.2.1, p.212"
+        syntax: "none"
+      - since: 60
+        citation: "OpenMP 6.0 §10.5.1.5, p.360"
+        syntax: "none | [modifiers[directive-name] ':'] expr@required"
+
+  use_device_addr:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.10, p.123"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.10, p.238"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  use_device_ptr:
+    status: provisional
+    forms:
+      - since: 52
+        citation: "OpenMP 5.2 §5.4.8, p.121"
+        syntax: "list"
+      - since: 60
+        citation: "OpenMP 6.0 §7.5.8, p.236"
+        syntax: "[modifiers[directive-name] ':'] list"
+
+  uses_allocators:
+    status: provisional
+    notes: "5.2 also accepts the deprecated list of allocator[(traits)]; 6.0 separates several specifications with ';'."
+    forms:
+      - since: 50
+        citation: "OpenMP 5.0 §2.12.5, p.170"
+        notes: "5.0: uses_allocators(allocator[(allocator-traits-array)] [,...]); the memspace and traits modifiers are 5.2 (5.2 §B.2, p.627). A single allocator with a traits array gives the traits atom."
+        syntax: "modifiers[allocator-traits] | list"
+        modifiers:
+          allocator-traits: {complex: traits, call: true}
+      - since: 52
+        citation: "OpenMP 5.2 §6.8, p.181"
+        syntax: "[modifiers[mem-space, traits-array] ':'] expr | list"
+        modifiers:
+          mem-space: {complex: memspace}
+          traits-array: {complex: traits}
+      - since: 60
+        citation: "OpenMP 6.0 §8.8, p.315"
+        syntax: "[modifiers[mem-space, traits-array, directive-name] ':'] expr"
+        multiple_specs: true
+        modifiers:
+          mem-space: {complex: memspace}
+          traits-array: {complex: traits}

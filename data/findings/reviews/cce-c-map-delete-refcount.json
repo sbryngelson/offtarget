@@ -1,0 +1,149 @@
+{
+ "finding": "cce-c-map-delete-refcount.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-17",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a: enter data to (rc1), second enter data (rc2), target alloc (rc3 then back to 2); exit data delete sets rc to zero and removes it, so a is not present. b: rc1 from decrements to zero, copied back and removed. Expected a_present=0 b_present=0; observed a_present=1 violates the delete rule."
+  },
+  {
+   "run": "run-20261112/batch-25",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a's reference count: 1 (enter data), 2 (second enter data), 3 (target alloc), back to 2 after target. exit data with delete sets the count to zero, so a is removed and omp_target_is_present(a) must be 0. b has count 1, then exit data from removes it. Data are correct, no race. Observed a_present=1 contradicts the delete rule."
+  },
+  {
+   "run": "run-v2-20261113/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a is mapped twice by enter data (count 2); the target alloc map raises and lowers the count; b has count 1. The exit data map(from: b) copies b back and removes it; map(delete: a) sets a's count to zero and removes it from the device. So neither is present afterwards. Observed a_present=1 contradicts the delete rule.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-64",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "missed",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a is mapped by two enter data to maps, so its reference count is 2. The target map(alloc: a, b) raises and then lowers it. exit data with map(delete: a) sets the count to zero, so the storage is removed and omp_target_is_present(a, d) must be 0. b has count 1 after enter data, and exit data map(from: b) takes it to zero and copies out. The expected a_present=0 is required, and the observed a_present=1 is wrong."
+  },
+  {
+   "run": "run-v2-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a is mapped twice by target enter data, so its reference count is 2. The exit data with map(delete: a) sets the reference count to zero regardless of its value, and zero count removes the storage. omp_target_is_present(a, d) must then return 0. b is mapped once, so from decrements it to zero and removes it. Observed a_present=1 contradicts the specification.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "363d69954e6a028a5aa7c62139f861042fc673313fe89805a9e8fb8fdb97e01c",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

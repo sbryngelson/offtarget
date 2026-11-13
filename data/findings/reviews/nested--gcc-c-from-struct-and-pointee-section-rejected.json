@@ -1,0 +1,113 @@
+{
+ "finding": "nested/gcc-c-from-struct-and-pointee-section-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-19",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Mapping r (from) and the section r.nx[0][0:1] is permitted: the section's storage is heap memory pointed to by a member, not storage within r, so the same-construct storage restriction is not triggered; pointer attachment applies. The program only writes mapped data (r.nx[0]->a[0..3], covered by the [0:1] section of struct s1) and tot. Reading r.v before assignment is harmless since tot is overwritten. 'from' is a valid map-type; the compiler's message is wrong, so a conforming compiler must accept."
+  },
+  {
+   "run": "run-20261113/batch-81",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r.nx[0][0:1] has its original storage in the heap block, not in r, so it shares no original storage with r; the two list items may appear together. The map-types are from, which is valid on target. The pointer r.nx[0] is mapped as part of r and the pointee section is mapped, so the corresponding pointer is attached. The read of r.v yields an unspecified value but tot is then overwritten with 7, so the check is deterministic. The GCC message citing an invalid map-type is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-14",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(from: r) maps the struct. map(from: r.nx[0][0:1]) maps one s1 object the pointer member points to, which is separate storage and does not share original storage with r, so the restriction on shared storage is not violated. from is a valid map type on target, so the GCC diagnostic about the map type is wrong. The device uninitialized r.v read is overwritten (tot = 7), so the result is deterministic.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-89",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(from: r) maps the struct and map(from: r.nx[0][0:1]) maps the pointee; the pointee storage is separate from r, so the share-original-storage restriction is not violated. The base pointer r.nx[0] becomes an attached pointer. from is a valid map-type, so the error about a map-type is wrong and a conforming compiler must accept the program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "a1e4af92fbaf2f122df44d591cd29d3f729c58ec0ab1124ba3a09a8c34dbe476",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,126 @@
+{
+ "finding": "stress/nvhpc-acc-derived-type-component-not-copied.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "xc is a Fortran derived-type (composite, hence aggregate) variable referenced in a serial construct with no data clause and no default(none). It is implicitly treated as in a copy clause, so the update xc%c1=2*101+1=203 must be copied back to the host. Printing 101 means the copyout was lost, a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-30",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "xc is a derived-type aggregate with no data clause on the serial construct, so it is treated as if in a copy clause. The device update must be copied back, giving 203. Printing 101 means the aggregate was not copied out."
+  },
+  {
+   "run": "run-20261112b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "xc is a Fortran derived-type variable, an aggregate, not a scalar. It has no data clause and no default(none) is visible, so it is implicitly treated as if in a copy clause on the serial construct. The device update xc%c1=2*101+1=203 is copied back at region exit, so the host must print 203. With separate memory, printing 101 means the implicit copy-out was not done. Single thread in serial, no race."
+  },
+  {
+   "run": "run-v2-20261113/batch-28",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "xc is a Fortran derived type, an aggregate variable. It has no data clause on the serial construct and is accessed inside it, so it is implicitly treated as if in a copy clause. The device update is copied back, giving 2*101+1 = 203. Printing 101 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-66",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "xc is a variable of derived type (composite, hence aggregate) used in a serial construct without a data clause or default clause, so it is implicitly treated as in a copy clause. The update to xc%c1 is copied back, giving 203. Only scalars are firstprivate.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-68",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "dae50f1f0e7a7dd962af07356d57091bb2e06b2de3098755833fede66eafff6f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

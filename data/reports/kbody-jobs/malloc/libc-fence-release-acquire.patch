@@ -1,0 +1,22 @@
+--- a/libc/src/__support/GPU/allocator.cpp	2026-11-02 17:30:19.000000000 -0800
++++ b/libc/src/__support/GPU/allocator.cpp	2026-11-02 17:31:49.000000000 -0800
+@@ -315,8 +315,10 @@
+           before = cpp::AtomicRef(get_bitfield()[slot])
+                        .fetch_or(bitmask, cpp::MemoryOrder::RELAXED);
+         before = gpu::shuffle(lane_mask, leader, before);
+-        if (~before & (1u << bit))
++        if (~before & (1u << bit)) {
++          cpp::atomic_thread_fence(cpp::MemoryOrder::ACQUIRE);
+           result = ptr_from_index(index, chunk_size);
++        }
+ 
+         uint32_t after = before | bitmask;
+         uint64_t waiting = gpu::ballot(lane_mask, !result);
+@@ -342,6 +344,7 @@
+     uint32_t slot = index / BITS_IN_WORD;
+     uint32_t bit = index % BITS_IN_WORD;
+ 
++    cpp::atomic_thread_fence(cpp::MemoryOrder::RELEASE);
+     cpp::AtomicRef(get_bitfield()[slot])
+         .fetch_and(~(1u << bit), cpp::MemoryOrder::RELAXED);
+   }

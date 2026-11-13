@@ -1,0 +1,113 @@
+{
+ "finding": "fresh/cce19-acc-automatic-array-copyout-copy-crash.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "w is an automatic explicit-shape array. data copyout(w) allocates device memory at entry; the parallel loop (present via the enclosing data region) writes every element once with collapse(2) over independent iterations; copyout returns it at exit. Then sum(w) = 210*15 = 3150. No race, no uninitialized read on host. A runtime crash is not permitted."
+  },
+  {
+   "run": "run-20261113/batch-60",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenACC. The automatic array w is copied out by the data construct. The parallel loop collapse(2) iterations are independent and write distinct elements, and w is present inside the region. After the region sum(w)=210*15=3150. A runtime crash is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-43",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "w is an automatic array present via data copyout(w); the collapse(2) loop nest is tightly nested, each iteration writes a distinct element, loop variables are private. After end data w is copied out, so sum(w)=210*15=3150. Nothing in the program is non-conforming, so a runtime crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-43",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-77",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "w is an automatic array copied out by the enclosing data construct, so it is present when the parallel loop runs; the implicit-attribute rule applies only to variables not in a visible data clause. The i and k iterations write distinct elements of w, so there is no race. After the region w holds i*k, so sum is 210*15 = 3150. The abort is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "386020091e9f1db635aba0c045ef52e554b0309c082d0c3187c6f432f5d492bc",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

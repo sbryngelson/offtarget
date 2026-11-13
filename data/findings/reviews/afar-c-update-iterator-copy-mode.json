@@ -1,0 +1,113 @@
+{
+ "finding": "afar-c-update-iterator-copy-mode.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "iterator(k=0:1) in the to motion clause of target update is allowed in 5.2 with the type defaulting to int. The iterator takes only the value k=0, giving a[0:64], which is present from enter data. The host update (+10) must be copied to the device before the target region copies a to b, so bad must be 0."
+  },
+  {
+   "run": "run-20261112/batch-28",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "iterator(k = 0:1) takes the single value k=0 (i0<end, i0+step>=end), so a[0:64] is updated to the device. The updated values are copied to b and back. bad must be 0."
+  },
+  {
+   "run": "run-v2-20261113/batch-55",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The untyped iterator is of int type, the range k=0:1 gives one value, so the list item is a[0:64]. The iterator k shadows the outer k. The to clause of target update is legal and must copy the updated array to the device. 64 bad means the update was not done.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-61",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Motion clauses accept an iterator modifier from OpenMP 5.1 on. iterator(k = 0:1) has one value, k = 0, so the list item is a[0:64], the whole array. The enter data mapped a with refcount 1, so the update to copies the modified a to the device. The target region with map(alloc:) finds a present, so it reads the updated values. b is then copied back, and bad is 0. The inner k is distinct from the outer k. Result 64 means the update did not occur.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ff5357859a7dee339406440985db81414b04914b0ea21b543a7fa55aea2078c8",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

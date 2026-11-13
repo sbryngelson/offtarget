@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-c-ordered-doacross-link.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "ordered(1) on a worksharing-loop is allowed for a single perfectly nested loop with no linear or collapse clause; nothing requires an ordered construct inside the loop. Iterations write distinct elements, so no race. default(none) is satisfied (a, b shared; n is an enumeration constant; i is the loop variable). A link failure on doacross runtime symbols is a toolchain defect."
+  },
+  {
+   "run": "run-20261113/batch-53",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "ordered(1) on a parallel worksharing loop with one canonical rectangular loop satisfies the restrictions; no ordered construct is needed. Loop variable is predetermined private so default(none) is fine. Compiling and linking must succeed and b = 2a+1."
+  },
+  {
+   "run": "run-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "ordered(1) on parallel for names one perfectly nested associated loop; n does not exceed the nest depth and no linear clause is present. No ordered construct or depend appears, which is not restricted. Iterations write distinct elements, so there is no race. default(none) lists a and b; the loop variable is private. The undefined __kmpc_doacross_* link error is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-111",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "ordered(1) with one perfectly nested associated loop satisfies the ordered clause restrictions (n not greater than depth, no linear, no collapse conflict). It is allowed on for, and no ordered construct or depend is needed. The loop writes distinct b elements, and i is predetermined private. A conforming compiler must build it, so the missing __kmpc_doacross_init at link time is a toolchain bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-45",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "5782c17e3a0b767886fbb87b923aa401d8fa471d3eccbf899279413b289fc3a7",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

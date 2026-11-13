@@ -1,0 +1,113 @@
+{
+ "finding": "nvhpc-defaultmap-firstprivate-explicit-map.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "b is explicitly mapped from and host_flag tofrom; the defaultmap(firstprivate) without category means all, and affects only implicitly mapped variables (c). Neither explicit map is overridden, so b must be copied back (sum 2144) and host_flag set by the device. Observed sum 0 is a compiler error. No race, no restriction broken."
+  },
+  {
+   "run": "run-20261112/batch-32",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "defaultmap(firstprivate) with no category applies to all categories for variables not explicitly mapped; b and host_flag have explicit map clauses so they keep them, c and i become firstprivate (i is a private loop counter inside the region). No race, single thread executes the region. map(from: b) must copy b back, so sum is 2144 (64 values of i+1). Sum 0 is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-103",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "b and host_flag have explicit map clauses, and explicit data-environment attribute clauses take precedence over defaultmap, which affects only implicitly determined variables. Only c and i are implicitly handled; c is firstprivate. b is mapped from, so the device values 2..65 (sum 2144) must be copied back. Observed sum 0 means the explicit map(from: b) was ignored.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-20",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-20",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "defaultmap(firstprivate) with no category applies to all variables not explicitly mapped, so c and i are firstprivate. b and host_flag are explicitly mapped. Each b(i) is written once, so there is no race. b must come back as i+1, summing to 2144. The observed sum of 0 is wrong. host_flag is 0 when the region runs on a device.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-57",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "74000df89df0ab339444ea3a826676f564d98c42e7a3e0b584f52c04edaf800f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

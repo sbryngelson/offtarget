@@ -1,0 +1,6 @@
+# Verbatim run output stored by the stress campaign s1-acc (results/stress/s1-acc/rows.jsonl, map-acc-310-1 cce19 mode 1 O2), Tuolumne, 2026-10. Module-system notices dropped.
+# source: ftn -h acc -O2 (CCE 19.0.0) on offload.engine.stress map axis, size 310, seed 1
+# exit status: 1
+# The runtime reports a capacity limit: a break point, not a compiler failure
+==== verbatim output below ====
+ACC: libcrayacc/acc_hw_amd.c:1783 CRAY_ACC_ERROR - Large args not supported

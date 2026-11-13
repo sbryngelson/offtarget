@@ -1,0 +1,113 @@
+{
+ "finding": "stress/cce-lastprivate-num-threads-collapse-simd.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lp is a lastprivate list item on a combined target construct and is not in a map clause, so Section 17.2 treats it as mapped tofrom. The value of the sequentially last iteration (200) is assigned to the original list item, which is the mapped variable, and the tofrom map copies it back to the host. Host result 0 is therefore non-conforming."
+  },
+  {
+   "run": "run-20261112/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "For the combined construct with target among its constituents, lastprivate(lp) acts as map(tofrom: lp) on target and as lastprivate on distribute and parallel for, so the value of the sequentially last iteration (200) is copied to the host. The restore to 0 is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "On a combined target construct, a lastprivate list item that is not mapped is treated as if it appeared in a map clause with map-type tofrom. So lp is mapped tofrom, and lastprivate copies the value from the sequentially last iteration (200) to lp, which is copied back. Printing 0 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-06",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-66",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "On a combined construct containing target, a lastprivate list item that is not in a map clause gets an implicit map with map-type tofrom, so the sequentially last iteration value (200) is copied back to host lp. Leaving lp at 0 violates this.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "897bf8cad0fadc0b8318ebf47d78c5cce1f9029034ab6ec1b02ca1d515851a29",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

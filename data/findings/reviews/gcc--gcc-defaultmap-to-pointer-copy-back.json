@@ -1,0 +1,217 @@
+{
+ "finding": "gcc/gcc-defaultmap-to-pointer-copy-back.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program is conforming. Whether defaultmap(to: pointer) applies to a Fortran POINTER array is not clear: the category is described as variables of pointer type, and wp is also an aggregate (array). If pointer applies, map(to:) keeps device writes off the host (changed==0, expected). If it does not, wp is implicitly tofrom (non-scalar rule), writes reach the host, and changed==64 is allowed. The observed result is therefore possibly permitted."
+  },
+  {
+   "run": "run-20261112/batch-27",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "wp is an associated Fortran pointer; defaultmap(to: pointer) gives it an implicit map clause with map-type to, and the pointer target is implicitly mapped in the same clause, so with to it is not copied back. Without shared memory the host wp must remain 0 (changed==0) and b(n)=129. Observed changed=64 with shared_mem=F means the target was copied back (tofrom), contradicting the map type."
+  },
+  {
+   "run": "run-v2-20261113/batch-16",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "wp is an array pointer, so it falls into both the pointer and the aggregate variable categories (arrays). The text does not say which defaultmap category wins, and without a rule the implicit tofrom for non-scalars could apply. Whether the pointee is mapped to-only is therefore not clearly required, and the observed tofrom-like behavior is not clearly forbidden.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-09",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-97",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Section 5.8.7 defines pointer as variables of pointer type and aggregate as arrays or structures. wp is a Fortran pointer array, so it fits both, and the specification does not say which applies. If it counts as aggregate, defaultmap(to: pointer) does not apply and the default tofrom copies wp back, matching the observed output. The expected result is not required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-35",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "905bccf76a70024abe28438530c50460463e908c4bb6ca412832af49c81d9e3d",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: Section 5.8.7 defines pointer as variables of pointer type and aggregate as variables of aggregate type (arrays or structures). The Fortran pointer array wp is a pointer and also an array, so it fits both categories. The text gives no precedence between them. If aggregate applies, the implicit tofrom rule of 5.8.1 maps wp and the observed copy-back is permitted. If pointer applies, to-only mapping is permitted too.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading B overstates. The pointer category is defined as 'variables of pointer type', a C notion; for a Fortran POINTER array wp the text does not say whether it falls in pointer, aggregate (arrays), or neither category, and the 5.8.1 non-scalar tofrom rule would apply if defaultmap does not reach it. The to behavior needs the clause to apply, which is not established. Reading A is closer; the observed tofrom copy-back is not clearly forbidden."
+  },
+  {
+   "run": "adj-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Legal. Whether Fortran POINTER array wp belongs to the pointer category is not settled: the text says 'variables of pointer type', which has no direct Fortran meaning, and wp is also an array (aggregate), which would give it tofrom. Reading B asserts the pointer reading without support; Reading A's doubt is right."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Section 5.8.7 defines pointer as variables of pointer type and aggregate as variables of aggregate type (arrays or structures). The Fortran pointer array wp is a pointer and also an array, so it fits both categories. The text gives no precedence between them. If aggregate applies, the implicit tofrom rule of 5.8.1 maps wp and the observed copy-back is permitted. If pointer applies, to-only mapping is permitted too. Reading A is right that the expected result is not required. Reading B's uncertain verdict is weaker because the text allows both outcomes.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Neither reading fully holds. The pointer category is defined as variables of pointer type and the aggregate category as arrays or structures. A Fortran pointer array could be read as either, and the text gives no precedence. If it is a pointer, defaultmap(to: pointer) maps it to-only and the host copy stays unchanged; if aggregate, the implicit tofrom applies. Reading A asserts the aggregate reading without support. The expected result is not clearly required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-37",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

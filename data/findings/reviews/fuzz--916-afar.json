@@ -1,0 +1,130 @@
+{
+ "finding": "fuzz/916-afar.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-19",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "teams reduction(iand) with distribute, an inner parallel and a worksharing do reduction(iand) on the same shared (team-private) item is allowed; no firstprivate on distribute. Each o1(i,j) is written by one thread; the r1a combination is associative and deterministic. o1 is implicitly mapped tofrom. The GPU memory fault is a compiler/runtime defect."
+  },
+  {
+   "run": "run-20261113/batch-50",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "teams with reduction(iand) inside target, distribute, then parallel with a worksharing do reduction(iand) on r1a, which is shared in the parallel region. o1(i,j) writes are disjoint. Each team's initial thread updates its own private r1a. Result is deterministic (iand of 1..48 and 65535 is 0, o1 all 0) and the output is fixed. The GPU memory fault is a compiler or runtime defect. The loop-binding restriction on reduction applies only to the loop construct, which is absent. distribute region is strictly nested in teams, parallel is allowed in distribute."
+  },
+  {
+   "run": "run-v2-20261113/batch-110",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "teams reduction(iand) on r1a; inside, the parallel region shares r1a (the teams private copy) and the worksharing do reduction on r1a satisfies the rule that the item be shared in the binding parallel region. Each distribute iteration writes distinct o1(i,j); o1 is implicitly mapped tofrom. parallel and distribute may be nested in teams. Result is deterministic (and of 1..48 with 65535 = 0). The GPU memory fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-28",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-48",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The teams reduction gives each team a private r1a. Inside the parallel region r1a is shared by that team's threads, as the worksharing reduction requires, and the inner do reduction combines the per-thread values. o1(i,j) writes are disjoint. No restriction on nested reductions or firstprivate is violated, so the result is deterministic and a GPU write fault is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "3081e53aa95c8d6c05f36b4f45c08ca4386d687d1c11d4d54c6c9e35309045c9",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

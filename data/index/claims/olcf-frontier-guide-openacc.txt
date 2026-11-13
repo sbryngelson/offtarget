@@ -1,0 +1,43 @@
+OpenACC
+This section shows how to compile code with OpenACC. Currently only the Cray compiler supports OpenACC for Fortran. The AMD and
+GNU programming environments do not support OpenACC at all.
+C and C++ support for OpenACC is provided by clacc which maintains a fork of the LLVM
+compiler with added support for OpenACC. It can be obtained by loading the UMS modules
+ums, ums025, and clacc.
+Note
+Make sure the craype-accel-amd-gfx90a module is loaded when using the Cray compiler to
+compile Fortran OpenACC code.
+Vendor
+Module
+Language
+Compiler
+Flags
+Support
+Cray
+cce
+C, C++
+No support
+Fortran
+ftn (wraps crayftn)
+-h acc
+Full support for OpenACC 2.0
+Partial support for OpenACC 2.x/3.x
+UMS
+module
+PrgEnv-cray
+ums
+um025
+clacc
+C, C++
+clang
+-fopenacc
+Experimental. ContactJoel Denny dennyje@ornl.gov
+Fortran
+No support
+HIP
+This section shows how to compile HIP codes using the Cray compiler wrappers and hipcc compiler driver.
+Note
+Make sure the craype-accel-amd-gfx90a module is loaded when compiling HIP with the Cray compiler wrappers.
+Compiler
+Compile/Link Flags, Header Files, and Libraries
+CC

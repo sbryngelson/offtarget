@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-reduction-task-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reduction with the task modifier on a worksharing do construct is permitted; s is shared in the enclosing parallel, there is no nowait, the loop variable is private, and no explicit tasks exist. A link-time undefined runtime symbol is a compiler/runtime defect."
+  },
+  {
+   "run": "run-20261113/batch-76",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "reduction(task,+:s) on a worksharing do inside a parallel is allowed; s is shared in the parallel region, nowait is absent, and neither simd nor loop is a constituent. default(none) is satisfied (i is the predetermined private loop iterator). A conforming compiler must support the task modifier, so a link-time undefined runtime symbol is a compiler/runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-56",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "reduction(task, +: s) on a worksharing loop is allowed. s is shared in the enclosing parallel region, as the restriction requires, and nowait is not used. default(none) lists a, b and s, and the loop variable is private. The program is conforming, so a conforming compiler must compile and link it. The undefined runtime symbol is an implementation failure.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-20",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-81",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "reduction(task, +: s) appears on a worksharing loop inside a parallel construct without nowait, which the restrictions allow. s is shared in the parallel and privatized by the do; i is the predetermined loop variable. No race or other violation, so a conforming implementation must compile and link it; an undefined runtime symbol is an implementation defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-15",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "fbb48545f931e6e9cd9ae81a96acbb8beda010c48b8b600c5688253674c419d7",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

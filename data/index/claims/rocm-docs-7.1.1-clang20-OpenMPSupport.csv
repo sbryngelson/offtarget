@@ -1,0 +1,179 @@
+section,c1,c2,c3,c4
+OpenMP 5.0 Implementation Details,Category,Feature,Status,Reviews
+OpenMP 5.0 Implementation Details,loop,support != in the canonical loop form,done,D54441
+OpenMP 5.0 Implementation Details,loop,#pragma omp loop (directive),partial,D145823 (combined forms)
+OpenMP 5.0 Implementation Details,loop,#pragma omp loop bind,worked on,D144634 (needs review)
+OpenMP 5.0 Implementation Details,loop,collapse imperfectly nested loop,done,
+OpenMP 5.0 Implementation Details,loop,collapse non-rectangular nested loop,done,
+OpenMP 5.0 Implementation Details,loop,C++ range-base for loop,done,
+OpenMP 5.0 Implementation Details,loop,clause: if for SIMD directives,done,
+OpenMP 5.0 Implementation Details,loop,inclusive scan (matching C++17 PSTL),done,
+OpenMP 5.0 Implementation Details,memory management,memory allocators,done,"r341687,r357929"
+OpenMP 5.0 Implementation Details,memory management,allocate directive and allocate clause,done,"r355614,r335952"
+OpenMP 5.0 Implementation Details,OMPD,OMPD interfaces,done,https://reviews.llvm.org/D99914 (Supports only HOST(CPU) and Linux
+OpenMP 5.0 Implementation Details,OMPT,OMPT interfaces (callback support),done,
+OpenMP 5.0 Implementation Details,thread affinity,thread affinity,done,
+OpenMP 5.0 Implementation Details,task,taskloop reduction,done,
+OpenMP 5.0 Implementation Details,task,task affinity,not upstream,https://github.com/jklinkenberg/openmp/tree/task-affinity
+OpenMP 5.0 Implementation Details,task,clause: depend on the taskwait construct,done,D113540 (regular codegen only)
+OpenMP 5.0 Implementation Details,task,depend objects and detachable tasks,done,
+OpenMP 5.0 Implementation Details,task,mutexinoutset dependence-type for tasks,done,"D53380,D57576"
+OpenMP 5.0 Implementation Details,task,combined taskloop constructs,done,
+OpenMP 5.0 Implementation Details,task,master taskloop,done,
+OpenMP 5.0 Implementation Details,task,parallel master taskloop,done,
+OpenMP 5.0 Implementation Details,task,master taskloop simd,done,
+OpenMP 5.0 Implementation Details,task,parallel master taskloop simd,done,
+OpenMP 5.0 Implementation Details,SIMD,atomic and simd constructs inside SIMD code,done,
+OpenMP 5.0 Implementation Details,SIMD,SIMD nontemporal,done,
+OpenMP 5.0 Implementation Details,device,infer target functions from initializers,worked on,
+OpenMP 5.0 Implementation Details,device,infer target variables from initializers,done,D146418
+OpenMP 5.0 Implementation Details,device,OMP_TARGET_OFFLOAD environment variable,done,D50522
+OpenMP 5.0 Implementation Details,device,support full ‘defaultmap’ functionality,done,D69204
+OpenMP 5.0 Implementation Details,device,device specific functions,done,
+OpenMP 5.0 Implementation Details,device,clause: device_type,done,
+OpenMP 5.0 Implementation Details,device,clause: extended device,done,
+OpenMP 5.0 Implementation Details,device,clause: uses_allocators clause,done,
+OpenMP 5.0 Implementation Details,device,clause: in_reduction,worked on,r308768
+OpenMP 5.0 Implementation Details,device,omp_get_device_num(),done,"D54342,D128347"
+OpenMP 5.0 Implementation Details,device,structure mapping of references,unclaimed,
+OpenMP 5.0 Implementation Details,device,nested target declare,done,D51378
+OpenMP 5.0 Implementation Details,device,implicitly map ‘this’ (this[:1]),done,D55982
+OpenMP 5.0 Implementation Details,device,allow access to the reference count (omp_target_is_present),done,
+OpenMP 5.0 Implementation Details,device,requires directive,done,
+OpenMP 5.0 Implementation Details,device,clause: unified_shared_memory,done,"D52625,D52359"
+OpenMP 5.0 Implementation Details,device,clause: unified_address,partial,
+OpenMP 5.0 Implementation Details,device,clause: reverse_offload,partial,"D52780,D155003"
+OpenMP 5.0 Implementation Details,device,clause: atomic_default_mem_order,done,D53513
+OpenMP 5.0 Implementation Details,device,clause: dynamic_allocators,unclaimed parts,D53079
+OpenMP 5.0 Implementation Details,device,user-defined mappers,done,"D56326,D58638,D58523,D58074,D60972,D59474"
+OpenMP 5.0 Implementation Details,device,map array-section with implicit mapper,done,https://github.com/llvm/llvm-project/pull/101101
+OpenMP 5.0 Implementation Details,device,mapping lambda expression,done,D51107
+OpenMP 5.0 Implementation Details,device,clause: use_device_addr for target data,done,
+OpenMP 5.0 Implementation Details,device,support close modifier on map clause,done,"D55719,D55892"
+OpenMP 5.0 Implementation Details,device,teams construct on the host device,done,r371553
+OpenMP 5.0 Implementation Details,device,support non-contiguous array sections for target update,done,
+OpenMP 5.0 Implementation Details,device,pointer attachment,done,
+OpenMP 5.0 Implementation Details,atomic,hints for the atomic construct,done,D51233
+OpenMP 5.0 Implementation Details,base language,C11 support,done,
+OpenMP 5.0 Implementation Details,base language,C++11/14/17 support,done,
+OpenMP 5.0 Implementation Details,base language,lambda support,done,
+OpenMP 5.0 Implementation Details,misc,array shaping,done,D74144
+OpenMP 5.0 Implementation Details,misc,library shutdown (omp_pause_resource[_all]),done,D55078
+OpenMP 5.0 Implementation Details,misc,metadirectives,mostly done,D91944
+OpenMP 5.0 Implementation Details,misc,conditional modifier for lastprivate clause,done,
+OpenMP 5.0 Implementation Details,misc,iterator and multidependences,done,
+OpenMP 5.0 Implementation Details,misc,depobj directive and depobj dependency kind,done,
+OpenMP 5.0 Implementation Details,misc,user-defined function variants,done.,"D67294, D64095, D71847, D71830, D109635"
+OpenMP 5.0 Implementation Details,misc,pointer/reference to pointer based array reductions,done,
+OpenMP 5.0 Implementation Details,misc,prevent new type definitions in clauses,done,
+OpenMP 5.0 Implementation Details,memory model,"memory model update (seq_cst, acq_rel, release, acquire,…)",done,
+OpenMP 5.1 Implementation Details,Category,Feature,Status,Reviews
+OpenMP 5.1 Implementation Details,atomic,‘compare’ clause on atomic construct,done,"D120290, D120007, D118632, D120200, D116261, D118547, D116637"
+OpenMP 5.1 Implementation Details,atomic,‘fail’ clause on atomic construct,worked on,D123235 (in progress)
+OpenMP 5.1 Implementation Details,base language,C++ attribute specifier syntax,done,D105648
+OpenMP 5.1 Implementation Details,device,‘present’ map type modifier,done,"D83061, D83062, D84422"
+OpenMP 5.1 Implementation Details,device,‘present’ motion modifier,done,"D84711, D84712"
+OpenMP 5.1 Implementation Details,device,‘present’ in defaultmap clause,done,D92427
+OpenMP 5.1 Implementation Details,device,map clause reordering based on ‘present’ modifier,unclaimed,
+OpenMP 5.1 Implementation Details,device,device-specific environment variables,unclaimed,
+OpenMP 5.1 Implementation Details,device,omp_target_is_accessible routine,unclaimed,
+OpenMP 5.1 Implementation Details,device,omp_get_mapped_ptr routine,done,D141545
+OpenMP 5.1 Implementation Details,device,new async target memory copy routines,done,D136103
+OpenMP 5.1 Implementation Details,device,thread_limit clause on target construct,partial,"D141540 (offload), D152054 (host, in progress)"
+OpenMP 5.1 Implementation Details,device,has_device_addr clause on target construct,unclaimed,
+OpenMP 5.1 Implementation Details,device,iterators in map clause or motion clauses,unclaimed,
+OpenMP 5.1 Implementation Details,device,indirect clause on declare target directive,unclaimed,
+OpenMP 5.1 Implementation Details,device,allow virtual functions calls for mapped object on device,partial,
+OpenMP 5.1 Implementation Details,device,interop construct,partial,"parsing/sema done: D98558, D98834, D98815"
+OpenMP 5.1 Implementation Details,device,assorted routines for querying interoperable properties,partial,D106674
+OpenMP 5.1 Implementation Details,loop,Loop tiling transformation,done,D76342
+OpenMP 5.1 Implementation Details,loop,Loop unrolling transformation,done,D99459
+OpenMP 5.1 Implementation Details,loop,‘reproducible’/’unconstrained’ modifiers in ‘order’ clause,partial,D127855
+OpenMP 5.1 Implementation Details,memory management,alignment for allocate directive and clause,done,D115683
+OpenMP 5.1 Implementation Details,memory management,‘allocator’ modifier for allocate clause,done,https://github.com/llvm/llvm-project/pull/114883
+OpenMP 5.1 Implementation Details,memory management,‘align’ modifier for allocate clause,done,https://github.com/llvm/llvm-project/pull/121814
+OpenMP 5.1 Implementation Details,memory management,new memory management routines,unclaimed,
+OpenMP 5.1 Implementation Details,memory management,changes to omp_alloctrait_key enum,unclaimed,
+OpenMP 5.1 Implementation Details,memory model,seq_cst clause on flush construct,done,https://github.com/llvm/llvm-project/pull/114072
+OpenMP 5.1 Implementation Details,misc,‘omp_all_memory’ keyword and use in ‘depend’ clause,done,"D125828, D126321"
+OpenMP 5.1 Implementation Details,misc,error directive,done,D139166
+OpenMP 5.1 Implementation Details,misc,scope construct,done,"D157933, https://github.com/llvm/llvm-project/pull/109197"
+OpenMP 5.1 Implementation Details,misc,routines for controlling and querying team regions,partial,D95003 (libomp only)
+OpenMP 5.1 Implementation Details,misc,changes to ompt_scope_endpoint_t enum,unclaimed,
+OpenMP 5.1 Implementation Details,misc,omp_display_env routine,done,D74956
+OpenMP 5.1 Implementation Details,misc,extended OMP_PLACES syntax,unclaimed,
+OpenMP 5.1 Implementation Details,misc,OMP_NUM_TEAMS and OMP_TEAMS_THREAD_LIMIT env vars,done,D138769
+OpenMP 5.1 Implementation Details,misc,‘target_device’ selector in context specifier,worked on,
+OpenMP 5.1 Implementation Details,misc,begin/end declare variant,done,D71179
+OpenMP 5.1 Implementation Details,misc,dispatch construct and function variant argument adjustment,worked on,"D99537, D99679"
+OpenMP 5.1 Implementation Details,misc,assumes directives,worked on,
+OpenMP 5.1 Implementation Details,misc,assume directive,done,
+OpenMP 5.1 Implementation Details,misc,nothing directive,done,D123286
+OpenMP 5.1 Implementation Details,misc,masked construct and related combined constructs,done,"D99995, D100514, PR-121741(parallel_masked_taskloop) PR-121746(parallel_masked_task_loop_simd),PR-121914(masked_taskloop) PR-121916(masked_taskloop_simd)"
+OpenMP 5.1 Implementation Details,misc,default(firstprivate) & default(private),done,"D75591 (firstprivate), D125912 (private)"
+OpenMP 5.1 Implementation Details,other,deprecating master construct,unclaimed,
+OpenMP 5.1 Implementation Details,OMPT,new barrier types added to ompt_sync_region_t enum,unclaimed,
+OpenMP 5.1 Implementation Details,OMPT,async data transfers added to ompt_target_data_op_t enum,unclaimed,
+OpenMP 5.1 Implementation Details,OMPT,new barrier state values added to ompt_state_t enum,unclaimed,
+OpenMP 5.1 Implementation Details,OMPT,new ‘emi’ callbacks for external monitoring interfaces,done,
+OpenMP 5.1 Implementation Details,OMPT,device tracing interface,unclaimed,
+OpenMP 5.1 Implementation Details,task,‘strict’ modifier for taskloop construct,unclaimed,
+OpenMP 5.1 Implementation Details,task,inoutset in depend clause,done,"D97085, D118383"
+OpenMP 5.1 Implementation Details,task,nowait clause on taskwait,partial,"parsing/sema done: D131830, D141531"
+OpenMP 6.0 Implementation Details,Feature,C/C++ Status,Fortran Status,Reviews
+OpenMP 6.0 Implementation Details,free-agent threads,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Recording of task graphs,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Parallel inductions,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,init_complete for scan directive,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Loop transformation constructs,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,work distribute construct,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,task_iteration,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,memscope clause for atomic and flush,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,transparent clause (hull tasks),unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,rule-based compound directives,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,"C23, C++23",unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Fortran 2023,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,decl attribute for declarative directives,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,C attribute syntax,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,pure directives in DO CONCURRENT,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Optional argument for all clauses,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Function references for locator list items,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,All clauses accept directive name modifier,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Extensions to depobj construct,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Extensions to atomic construct,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Private reductions,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Self maps,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Release map type for declare mapper,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Extensions to interop construct,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,no_openmp_constructs,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,safe_sync and progress with identifier and API,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,OpenMP directives in concurrent loop regions,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,atomics constructs on concurrent loop regions,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Loop construct with DO CONCURRENT,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,device_type clause for target construct,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,nowait for ancestor target directives,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,New API for devices’ num_teams/thread_limit,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Host and device environment variables,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,num_threads ICV and clause accepts list,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Numeric names for environment variables,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Increment between places for OMP_PLACES,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,OMP_AVAILABLE_DEVICES envirable,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Traits for default device envirable,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Optionally omit array length expression,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Canonical loop sequences,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Clarifications to Fortran map semantics,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,default clause at target construct,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,"ref count update use_device_{ptr, addr}",unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Clarifications to implicit reductions,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,ref modifier for map clauses,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,map-type modifiers in arbitrary position,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,atomic constructs in loop region,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Lift nesting restriction on concurrent loop,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,priority clause for target constructs,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,changes to target_data construct,unclaimed,unclaimed,
+OpenMP 6.0 Implementation Details,Non-const do_not_sync for nowait/nogroup,unclaimed,unclaimed,
+OpenMP Extensions,Category,Feature,Status,Reviews
+OpenMP Extensions,atomic extension,‘atomic’ strictly nested within ‘teams’,prototyped,D126323
+OpenMP Extensions,device extension,‘ompx_hold’ map type modifier,prototyped,"D106509, D106510"
+OpenMP Extensions,device extension,‘ompx_bare’ clause on ‘target teams’ construct,prototyped,"#66844, #70612"
+OpenMP Extensions,device extension,Multi-dim ‘num_teams’ and ‘thread_limit’ clause on ‘target teams ompx_bare’ construct,partial,"#99732, #101407, #102715"

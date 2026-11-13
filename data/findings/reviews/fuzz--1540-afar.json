@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/1540-afar.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-34",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate with the conditional modifier is allowed on the do/for leaf, lp1 is a scalar, and the modifier is not forbidden on the loop construct. No iteration assigns lp1, so under the conditional rule the original keeps 0 (and lp1 is mapped tofrom on target anyway). Output checksum 0 is deterministic. The MLIR verifier failure is a compiler bug."
+  },
+  {
+   "run": "run-20261113/batch-60",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate with the conditional modifier is allowed on a combined target parallel do for a scalar list item. lp1 is a scalar. The empty loop never assigns it, so the original value stays. A conforming compiler must compile it; the MLIR verifier crash is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate with the conditional modifier is allowed on the do construct (a leaf of target parallel do); lp1 is a scalar, so the restriction is met. The restriction forbidding the modifier applies only to distribute and taskloop. The empty loop body is legal; lp1 stays 0. The lastprivate effect on the combined construct puts lp1 in a tofrom map for target and shared for parallel. A conforming compiler must accept the program, so the lowering crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 2,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-65",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate with conditional modifier is allowed on do; lp1 is a scalar, so the restriction is met. The empty loop is valid Fortran. Conforming compiler must accept and compile; crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-20",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "79ef379c05d1561de7d820a91a37f3d0cadcdf58e684879f6fb5616adf697fa2",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

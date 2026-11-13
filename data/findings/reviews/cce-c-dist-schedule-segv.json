@@ -1,0 +1,113 @@
+{
+ "finding": "cce-c-dist-schedule-segv.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dist_schedule(static) without chunk_size is permitted on the distribute constituent of the combined construct; the loop is rectangular; no data race (distinct b elements); b is mapped from. The specification defines the division into about equal chunks, at most one per team, so the program must print 64 of 64. A SIGSEGV is a compiler or runtime defect."
+  },
+  {
+   "run": "run-20261113/batch-66",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dist_schedule(static) without chunk_size is explicitly allowed on a combined target teams distribute parallel for; iterations split into approximately equal chunks. Loop is race-free, b mapped from. A SIGSEGV is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-36",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "dist_schedule with kind static and no chunk_size is allowed on distribute, hence on target teams distribute parallel for; the loop is rectangular. Iterations are divided into chunks of about equal size, one per team at most. The program has no race: each iteration writes a distinct b element. A run-time crash is not allowed.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-26",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-78",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "dist_schedule(static) without chunk_size is allowed on distribute and so on the combined construct. Iterations are divided into roughly equal chunks, one per team; b elements are written disjointly. A conforming program must run and print 64 of 64; a SIGSEGV is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-57",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f4b46a81bbde4b3bf11224d10202e506b1ca7b4561c25fef2039f7ddc8595203",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

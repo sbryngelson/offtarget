@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-flang-absent-optional-target-crash.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "c is an optional dummy argument that is absent. The specification says data-mapping rules for an absent optional variable referenced in a construct are ignored, so no implicit map of c is attempted and present(c) selects the else branch. The mapping failure is a compiler bug."
+  },
+  {
+   "run": "run-20261113/batch-61",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The optional dummy c is absent. It is referenced in the target construct only under present(c), and the spec says data-mapping rules for an absent optional dummy are ignored, so no implicit map of c is made. Other maps are valid, only k==1 writes hf, so there is no race. The failure is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Optional dummy c is absent in the call. The target region references c only under present(c). The specification says that when a referenced optional dummy argument is not present, all data-mapping attribute rules for it, including implicit ones, are ignored. A compiler therefore must not try to map c. Other accesses are race-free: only k==1 writes hf. The runtime failure from a null pointer in getTargetPointer is a compiler/runtime bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-18",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-118",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "c is an optional dummy not present in the call and is not in a map clause. The spec says that when a referenced variable is an absent optional dummy, its data-mapping rules are ignored, so no implicit mapping of c is attempted. c is referenced only in the present(c) branch. x and y are mapped explicitly; hf is written only for k==1. A conforming compiler must run it; failing in getTargetPointer is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-10",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1547bfe97a90c734a21e6df4e1b58f5d4398bff2b93eff70399dab45223501a9",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

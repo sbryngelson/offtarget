@@ -1,0 +1,217 @@
+{
+ "finding": "hecbench/gcc-c-float16-array-in-target-lto-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "_Float16 is not a type of ISO C17; it is an optional extension (ISO/IEC TS 18661-3, C23 Annex H) whose availability is implementation-defined. Mapping a contiguous array of it with array sections is fine if the type exists, but the OpenMP specification does not require a compiler to support any particular implementation-defined base-language type, so an internal compiler error in LTO for this type is not a violation the specification requires to be avoided."
+  },
+  {
+   "run": "run-20261113/batch-66",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "_Float16 is not a type of ISO C11; it is an extension (C23 optional / TS 18661-3). The OpenMP spec places no requirement on offloading or compiling implementation-specific types, so whether a conforming compiler must accept and offload the program is not required by the specification."
+  },
+  {
+   "run": "run-v2-20261113/batch-45",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program uses _Float16, which is not in the C base languages the specification cites (C90 to C18). Support for it, including on offload targets, is an implementation choice. The specification does not require a compiler to accept or compile this type for a target region, so the link-time crash is not a violation of a required result.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-81",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program uses _Float16, a type that is not required by the C base language (optional/extension in the C standard). The specification does not require implementations to support arbitrary optional base-language types in target regions, so an internal compiler error at LTO link time for a device region using _Float16 conversion is not clearly a violation of a requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "02d8f7c9c935a132dc253fd11b9a7e690ac8200cbb5e36060fd1c6ae70b51561",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: _Float16 is not part of the base languages OpenMP names; section 1.6 says an implementation need not support a construct the base language implementation does not support. Whether the device compiler handles _Float16 conversions is not specified, so the ICE is not a violation of a required result. Both readings are right.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings agree. _Float16 is not part of the base language standard the specification relies on (an optional extension). The OpenMP text sets no requirement that an implementation compile or offload extension types, so an LTO internal error is not shown to violate a requirement. Neither reading cites a spec passage, and none contradicts this."
+  },
+  {
+   "run": "adj-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings are right in outcome. _Float16 is not a type of the C base language the specification relies on; the OpenMP text neither requires support for it nor says how it is mapped. An LTO internal error for an implementation-specific type is not a failure the specification requires to be avoided."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "_Float16 is not part of the base languages OpenMP names; section 1.6 says an implementation need not support a construct the base language implementation does not support. Whether the device compiler handles _Float16 conversions is not specified, so the ICE is not a violation of a required result. Both readings are right.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-55",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "_Float16 is not part of C90 through C18, the base languages the specification cites. Nothing in the specification requires a compiler to support that type in a target region, so an internal compiler error at link time is not a violation of a required result. Both readings reach this; neither cites a passage, but the cited base-language list supports them.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-58",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

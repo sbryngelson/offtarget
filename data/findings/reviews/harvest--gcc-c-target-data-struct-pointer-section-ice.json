@@ -1,0 +1,113 @@
+{
+ "finding": "harvest/gcc-c-target-data-struct-pointer-section-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-39",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "s.p[:4] is the pointee v, s.p is the pointer member, and s.a is another member. They are distinct storage, so the shared original storage restriction does not apply. Nothing is present on entry to target data, so the structure-element restriction is met. The inner target maps q[:4], which is the same extent as s.p[:4], so it is already present. An internal compiler error is a bug."
+  },
+  {
+   "run": "run-20261113/batch-78",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s.p[:4], s.p and s.a are distinct storage: the pointed-to array, the pointer, and another member. None shares original storage with another, so the map restriction is not broken. The inner target maps q[:4], already present. An internal compiler error is never a conforming result. Some residual doubt about mapping a base pointer together with its section."
+  },
+  {
+   "run": "run-v2-20261113/batch-36",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s.p[:4] (storage v[0..3]), s.p (pointer member) and s.a do not share original storage; the members of s with the same containing structure form one mappable storage block. Mapping a pointer member and its pointee section is conforming. The inner target uses q with an explicit map. The expected sum is 14. A compiler segfault is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-83",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s.p[:4] has original storage v[0:4], s.p is the pointer member itself, and s.a is another member; none share original storage, so the map restriction is not violated. The inner target maps q[:4] explicitly, and host_flag. The program is conforming and a conforming compiler must compile it; an internal compiler error is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "5104f7e3efb059935b8187ca130141c84f52940f7c9f974baa2c32fd260f0c88",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

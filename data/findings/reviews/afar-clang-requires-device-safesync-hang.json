@@ -1,0 +1,191 @@
+{
+ "finding": "afar-clang-requires-device-safesync-hang.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-33",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "device_safesync is a requires clause in 6.0 with an optional argument; absent argument means true. A bare requires directive with it in a file with only main is conforming and must be accepted; a hang is a defect. Run behavior is unobservable."
+  },
+  {
+   "run": "run-20261113/batch-64",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 6.0 defines device_safesync as a requires clause with an optional constant logical argument; without one it means true. A file-scope requires directive with it is conforming and the program is otherwise trivial. A conforming 6.0 compiler must accept it; a hang is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-53",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The requires directive with device_safesync is valid OpenMP 6.0 at file scope. But whether an implementation supports a requirement clause is implementation defined, and an unsupported requirement must lead to compile-time error termination. A conforming compiler may therefore refuse the program, so acceptance is not required, though a hang is still a poor way to refuse.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-15",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-69",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "device_safesync is a requires clause in 6.0 and without an argument means true. The directive is at file scope and conforming. A conforming compiler either supports it or diagnoses; hanging is neither.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-26",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The directive is conforming, but support for a given requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. A compiler may thus refuse the program, so acceptance is not required.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The directive is conforming, but support for a given requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. A compiler may thus refuse the program, so acceptance is not required. Reading B fails: the specification permits a diagnosis, though a hang is poor quality it is not a required-result violation under these rules.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B fails. The requires directive is at file scope and device_safesync is a requirement clause, so the program is legal. But the specification makes support for any requirement clause implementation defined, so a conforming compiler need not accept the program. Reading A is right. A hang is poor quality but the text does not oblige acceptance.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-54",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

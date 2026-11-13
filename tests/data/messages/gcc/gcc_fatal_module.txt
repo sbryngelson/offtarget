@@ -1,0 +1,15 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran (gcc_g90) on offload.engine.gen omp60-clause-linear-uval (the gcc smoke subset, tools/jobs/run_gcc_lane.sh); flags: -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2
+# exit status: 1
+==== verbatim output below ====
+<tmpdir>/omp60-clause-linear-uval.f90:15:13:
+
+   15 |       !$omp declare_simd(lf) linear(x: uval)
+      |             1
+Error: Unclassifiable OpenMP directive at (1)
+<tmpdir>/omp60-clause-linear-uval.f90:23:7:
+
+   23 |   use gen_mod
+      |       1
+Fatal Error: Cannot open module file ‘gen_mod.mod’ for reading at (1): No such file or directory
+compilation terminated.

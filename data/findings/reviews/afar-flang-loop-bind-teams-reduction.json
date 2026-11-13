@@ -1,0 +1,126 @@
+{
+ "finding": "afar-flang-loop-bind-teams-reduction.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-37",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The loop construct allows a reduction clause; bind(teams) requires strict nesting in a teams region, which holds (target teams body). The only reduction restriction tied to bind(teams) makes behavior unspecified when the loop is NOT nested inside a teams construct; here it is nested. Iterations complete before the end of the teams region, so r=55 on the host. Rejecting the reduction clause is wrong."
+  },
+  {
+   "run": "run-20261113/batch-65",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The loop construct accepts a reduction clause and a bind(teams) clause. The loop is strictly nested in the teams region of the combined target teams construct. The only reduction restriction on bind(teams) concerns a loop not nested inside a teams construct, which does not apply. No clause combination is prohibited, so a conforming compiler must accept the program, and the refusal is a compiler error."
+  },
+  {
+   "run": "run-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The loop region is strictly nested in the teams region of the combined target teams, so binding teams is allowed. The only reduction restriction on bind(teams) applies when the loop is not nested inside a teams construct; here it is nested in one (leaf of target teams), so reduction behavior is defined. Reduction on a loop construct is allowed with the default modifier. r is shared in the teams region, so the combined value 55 is stored to r at the end of the teams region. Refusing the clause is therefore a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-101",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The loop region is strictly nested in the teams region of target teams, so bind(teams) is allowed. The reduction clause is listed among the loop construct clauses. The only restriction on reduction with bind(teams) makes behavior unspecified when the loop is not nested inside a teams construct, which does not apply here. A compiler may not reject the clause.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-62",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-31",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The loop construct accepts a reduction clause. The bind(teams) restriction requires the loop to be strictly nested in a teams region, and it is, since target teams supplies the teams region. The unspecified-reduction rule applies only when the construct is not nested inside a teams construct; here it is nested in one. Nothing forbids reduction with bind(teams), so a conforming compiler must accept the program. The refusal message states a restriction the specification does not contain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-49",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d252e939cc282feba90cd2cedba749c9cd0f1a49a6a5048d1e162e55f6c481b5",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

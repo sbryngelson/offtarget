@@ -1,0 +1,8 @@
+# Verbatim compile output captured on tuolumne2151, 2026-10-18.
+# source: offload.engine.harness.compile_script(afar, -fopenmp --offload-arch=gfx942 -L/usr/lib/gcc/x86_64-redhat-linux/8 -fopenmp-version=60 -O2) of offload.engine.gen omp60-clause-severity-fatal (error directive at(compilation), round 1)
+# exit status: 1
+==== verbatim output below ====
+error: Semantic errors in <tmpdir>/omp60-clause-severity-fatal.f90
+<tmpdir>/omp60-clause-severity-fatal.f90:16:9: error: COMPLIANCE_PROBE_MESSAGE
+    !$omp error at(compilation) severity(fatal) message("COMPLIANCE_PROBE_MESSAGE")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-num-threads-reduction-identity-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r is mapped tofrom explicitly and reduced with * on parallel do; num_threads(2) gives 2 private copies initialized to 1. Each does 4 iterations (static schedule or any split) giving a total factor 2^8, combined with the original 3 gives 768. The result is independent of the iteration distribution, so r=0 is wrong."
+  },
+  {
+   "run": "run-20261112/batch-27",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "On target parallel do the reduction applies to the worksharing loop only (parallel gets shared, target does not take reduction) and r is explicitly mapped tofrom. Private copies start at 1, each iteration doubles, the combined product is 2^8 and combined with the original 3 gives 768 for any thread count. The loop has the allowed form r = r * 2. Observed 0 is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-35",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is mapped tofrom and is the reduction variable of the parallel do. Each thread's copy is initialized to 1 for the * identifier and the copies are combined with the original value 3. Eight iterations of r*2 give 3*2^8=768 for any thread count. There is no race.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-19",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-73",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is mapped tofrom and is a reduction variable of the combined parallel do. Each thread starts from 1 and multiplies by 2 for its iterations; the partial results combine by multiplication with the original value 3. With 8 iterations in total the result is 3*2**8=768 for any thread count and schedule. Observed r=0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-49",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "049bb7b7aaf3aa451a041f9025463c7d303ff9594e946091c31fdd29bbfa0e34",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

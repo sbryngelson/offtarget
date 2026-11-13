@@ -1,0 +1,66 @@
+// 16 int64 sum reductions on one combined target
+// construct (the kernel k0012 of the stress program scalars-c-64, alone).
+// Each s_k starts at 100 + k and adds k in each of 4 iterations, so it ends
+// at 100 + 5k (OpenMP 5.2 §5.5.8; §17.2 p.340: on a combined target
+// construct a reduction list item is also map(tofrom)). Expected: bad= 0
+#include <stdio.h>
+#include <stdint.h>
+int main(void) {
+  int64_t s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16;
+  s1 = 101;
+  s2 = 102;
+  s3 = 103;
+  s4 = 104;
+  s5 = 105;
+  s6 = 106;
+  s7 = 107;
+  s8 = 108;
+  s9 = 109;
+  s10 = 110;
+  s11 = 111;
+  s12 = 112;
+  s13 = 113;
+  s14 = 114;
+  s15 = 115;
+  s16 = 116;
+  #pragma omp target teams distribute parallel for reduction(+: s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16)
+  for (int ii = 0; ii < 4; ii++) {
+    s1 += 1;
+    s2 += 2;
+    s3 += 3;
+    s4 += 4;
+    s5 += 5;
+    s6 += 6;
+    s7 += 7;
+    s8 += 8;
+    s9 += 9;
+    s10 += 10;
+    s11 += 11;
+    s12 += 12;
+    s13 += 13;
+    s14 += 14;
+    s15 += 15;
+    s16 += 16;
+  }
+  int bad = 0, first = -1;
+  long fv = 0;
+  if (s1 != 105) { bad++; if (first < 0) { first = 1; fv = (long) s1; } }
+  if (s2 != 110) { bad++; if (first < 0) { first = 2; fv = (long) s2; } }
+  if (s3 != 115) { bad++; if (first < 0) { first = 3; fv = (long) s3; } }
+  if (s4 != 120) { bad++; if (first < 0) { first = 4; fv = (long) s4; } }
+  if (s5 != 125) { bad++; if (first < 0) { first = 5; fv = (long) s5; } }
+  if (s6 != 130) { bad++; if (first < 0) { first = 6; fv = (long) s6; } }
+  if (s7 != 135) { bad++; if (first < 0) { first = 7; fv = (long) s7; } }
+  if (s8 != 140) { bad++; if (first < 0) { first = 8; fv = (long) s8; } }
+  if (s9 != 145) { bad++; if (first < 0) { first = 9; fv = (long) s9; } }
+  if (s10 != 150) { bad++; if (first < 0) { first = 10; fv = (long) s10; } }
+  if (s11 != 155) { bad++; if (first < 0) { first = 11; fv = (long) s11; } }
+  if (s12 != 160) { bad++; if (first < 0) { first = 12; fv = (long) s12; } }
+  if (s13 != 165) { bad++; if (first < 0) { first = 13; fv = (long) s13; } }
+  if (s14 != 170) { bad++; if (first < 0) { first = 14; fv = (long) s14; } }
+  if (s15 != 175) { bad++; if (first < 0) { first = 15; fv = (long) s15; } }
+  if (s16 != 180) { bad++; if (first < 0) { first = 16; fv = (long) s16; } }
+  printf("bad= %d first= %d (value %ld, expected %ld) s1= %ld s16= %ld\n", bad, first, fv,
+         first < 0 ? 0L : 100L + 5L * first, (long) s1, (long) s16);
+  return 0;
+}

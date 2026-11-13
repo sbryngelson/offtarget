@@ -1,0 +1,217 @@
+{
+ "finding": "nested/gcc-fortran-pointer-component-alloc-bounds-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Mapping r with alloc maps the pointer component through the predefined default mapper, whose association status is treated as undefined; r%a is then mapped separately and attached. The exit sequence (from r%a, then from r) copies the whole structure including the pointer component after detachment. The text does not clearly say what happens to the host r%a pointer or the data when the enclosing structure is copied back after the component was removed, so the observed result may be permitted."
+  },
+  {
+   "run": "run-20261112/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r has a structure type, so its predefined default mapper maps each structure element, including pointer component a, with tofrom (alloc on enter). The extra map(alloc: r%a) raises the reference count to 2; the first exit data only decrements it, the exit data for r removes it and copies back both s and the array. So r%a(1:8) must be 500..507 on the host (sum 4028). No race or restriction is broken."
+  },
+  {
+   "run": "run-v2-20261113/batch-53",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is mapped (alloc) first, then r%a, whose base pointer r%a already has a corresponding pointer on the device, so the pointee is mapped and attached. The target region only accesses present data and has no race. Exit data of r%a then r detaches and copies back s and the elements, so the host should see 500..507 (sum 4028). tot=504 means the pointee data was not copied back correctly.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-30",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-90",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is mapped with alloc, then the pointer array r%a is mapped separately. Whether the Fortran pointer component r%a gets attached to the device copy of its target, and how the exit data from r then restores the pointer, depends on the attached-pointer rules. They do not clearly cover a whole pointer-array component mapped as its own list item after the parent. Four compilers pass, but the spec text does not settle the program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "aed18c20a0f62246be73123cb517c0b7e73e822c77a79a8f56f76dce00b413b0",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Mapping r with alloc treats the association status of its pointer component r%a as undefined, and r%a is then mapped and attached separately. Exit data of r%a detaches, and exit data of r later copies back r including the pointer component whose association status the specification leaves undefined, so reading r%a on the host afterwards is not clearly guaranteed.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "map(alloc: r) uses the predefined default mapper, under which the POINTER component a has its association status treated as undefined; r%a is then mapped separately. After r%a is removed, map(from: r) copies the whole structure, including the pointer component whose association status the spec treats as undefined, back to the host descriptor. The text does not guarantee the host r%a stays associated with its target, so the observed sum is permitted. Reading B assumes the reference-count walk preserves the host pointer, which the text does not state. Reading A is closer."
+  },
+  {
+   "run": "adj-20261112/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 1
+   },
+   "reasoning": "Reading B's reference-count argument fails: the predefined default mapper treats the pointer component with undefined association status, so map(alloc: r) does not map the pointer target, and the target is a separate entry created by map(alloc: r%a). Reading A is closer but also unsettled. After the first exit data removes the target, the second exit data copies r (including the descriptor of a) back, and the text on restoring attached pointers and on the host descriptor at that point does not fix the host values of r%a. The observed values are therefore not clearly excluded."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is mapped alloc, then r%a is mapped as its own list item. Section 5.8.3 says an associated pointer list item that is not the base pointer of another list item has its pointer target implicitly mapped, with the pointer as its base pointer. A new list item is created while the corresponding pointer r%a exists in the already mapped r, so the corresponding pointer becomes an attached pointer. The target region accesses only present data. Exit data from r%a copies the elements back and exit data from r copies s back. The host pointer keeps its target when the attached pointer is restored. Reading A holds, and Reading B's doubt is not supported by the text.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-14",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A overstates. Mapping r with alloc treats the association status of its pointer component r%a as undefined, and r%a is then mapped and attached separately. Exit data of r%a detaches, and exit data of r later copies back r including the pointer component whose association status the specification leaves undefined, so reading r%a on the host afterwards is not clearly guaranteed. Reading B is closer.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

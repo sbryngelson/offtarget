@@ -1,0 +1,6 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: ftn -fopenmp -O2 after module load cce/19.0.0 craype-accel-amd-gfx942 rocm (CCE 19.0.0, rocm 6.4.3) on offload.engine.gen omp52-clause-map-iterator (iterator modifier in map)
+# exit status: 1
+==== verbatim output below ====
+/opt/cray/pe/cce/19.0.0/binutils/x86_64/x86_64-pc-linux-gnu/bin/ld: <site>/pe_2503453/omp52-clause-map-iterator_1.o: in function `main':
+The Cpu Module:(.text+0x1db): undefined reference to `OmpIt$k'

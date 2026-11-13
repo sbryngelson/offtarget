@@ -1,0 +1,130 @@
+{
+ "finding": "harvest/cce-ftn-target-parallel-thread-query-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-27",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target parallel with a guarded write by thread 0 to a mapped scalar is conforming; no race. omp_get_num_threads returns at least 1, so check=pass is required wherever it executes. The crash is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-45",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Target region with omp_is_initial_device and a target parallel region where thread 0 alone writes x; no race. x is mapped from, defined by thread 0, so x>=1 holds with any team size. The compiler crash ('Could not find call') is a compiler defect, not permitted behavior."
+  },
+  {
+   "run": "run-v2-20261113/batch-43",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Two valid target constructs; target parallel with map(from: x) lets thread 0 set x to the team size (at least 1). omp_get_thread_num and omp_get_num_threads are allowed in target regions. No races (only thread 0 writes x). Valid, so an internal compiler error is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-86",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target parallel is a valid combined construct. Only thread 0 writes x, so there is no race. The first target writes on_host from a single initial thread. A conforming compiler must compile it, so the compiler crash is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2befb4c664a513d5825b8b8db7a7cf5f61bb93e9f727cb257d7c04438cc81fde",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

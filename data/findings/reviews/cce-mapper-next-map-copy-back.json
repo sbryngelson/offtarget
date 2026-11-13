@@ -1,0 +1,208 @@
+{
+ "finding": "cce-mapper-next-map-copy-back.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "declare mapper(mm: dt :: q) map(to: q%v) is valid in the program specification part. The map clause with mapper(mm) and tofrom invokes it; by Table 5.3 the mapper's to combined with tofrom decays to to, so s%v is copied in but not back; with separate memory sv stays 1 and b = 3. Target executes on the device, so omp_is_initial_device() is false and host_flag becomes 0. Observed host_flag=1 with sv=1 is inconsistent with host execution (sv would be 7), so it is a compiler defect. Residual doubt: host fallback is allowed only when no device is available."
+  },
+  {
+   "run": "run-20261113/batch-43",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The declare mapper is in the program specification part, and the mapper's map(to: q%v) means s%v=7 is not copied back, so sv=1. The failing run executed on the device (sv=1), where omp_is_initial_device must return false, so host_flag must be 0. Observed host_flag=1 contradicts that. Residual doubt: device selection is implementation defined."
+  },
+  {
+   "run": "run-v2-20261113/batch-16",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming (mapper to combined with tofrom decays to to, so sv=1 after the region). The expected host_flag=0 needs the target region to run on a non-host device. The initial default-device-var is an implementation-defined number that may equal the host device, and a region may execute on the host. Running on the host is allowed.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-79",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The mapper declaration is legal and map-type decay of mapper 'to' with invoking 'tofrom' gives 'to', so sv stays 1, matching observed output. Only host_flag differs: the spec lets target regions run on the host when the target device does not exist or is unsupported, and the case does not show that a usable device was the default device. Whether the host fallback was permitted cannot be settled from the program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 1
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b387642834134bfe5207f98b911b2ae0392ece980ab6e62fa939a563dd1941eb",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: Mapper decay is correct (to with tofrom gives to), so sv=1 is right. The host_flag difference is not required: default-device-var is implementation-defined and target regions may execute on the host when the device does not exist or is unsupported.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Mapper decay is correct (to with tofrom gives to), so sv=1 is right. The host_flag difference is not required: default-device-var is implementation-defined and target regions may execute on the host when the device does not exist or is unsupported. Reading A is right; Reading B is right that it cannot be settled, but the spec does not require device execution.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Map-type decay gives to, so sv=1 is right. For host_flag, default-device-var is implementation-defined and may equal the initial device, and target regions run on the host when the device is not supported by the implementation. Host execution is permitted, so host_flag=1 is allowed. Reading A is right.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-18",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

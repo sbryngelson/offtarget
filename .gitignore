@@ -1,0 +1,25 @@
+corpus/
+spec/
+results/
+# a worktree links these three to the shared directories; "dir/" matches directories only, so
+# the links need the patterns without a trailing slash (a tracked link replaces the directory on merge)
+/corpus
+/spec
+/results
+.superpowers/
+# the site built by tools/site_publish.sh _site (docs/tooling/publishing.md)
+/_site/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.core
+/data/bench/hecbench-holdout/outcomes.csv
+
+# core dumps
+*.core
+
+# offload data built from a checkout
+.offload-cache/
+
+# per-user settings for the machines and compilers (catalog/local.example.yaml)
+/catalog/local.yaml

@@ -1,0 +1,113 @@
+{
+ "finding": "clang-c-declare-target-to-omp52.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-27",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "In OpenMP 5.2 the to clause on declare target is a deprecated but normative synonym of enter, so a 5.2 compiler must accept it. Rejecting at version 5.2 is a compiler error."
+  },
+  {
+   "run": "run-20261113/batch-52",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 5.2 keeps to as a deprecated synonym for enter on declare target; deprecated features remain normative, so a conforming 5.2 compiler must accept declare target to(f) device_type(any). The rejection of the to clause at version 5.2 is a compiler bug. The program is otherwise race free and deterministic."
+  },
+  {
+   "run": "run-v2-20261113/batch-59",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 keeps to as a deprecated synonym of enter on declare target. Deprecated features remain normative, so a conforming 5.2 compiler must accept declare target to(f) device_type(any). Rejecting it with 'use enter instead' is a compiler error. The program has no races and f is called in the target region.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-18",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-70",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The to clause on declare target is a deprecated synonym for enter in 5.2. A deprecated feature stays normative, so a 5.2 compiler must accept it. The function f is called in the target region and device_type(any) is permitted. Refusing the pragma is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-30",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7c093473349895b2d0e9bb9dbd5decf01779469ae8f85db75d684e384623c3e4",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,53 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (wingtip, NVIDIA A100), 2026-10-28.
+# source: GCC 16.2.0 gfortran -fopenmp -foffload=nvptx-none -foffload-options=nvptx-none=-march=sm_80 -foffload-options=nvptx-none=-latomic (gcc_sm80) -O2 on the harvested dev program hv-llvm-offloading-fortran-dtype-member-map-syntax-2 (results/harvest/src; coverage parity, tools/campaigns/parity.py)
+# exit status: 1
+==== verbatim output below ====
+hv-llvm-offloading-fortran-dtype-member-map-syntax-2.f90:102:67:
+
+  102 | !$omp                     alloca_dtype%test_tile(N2)%field%vertexy)
+      |                                                                   ^
+internal compiler error: in gimplify_adjust_omp_clauses, at gimplify.cc:16128
+0x214aceb internal_error(char const*, ...)
+	<site>/gcc-build/gcc-16.2.0/gcc/diagnostic-global-context.cc:787
+0x7db5a3 fancy_abort(char const*, int, char const*)
+	<site>/gcc-build/gcc-16.2.0/gcc/diagnostics/context.cc:1813
+0x7a4e5e gimplify_adjust_omp_clauses
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:16128
+0xc4f42e gimplify_omp_workshare
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:18978
+0xc417ec gimplify_expr(tree_node**, gimple**, gimple**, bool (*)(tree_node*), int)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:21040
+0xc42d75 gimplify_stmt(tree_node**, gimple**)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:8686
+0xc42d75 gimplify_statement_list
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:2294
+0xc42d75 gimplify_expr(tree_node**, gimple**, gimple**, bool (*)(tree_node*), int)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:20937
+0xc55388 gimplify_stmt(tree_node**, gimple**)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:8686
+0xc55388 gimplify_bind_expr
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:1689
+0xc425bf gimplify_expr(tree_node**, gimple**, gimple**, bool (*)(tree_node*), int)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:20687
+0xc42d75 gimplify_stmt(tree_node**, gimple**)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:8686
+0xc42d75 gimplify_statement_list
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:2294
+0xc42d75 gimplify_expr(tree_node**, gimple**, gimple**, bool (*)(tree_node*), int)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:20937
+0xc55388 gimplify_stmt(tree_node**, gimple**)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:8686
+0xc55388 gimplify_bind_expr
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:1689
+0xc425bf gimplify_expr(tree_node**, gimple**, gimple**, bool (*)(tree_node*), int)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:20687
+0xc42d75 gimplify_stmt(tree_node**, gimple**)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:8686
+0xc42d75 gimplify_statement_list
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:2294
+0xc42d75 gimplify_expr(tree_node**, gimple**, gimple**, bool (*)(tree_node*), int)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimplify.cc:20937
+<site>/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0/f951 hv-llvm-offloading-fortran-dtype-member-map-syntax-2.f90 -quiet -dumpdir a- -dumpbase hv-llvm-offloading-fortran-dtype-member-map-syntax-2.f90 -dumpbase-ext .f90 -mtune=generic -march=x86-64 -O2 -fopenmp -foffload-options=nvptx-none=-march=sm_80 -foffload-options=nvptx-none=-latomic -foffload-options=-l_GCC_gfortran -foffload-options=-l_GCC_m -fintrinsic-modules-path <site>/gcc-16.2/lib/gcc/x86_64-pc-linux-gnu/16.2.0/finclude -fpre-include=/usr/include/finclude/x86_64-linux-gnu/math-vector-fortran.h -o /tmp/ccQY9jKI.s
+Please submit a full bug report, with preprocessed source (by using -freport-bug).
+Please include the complete backtrace with any bug report.
+See <https://gcc.gnu.org/bugs/> for instructions.

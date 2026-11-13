@@ -1,0 +1,100 @@
+# Combined-construct clause gaps: verified spec exclusions and items awaiting
+# owner ruling (each reason says which).
+#
+# tests/engine/test_generators.py requires every clause allowed on a leaf
+# construct of a slice compound directive (skeleton + spec_overrides.yaml,
+# at 52 and 60) to be allowed on the compound too, except the entries here.
+# The test fails for a new gap not listed here and for a listed entry that
+# is no longer a gap.
+
+gaps:
+  - directive: distribute parallel do
+    clause: nowait
+    versions: [52, 60]
+    leaves: [do]
+    reason: "5.2: spec exclusion, \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" (OpenMP 5.2 §17.4, p.343), applied through directive-name-B (parallel do) under the recursive reading; 6.0: no exclusion stated (6.0 §19.3, p.531 drops it) and nowait has the outermost-leaf property (6.0 §17.6, p.481), which would apply it to the do leaf; owner ruling pending"
+  - directive: distribute parallel do
+    clause: ordered
+    versions: [52, 60]
+    leaves: [do]
+    reason: "spec exclusion: \"If directive-name-A is distribute, the ordered clause must not be specified\" (OpenMP 5.2 §17.5, p.344); \"If distribute is a constituent-directive name, ... the ordered clause must not be specified\" (OpenMP 6.0 §19.3, p.531)"
+  - directive: distribute parallel do simd
+    clause: nowait
+    versions: [52, 60]
+    leaves: [do]
+    reason: "5.2: spec exclusion, \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" (OpenMP 5.2 §17.4, p.343), applied through directive-name-B (parallel do) under the recursive reading; 6.0: no exclusion stated (6.0 §19.3, p.531 drops it) and nowait has the outermost-leaf property (6.0 §17.6, p.481), which would apply it to the do leaf; owner ruling pending"
+  - directive: distribute parallel do simd
+    clause: ordered
+    versions: [52, 60]
+    leaves: [do]
+    reason: "spec exclusion: \"If directive-name-A is distribute, the ordered clause must not be specified\" (OpenMP 5.2 §17.5, p.344); \"If distribute is a constituent-directive name, ... the ordered clause must not be specified\" (OpenMP 6.0 §19.3, p.531)"
+  - directive: parallel do
+    clause: nowait
+    versions: [52, 60]
+    leaves: [do]
+    reason: "5.2: spec exclusion, \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" (OpenMP 5.2 §17.4, p.343); 6.0: no exclusion stated (6.0 §19.3, p.531 drops it) and nowait has the outermost-leaf property (6.0 §17.6, p.481), which would apply it to the do leaf; owner ruling pending"
+  - directive: parallel do simd
+    clause: nowait
+    versions: [52, 60]
+    leaves: [do]
+    reason: "5.2: spec exclusion, \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" (OpenMP 5.2 §17.4, p.343); 6.0: no exclusion stated (6.0 §19.3, p.531 drops it) and nowait has the outermost-leaf property (6.0 §17.6, p.481), which would apply it to the do leaf; owner ruling pending"
+  - directive: target parallel
+    clause: copyin
+    versions: [52]
+    leaves: [parallel]
+    reason: "spec exclusion at 5.2: \"If directive-name-A is target, the copyin clause must not be specified\" (OpenMP 5.2 §17.4, p.343); allowed from 6.0 by a spec override"
+  - directive: target parallel do
+    clause: copyin
+    versions: [52]
+    leaves: [parallel]
+    reason: "spec exclusion at 5.2: \"If directive-name-A is target, the copyin clause must not be specified\" (OpenMP 5.2 §17.4, p.343); allowed from 6.0 by a spec override"
+  - directive: target parallel do simd
+    clause: copyin
+    versions: [52]
+    leaves: [parallel]
+    reason: "spec exclusion at 5.2: \"If directive-name-A is target, the copyin clause must not be specified\" (OpenMP 5.2 §17.4, p.343); allowed from 6.0 by a spec override"
+  - directive: target parallel loop
+    clause: copyin
+    versions: [52]
+    leaves: [parallel]
+    reason: "spec exclusion at 5.2: \"If directive-name-A is target, the copyin clause must not be specified\" (OpenMP 5.2 §17.4, p.343); allowed from 6.0 by a spec override"
+  - directive: target teams distribute parallel do
+    clause: copyin
+    versions: [52]
+    leaves: [parallel]
+    reason: "spec exclusion at 5.2: \"If directive-name-A is target, the copyin clause must not be specified\" (OpenMP 5.2 §17.4, p.343); allowed from 6.0 by a spec override"
+  - directive: target teams distribute parallel do
+    clause: ordered
+    versions: [52, 60]
+    leaves: [do]
+    reason: "spec exclusion: \"If directive-name-A is distribute, the ordered clause must not be specified\" (OpenMP 5.2 §17.5, p.344); \"If distribute is a constituent-directive name, ... the ordered clause must not be specified\" (OpenMP 6.0 §19.3, p.531)"
+  - directive: target teams distribute parallel do simd
+    clause: copyin
+    versions: [52]
+    leaves: [parallel]
+    reason: "spec exclusion at 5.2: \"If directive-name-A is target, the copyin clause must not be specified\" (OpenMP 5.2 §17.4, p.343); allowed from 6.0 by a spec override"
+  - directive: target teams distribute parallel do simd
+    clause: ordered
+    versions: [52, 60]
+    leaves: [do]
+    reason: "spec exclusion: \"If directive-name-A is distribute, the ordered clause must not be specified\" (OpenMP 5.2 §17.5, p.344); \"If distribute is a constituent-directive name, ... the ordered clause must not be specified\" (OpenMP 6.0 §19.3, p.531)"
+  - directive: teams distribute parallel do
+    clause: nowait
+    versions: [52, 60]
+    leaves: [do]
+    reason: "5.2: spec exclusion, \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" (OpenMP 5.2 §17.4, p.343), applied through directive-name-B (parallel do) under the recursive reading; 6.0: no exclusion stated (6.0 §19.3, p.531 drops it) and nowait has the outermost-leaf property (6.0 §17.6, p.481), which would apply it to the do leaf; owner ruling pending"
+  - directive: teams distribute parallel do
+    clause: ordered
+    versions: [52, 60]
+    leaves: [do]
+    reason: "spec exclusion: \"If directive-name-A is distribute, the ordered clause must not be specified\" (OpenMP 5.2 §17.5, p.344); \"If distribute is a constituent-directive name, ... the ordered clause must not be specified\" (OpenMP 6.0 §19.3, p.531)"
+  - directive: teams distribute parallel do simd
+    clause: nowait
+    versions: [52, 60]
+    leaves: [do]
+    reason: "5.2: spec exclusion, \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" (OpenMP 5.2 §17.4, p.343), applied through directive-name-B (parallel do) under the recursive reading; 6.0: no exclusion stated (6.0 §19.3, p.531 drops it) and nowait has the outermost-leaf property (6.0 §17.6, p.481), which would apply it to the do leaf; owner ruling pending"
+  - directive: teams distribute parallel do simd
+    clause: ordered
+    versions: [52, 60]
+    leaves: [do]
+    reason: "spec exclusion: \"If directive-name-A is distribute, the ordered clause must not be specified\" (OpenMP 5.2 §17.5, p.344); \"If distribute is a constituent-directive name, ... the ordered clause must not be specified\" (OpenMP 6.0 §19.3, p.531)"

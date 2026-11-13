@@ -1,0 +1,6 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-clause-schedule-auto (OpenMP/OpenACC version 52), compile sweep
+# exit status: 2
+==== verbatim output below ====
+NVC++-F-1196-OpenMP - Only static schedule kind is supported for GPU  (<tmpdir>/p.c: 34)
+NVC++/x86-64 Linux 25.11-0: compilation aborted

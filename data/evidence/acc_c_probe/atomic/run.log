@@ -1,0 +1,225 @@
+host wingtip-gpu3.cc.gatech.edu 2026-10-25T14:36:42-04:00 GPU 3
+
+== 25.11 sum.c [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVC++-S-0155-Invalid atomic update expression  (sum.c: 7)
+NVC++-F-0000-Internal compiler error. invalid ILM atomic region       0  (sum.c: 7)
+NVC++/x86-64 Linux 25.11-0: compilation aborted
+compile exit 2
+
+== 25.11 sum.c [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVC++-S-0155-Invalid atomic update expression  (sum.c: 7)
+NVC++-F-0000-Internal compiler error. invalid ILM atomic region       0  (sum.c: 7)
+NVC++/x86-64 Linux 25.11-0: compilation aborted
+compile exit 2
+
+== 25.11 sum.c [-O2 -acc=multicore]
+NVC++-S-0155-Invalid atomic update expression  (sum.c: 7)
+NVC++-F-0000-Internal compiler error. invalid ILM atomic region       0  (sum.c: 7)
+NVC++/x86-64 Linux 25.11-0: compilation aborted
+compile exit 2
+
+== 25.11 sum_paren.c [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 25.11 sum_paren.c [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 25.11 sum_paren.c [-O2 -acc=multicore]
+compile exit 0
+x=2080
+run exit 0
+
+== 25.11 sum_compound.c [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 25.11 sum_compound.c [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 25.11 sum_compound.c [-O2 -acc=multicore]
+compile exit 0
+x=2080
+run exit 0
+
+== 25.11 sum.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (sum.f90: 8)
+NVFORTRAN-S-0155-Invalid atomic region.  (sum.f90: 8)
+  0 inform,   0 warnings,   2 severes, 0 fatal for p
+compile exit 2
+
+== 25.11 sum.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (sum.f90: 8)
+NVFORTRAN-S-0155-Invalid atomic region.  (sum.f90: 8)
+  0 inform,   0 warnings,   2 severes, 0 fatal for p
+compile exit 2
+
+== 25.11 sum.f90 [-O2 -acc=multicore]
+NVFORTRAN-S-0155-Invalid atomic update expression  (sum.f90: 8)
+NVFORTRAN-S-0155-Invalid atomic region.  (sum.f90: 8)
+  0 inform,   0 warnings,   2 severes, 0 fatal for __nv_MAIN__F1L4_1
+compile exit 2
+
+== 25.11 sum_paren.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2144
+run exit 0
+
+== 25.11 sum_paren.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2144
+run exit 0
+
+== 25.11 sum_paren.f90 [-O2 -acc=multicore]
+compile exit 0
+x=2144
+run exit 0
+
+== 25.11 gang.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (gang.f90: 13)
+nvfortran-Fatal-/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/tools/fort2 TERMINATED by signal 11
+compile exit 2
+
+== 25.11 gang.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (gang.f90: 13)
+nvfortran-Fatal-/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/tools/fort2 TERMINATED by signal 11
+compile exit 2
+
+== 25.11 gang.f90 [-O2 -acc=multicore]
+NVFORTRAN-S-0155-Invalid atomic update expression  (gang.f90: 13)
+nvfortran-Fatal-/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/tools/fort2 TERMINATED by signal 11
+compile exit 2
+
+== 25.11 gang_paren.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+sum=4224
+run exit 0
+
+== 25.11 gang_paren.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+sum=4224
+run exit 0
+
+== 25.11 gang_paren.f90 [-O2 -acc=multicore]
+compile exit 0
+sum=4224
+run exit 0
+nvc 25.11-0 64-bit target on x86-64 Linux -tp icelake-server 
+
+== 26.9 sum.c [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVC++-S-0155-Invalid atomic update expression  (sum.c: 7)
+NVC++-F-0000-Internal compiler error. invalid ILM atomic region       0  (sum.c: 7)
+NVC++/x86-64 Linux 26.9-0: compilation aborted
+compile exit 2
+
+== 26.9 sum.c [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVC++-S-0155-Invalid atomic update expression  (sum.c: 7)
+NVC++-F-0000-Internal compiler error. invalid ILM atomic region       0  (sum.c: 7)
+NVC++/x86-64 Linux 26.9-0: compilation aborted
+compile exit 2
+
+== 26.9 sum.c [-O2 -acc=multicore]
+NVC++-S-0155-Invalid atomic update expression  (sum.c: 7)
+NVC++-F-0000-Internal compiler error. invalid ILM atomic region       0  (sum.c: 7)
+NVC++/x86-64 Linux 26.9-0: compilation aborted
+compile exit 2
+
+== 26.9 sum_paren.c [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 26.9 sum_paren.c [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 26.9 sum_paren.c [-O2 -acc=multicore]
+compile exit 0
+x=2080
+run exit 0
+
+== 26.9 sum_compound.c [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 26.9 sum_compound.c [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2080
+run exit 0
+
+== 26.9 sum_compound.c [-O2 -acc=multicore]
+compile exit 0
+x=2080
+run exit 0
+
+== 26.9 sum.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (sum.f90: 8)
+NVFORTRAN-S-0155-Invalid atomic region.  (sum.f90: 8)
+  0 inform,   0 warnings,   2 severes, 0 fatal for p
+compile exit 2
+
+== 26.9 sum.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (sum.f90: 8)
+NVFORTRAN-S-0155-Invalid atomic region.  (sum.f90: 8)
+  0 inform,   0 warnings,   2 severes, 0 fatal for p
+compile exit 2
+
+== 26.9 sum.f90 [-O2 -acc=multicore]
+NVFORTRAN-S-0155-Invalid atomic update expression  (sum.f90: 8)
+NVFORTRAN-S-0155-Invalid atomic region.  (sum.f90: 8)
+  0 inform,   0 warnings,   2 severes, 0 fatal for __nv_MAIN__F1L4_1
+compile exit 2
+
+== 26.9 sum_paren.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2144
+run exit 0
+
+== 26.9 sum_paren.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+x=2144
+run exit 0
+
+== 26.9 sum_paren.f90 [-O2 -acc=multicore]
+compile exit 0
+x=2144
+run exit 0
+
+== 26.9 gang.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (gang.f90: 13)
+nvfortran-Fatal-/fastscratch/sbryngelson3/nvhpc/Linux_x86_64/26.9/compilers/bin/tools/fort2 TERMINATED by signal 11
+compile exit 2
+
+== 26.9 gang.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+NVFORTRAN-S-0155-Invalid atomic update expression  (gang.f90: 13)
+nvfortran-Fatal-/fastscratch/sbryngelson3/nvhpc/Linux_x86_64/26.9/compilers/bin/tools/fort2 TERMINATED by signal 11
+compile exit 2
+
+== 26.9 gang.f90 [-O2 -acc=multicore]
+NVFORTRAN-S-0155-Invalid atomic update expression  (gang.f90: 13)
+nvfortran-Fatal-/fastscratch/sbryngelson3/nvhpc/Linux_x86_64/26.9/compilers/bin/tools/fort2 TERMINATED by signal 11
+compile exit 2
+
+== 26.9 gang_paren.f90 [-O2 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+sum=4224
+run exit 0
+
+== 26.9 gang_paren.f90 [-O0 -acc=gpu -gpu=cc80 -gpu=mem:separate]
+compile exit 0
+sum=4224
+run exit 0
+
+== 26.9 gang_paren.f90 [-O2 -acc=multicore]
+compile exit 0
+sum=4224
+run exit 0
+nvc 26.9-0 64-bit target on x86-64 Linux -tp icelake-server 

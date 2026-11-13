@@ -1,0 +1,179 @@
+HPE Cray Compiling Environment (CCE) 20.0.0
+===========================================
+
+
+Purpose:
+--------
+CCE 20.0.0 provides Fortran, C, and C++ compilers for
+HPE Cray supercomputer and HPE Apollo 2000 Gen10Plus systems.
+
+
+Key Changes and Support with CCE 20.0.0:
+----------------------------------------
+
+CCE 20.0.0:
+-----------
+ - LLVM 20 base (merges up to May 27, 2025 - LLVM version 20.1.6)
+ - C++ virtual and indirect function calls are supported in C/C++ OpenMP offload regions when compiling with either -fopenmp-offload-translate-at-map or -fopenmp-offload-translate-at-call
+ - Added or extended support for the following OpenMP features:
+   [6.0]
+   - free-agent threads
+   - reductions on private variables
+   - self mapping for accelerators
+   - Fortran: misc. extensions to `default` and `defaultmap` clauses
+   [5.2]
+   - `masked` construct with `filter` clause
+   - `OMP_PLACES` extended syntax
+   - Fortran: `allocators` construct for `ALLOCATE` statement
+   - misc. new syntax allowed by specification (e.g. `declare target`, `ordered`, metadirective)
+   [5.1]
+   - Fortran: `thread_limit` clause on `target`
+   - Fortran: `tile` and `unroll` constructs
+   - Fortran: allow `BLOCK`...`ENDBLOCK` as OpenMP structured block
+   - 'strict' extension for `num_tasks` and `grain_size` on `taskloop`
+   - `masked` construct and related combined constructs
+   - `primary` thread affinity policy
+   - `_DEV` suffix for device-specific environment variables
+   - `omp_target_is_accessible` routine
+   - allow `scan` directive to apply to array sections
+
+- This release of HPE CCE has support for the language features specified
+  by the Fortran 2023 standard, with the exception of .NIL., as noted below.
+   - New Fortran 2023 Intrinsics
+    - `TOKENIZE`
+    - `SPLIT`
+    - `PREVIOUS` 
+    - `NEXT`
+   - Updated `KIND` data types within `ISO_FORTRAN_ENV`
+    - `LOGICAL8`
+    - `LOGICAL16`
+    - `LOGICAL32`
+    - `LOGICAL64`
+    - `REAL16`
+   - Automatic allocation of lengths of character variables
+   - The `at` edit descriptor
+   - Control over leading zeros in output of real values
+   - Allow an object of a type with a coarray ultimate component to be an array or allocatable
+   - Full support for the scaled-by-Pi trig functions (`sinpi`, `tanpi`, etc) 
+   - Update to the `SYSTEM_CLOCK` intrinsic argument `COUNT_RATE`
+   - `ISO_C_BINDING` updated to support the new `F_C_STRING` and `C_F_STRPOINTER` subroutines
+   - Conditional Expressions
+   - Conditional Arguments (exclusive of `.NIL.`)
+   - `IEEE_ARITHMETIC` routines are now `PURE` and `SIMPLE`
+   - Updated line and statement length maximums, as well as the number of continuation lines
+   - Put with notify
+   - Subscripts and section subscripts support the '@' identifier and can be specified using integer arrays.
+   - Integer arrays can be used to specify bounds in an array specification.
+
+ - AMD Turin Support (500W)
+ - SLES15 SP7 x86_64 support
+ - SLES15 SP7 aarch64 support
+ - RHEL 9.6 x86_64 support
+ - RHEL 9.6 aarch64 support
+ - ROCm 6.4
+ - NVIDIA SDK 25.05
+ - Enhanced DWARF Support
+
+
+
+
+User and Application Impact:
+----------------------------
+
+CCE 20.0.0:
+-----------
+CCE-20.0.0
+ - CCE 20.0.0 is not compatible with Fortran modules produced by prior versions
+   of CCE. Compiling source code that uses a Fortran module produced by a prior
+   version of CCE results in an ftn-1774 error message at compile time. If you
+   encounter this error message, you must rebuild your Fortran modules with CCE
+   20.0.0.
+
+Issues or Bugs Resolved:
+------------------------
+CCE 20.0.0:
+-----------
+CAST-38682     Thornado linking error with CCE/20.0.0
+CAST-38098     BerkeleyGW unrecoverable lib-4425 Fortran error when -homp
+CAST-38096     use_device_ptr Fortran clause not correctly handled
+CAST-37908     ftn sanitize=address has problems in cce 18 and cce 19
+CAST-37842     Memory leak with CCE Fortran with lots of open/close calls
+CAST-37681     Fortran does not support use_device_addr with omp requires unified_shared_memory
+CAST-37645     OpenACC error when renaming module variable
+CAST-37556     CCE 19.0.0 RC -g causes some OpenMP GPU code to crash at runtime
+CAST-37555     CCE 18.0.1 Fortran ftn-1426 recursive reshape error
+CAST-37554     Fortran ICE when compiling submodules with subroutines that contain procedures
+CAST-37534     FTN internal compiler error with subroutine calls within submodule function block constructs
+CAST-37455     Compilation performance issue with cce17.0.0/cce18.0.0
+CAST-37351     Issue compiling coarray Fortran
+CAST-37191     Fortran OpenMP runtime error when using map(alloc:) on MI300A (Minikin)
+CAST-37086     CCE/17.0.0 linker bug
+CAST-36485     derived datatypes not thread safe
+CAST-36453     target openmp array reduction poor performance
+CAST-36272     Fortran derived type data transfer not working with CCE (openmp target offload)
+CAST-35535     crayftn runtime error with user defined operator on associate name
+CAST-35034     OpenACC reductions with array variables are not supported
+CAST-35032     Bad performance with OpenACC "kernels" when used with assumed shape arrays
+CAST-34762     Fortran + OpenAcc on AMD GPU
+CAST-34739     Wrong data attribute for scalar in OpenACC data
+CAST-33011     OpenACC compile time error with Fortran strings
+CAST-33010     OpenACC error with zero-sized Fortran array
+CAST-30651     Unable to use runtime variable in openmp thread_limit(var) clause
+
+
+Product and OS Dependencies:
+----------------------------
+This CCE release is supported on
+- HPE Cray supercomputer systems running CSM with COS 2.5.X (SLES15 SP4) or COS 23.11 (SLES15 SP5)
+- HPE Cray supercomputer systems running HPCM with COS 2.5.X (SLES15 SP4) or COS 23.11 (SLES15 SP5)
+- HPE Cray supercomputer systems running HPCM with RHEL 8.10
+- HPE Apollo 2000 Gen10Plus systems running RHEL 8.9
+- AMD GPU offloading support requires at least ROCm 6.0 and is tested up to ROCm 6.4
+
+
+
+
+Notes and Limitations:
+----------------------
+ - LLVM backends for unsupported targets are deprecated and will be removed in a future release.  LLVM backends for all supported CPU and GPU targets will be retained (X86, AArch64, NVPTX, and AMDGPU).
+ - Support for the AMD GPU gfx940 target is deprecated and will be removed in a future release.
+ - AMD GPU code object version 4 is deprecated and will be removed in a future release.  The default code object version is 5, so this change only affects explicit use of the flag '-mcode-object-version=4'.
+
+Documentation:
+--------------
+- S-5212 Cray Compiling Environment Release Overview (20.0)
+- S-3901 Cray Fortran Reference Manual
+- S-2179 Cray C and C++ Quick Reference
+- Basic man pages: crayftn(1), craycc(1), crayCC(1), intro_openmp(7), intro_openacc(7)
+- Please see https://clang.llvm.org/docs/UsersManual.html or use the -help command line option for 
+  more information on using Clang
+
+
+Modulefile:
+-----------
+The following will load the modules necessary to use CCE:
+module load PrgEnv-cray
+
+The following will switch to x.y.z version of CCE:
+module swap cce cce/x.y.z
+
+
+Installation instructions:
+--------------------------
+rpm -ivh cce-20.0.0-202509231735.95f64a80f3ee7-0.el8.x86_64.rpm
+
+The following script will set CCE version 20.0.0 default:
+/opt/cray/pe/admin-pe/set_default_files/set_default_cce_20.0.0
+
+
+License:
+--------
+Except for the third party components and software licensed by HPE through
+proprietary agreements, components, files or programs contained within this
+package or product are Copyright -2025 Hewlett Packard Enterprise Development LP.
+
+
+Attribution notices for open source licensed software for this 
+package are detailed in the file:
+
+/opt/cray/pe/cce/20.0.0/ATTRIBUTIONS_20.0.txt

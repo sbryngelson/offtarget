@@ -1,0 +1,113 @@
+{
+ "finding": "fortran-schedule-static-in-target.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "schedule(static,4) requires chunks of 4 iterations assigned round-robin by thread number, so iteration i goes to thread mod((i-1)/4,nthr). Observed 0 1 2 ... shows chunk size 1. For schedule(static) without chunk, at most one chunk per thread, each chunk contiguous, so no thread starts a second chunk; observed 744 violations. nthr is written by one iteration only. Both requirements hold in a target region with a parallel do."
+  },
+  {
+   "run": "run-20261112/batch-29",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "nthr is written by a single iteration, tid/tid2 elements by distinct iterations: no race. schedule(static,4) requires chunks of 4 iterations assigned round-robin by thread number, so iteration i goes to thread mod((i-1)/4,nthr). schedule(static) gives at most one chunk per thread. Observed tid(1:12)=0..11 puts consecutive iterations on different threads and 744 second-chunk starts, violating both rules."
+  },
+  {
+   "run": "run-v2-20261113/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "schedule(static,4) requires chunks of 4 iterations assigned round-robin in thread-number order; schedule(static) gives at most one chunk per thread. Only iteration 1 writes nthr, so no race. The observed assignment violates both.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-97",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "With schedule(static, 4), chunks of 4 iterations go round-robin in thread-number order, so iteration i runs on thread mod((i-1)/4, nthr). Without chunk_size the space is split into at most one chunk per thread, so a thread never starts a second chunk. nthr is written by one iteration only and read after the target region. The program is conforming and the observed distribution violates the specification.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-58",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d7a20315dea6104e082a555340939927f1ffab41d7d94b1a1320aed361932826",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

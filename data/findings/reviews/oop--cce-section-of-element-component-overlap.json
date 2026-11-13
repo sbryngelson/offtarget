@@ -1,0 +1,113 @@
+{
+ "finding": "oop/cce-section-of-element-component-overlap.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Mapping an array section of an allocatable component of an element of a derived-type array is a valid map list item. No rule is broken: v(2) is not otherwise mapped, the allocatable is not reallocated during the region, and the loop writes disjoint elements. The result (r1=2880, r2=2080) follows from tofrom copy-back. The Cray error about a host region overlapping a present region is an implementation defect."
+  },
+  {
+   "run": "run-20261113/batch-60",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Mapping an array section of an allocatable component, v(2)%a(5:20), with tofrom is conforming. The iterations write disjoint elements, with no race. The runtime overlap error is a compiler or runtime defect. Sums 2880 and 2080 are as expected."
+  },
+  {
+   "run": "run-v2-20261113/batch-26",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Only the section v(2)%a(5:20) is mapped tofrom and the target region references only elements 5:20, so the restriction on referencing the whole array is not violated. The allocatable component is allocated before the construct and not reallocated during it. No overlapping maps exist on the construct. Expected sums: 2080+16*50=2880 for v(2), 2080 for v(1). The runtime error about a host region overlapping a present region is a compiler/runtime bug in handling the section of an allocatable component.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-93",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "v(2)%a(5:20) is a single-part-ref-with-rank section of an allocated allocatable component; the last part-ref has a section subscript list, and v(2) is rank 0. No restriction is broken: the allocatable is not reallocated during the region, and the whole array is not referenced in a way the spec makes unspecified (only the mapped section is referenced). Nothing was present beforehand, so the 'overlap present region' runtime error is a compiler fault in mapping the descriptor. Sums 2880 and 2080 are determined.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1114c2c5429591a4060e19916516bc18bb3860761b8c68534d36c7476644fdc6",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

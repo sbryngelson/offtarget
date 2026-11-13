@@ -1,0 +1,126 @@
+{
+ "finding": "cce-c-map-present-assert.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a is mapped by the enclosing target data, so map(present, to: a) finds it present and no runtime error termination is required; the program must print ok=1. An assertion abort in the runtime is a defect."
+  },
+  {
+   "run": "run-20261113/batch-81",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "a is mapped by the enclosing target data, so map(present, to: a) finds it present and no error termination occurs. present is a valid map-type-modifier combined with map-type to. b is mapped from; no races. The abort is a runtime defect: the only permitted failure for present is when the item is absent, which is not the case."
+  },
+  {
+   "run": "run-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a is mapped by the enclosing target data, so on entry to the target region it is present and map(present, to: a) does not trigger runtime error termination. b is mapped from; the results are deterministic (ok=1). The program is conforming and must run; an abort in the runtime is a compiler/runtime bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-29",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a is already present through the enclosing target data, so map(present, to: a) does not trigger the runtime error. The program is conforming and must print ok=1. An assertion abort is a compiler runtime bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-22",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-67",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a is mapped by the enclosing target data, so map(present, to: a) finds it present and there is no runtime error termination. The program must compile and run, printing ok=1.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "06d4e159df0b3cfa19c04c1c08cf3738322e6f3cb5768b6d28af6aa41824ed60",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

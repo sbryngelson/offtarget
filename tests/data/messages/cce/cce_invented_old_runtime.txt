@@ -1,0 +1,5 @@
+# INVENTED (not captured): a too-old HIP runtime at link time. Built from the real line format of cce_link_no_rocm.txt (same ld, same libcrayacc_amdgpu.so path) with a hip_6.2 symbol; rocm/6.0.0 and rocm/5.6.1 were tried on 2026-10-17 and did not produce it (6.0.0 links; 5.6.1 gives the 'needed by ..., not found' output of cce_link_no_rocm).
+# source: invented for tests/engine/test_findings_nogpu.py (review fix round 1, item 2)
+# exit status: 1
+==== verbatim output below ====
+/opt/cray/pe/cce/19.0.0/binutils/x86_64/x86_64-pc-linux-gnu/bin/ld: /opt/cray/pe/cce/19.0.0/cce/x86_64/lib/pkgconfig/..//libcrayacc_amdgpu.so: undefined reference to `hipMemPrefetchAsync@hip_6.2'

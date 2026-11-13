@@ -1,0 +1,4 @@
+# The Python packages the site build, its check and its tests need (tools/site_publish.sh,
+# .github/workflows/site.yml). Pinned; the rest is the standard library.
+pyyaml==6.0.2
+pytest==8.3.5

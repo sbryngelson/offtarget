@@ -1,0 +1,8 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gcc -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a (gcc_g90) -O2 on offload.engine.gen omp60-c-clause-message (legal; the compile-only sweep, tools/campaigns/gcc_compile_sweep.py)
+# exit status: 0
+==== verbatim output below ====
+<tmpdir>/p.c: In function ‘main’:
+<tmpdir>/p.c:33:13: warning: ‘pragma omp error’ encountered: COMPLIANCE_PROBE_MESSAGE
+   33 |     #pragma omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+      |             ^~~

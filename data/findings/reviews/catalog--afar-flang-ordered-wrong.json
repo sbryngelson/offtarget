@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-flang-ordered-wrong.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Worksharing loop with ordered clause and a block-associated ordered region inside a target region is conforming. The ordered regions execute sequentially in iteration order, so cnt increments are race-free and seq(i)=i. b(i) uses distinct elements. The loop variable i is private; all other variables are listed. So check=pass is required and compiler A's failure is a bug."
+  },
+  {
+   "run": "run-20261112/batch-29",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The ordered clause on the parallel do makes the ordered region legal; cnt and seq are only touched inside ordered regions, so no race. With no parallelization-level clause the threads level applies, so ordered regions run sequentially in iteration order, giving seq(i)=i and b(i)=2a(i)+1. The device run gave check=fail, so ordering was not enforced."
+  },
+  {
+   "run": "run-v2-20261113/batch-54",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "parallel do with ordered clause and an ordered region in each iteration; the ordered regions execute in iteration order, so cnt increments sequentially and seq(i)=i. b(i) writes are distinct. Variables in default(none) are listed; i is the predetermined private loop variable, n a named constant. host_flag set by the initial thread of the target. Result check should pass.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-53",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-74",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The parallel do carries an ordered clause and the ordered region binds to it, so ordered regions run sequentially in iteration order. cnt then increments in order and seq(i)=i, with no race. Variables are mapped explicitly, so the expected check=pass is required and the wrong answer is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-14",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 5,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4efcad57ec1fec488a800bbc83a127a8af8bfa48418121fcf900a018762db662",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

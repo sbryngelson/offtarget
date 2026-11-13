@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/s1-9443-afar.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The enclosing target data maps xk1 with map(to), so the list item is present in the device data environment on entry to the target region. The present modifier is then satisfied and no error termination may occur. The close and present modifiers may be combined. The empty target region is legal. Unified memory does not remove the presence requirement, it only means the condition is met here."
+  },
+  {
+   "run": "run-20261113/batch-44",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target data map(to: xk1) creates the mapping, so the enclosed target with the present modifier finds xk1 in the device data environment; runtime error termination applies only when it is absent. Map-type-modifiers may be listed together. Empty target region is legal. Observed abort is therefore not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-14",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "xk1 is mapped by the enclosing target data, so it is present in the device data environment when the target construct is entered. The present modifier is satisfied and no runtime error termination may occur. The compiler runtime reports no mapping for the host address, which contradicts the enclosing target data mapping. close, present and to are valid modifiers in a comma-separated list.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-86",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "xk1 is mapped by the enclosing target data, so on entry to the target region it is present in the device data environment. The present modifier therefore causes no runtime error termination; close, present, to is a valid modifier combination. The runtime error reports no mapping, contradicting the enclosing target data.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ac78cc0ef0f7629c035fa825d792ee50436288ef51d5892e5d6d7d4b22102cc7",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

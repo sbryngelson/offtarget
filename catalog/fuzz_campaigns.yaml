@@ -1,0 +1,26 @@
+# Fuzz campaigns run as several run ids (chunks of one hour on
+# pdebug, merged per memory mode by tools/campaigns/fuzz.py merge). The runs of a campaign use one
+# generator version and the same base-language groups, so a seed is the
+# same program in every run: the confirmer (offload/engine/confirm/ingest.py)
+# names it "<campaign>:<seed>" and keeps the memory mode per cell, so a
+# copy-mode cell of s1x0-NN finds the unified-mode cell of the same seed
+# in s1-NN (other_mode). The run id stays in each row (extra "run").
+# Tested: every run exists and all runs of a campaign share the generator
+# configuration (tests/confirm/test_confirm.py).
+version: 1
+campaigns:
+  s1:
+    note: "fuzz-3, all base groups (types derived alloc declare multitu), -O2; s1-NN: HSA_XNACK=1 (unified), seeds 1+500*NN .. 500+500*NN (1-10000); s1x0-NN: HSA_XNACK=0 (copy), same mapping (1-2500)"
+    # the merged directories (tools/campaigns/fuzz.py merge): s1 from s1-00 .. s1-19,
+    # s1x0 from s1x0-00 .. s1x0-04
+    runs: [s1, s1x0]
+  n0:
+    note: "Fuzz-4s50 (the 5.0/5.1 spellings NVHPC accepts), no base groups, -O2, seeds 1-1000; n0x0: AMD at HSA_XNACK=0 (n0x0-00, n0x0-01) joined with NVHPC 25.11 and 26.9 in separate memory (n0x0-nvhpc, n0x0-nvhpc269; tools/campaigns/fuzz.py join)"
+    runs: [n0x0]
+    run_notes:
+      n0x0: "The NVHPC runs of n0x0 (21:51-22:44 on 2026-10-24) shared wingtip GPUs 0 and 1 with two stray executables of n1x0 seed 72 (see the n1x0 report); a second look found no effect on the classes."
+  n1:
+    note: "Fuzz-4s50, all base groups, -O2, seeds 1-1000; n1x0: AMD at HSA_XNACK=0 (n1x0-00, n1x0-01) joined with NVHPC 25.11 and 26.9 in separate memory (n1x0-nvhpc, n1x0-nvhpc269; tools/campaigns/fuzz.py join)"
+    runs: [n1x0]
+    run_notes:
+      n1x0: "Two executables of seed 72 from the first, stopped attempt of this campaign (21:47-21:51 on 2026-10-24) kept running on wingtip GPUs 0 and 1 until the next morning, so every NVHPC program of n0x0 (21:51-22:44) and n1x0 (22:39/22:44-00:11) shared its GPU with a spinning stray. A second look found no effect on the classes: the 17 timeouts are the same seeds on both releases, agreeing programs run in about 0.5 s, and each timeout reached the 60 s limit twice. Seed 72 itself is a timeout on both releases (rerun by the restarted campaign). Fixed in offload/engine/harness.py (a run cannot outlive its runner)."

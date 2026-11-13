@@ -1,0 +1,221 @@
+{
+ "programs": {
+  "acc34-clause-if": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "acc34-directive-data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "acc34-directive-enter_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "acc34-directive-exit_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "acc34-directive-shutdown": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "wrong_answer",
+   "heap_probe_reason": "crash: SIGSEGV",
+   "status": "not_explained"
+  },
+  "omp50-clause-defaultmap-allocatable": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-clause-map": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-clause-map-alloc": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-clause-map-delete": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-clause-map-from": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-clause-map-release": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-clause-map-to": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-clause-use_device_addr": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-directive-target_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-directive-target_enter_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp50-directive-target_exit_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-clause-defaultmap-allocatable": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-clause-map": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-clause-map-alloc": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-clause-map-delete": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-clause-map-from": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-clause-map-release": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-clause-map-to": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-directive-target_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-directive-target_enter_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp52-directive-target_exit_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-clause-defaultmap-allocatable": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-clause-map": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-clause-map-alloc": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-clause-map-delete": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-clause-map-from": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-clause-map-release": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-clause-map-to": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-directive-target_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-directive-target_enter_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  },
+  "omp60-directive-target_exit_data": {
+   "compiler": "nvfortran 25.11-0 64-bit target on x86-64 Linux -tp icelake-server",
+   "heap_probe": "correct_on_device",
+   "heap_probe_reason": "ran_on_host=0 check=pass",
+   "status": "explained"
+  }
+ },
+ "what": "Copy_mode_only programs correct in NVHPC separate memory and wrong in managed memory, rerun in managed memory with the shared-memory probe on the heap (tools/campaigns/nvhpc_managed_probe.py)"
+}

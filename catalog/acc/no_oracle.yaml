@@ -1,0 +1,89 @@
+# Spec basis of the OpenACC programs that have no separating oracle (Task
+# 17; same schema and categories as catalog/omp/no_oracle.yaml: hint_only,
+# implementation_defined, equivalent_default). Read by offload/engine/gen.py
+# (no_oracle_bases("acc")). Every `quote` is checked (tests/engine/test_acc.py) to
+# occur verbatim (whitespace aside) in the cited section of
+# results/spec_cache/openacc-3.4.txt, and the page to lie in that section.
+# `status: provisional` until the maintainer reviews it.
+
+bases:
+  # --- hint_only -------------------------------------------------------------
+  num_gangs_lower:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.5.10, p.38"
+        quote: "The implementation may use a lower value than specified based on limitations imposed by the target architecture."
+  num_workers_value:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.5.11, p.38"
+        quote: "The implementation may use a different value than specified based on limitations imposed by the target architecture."
+  vector_length_value:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.5.12, p.38"
+        quote: "The implementation may use a different value than specified based on limitations imposed by the target architecture."
+  independent_assertion:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.9.6, p.69"
+        quote: "The independent clause tells the implementation that the loop iterations must be data indepen- dent, except for vars which appear in a reduction clause or which are modified in an atomic region."
+  cache_hint:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.10, p.75"
+        quote: "When the cache directive appears at the top of (inside of) a loop, it suggests array elements or subarrays would benefit by being fetched into the highest level of the cache for the body of the loop."
+  # --- implementation_defined ------------------------------------------------
+  async_may:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.16, p.99"
+        quote: "If a compute construct, data directive, or runtime API call has an async-value other than acc_async_sync, the associated operations are executed on the activity queue associated with that async-value and the associated operations may be processed asynchronously while the local thread continues executing the code following the construct or directive."
+  async_queues:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.16, p.99"
+        quote: "Two asynchronous operations with different async-values may be enqueued onto different activity queues, and therefore may be executed on the device in either order or concurrently relative to each other."
+  device_types:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.4, p.32"
+        quote: "The supported device types are implementation-defined."
+  # --- equivalent_default ----------------------------------------------------
+  routine_implicit:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.15.1, p.92"
+        quote: "If no explicit routine directive applies to a procedure whose definition appears in the program unit being compiled, then the implementation applies an implicit routine directive to that procedure if any of the following conditions holds:"
+      - cite: "OpenACC 3.4 §2.15.1, p.92"
+        quote: "An implicit routine directive always has only a seq clause if the procedure is not a lambda."
+  auto_kernels:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.9.7, p.69"
+        quote: "When the parent compute construct is a kernels construct, a loop construct with no independent or seq clause is treated as if it has the auto clause."
+  gang_implied:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.9.2, p.67"
+        quote: "A gang(dim:1) clause is implied on a data-independent loop construct without an explicit gang clause if the following conditions hold while ignoring gang, worker, and vector clauses on any sequential loop constructs and while treating implicit routine directives as if they are explicit:"
+  gang_dim_default:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.9.2, p.66"
+        quote: "The associated dimension is the value of the dim argument, if it appears, or is dimension one."
+  atomic_update_default:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.12, p.80"
+        quote: "Note that when no clause appears, the semantics are equivalent to atomic update."
+  wait_devnum_current:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.16, p.99"
+        quote: "If no devnum modifier appears then the associated device is the current device."
+  wait_queues_optional:
+    status: provisional
+    34:
+      - cite: "OpenACC 3.4 §2.16, p.99"
+        quote: "The queues modifier within a wait-argument is optional to improve clarity of the expression list."

@@ -1,0 +1,191 @@
+{
+ "finding": "nested/nvhpc-c-update-from-structure-overwrites-attached-pointer-segv.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-32",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "r[0:1] mapped, then r->a[0:8] mapped attaches the device r->a to the device array. The target region uses r (implicit zero-length pointee mapping). target update from r[0:1] does not assign attached pointers, so host r->a keeps its host value; the later update copies the data. Sum 500..507 = 4028. A runtime core dump is a compiler/runtime bug."
+  },
+  {
+   "run": "run-20261113/batch-73",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "r[0:1] is mapped, then r->a[0:8] is mapped; the new list item with base pointer r->a makes the device r->a an attached pointer. Target update from(r[0:1]) restores the attached pointer values on exit, so host r->a is not overwritten and the later update/delete on r->a are valid. r is implicitly a zero-length-section pointer translated to the device copy. No restriction is broken; sum 500..507 = 4028, so a crash is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-41",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r and r->a are mapped by enter data with alloc, r->a is attached to the device array, and the target region writes through r (implicitly mapped as a zero-length section base pointer). The program is conforming. The crash probably comes from target update from(r[0:1]) copying the device value of the pointer member r->a over the host pointer. The specification says assignment applies to list items that are not attached pointers, but does not clearly say whether a pointer member inside a larger structure list item is exempt, so a required result is not clear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-45",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-67",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r[0:1] and r->a[0:8] are mapped by enter data; r->a becomes an attached pointer. target update from(r[0:1]) does not assign attached pointers, so host r->a stays valid for the later update and the host sum 4028. The pointer r in the region is initialized to the device address of the present *r. Observed core dump is a compiler/runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-39",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9271f17e8f59997005f99169e8efa08630323f76fb2a17e711e784125c06a72a",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Both mappings are legal in separate constructs. The text does not say a pointer member inside a larger list item keeps its host value, so the device pointer value may overwrite host r->a.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both mappings are legal in separate constructs. Reading B overreaches: the update-from rule exempts a list item that is an attached pointer, but the list item is r[0:1], a structure, not the pointer r->a. The text does not say a pointer member inside a larger list item keeps its host value, so the device pointer value may overwrite host r->a. Reading A is right that the spec is unclear, so a crash is not clearly a violation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B is overconfident. The list item r[0:1] is a structure, not an attached pointer, so the update rule assigns the whole struct, including the member r->a, from the device; the device copy holds the device address, so the host pointer may be overwritten and later host access crashes. The exemption covers a list item that is itself an attached pointer. Reading A is right that the text does not say whether a pointer member inside a larger list item is exempt, so the required result is unclear. The program is otherwise conforming.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

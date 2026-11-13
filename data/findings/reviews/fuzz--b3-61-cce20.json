@@ -1,0 +1,191 @@
+{
+ "finding": "fuzz/b3-61-cce20.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Empty derived type, internal procedure, host-associated r3a/hf3/i are base-language legal. taskgroup task_reduction(+: r3a) encloses the target task whose in_reduction(+: r3a) matches it; r3a is implicitly mapped tofrom,always. The target adds nothing, so r3a stays 45 after the taskgroup; o3 is set to 9973; hf3 set on device. Checksum is deterministic, so the differing value of compiler A is an error (the exact expected value is not stated, only that compiler E differs)."
+  },
+  {
+   "run": "run-20261112/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "r3a is a taskgroup task_reduction item and the target task has in_reduction over it without referencing it; this is permitted. r3a is mapped tofrom always and unchanged (45), o3 is set to 9973, o1 and o2 stay 0, so the checksum is deterministic. Moderate confidence: the exact checksum was not recomputed."
+  },
+  {
+   "run": "run-v2-20261113/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "in_reduction on target inside a taskgroup with a matching task_reduction is allowed. The base variable is mapped tofrom always, and a private copy may or may not be created and combined, so r3a stays 45 either way. The expected output is not stated, and the cause of the differing checksum cannot be tied to a required behavior.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-71",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-108",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The in_reduction on target participates in the enclosing taskgroup task_reduction for r3a, and the spec treats the base variable as implicitly mapped tofrom with always. The target task only gets a private copy that may be created, and how it is mapped back is described loosely. The expected checksum depends on r3a staying 45 and is not clearly pinned by the text, so a required result is uncertain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6a654bcde108a0a5db8c4ab36c4b1a51a9dfc72a34d57bc0d02531434ffd571f",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: in_reduction on target inside a matching taskgroup task_reduction is allowed. The base variable r3a is mapped tofrom with always, and a private copy may be created and implicitly mapped, so whether the host value r3a=45 survives depends on unspecified copy-back and combination order. The text does not pin the expected checksum, so a differing result cannot be shown to be an error. Both readings reach this; neither identifies a required value.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "in_reduction on target inside a matching taskgroup task_reduction is allowed. The base variable r3a is mapped tofrom with always, and a private copy may be created and implicitly mapped, so whether the host value r3a=45 survives depends on unspecified copy-back and combination order. The text does not pin the expected checksum, so a differing result cannot be shown to be an error. Both readings reach this; neither identifies a required value.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-35",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The taskgroup task_reduction and the target in_reduction on r3a match, and r3a is implicitly mapped tofrom always. The text says a private copy of the list item may be created for the target task and is combined at the end. Whether it is created, and its initial value on a separate device, is not fixed, so the final r3a and the checksum are not pinned. Both readings reach uncertain; neither shows a required result.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

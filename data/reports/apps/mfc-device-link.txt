@@ -1,0 +1,140 @@
+# MFC (ee99151, OpenMP) and the CCE 20/21 device-link crashes: build, link and test evidence
+# results/apps/mfc/<tc>-mp, <tc>-mp-nolines and cce20-mp-o0cbc (tools/jobs/run_mfc.sh MFC_VARIANT; not corpus records); trimmed
+## Builds: the device-link crashes
+### cce20-mp
+ 1. Running pass 'Function Pass Manager' on module 'ld-temp.o'. 
+ 2. Running pass 'Infer address spaces' on function 
+ '@"s_cbc$m_cbc_$ck_L597_13"' 
+ malloc_consolidate(): unaligned fastbin chunk detected 
+### cce21-mp
+ llvm::IndexListEntry* llvm::SlotIndex::listEntry() const: Assertion 
+ 1. Running pass 'CallGraph Pass Manager' on module 'ld-temp.o'. 
+ 2. Running pass 'AMDGPU Rewrite AGPR-Copy-MFMA' on function 
+ '@"s_compute_bubble_ee_source$m_bubbles_ee_$ck_L186_28"' 
+## valgrind on lld, MFC's s_cbc kernel extracted with the reduced m_cbc and MFC's m_compute_cbc (with fypp line markers), CCE 20
+ Invalid read of size 8
+    at 0x574BF1E: llvm::Value::assertModuleIsMaterializedImpl() const (in /opt/cray/pe/cce/20.0.2/cce-clang/x86_64/bin/lld)
+    by 0x4AA530F: llvm::RecursivelyDeleteTriviallyDeadInstructions(llvm::SmallVectorImpl<llvm::WeakTrackingVH>&, llvm::TargetLibraryInfo const*, llvm::MemorySSAUpdater*, std::function<void (llvm::Valu
+    by 0x4AA58AA: llvm::RecursivelyDeleteTriviallyDeadInstructions(llvm::Value*, llvm::TargetLibraryInfo const*, llvm::MemorySSAUpdater*, std::function<void (llvm::Value*)>) (in /opt/cray/pe/cce/20.0.
+    by 0x45F1FAE: (anonymous namespace)::InferAddressSpacesImpl::rewriteWithNewAddressSpaces(llvm::ArrayRef<llvm::WeakTrackingVH>, llvm::DenseMap<llvm::Value const*, unsigned int, llvm::DenseMapInfo<l
+    by 0x45F3E59: (anonymous namespace)::InferAddressSpacesImpl::run(llvm::Function&) [clone.constprop.0] (in /opt/cray/pe/cce/20.0.2/cce-clang/x86_64/bin/lld)
+    by 0x45F546F: (anonymous namespace)::InferAddressSpaces::runOnFunction(llvm::Function&) (in /opt/cray/pe/cce/20.0.2/cce-clang/x86_64/bin/lld)
+    by 0x56CB581: llvm::FPPassManager::runOnFunction(llvm::Function&) (in /opt/cray/pe/cce/20.0.2/cce-clang/x86_64/bin/lld)
+## the same without line markers in m_compute_cbc: valgrind reports no invalid access (0 lines)
+## CCE 20, fypp without --line-numbering (cce20-mp-nolines): still crashes
+ 1. Running pass 'Function Pass Manager' on module 'ld-temp.o'. 
+ 2. Running pass 'Infer address spaces' on function 
+ '@"s_cbc$m_cbc_$ck_L1640_13"' 
+ malloc_consolidate(): unaligned fastbin chunk detected 
+mfc build rc=143
+## CCE 20 workaround m_compute_cbc at -O0 (cce20-mp-o0cbc): build
+ ✓ Built simulation
+mfc build rc=0
+## cce20-mp-o0cbc copy-mode test subset (the run was stopped while 20AE0551 had run more than 10 minutes)
+tests passed (progress lines): 155
+       Error: Test tests/2122A4F6: 2D -> Lagrange Bubbles -> Two-way Coupling -> adap_dt=T: Failed to execute MFC (memory access fault by GPU).
+       Error: Test tests/0D1FA5C5: 2D -> Lagrange Bubbles -> One-way Coupling -> adap_dt=T: Failed to execute MFC (memory access fault by GPU).
+       Error: Test tests/12ECE133: 3D -> Lagrange Bubbles -> One-way Coupling -> adap_dt=T: Failed to execute MFC (memory access fault by GPU).
+     Still running (>10min) 20AE0551  2D -> bc=-4
+## CCE 21 workaround fypp without --line-numbering (cce21-mp-nolines; syscheck linked with LDFLAGS=-lgcc_s): build
+ ✓ Built simulation
+mfc build rc=0
+## cce21-mp-nolines copy-mode test subset
+tests passed (progress lines): 151
+       Error: Test tests/EA8FA07E: 2D -> IBM -> STL: Failed to execute MFC.
+       Error: Test tests/4E0FBE72: 3D -> IBM -> STL: Failed to execute MFC.
+       Error: Test tests/02748F0F: 1D -> 1 Fluid(s) -> Viscous -> weno_Re_flux -> weno_avg: Variable n°25 (1-indexed) in D/cons.1.00.000050.dat is not within tolerance:
+       Error: Test tests/122B0BF3: 1D -> 1 Fluid(s) -> Non-Newtonian -> nn=0.5: Variable n°30 (1-indexed) in D/cons.2.00.000050.dat is not within tolerance:
+       Error: Test tests/0387594F: 3D -> 1 Fluid(s) -> Viscous -> IBM -> Cylinder -> slip: Failed to execute MFC.
+       Error: Test tests/135F548B: 3D -> 2 Fluid(s) -> IBM -> Particle Cloud -> Hemisphere Shell: Failed to execute MFC.
+       Error: Test tests/0BD42F35: 3D -> 2 Fluid(s) -> Viscous -> IBM -> Cylinder: Failed to execute MFC.
+       Error: Test tests/D13FDB23: 3D -> mixlayer_perturb: Variable n°1 (1-indexed) in D/cons.1.00.000050.dat is not within tolerance:
+│ 151 passed │
+│ 8 failed │
+mfc test rc=8
+## CCE 20 objects, m_cbc / m_compute_cbc recompiled (MFC's ftn flags), kernels or the whole device link
+host tuolumne1026 2026-10-25T18:57:42-07:00
+60 -> 58
+rest rc=0
+== m_cbc kernels, both files at MFC's flags
+lld rc=134 Running pass 'Infer address spaces' on function '@"s_cbc$m_cbc_$ck_L597_13"'
+crash=yes
+== m_cbc kernels, both files at -O1
+lld rc=139 Running pass 'Infer address spaces' on function '@"s_cbc$m_cbc_$ck_L597_13"'
+crash=yes
+== m_cbc kernels, m_cbc alone at -O0
+lld rc=134 Running pass 'Infer address spaces' on function '@"s_cbc$m_cbc_$ck_L597_13"'
+crash=yes
+== m_cbc kernels, m_compute_cbc alone at -O0
+lld rc=0 
+crash=no
+== every simulation object's device code (full device link), m_compute_cbc at -O0
+lld rc=0 
+crash=no
+## CCE 21 objects, m_bubbles recompiled
+host tuolumne1026 2026-10-25T18:53:42-07:00
+60 -> 58
+rest rc=0
+== m_bubbles_EE kernels, m_bubbles at MFC's flags (-O2 default)
+lld rc=134 Running pass 'AMDGPU Rewrite AGPR-Copy-MFMA' on function '@"s_compute_bubble_ee_source$m_bubbles_ee_$ck_L186_28"'
+crash=yes
+== m_bubbles_EE kernels, m_bubbles at -O0
+lld rc=0 
+crash=no
+== every simulation object's device code (full device link), m_bubbles at -O0
+lld rc=0 
+crash=no
+## fypp line markers in the callee module. The kernel module is the reduced one (inputs/m_cbc-reduced.f90,
+## inputs/m_bubbles_EE-reduced.f90, reducer output, not standalone); 'without markers' = MFC's generated file with
+## its '# <n> "<file>"' lines removed (grep -v '^# [0-9]'); the other modules are objects
+host tuolumne1026 2026-10-25T19:04:43-07:00
+## CCE 20: reduced m_cbc kernel (cbc3.f90) + m_compute_cbc
+== m_compute_cbc as MFC generated it (with markers)
+lld rc=134 Running pass 'Infer address spaces' on function '@"s_cbc$m_cbc_$ck_L16_1"'
+crash=yes
+== m_compute_cbc without the '# n file' markers (ccbc0.f90)
+lld rc=0 
+crash=no
+## CCE 21: reduced m_bubbles_EE kernel (bee2.f90) + m_bubbles
+== m_bubbles as MFC generated it (with markers)
+lld rc=134 Running pass 'AMDGPU Rewrite AGPR-Copy-MFMA' on function '@"s_compute_bubble_ee_source$m_bubbles_ee_$ck_L13_1"'
+crash=yes
+== m_bubbles without markers (bub0.f90)
+lld rc=0 
+crash=no
+== m_bubbles without markers, -hipa0
+lld rc=134 Running pass 'AMDGPU Rewrite AGPR-Copy-MFMA' on function '@"s_compute_bubble_ee_source$m_bubbles_ee_$ck_L13_1"'
+crash=yes
+## m_compute_cbc's device bitcode (llvm-dis of the.acc.o, MFC's ftn flags, CCE 20): the helpers are inlined in both;
+## with the markers the routines are smaller and the helpers' pointer arguments lose noalias
+### with markers
+@"s_fill_density_l$m_compute_cbc_" lines=143
+@"s_fill_velocity_l$m_compute_cbc_" lines=68
+@"s_fill_advection_l$m_compute_cbc_" lines=146
+@"s_fill_chemistry_l$m_compute_cbc_" lines=7
+@"s_compute_slip_wall_l$m_compute_cbc_" lines=128
+@"s_compute_nonreflecting_subsonic_buffer_l$m_compute_cbc_" lines=286
+@"s_compute_nonreflecting_subsonic_inflow_l$m_compute_cbc_" lines=123
+@"s_compute_nonreflecting_subsonic_outflow_l$m_compute_cbc_" lines=272
+@"s_compute_force_free_subsonic_outflow_l$m_compute_cbc_" lines=279
+@"s_compute_constant_pressure_subsonic_outflow_l$m_compute_cbc_" lines=274
+@"s_compute_supersonic_inflow_l$m_compute_cbc_" lines=104
+@"s_compute_supersonic_outflow_l$m_compute_cbc_" lines=277
+@"s_fill_density_l$m_compute_cbc_"(ptr %l
+### without markers
+@"s_fill_density_l$m_compute_cbc_" lines=143
+@"s_fill_velocity_l$m_compute_cbc_" lines=68
+@"s_fill_advection_l$m_compute_cbc_" lines=146
+@"s_fill_chemistry_l$m_compute_cbc_" lines=7
+@"s_compute_slip_wall_l$m_compute_cbc_" lines=127
+@"s_compute_nonreflecting_subsonic_buffer_l$m_compute_cbc_" lines=368
+@"s_compute_nonreflecting_subsonic_inflow_l$m_compute_cbc_" lines=123
+@"s_compute_nonreflecting_subsonic_outflow_l$m_compute_cbc_" lines=354
+@"s_compute_force_free_subsonic_outflow_l$m_compute_cbc_" lines=359
+@"s_compute_constant_pressure_subsonic_outflow_l$m_compute_cbc_" lines=356
+@"s_compute_supersonic_inflow_l$m_compute_cbc_" lines=104
+@"s_compute_supersonic_outflow_l$m_compute_cbc_" lines=358
+@"s_fill_density_l$m_compute_cbc_"(ptr noalias %l
+## m_bubbles' f_advance_step in the extracted CCE 21 kernel (llvm-dis, the reduced m_bubbles_EE kernel, MFC's flags): IR lines
+with markers: 13183
+without markers: 11570

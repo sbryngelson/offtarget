@@ -1,0 +1,13 @@
+# Verbatim run output (stdout then stderr) captured on tuolumne2151, 2026-10-18.
+# source: offload.engine.harness.run_script(cce19, xnack=0, mandatory=True) running the cce19 build of offload.engine.gen omp52-clause-map-present (negative probe: the present modifier names an absent item; ) under HSA_XNACK=0
+# exit status: 1
+==== verbatim output below ====
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) cray-mpich/9.0.1
+
+The following have been reloaded with a version change:
+  1) cce/20.0.0 => cce/19.0.0     2) cray-libsci/25.09.0 => cray-libsci/25.03.0
+
+ACC:            find_in_present_table failed for 'a(:)' (0x48f0c0-0x48f1c0) from ../../omp52-clause-map-present.f90:35
+ACC: libcrayacc/acc_runtime.c:703 CRAY_ACC_ERROR - Variable not found in present table

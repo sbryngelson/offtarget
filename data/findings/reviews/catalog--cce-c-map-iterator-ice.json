@@ -1,0 +1,217 @@
+{
+ "finding": "catalog/cce-c-map-iterator-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-25",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The iterator map yields w[1:31] and w[2:30], instances with the same containing array w, which the restriction forbids. Program is non-conforming, so a crash is permitted."
+  },
+  {
+   "run": "run-20261113/batch-84",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Iterator k=1:2 yields w[1:31] (elements 1..31) and w[2:30] (elements 2..31). These instances have the same containing array w, violating the iterator restriction on map list items, so the program is non-conforming and no behavior is required; the crash is permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The map iterator k=1:2 yields w[1:31] and w[2:30]. These instances have the same containing array w, which the iterator restriction forbids. The program is non-conforming, so no acceptance is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-54",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-100",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The map clause uses an iterator k = 1:2 in the list item w[k:n/2-(k+1)+1]. The two iterator values give sections w[1:31] and w[2:30] of the same array w, so the instances have the same containing array. This is forbidden. The program is non-conforming and a compiler crash or rejection is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-44",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "af215edc92dad2ee2d06dd1d5c4f0e8c1350de1a96dd88c7a486e4beac3d7c6d",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the program not legal: Both readings are right. With k=1:2 the section w[k:n/2-(k+1)+1] gives w[1:31] and w[2:30], two instances with the same containing array w. The 5.2 map restriction forbids this, so the program is non-conforming and a compiler crash or rejection is permitted.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings are right. Iterator k=1:2 gives w[1:31] and w[2:30], list item instances with the same containing array w, which the map clause restriction forbids. The program is non-conforming, so a compiler crash is not a required-result failure."
+  },
+  {
+   "run": "adj-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings are right. With iterator k=1:2 the instances are w[1:31] and w[2:30]; both have containing array w. The map restriction forbids iterator instances with the same containing array, so the program is non-conforming and a compiler crash is not a required-behavior violation."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings are right. With k=1:2 the section w[k:n/2-(k+1)+1] gives w[1:31] and w[2:30], two instances with the same containing array w. The 5.2 map restriction forbids this, so the program is non-conforming and a compiler crash or rejection is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The iterator k=1:2 gives w[1:31] and w[2:30], both with containing array w. The restriction forbids instances from different iterator values having the same containing array, so the program is non-conforming and a crash or rejection is permitted. Both readings are right.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

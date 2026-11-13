@@ -1,0 +1,126 @@
+{
+ "finding": "oop/nvhpc-polymorphism-runtime-unsupported.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-36",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Dummy s is class(base_t), non-allocatable; the actual arguments are non-polymorphic mapped variables. SELECT TYPE in a declare target procedure is not restricted, no type-bound procedures are used, and no polymorphic allocatable appears in a clause. The only restriction on derived types is that accessed type-bound procedures be declare target, which does not apply. The compile-time runtime-function refusal is a compiler limitation."
+  },
+  {
+   "run": "run-20261113/batch-58",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Mapped objects e1,e2,b0 are non-polymorphic, non-allocatable derived types with scalar integer components. bump is a declare target module procedure with a CLASS dummy and SELECT TYPE; the 5.2 text contains no restriction on polymorphic dummies or SELECT TYPE in device code (polymorphic restrictions concern allocatable list items and C++ classes). The expected values 10, 100, -1 are deterministic, so a conforming compiler must compile and run it. Slight uncertainty: spec silent on runtime type support."
+  },
+  {
+   "run": "run-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "bump is declare target and called only from the target region. The mapped variables e1, e2, b0 are non-polymorphic, so the polymorphic map restrictions do not apply; the polymorphic dummy and select type are plain Fortran. No OpenMP rule restricts select type in device code, so a conforming compiler must accept it. The refusal is a missing device runtime routine (same_type_as)."
+  },
+  {
+   "run": "run-v2-20261113/batch-32",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A type-bound-free select type with type is and class default inside a module subroutine marked declare target is conforming Fortran 2003 plus a declare target directive. The spec places no restriction on polymorphic dummies or select type in declare target procedures; the call from the target region makes it a device procedure. The mapped variables are plain extended types without allocatable or pointer components, so mapping is well defined. The refusal comes from an unsupported runtime routine (same_type_as), not from a spec rule, so a conforming compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-09",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-72",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The only polymorphism rule for map and declare target concerns polymorphic ALLOCATABLE list items; e1, e2, b0 are non-polymorphic, non-allocatable and mapped tofrom. The dummy s is class(base_t) in a declare target subroutine with SELECT TYPE, which no OpenMP 5.2 text forbids. A conforming compiler must accept and compile it; the refusal comes from a missing runtime function for same_type_as, a compiler limitation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2f9a62f0d763e74a8ab8c424f321cef23b10c1bdcc6166a09188f3711389a7f2",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

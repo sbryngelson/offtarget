@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-target-simd-no-end-directive-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-19",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Fortran target simd with a do loop; the end directive is optional for loop-associated directives, so omitting !$omp end target simd is conforming. private(t) and map clauses are valid. Result: sum(a)=sum(1+i)=152. NVFORTRAN's 'unterminated TARGET' is a compiler error."
+  },
+  {
+   "run": "run-20261113/batch-71",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target simd is a combined construct (target + simd); private is permitted on it and applies to the leaf constructs. The loop is a simple counted loop, t is private, no race; a(i)=1+i sums to 152. A conforming compiler must accept it."
+  },
+  {
+   "run": "run-v2-20261113/batch-21",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target simd is a combined loop-associated construct. In Fortran its paired end directive is optional, so omitting end target simd is conforming. Variable t is private, a and b are mapped, and each iteration writes a distinct a(i). The sum is 16+136=152. A conforming compiler must accept it; the unterminated TARGET diagnostic is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-27",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-90",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target simd is a legal combined construct. For a loop-associated directive the end directive is optional in Fortran, so the missing end target simd is legal. t is private, a and b are mapped, and there is no race. The sum is 16+136=152, so check=pass. The compile error 'unterminated TARGET' is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b9764b84ea4c00a695c1e211ebddfc42d8670701403f18e2320440f1947e5ef9",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

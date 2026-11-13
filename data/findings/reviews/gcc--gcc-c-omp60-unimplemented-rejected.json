@@ -1,0 +1,236 @@
+{
+ "finding": "gcc/gcc-c-omp60-unimplemented-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-38",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "induction is permitted on for (and so on parallel for) in 6.0; step modifier and induction identifier + are given; induction is a data-sharing attribute clause so default(none) is satisfied. With default relaxed modifier the body update x = x + 1 matches the closed form (x=3+i-1 at iteration i, so b = 2a+1), and the final original value is 3+n = n+3. A compiler without induction support refuses a conforming 6.0 program."
+  },
+  {
+   "run": "run-20261113/batch-67",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "induction is valid on the for leaf of parallel for in 6.0 and the closed form gives x = i+2 at iteration i and n+3 at the end, so values are right. But parallel default(none) shared(a,b) does not list x; section 19.2 gives no rule that induction creates a shared clause on the parallel leaf, so x may lack an explicit data-sharing attribute on the parallel construct. Whether default(none) is satisfied is unclear; the compiler's second error shows that reading."
+  },
+  {
+   "run": "run-v2-20261113/batch-36",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "induction is allowed on the for construct, so on the combined parallel for. Identifier + is implicitly declared for int; step(1) is region-invariant; x is explicitly listed so default(none) is satisfied. With the default relaxed modifier x starts each iteration at x0+k, and x=x+1 keeps that; the final x is 67 = n+3. A compiler for 6.0 must accept it; the GCC error shows the clause is unimplemented.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "x listed in induction on the combined parallel for satisfies default(none) on the parallel leaf."
+     ],
+     "quotes": {
+      "ok": 6,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "x is listed on the compound construct, so default(none) on the parallel construct is satisfied."
+     ],
+     "quotes": {
+      "ok": 5,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-70",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The induction clause is allowed on the for construct, and so on parallel for. The step modifier and the + identifier are valid for int. x is listed in the clause, so default(none) is satisfied. The value of x at the start of each iteration is 3+(i-1), which is what the body expects, and the final x is 67 = n+3. A conforming 6.0 compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "x listed in the induction clause satisfies default(none) on the parallel leaf of parallel for"
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113c/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 4,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 6.0 adds the induction clause, permitted on the for construct and, by the all-constituents rule, on parallel for. x is listed in induction, so it has an explicitly determined attribute under default(none). With x0=3 and step 1, x at the start of logical iteration j is 3+j, which is i+2 for loop value i, so b[i-1]=2*a[i-1]+1. The body increment keeps the value consistent with the closed form (relaxed default), and the final x is n+3. The compiler must accept induction; it is refused. Residual doubt: the body assignment to the induction variable.",
+   "verifications": [
+    {
+     "run": "verify-20261113d/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4881fc09441baa8136ed371b152fc836eba85cbd9df8d09fee23b7aafabd8039",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading A fails: induction is not a clause that adds an implicit shared on the parallel leaf. Section 19.2 gives explicit shared-clause rules for firstprivate, lastprivate and reduction only; induction applies to the leaf constructs that permit it (for). With default(none) on parallel, x is referenced without an explicitly determined data-sharing attribute on parallel, which the default restriction forbids. The text does not settle whether induction on the for leaf counts, so legality is uncertain, and acceptance is not required."
+  },
+  {
+   "run": "adj-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "induction is allowed on for in 6.0 and the values are right. But induction lacks the all-leaf rules for adding shared on parallel (only firstprivate, lastprivate, reduction are specified as adding shared), so x has no explicit attribute on the parallel construct under default(none). Whether the inner for's induction counts is not settled by the text; Reading A asserts without a passage, Reading B is closer."
+  }
+ ]
+}

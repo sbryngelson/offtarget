@@ -1,0 +1,217 @@
+{
+ "finding": "harvest/cce-c-implicit-struct-map-partly-present.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "s.p[:N], s.p, s.a, s.b are mapped on the enclosing target data. The inner target implicitly maps whole struct s (about 200 KB), of which only separate member parts are present. The rule that limits an implicit map to the present part covers a single contiguous part, and here several separately mapped members are present; mapping the whole of s then partially overlaps existing mappings, which the specification does not define. An overlap error is therefore not shown to be required behavior."
+  },
+  {
+   "run": "run-20261113/batch-82",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The explicit maps s.p[:N], s.p, s.a and s.b do not share storage. In the target region s is implicitly mapped. If its present part counts as a single contiguous part (a, b, p are adjacent), only that part is mapped and the program runs. The three parts were mapped as separate list items, so whether they form one contiguous part is unclear. An implementation could reasonably treat the large struct as partially present and report an error."
+  },
+  {
+   "run": "run-v2-20261113/batch-19",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target region references s (via &s), so s is implicitly mapped as a whole 200000-byte structure, while only s.p, s.a and s.b (small parts) are already present from the enclosing target data. The whole structure is then partially present, which the specification does not make a required success; a runtime error for overlap without containment is a permitted outcome. Legality of this mix is unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-71",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-69",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s is implicitly mapped in the target region. Parts s.a, s.b, s.p are one contiguous present part, so only that part gets corresponding storage; big is not touched. The 'not contained' error is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-54",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "fe5fc42dea725edbce348e712f94ae99d51c6605cb03c84fb2b6b86b9a1f04ed",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The restriction on partially present storage covers only list items with an explicit data-mapping attribute, so it does not apply to the implicit map of s, and no passage requires success when a larger overlapping object is implicitly mapped.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The implicit-map rule covers a single contiguous part of s with device storage. Here s.p[:N] (pointee storage), s.p, s.a and s.b were mapped as separate list items, so the present storage is not shown to be one contiguous part of s. The specification does not define the whole-of-s implicit map in this partial case, so Reading B's yes on legality is unproven and the overlap error is not shown required. Reading A is closer."
+  },
+  {
+   "run": "adj-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The explicit maps share no storage (s.p[:N] is the pointee, s.p, s.a, s.b are distinct members), so the program is legal. s is then implicitly mapped. The rule that keeps only the present part applies to a single contiguous part with corresponding storage. Here a, b, p were mapped as three separate list items (adjacent, 16 bytes), so whether they count as one contiguous part is not settled by the text. Reading B is closer; the overlap error is neither shown required nor shown wrong."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A is right. s is implicitly mapped, but the target data already mapped s.a, s.b and s.p, which form one contiguous part of s. The rule for implicit data-mapping attributes then gives corresponding storage only to that part, so big is not mapped and no overlap error is required. Reading B misses this rule, which is also in 5.0.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A fails: s is referenced in the target region, so it is implicitly mapped as a whole struct, while only parts s.p, s.a, s.b are present. The restriction on partially present storage covers only list items with an explicit data-mapping attribute, so it does not apply to the implicit map of s, and no passage requires success when a larger overlapping object is implicitly mapped. Reading B is right that the outcome is not required, though the legality of the mix is not settled by a stated rule.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,141 @@
+# The vendor and product behind each measured toolchain, for the
+# generic vendor-claim format (offload/engine/confirm/claims.py). A new
+# machine's compilers (e.g. NVHPC) are added here and in
+# offload/engine/toolchains.py; claims from its documentation then load in the
+# same format (vendor, product, version, source, url, page, language,
+# construct, clause, claim, quote).
+products:
+  afar: {vendor: AMD, product: "AFAR (ROCm/llvm-project amdflang, amdclang)", version: "24.3.0 (LLVM 24.0.0git)"}
+  cce19: {vendor: HPE, product: "Cray Compiling Environment (ftn, craycc)", version: "19.0.0"}
+  cce20: {vendor: HPE, product: "Cray Compiling Environment (ftn, craycc)", version: "20.0.2"}
+  cce21: {vendor: HPE, product: "Cray Compiling Environment (ftn, craycc)", version: "21.0.3"}
+  cce21_4: {vendor: HPE, product: "Cray Compiling Environment (ftn, craycc)", version: "21.0.4"}
+  # NVIDIA HPC SDK on wingtip (A100)
+  nvhpc: {vendor: NVIDIA, product: "NVIDIA HPC SDK (nvfortran, nvc)", version: "25.11"}
+  nvhpc269: {vendor: NVIDIA, product: "NVIDIA HPC SDK (nvfortran, nvc)", version: "26.9"}
+
+# The documents vendor claims are read from. Each document has
+# one edition per toolchain it describes: a local snapshot (data/index/claims/)
+# that `tools/derive/claims.py ingest` checks every quote against, so a claim is
+# recorded for a toolchain only when that toolchain's edition contains the
+# quote. `format` selects the quote check (offload.engine.confirm.claims):
+#   text   one paragraph or bullet per line (man pages rendered with
+#          MANWIDTH=4000 man -l <page> | col -bx; release notes; site
+#          guides; web pages stripped of markup). A quote is
+#          "<header> ... <bullet>" (the bullet under that header) or one
+#          sentence.
+#   table  status tables as rows "group | feature | status" (CSV with
+#          columns section,c1,c2,c3,c4, or a Markdown file of tables).
+#   todo   a directory of compiler tests whose expected message is quoted
+#          ("<test>.f90: <message>").
+# `cross_language: true`: the document's statements are compared with
+# programs of every language (the maintainer-supplied AMD-hosted Clang page,
+# "purported for amdflang"); otherwise a claim covers only the languages
+# it names.
+documents:
+  hpe-cce-intro-openmp:
+    vendor: HPE
+    title: "intro_openmp(7) man page"
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openmp.7.html
+    format: text
+    editions:
+      cce19: {path: data/index/claims/hpe-cce-19.0.0-intro_openmp.txt, origin: /opt/cray/pe/cce/19.0.0/man/man7/intro_openmp.7, version: "CCE 19.0.0 (page dated 01-22-2025)"}
+      cce20: {path: data/index/claims/hpe-cce-20.0.2-intro_openmp.txt, origin: /opt/cray/pe/cce/20.0.2/man/man7/intro_openmp.7, version: "CCE 20.0.2 (page dated 07-27-2025)"}
+      cce21: {path: data/index/claims/hpe-cce-21.0.3-intro_openmp.txt, origin: /opt/cray/pe/cce/21.0.3/man/man7/intro_openmp.7, version: "CCE 21.0.3 (page dated 11-13-2025)"}
+  hpe-cce-intro-openacc:
+    vendor: HPE
+    title: "intro_openacc(7) man page"
+    url: https://cpe.ext.hpe.com/docs/latest/cce/man7/intro_openacc.7.html
+    format: text
+    editions:
+      cce19: {path: data/index/claims/hpe-cce-19.0.0-intro_openacc.txt, origin: /opt/cray/pe/cce/19.0.0/man/man7/intro_openacc.7, version: "CCE 19.0.0 (page dated 03-08-2024)"}
+      cce20: {path: data/index/claims/hpe-cce-20.0.2-intro_openacc.txt, origin: /opt/cray/pe/cce/20.0.2/man/man7/intro_openacc.7, version: "CCE 20.0.2 (page dated 03-08-2024)"}
+      cce21: {path: data/index/claims/hpe-cce-21.0.3-intro_openacc.txt, origin: /opt/cray/pe/cce/21.0.3/man/man7/intro_openacc.7, version: "CCE 21.0.3 (page dated 11-13-2025)"}
+  hpe-cce-release-notes:
+    vendor: HPE
+    title: "CCE release notes (release_info)"
+    url: file:///opt/cray/pe/cce/<version>/release_info
+    format: text
+    editions:
+      cce19: {path: data/index/claims/hpe-cce-19.0.0-release_info.txt, origin: /opt/cray/pe/cce/19.0.0/release_info, version: "CCE 19.0.0 release notes"}
+      # the 20.0.2 install ships a placeholder ("Release notes go here."):
+      # the 20.0.0 notes describe the 20.0 series
+      cce20: {path: data/index/claims/hpe-cce-20.0.0-release_info.txt, origin: /opt/cray/pe/cce/20.0.0/release_info, version: "CCE 20.0.0 release notes (20.0.2 ships none)"}
+      cce21: {path: data/index/claims/hpe-cce-21.0.3-release_info.txt, origin: /opt/cray/pe/cce/21.0.3/release_info, version: "CCE 21.0.3 release notes"}
+  olcf-frontier-guide:
+    vendor: OLCF (site documentation)
+    title: "Frontier User Guide, Compiling > OpenACC"
+    url: https://docs.olcf.ornl.gov/systems/frontier_user_guide.html
+    format: text
+    # a site statement about the Cray compiler, not tied to a CCE version;
+    # compared with every CCE toolchain (its CCE 17/18 known issues are out
+    # of scope)
+    editions:
+      cce19: &olcf {path: data/index/claims/olcf-frontier-guide-openacc.txt, origin: "the guide's text as supplied by a maintainer, lines 1988-2030 of that copy", version: "Frontier User Guide as supplied 2026-10-17"}
+      cce20: *olcf
+      cce21: *olcf
+  rocm-openmp-support:
+    vendor: AMD
+    title: "ROCm docs: OpenMP support (conceptual/openmp)"
+    url: https://rocm.docs.amd.com/projects/llvm-project/en/docs-7.1.0/conceptual/openmp.html
+    format: text
+    editions:
+      afar: {path: data/index/claims/rocm-docs-7.1.0-conceptual-openmp.txt, origin: "fetched 2026-10-22 (curl), markup stripped", version: "ROCm 7.1.0 docs (release-level; not a statement about AFAR 24.3.0)"}
+  rocm-clang-openmp-status:
+    vendor: AMD
+    title: "Clang 20.0.0git OpenMP Support table hosted by AMD"
+    url: https://rocm.docs.amd.com/projects/llvm-project/en/docs-7.1.1/LLVM/clang/html/OpenMPSupport.html
+    format: table
+    cross_language: true
+    editions:
+      afar: {path: data/index/claims/rocm-docs-7.1.1-clang20-OpenMPSupport.csv, origin: "fetched 2026-10-22 (curl), tables extracted", version: "Clang 20.0.0git (older than AFAR's 24.0.0git); C/C++ table, purported for amdflang"}
+  amdclang-afar-openmp-support:
+    vendor: AMD
+    title: "clang/docs/OpenMPSupport.md at the AFAR 24.3.0 source commit (C/C++ status)"
+    url: https://github.com/ROCm/llvm-project/blob/3ba19712e9fbf709f6c93d33394211ed4eeec8a7/clang/docs/OpenMPSupport.md
+    format: table
+    editions:
+      afar: {path: data/index/claims/amdclang_afar_OpenMPSupport.md, origin: "git show 3ba19712e9fbf709f6c93d33394211ed4eeec8a7:clang/docs/OpenMPSupport.md (corpus/rocm_llvm_afar), 2026-10-22", version: "AFAR 24.3.0 amdclang source commit"}
+  afar-flang-openmp-status:
+    vendor: AMD
+    title: "flang/docs/OpenMPSupport.md at the AFAR 24.3.0 source commit"
+    url: https://github.com/ROCm/llvm-project/blob/3ba19712e9fbf709f6c93d33394211ed4eeec8a7/flang/docs/OpenMPSupport.md
+    format: table
+    editions:
+      afar: {path: data/index/claims/amdflang_afar_openmp_status.csv, origin: "CSV transcription of the doc's tables; good -> supported, part/progress -> partial, none -> unsupported", version: "AFAR 24.3.0 amdflang source commit"}
+  afar-flang-lowering-todo:
+    vendor: AMD
+    title: "flang/test/Lower/OpenMP/Todo at the AFAR 24.3.0 source commit"
+    url: https://github.com/ROCm/llvm-project/tree/3ba19712e9fbf709f6c93d33394211ed4eeec8a7/flang/test/Lower/OpenMP/Todo
+    format: todo
+    editions:
+      afar: {path: corpus/rocm_llvm_afar/flang/test/Lower/OpenMP/Todo, origin: "sparse checkout of the AFAR commit (git-ignored corpus); file list in data/index/claims/amdflang_afar_lowering_todo_tests.txt", version: "AFAR 24.3.0 amdflang source commit"}
+  # The NVIDIA HPC Compilers User's Guide of the installed releases
+  # (25.11; 26.9, the latest, whose edition names its own url), fetched 2026-10-24 (curl), HTML stripped to one paragraph per
+  # line; one snapshot per chapter the claims quote. The 25.11 release
+  # notes (https://docs.nvidia.com/hpc-sdk/archive/25.11/hpc-sdk-release-notes/index.html)
+  # were read too and state nothing about OpenMP or OpenACC features.
+  nvidia-hpc-ug-openmp:
+    vendor: NVIDIA
+    title: "HPC Compilers User's Guide, section 7 Using OpenMP (7.4 OpenMP Subset)"
+    url: https://docs.nvidia.com/hpc-sdk/archive/25.11/compilers/hpc-compilers-user-guide/index.html#openmp-subset
+    format: text
+    editions:
+      nvhpc: {path: data/index/claims/nvidia-hpc-25.11-user-guide-openmp.txt, origin: "fetched 2026-10-24 (curl), chapter 7 extracted, markup stripped", version: "HPC SDK 25.11 documentation"}
+      nvhpc269: {path: data/index/claims/nvidia-hpc-26.9-user-guide-openmp.txt, url: "https://docs.nvidia.com/hpc-sdk/archive/26.9/compilers/hpc-compilers-user-guide/index.html#openmp-subset", origin: "fetched 2026-10-24 (curl), the same extraction", version: "HPC SDK 26.9 documentation"}
+  nvidia-hpc-ug-openacc:
+    vendor: NVIDIA
+    title: "HPC Compilers User's Guide, section 6 Using OpenACC (6.1.3 OpenACC Support)"
+    url: https://docs.nvidia.com/hpc-sdk/archive/25.11/compilers/hpc-compilers-user-guide/index.html#openacc-support
+    format: text
+    editions:
+      nvhpc: {path: data/index/claims/nvidia-hpc-25.11-user-guide-openacc.txt, origin: "fetched 2026-10-24 (curl), chapter 6 extracted, markup stripped", version: "HPC SDK 25.11 documentation"}
+      nvhpc269: {path: data/index/claims/nvidia-hpc-26.9-user-guide-openacc.txt, url: "https://docs.nvidia.com/hpc-sdk/archive/26.9/compilers/hpc-compilers-user-guide/index.html#openacc-support", origin: "fetched 2026-10-24 (curl), the same extraction", version: "HPC SDK 26.9 documentation"}
+  nvidia-hpc-ug-memory:
+    vendor: NVIDIA
+    title: "HPC Compilers User's Guide, section 5.4 Memory Model"
+    url: https://docs.nvidia.com/hpc-sdk/archive/25.11/compilers/hpc-compilers-user-guide/index.html#memory-model
+    format: text
+    editions:
+      nvhpc: {path: data/index/claims/nvidia-hpc-25.11-user-guide-memory.txt, origin: "fetched 2026-10-24 (curl), section 5.4 extracted, markup stripped", version: "HPC SDK 25.11 documentation"}
+      nvhpc269: {path: data/index/claims/nvidia-hpc-26.9-user-guide-memory.txt, url: "https://docs.nvidia.com/hpc-sdk/archive/26.9/compilers/hpc-compilers-user-guide/index.html#memory-model", origin: "fetched 2026-10-24 (curl), the same extraction", version: "HPC SDK 26.9 documentation"}

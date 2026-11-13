@@ -1,0 +1,113 @@
+{
+ "finding": "cce-acc-init-set-runtime-assert.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "init with no clauses is allowed (all devices initialized). set default_async(2) satisfies the at-least-one-clause rule. async without argument uses queue 2, wait(2) completes it, and acc_get_default_async returns 2. No restriction is violated, so a device-type assertion failure is a compiler bug."
+  },
+  {
+   "run": "run-20261113/batch-49",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "init, parallel loop copy, set default_async(2), async parallel loop with no queue (uses queue 2), wait(2) before reading, then acc_get_default_async: all legal. No race; the host reads a only after the wait. The assertion failure is a runtime bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-33",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The init directive may appear without clauses. The set directive has a default_async clause, satisfying the requirement that at least one clause appear. The async clause with no argument uses the default queue 2, wait(2) waits for it, and acc_get_default_async returns 2. A crash in the runtime is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-88",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The init directive with no clauses is allowed and initializes all devices. set default_async(2), an async clause without an argument, wait(2) and acc_get_default_async are all valid. The assertion in init is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f35623a855ac2da4981c8aca98f6cfaa8bfebb1c72852806521749090e4ba293",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

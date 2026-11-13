@@ -1,0 +1,147 @@
+{
+ "finding": "fuzz/591-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-35",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The target contains only the teams construct, satisfying the nesting rule. nontemporal is allowed on simd, hence on the composite teams distribute simd; o1 need not be accessed. lastprivate(lp1) and private(t1) are valid, and all iterations assign the same value, so no race. Output is deterministic. The compiler crash on unhandled nontemporal context is a bug."
+  },
+  {
+   "run": "run-20261113/batch-83",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "nontemporal is permitted on simd and thus on the composite teams distribute simd; its list item may be an array and is only a hint. lastprivate and private are allowed there; lp1 is always 0, so the result is deterministic. teams is the only statement in target. The compiler crash is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "nontemporal is permitted on simd, and teams distribute simd is a combined construct that includes simd. Its list items may also appear in data-environment clauses or none. The program has no races (all writes store zero) and is conforming, so a compiler must accept it; an internal compiler error is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-29",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-65",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "nontemporal is allowed on simd, so it applies to the simd leaf of the combined construct; lp1 and t1 privatization clauses are fine. The program is conforming and must be compiled.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "43b41eb9b3ad3b200194c2e9650867038c66d84e11cbfbb31b5b1ff5cfb16f3b",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "nvhpc-c-ordered-in-target-nvcpfe-crash.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The ordered clause is on the combined target parallel for, so the ordered region binds to a loop with the ordered clause. The ordered region serializes the updates of b and cnt in iteration order, so there is no race. host_flag is written only by iteration 0. The compiler error saying for must have ordered is wrong, and the front-end crash is not allowed for a conforming program."
+  },
+  {
+   "run": "run-20261113/batch-64",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The combined target parallel for accepts the ordered clause (no parameter), and a block-associated ordered construct binds to that loop, satisfying the restriction that the binding construct specify an ordered clause. Ordered regions execute one at a time in iteration order, so cnt and b[cnt] updates are race-free and b equals ref. host_flag is written only by iteration 0. The diagnostic that the clause is missing is wrong; the compiler must accept."
+  },
+  {
+   "run": "run-v2-20261113/batch-109",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The combined target parallel for carries the ordered clause, so the block-associated ordered region inside the loop binds to a construct that specifies an ordered clause. Ordered regions run in iteration order, so b[cnt] and cnt are race free; host_flag is written only by iteration 0. The compiler diagnostic that for lacks an ordered clause is wrong, and the crash is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-37",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-49",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The ordered clause is on the combined target parallel for, so the block-associated ordered construct binds to a worksharing-loop with the ordered clause. Ordered regions execute sequentially in loop-iteration order, so b[cnt] = a[i] with cnt incremented inside the region is race free and gives b == ref and cnt == n. host_flag is written by one iteration only. The program conforms and must compile; the crash is a compiler fault.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6fbae03e53a6ddfea808addcdfc4a499a0cc293f48a8d99b5cd7c26d7d8ded30",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

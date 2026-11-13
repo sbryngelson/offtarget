@@ -1,0 +1,2730 @@
+# One case per finding file checked for the vendor packets.
+# Keys: id (the report or variant stem), vendor (amd | hpe | nvidia, or a
+# list), finding (path under findings), affected (toolchains that show
+# the defect), modes (AMD HSA_XNACK values where it shows; NVHPC 0 separate,
+# 2 managed), arch (gfx942 = MI300A Tuolumne, gfx90a = MI250X Tioga,
+# sm_80 = A100 wingtip), flags ({all|afar|cce|nvhpc|<toolchain>: extra
+# compile flags}), opt (default -O2), symptom and expect (build.py patterns),
+# edits (applied to the trimmed finding text), control ({edits} | {file} |
+# {text}, with what: the one change), control_<key> (a key for the control
+# only), compile_s / run_s (limits).
+
+# --- top-level findings -------------------------------------------------------
+- id: afar-cce19-character-defaultmap
+  vendor: [amd, hpe]
+  finding: afar-cce19-character-defaultmap.f90
+  affected: [afar, cce19, cce20]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:ch=b s=wxyz k=1"
+  control:
+    what: "ch and s mapped explicitly: map(tofrom: ch, s)"
+    edits: [["!$omp target\n", "!$omp target map(tofrom: ch, s)\n"]]
+
+- id: cce19-target-parallel-guarded-loop
+  vendor: hpe
+  finding: cce19-target-parallel-guarded-loop.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:bad=\\s+0\\s*$"
+  control:
+    what: "compiled at -O0 instead of -O2"
+    edits: []
+  control_opt: "-O0"
+
+- id: cce19-target-parallel-single-ice
+  vendor: hpe
+  finding: cce19-target-parallel-single-ice.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:unhandled (acc )?construct type"
+  expect: "outre:bad=\\s+0\\s*$"
+  control:
+    what: "the single construct replaced by a worksharing do construct"
+    edits: [["!$omp single\n", "!$omp do\n"], ["!$omp end single\n", "!$omp end do\n"]]
+
+- id: afar-cce19-task-in-target-ice
+  vendor: [amd, hpe]
+  finding: afar-cce19-task-in-target-ice.f90
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(createTask|unhandled (acc )?construct type|Segmentation|signal|error)"
+  expect: "outre:r=\\s+42"
+  control:
+    what: "the task and taskwait constructs removed (the task body kept)"
+    edits: [["    !$omp task default(shared)\n      c = 42\n    !$omp end task\n    !$omp taskwait\n", "      c = 42\n"]]
+
+- id: afar-loop-bind-thread-in-teams
+  vendor: amd
+  finding: afar-loop-bind-thread-in-teams.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:BIND\\(TEAMS\\)` must be specified"
+  expect: "outre:tot=((\\s+64){4}|\\s+4\\*64)\\s*$"
+  control:
+    what: "the loop directive removed (a plain DO loop in each team)"
+    edits: [["      !$omp loop bind(thread)\n", ""], ["      !$omp end loop\n", ""]]
+
+- id: cce21-defaultmap-aggregate-flag
+  vendor: hpe
+  finding: cce21-defaultmap-aggregate-flag.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:A\\s+0\\s+B\\s+0\\s+C\\s+0\\s*$"
+  control:
+    what: "defaultmap(to: aggregate) removed from regions A and C"
+    edits: [["map(to:a) defaultmap(to: aggregate)\n  x = merge(1,0,omp_is_initial_device())\n  !$omp end target\n  print *, 'A', x", "map(to:a)\n  x = merge(1,0,omp_is_initial_device())\n  !$omp end target\n  print *, 'A', x"],
+            ["map(to:a) defaultmap(to: aggregate)\n  x = merge(1,0,omp_is_initial_device())\n  do i", "map(to:a)\n  x = merge(1,0,omp_is_initial_device())\n  do i"]]
+
+- id: multithread-allocatable-section-maps
+  vendor: [amd, hpe]
+  finding: multithread-allocatable-section-maps.f90
+  affected: [afar@0, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: wrong
+  expect: "outre:bad=\\s+0\\s*$"
+  control:
+    what: "num_threads(1) instead of num_threads(2)"
+    edits: [["num_threads(2)", "num_threads(1)"]]
+
+- id: target-update-sections-in-parallel
+  vendor: [amd, hpe]
+  finding: target-update-sections-in-parallel.f90
+  affected: [afar@0, cce19@0, cce20@0, cce21@0]
+  modes: [0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:bad=\\s+0\\s*$"
+  control:
+    what: "the parallel do directive removed (the four updates run one after another)"
+    edits: [["  !$omp parallel do num_threads(4) private(lo, hi)\n", ""], ["  !$omp end parallel do\n", ""]]
+
+- id: cce21-in-reduction-taskwait-link
+  vendor: hpe
+  finding: cce21-in-reduction-taskwait-link.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:_cray\\$mt_taskwait"
+  expect: "out:check=pass"
+  control:
+    what: "in_reduction(.and.: ls) on the target replaced by map(tofrom: ls), without the enclosing taskgroup"
+    edits: [["  !$omp taskgroup task_reduction(.and.: ls)\n", ""], ["  !$omp end taskgroup\n", ""], ["in_reduction(.and.: ls)", "map(tofrom: ls)"]]
+
+- id: cce-acc-init-set-runtime-assert
+  vendor: hpe
+  finding: cce-acc-init-set-runtime-assert.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:Incorrect device type set"
+  expect: "outre:ok\\s+2\\s*\\n\\s*ok\\s+(2\\s+2|2\\*2)"
+  control:
+    what: "device_type(radeon) added to the init and set directives"
+    edits: [["!$acc init\n", "!$acc init device_type(radeon)\n"], ["!$acc set default_async(2)", "!$acc set default_async(2) device_type(radeon)"]]
+
+- id: cce-acc-routine-bind-module-ice
+  vendor: hpe
+  finding: cce-acc-routine-bind-module-ice.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:host associated to itself"
+  expect: "outre:3\\D+5\\D+7\\D+9\\D+11\\D+13\\D+15\\D+17"
+  control:
+    what: "the two functions as external procedures instead of module procedures"
+    text: |
+      integer function dev_val(x)
+        !$acc routine seq
+        integer, intent(in) :: x
+        dev_val = 2*x + 1
+      end function dev_val
+      integer function host_val(x)
+        !$acc routine seq bind(dev_val)
+        integer, intent(in) :: x
+        host_val = -x
+      end function host_val
+
+      program t
+        implicit none
+        interface
+          integer function host_val(x)
+            !$acc routine seq bind(dev_val)
+            integer, intent(in) :: x
+          end function host_val
+        end interface
+        integer :: b(8), i
+        !$acc parallel loop copyout(b)
+        do i = 1, 8
+          b(i) = host_val(i)
+        end do
+        print *, b
+      end program t
+
+- id: cce-uses-allocators-traits-omp50
+  vendor: hpe
+  finding: cce-uses-allocators-traits-omp50.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:ftn-451"
+  expect: "outre:3\\D+5\\D+7\\D+9\\D+11\\D+13\\D+15\\D+17"
+  control:
+    what: "the OpenMP 5.2 spelling uses_allocators(traits(my_traits): my_alloc)"
+    edits: [["uses_allocators(my_alloc(my_traits))", "uses_allocators(traits(my_traits): my_alloc)"]]
+
+- id: afar-flang-task-reduction-max
+  vendor: amd
+  finding: afar-flang-task-reduction-max.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(no symbol found for|Invalid reduction identifier)"
+  expect: "outre:r =\\s+10\\s*$"
+  control:
+    what: "the reduction identifier + instead of max (r = r + i)"
+    edits: [["task_reduction(max: r)", "task_reduction(+: r)"], ["in_reduction(max: r)", "in_reduction(+: r)"], ["r = max(r, i)", "r = r + i"]]
+  control_expect: "outre:r =\\s+55\\s*$"
+
+- id: afar-flang-loop-bind-teams-reduction
+  vendor: amd
+  finding: afar-flang-loop-bind-teams-reduction.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:'REDUCTION' clause not allowed"
+  expect: "outre:r =\\s+55\\s*$"
+  control:
+    what: "bind(teams) removed (the loop binds to the teams region by default)"
+    edits: [["!$omp loop bind(teams) reduction(+: r)", "!$omp loop reduction(+: r)"]]
+
+- id: afar-flang-thread-limit-target-parallel-do
+  vendor: amd
+  finding: afar-flang-thread-limit-target-parallel-do.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:THREAD_LIMIT clause is not allowed"
+  expect: "outre:a\\(3\\) =\\s+3\\s*$"
+  control:
+    what: "thread_limit(8) removed"
+    edits: [[" thread_limit(8)", ""]]
+
+- id: afar-flang-firstprivate-map-two-targets
+  vendor: amd
+  finding: afar-flang-firstprivate-map-two-targets.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:may not appear on both MAP and FIRSTPRIVATE"
+  expect: "outre:a\\(3\\) =\\s+6\\s*$"
+  control:
+    what: "map(to: p1) instead of firstprivate(p1) on the first target"
+    edits: [["!$omp target firstprivate(p1) map(from: a)", "!$omp target map(to: p1) map(from: a)"]]
+
+- id: afar-nontemporal-assumed-shape-ice
+  vendor: amd
+  finding: afar-nontemporal-assumed-shape-ice.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(verification of lowering to FIR failed|must be variadic of OpenMP-compatible)"
+  expect: 'outre:RESULT checksum=704\b'
+  control:
+    what: "nontemporal(o1) removed from the simd directive"
+    edits: [["!$omp simd nontemporal(o1)", "!$omp simd"]]
+
+- id: afar-xnack1-atomic-min-nested-parallel
+  vendor: amd
+  finding: afar-xnack1-atomic-min-nested-parallel.f90
+  affected: [afar@1]
+  modes: [1]
+  arch: [gfx942]
+  symptom: "crash:."
+  expect: "out:r=0 s=0"
+  control:
+    what: "o1 an explicit-shape array instead of an allocatable"
+    edits: [["integer, allocatable :: o1(:,:)", "integer :: o1(n, m)"], ["  allocate(o1(n, m))\n", ""]]
+
+- id: afar-udr-derived-type-link
+  vendor: amd
+  finding: afar-udr-derived-type-link.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(flang_rt_verbose_abort|undefined symbol)"
+  expect: 'outre:RESULT checksum=2081066\b'
+  control:
+    what: "the same reduction on a host parallel do (no target teams distribute)"
+    edits: [["!$omp target teams distribute parallel do reduction(padd: rp) map(tofrom: rp)", "!$omp parallel do reduction(padd: rp)"]]
+
+- id: afar-xnack1-present-not-enforced
+  vendor: amd
+  finding: afar-xnack1-present-not-enforced.f90
+  affected: [afar@1]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: "out:reached the end"
+  expect: "re:^RUN_FAIL"
+  control:
+    what: "run at HSA_XNACK=0"
+    edits: []
+  control_run_env: {HSA_XNACK: "0"}
+
+- id: afar-xnack1-target-is-present
+  vendor: amd
+  finding: afar-xnack1-target-is-present.f90
+  affected: [afar@1]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: wrong
+  expect: "outre:after enter data: present=\\s+1\\s*\\n\\s*after exit data: present=\\s+0"
+  control:
+    what: "run at HSA_XNACK=0"
+    edits: []
+  control_run_env: {HSA_XNACK: "0"}
+
+- id: afar-c-xnack1-target-is-present
+  vendor: amd
+  finding: afar-c-xnack1-target-is-present.c
+  affected: [afar@1]
+  modes: [1, 0]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "outre:after enter data: present= 1\\s*\\n\\s*after exit data: present= 0"
+  control:
+    what: "run at HSA_XNACK=0"
+    edits: []
+  control_run_env: {HSA_XNACK: "0"}
+
+- id: afar-c-error-directive-in-target-link
+  vendor: amd
+  finding: afar-c-error-directive-in-target-link.c
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=60", cce: "-fopenmp-version=60"}
+  symptom: "compile:__kmpc_error"
+  expect: "out:check=pass"
+  control:
+    what: "the error directive removed"
+    edits: [["    #pragma omp error at(compilation) severity(warning) message(\"probe\")\n", ""]]
+
+- id: afar-clang-requires-device-safesync-hang
+  vendor: amd
+  finding: afar-clang-requires-device-safesync-hang.c
+  affected: [afar]
+  modes: [1]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=60", cce: "-fopenmp-version=60"}
+  compile_s: 120
+  symptom: hang
+  expect: ok
+  control:
+    what: "another requires clause, atomic_default_mem_order(seq_cst)"
+    edits: [["requires device_safesync", "requires atomic_default_mem_order(seq_cst)"]]
+
+- id: afar-c-update-iterator-copy-mode
+  vendor: amd
+  finding: afar-c-update-iterator-copy-mode.c
+  affected: [afar@0]
+  modes: [0, 1]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:to iterator: bad= 0"
+  control:
+    what: "to(a[0:n]) instead of to(iterator(k = 0:1): a[k:n - k])"
+    edits: [["to(iterator(k = 0:1): a[k:n - k])", "to(a[0:n])"]]
+
+- id: clang-c-shared-declare-target-combined
+  vendor: [amd, hpe]
+  finding: clang-c-shared-declare-target-combined.c
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:b[1]=3 "
+  control:
+    what: "shared(a, b, on_dev) removed from the first target teams loop"
+    edits: [["map(from: b) shared(a, b, on_dev)", "map(from: b)"]]
+
+- id: cce-c-map-present-assert
+  vendor: hpe
+  finding: cce-c-map-present-assert.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "crash:clang_flags == 0"
+  expect: "out:ok=1"
+  control:
+    what: "map(to: a) instead of map(present, to: a)"
+    edits: [["map(present, to: a)", "map(to: a)"]]
+
+- id: cce-c-parallel-for-in-target
+  vendor: hpe
+  finding: cce-c-parallel-for-in-target.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:static 64 of 64; lastprivate t=63; linear 64 of 64, x=64"
+  control:
+    what: "schedule(static) removed from the first parallel for (the first part of the output only)"
+    edits: [["#pragma omp parallel for schedule(static)", "#pragma omp parallel for"]]
+  control_expect: "out:static 64 of 64;"
+
+- id: cce-c-dist-schedule-segv
+  vendor: hpe
+  finding: cce-c-dist-schedule-segv.c
+  affected: [cce19@1, cce20@1, cce21@1]
+  modes: [1, 0]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "crash:."
+  expect: "out:64 of 64"
+  control:
+    what: "dist_schedule(static) removed"
+    edits: [[" dist_schedule(static)", ""]]
+
+- id: cce-c-openmp45-device-link
+  vendor: hpe
+  finding: cce-c-openmp45-device-link.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=45", cce: "-fopenmp-version=45"}
+  symptom: "compile:undefined symbol: omp_is_initial_device"
+  expect: "out:on_host=0"
+  control:
+    what: "built without -fopenmp-version=45 (the default, 5.1)"
+    edits: []
+  control_flags: {}
+
+- id: cce-c-map-delete-refcount
+  vendor: hpe
+  finding: cce-c-map-delete-refcount.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:bad= 0 a_present= 0 b_present= 0"
+  control:
+    what: "a entered once (reference count 1) instead of twice"
+    edits: [["  #pragma omp target enter data map(to: a)\n  #pragma omp target map", "  #pragma omp target map"]]
+
+- id: cce-mapper-next-map-copy-back
+  vendor: hpe
+  finding: cce-mapper-next-map-copy-back.f90
+  affected: [cce19@0, cce20@0]
+  modes: [0, 1]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:host_flag=\\s+0\\s+b1=\\s+3\\s+sv=\\s+[17]\\s*$"
+  control:
+    what: "the map(tofrom: host_flag) clause written before the mapper clause"
+    edits: [["map(from: b) map(mapper(mm), tofrom: s) map(tofrom: host_flag)", "map(tofrom: host_flag) map(from: b) map(mapper(mm), tofrom: s)"]]
+
+- id: cce-defaultmap-tofrom-explicit-map
+  vendor: hpe
+  finding: cce-defaultmap-tofrom-explicit-map.f90
+  edits: [["': ran_on_host='", "': host_flag='"]]
+  affected: [cce19@0, cce21@0]
+  modes: [0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "re:^RUN_OK(?![\\s\\S]*unchanged:\\s+(?!64\\b))"
+  control:
+    what: "defaultmap(tofrom) removed from regions 2 and 4"
+    edits: [["map(alloc: a) map(tofrom: host_flag) defaultmap(tofrom)", "map(alloc: a) map(tofrom: host_flag)"], ["map(to: a) map(tofrom: host_flag) defaultmap(tofrom)", "map(to: a) map(tofrom: host_flag)"]]
+
+- id: fortran-schedule-static-in-target
+  vendor: [amd, hpe]
+  finding: fortran-schedule-static-in-target.f90
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:wrong thread: 0 of 1000 \\(expected 0\\)\\s*\\n.*second chunk of a thread: 0 \\(expected"
+  control:
+    what: "schedule(static, 1) and its check (iteration i on thread mod(i - 1, T)) instead of schedule(static, 4)"
+    edits: [["schedule(static, 4)", "schedule(static, 1)"], ["mod((i - 1)/4, nthr)", "mod((i - 1)/1, nthr)"]]
+  control_expect: "out:iterations on the wrong thread: 0 of 1000"
+
+- id: fortran-loop-bind-thread-in-parallel
+  vendor: [amd, hpe]
+  finding: fortran-loop-bind-thread-in-parallel.f90
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:threads that did not run all 64 iterations: 0 (expected 0)"
+  control:
+    what: "the loop directive removed (each thread runs a plain DO loop)"
+    edits: [["      !$omp loop bind(thread)\n", ""], ["      !$omp end loop\n", ""]]
+
+- id: defaultmap-none-loop-variable
+  vendor: [amd, hpe]
+  finding: defaultmap-none-loop-variable.f90
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(DEFAULTMAP\\(NONE\\)|ftn-1964|default map\\(none\\))"
+  expect: "out:check=pass"
+  control:
+    what: "defaultmap(none) removed"
+    edits: [[" defaultmap(none) private(i)", " private(i)"]]
+
+- id: clang-c-declare-target-to-omp52
+  vendor: [amd, hpe]
+  finding: clang-c-declare-target-to-omp52.c
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:unexpected 'to' clause"
+  expect: "out:check=pass"
+  control:
+    what: "enter(f) instead of to(f)"
+    edits: [["declare target to(f)", "declare target enter(f)"]]
+
+- id: clang-c-map-iterator-omp51
+  vendor: [amd, hpe]
+  finding: clang-c-map-iterator-omp51.c
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:incorrect map type modifier"
+  expect: "out:check=pass"
+  control:
+    what: "map(tofrom: a[0:n]) without the iterator modifier"
+    edits: [["map(iterator(it = 0:1), tofrom: a[it:n])", "map(tofrom: a[0:n])"]]
+
+- id: clang-c-linear-directive-name-hang
+  vendor: [amd, hpe]
+  finding: clang-c-linear-directive-name-hang.c
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=60", cce: "-fopenmp-version=60"}
+  compile_s: 120
+  symptom: hang
+  expect: "re:^RUN_"
+  control:
+    what: "linear(x: step(2)) without the directive-name modifier"
+    edits: [["linear(x: for, step(2))", "linear(x: step(2))"]]
+
+- id: cce21-linear-modifier-default-none
+  vendor: hpe
+  finding: cce21-linear-modifier-default-none.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(ftn-1510|DEFAULT\\(NONE\\))"
+  expect: "out:check=pass"
+
+# --- fuzz campaign s1 (indexed) -----------------------------------------------------
+- id: s1-2370-cce21
+  vendor: hpe
+  finding: fuzz/s1-2370-cce21.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(ftn-1510|ftn-1310)"
+  expect: "out:RESULT check=pass"
+  control:
+    what: "firstprivate(i) removed from the parallel do"
+    edits: [["shared(a) firstprivate(i)", "shared(a)"]]
+
+- id: s1-2592-cce21
+  vendor: hpe
+  finding: fuzz/s1-2592-cce21.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:Should never reach this code"
+  expect: "out:RESULT check=pass"
+  control:
+    what: "ichar('k') instead of ichar(xs(1:1))"
+    edits: [["ichar(xs(1:1))", "ichar('k')"]]
+
+- id: s1-3463-cce21
+  vendor: hpe
+  finding: fuzz/s1-3463-cce21.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1]
+  arch: [gfx942]
+  symptom: "compile:Error getting dope vector information"
+  expect: "re:^RUN_OK"
+  control:
+    what: "the map clause dropped from the target construct"
+    edits: [["!$omp target map(dr%nd%k(1:n))", "!$omp target"]]
+
+- id: s1-4339-afar
+  vendor: amd
+  finding: fuzz/s1-4339-afar.f90
+  affected: [afar@1]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: "crash:."
+  expect: "out:RESULT check=pass"
+  control:
+    what: "map(tofrom: ia) without the close modifier"
+    edits: [["map(close, tofrom: ia)", "map(tofrom: ia)"]]
+
+- id: s1-6085-cce21
+  vendor: hpe
+  finding: fuzz/s1-6085-cce21.f90
+  affected: [cce20, cce21]
+  modes: [1]
+  arch: [gfx942]
+  symptom: "compile:(ftn-2116|signal 06|Aborted)"
+  expect: "re:^RUN_OK"
+  control:
+    what: "reduction(min: r1a) removed from the first target teams"
+    edits: [["!$omp target teams map(tofrom: dr) reduction(min: r1a)", "!$omp target teams map(tofrom: dr)"]]
+  control_expect: 'compile:ftn-7032'
+
+- id: s1-6760-cce20
+  vendor: hpe
+  finding: fuzz/s1-6760-cce20.f90
+  affected: [cce20]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:ftn-1725"
+  expect: "out:RESULT check=pass"
+  control:
+    what: "declare target to(g), the deprecated spelling, instead of enter(g)"
+    edits: [["declare target enter(g)", "declare target to(g)"]]
+
+- id: s1-6888-cce21
+  vendor: hpe
+  finding: fuzz/s1-6888-cce21.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:ftn-1747"
+  expect: "out:RESULT check=pass"
+  control:
+    what: "to(a(1:n)), without the stride (all elements updated)"
+    edits: [["to(a(1:n:2))", "to(a(1:n))"]]
+
+- id: s1-8634-cce21
+  vendor: hpe
+  finding: fuzz/s1-8634-cce21.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(ftn-2116|signal|Unhandled expression|TYPE_DEREF)"
+  expect: "out:RESULT check=pass"
+  control:
+    what: "a character array xs(2) instead of a character scalar"
+    edits: [["character(len=8) :: xs\n  xs = 'abcdefgh'", "character(len=8) :: xs(2)\n  xs = 'abcdefgh'"]]
+
+- id: s1-91-cce21
+  vendor: hpe
+  finding: fuzz/s1-91-cce21.f90
+  affected: [cce21]
+  modes: [1]
+  arch: [gfx942]
+  symptom: "compile:ftn-1510"
+  expect: "re:^RUN_OK"
+  control:
+    what: "default(none) removed from the empty parallel construct of kp1 (the ftn-1510 for HF2 goes away; CCE then stops at the masked construct, documented as unsupported in offload regions)"
+    edits: [["!$omp parallel default(none)", "!$omp parallel"]]
+  control_expect: 'compile:unhandled (acc )?construct type'
+
+- id: s1-9914-cce19
+  vendor: hpe
+  finding: fuzz/s1-9914-cce19.f90
+  affected: [cce19]
+  modes: [1]
+  arch: [gfx942]
+  compile_s: 300
+  symptom: hang
+  expect: "re:^RUN_OK"
+  control:
+    what: "thread_limit(1) removed from the first target"
+    edits: [["!$omp target thread_limit(1)", "!$omp target"]]
+
+- id: s1-7882-cce20
+  vendor: hpe
+  finding: fuzz/s1-7882-cce20.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:Variable not found in present table"
+  expect: "out:RESULT check=pass"
+  control:
+    what: "map(tofrom: xc) without the present modifier"
+    edits: [["map(present, tofrom: xc)", "map(tofrom: xc)"]]
+
+- id: s1-9443-afar
+  vendor: amd
+  finding: fuzz/s1-9443-afar.f90
+  affected: [afar@1]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: "crash:."
+  expect: "out:RESULT check=pass"
+  control:
+    what: "map(present, to: xk1) without the close modifier"
+    edits: [["map(close, present, to: xk1)", "map(present, to: xk1)"]]
+
+# --- catalog findings (the catalog program is the reproducer) ------------------------
+- id: afar-c-complex-reduction-link
+  vendor: amd
+  finding: catalog/afar-c-complex-reduction-link.c
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:undefined symbol: __atomic_load"
+  expect: "out:check=pass"
+  control:
+    what: "the same reduction on a host parallel for (target teams distribute and the map clauses removed)"
+    edits: [["#pragma omp target teams distribute parallel for map(to: a) map(tofrom: host_flag) \\\n      reduction(+: z)", "#pragma omp parallel for reduction(+: z)"]]
+
+- id: afar-c-critical-hint-link
+  vendor: amd
+  finding: catalog/afar-c-critical-hint-link.c
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_critical_with_hint"
+  expect: "out:check=pass"
+  control:
+    what: "the hint clause removed (a named critical without hint)"
+    edits: [[" hint(omp_sync_hint_contended)", ""]]
+
+- id: afar-c-ordered-doacross-link
+  vendor: amd
+  finding: catalog/afar-c-ordered-doacross-link.c
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_doacross_init"
+  expect: "out:check=pass"
+  control:
+    what: "the ordered(1) clause removed"
+    edits: [["shared(a, b) ordered(1)", "shared(a, b)"]]
+
+- id: afar-c-reduction-task-link
+  vendor: amd
+  finding: catalog/afar-c-reduction-task-link.c
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_taskred_modifier_init"
+  expect: "out:check=pass"
+  control:
+    what: "reduction(+: s) without the task modifier"
+    edits: [["reduction(task, +: s)", "reduction(+: s)"]]
+
+- id: afar-flang-absent-optional-target-crash
+  vendor: amd
+  finding: catalog/afar-flang-absent-optional-target-crash.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:."
+  expect: "out:check=pass"
+  control:
+    what: "the PRESENT(c) branch removed (the absent dummy is not referenced in the region)"
+    edits: [["      if (present(c)) then\n        y(k) = x(k) + c(k)\n      else\n        y(k) = 2*x(k) + 1\n      end if\n", "      y(k) = 2*x(k) + 1\n"]]
+
+- id: afar-flang-critical-target-parallel-wrong
+  vendor: amd
+  finding: catalog/afar-flang-critical-target-parallel-wrong.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "an atomic update instead of the critical construct"
+    edits: [["    !$omp critical\n    t = s\n    s = t + a(i)\n    !$omp end critical\n", "    !$omp atomic\n    s = s + a(i)\n"]]
+
+- id: afar-flang-dist-schedule-chunk
+  vendor: amd
+  finding: catalog/afar-flang-dist-schedule-chunk.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "num_teams(1) instead of num_teams(4) (every chunk on team 0)"
+    edits: [["num_teams(4)", "num_teams(1)"]]
+
+- id: afar-flang-linear-parallel-ice
+  vendor: amd
+  finding: catalog/afar-flang-linear-parallel-ice.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(createParallel|Segmentation|signal|error)"
+  expect: "out:check=pass"
+  control:
+    what: "the same parallel do on the host (the target directive removed)"
+    edits: [["  !$omp target map(to: a) map(from: b) map(tofrom: x) map(tofrom: host_flag)\n", ""], ["  !$omp end target\n", ""]]
+
+- id: afar-flang-named-critical-link
+  vendor: amd
+  finding: catalog/afar-flang-named-critical-link.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:__kmpc_critical_with_hint"
+  expect: "out:check=pass"
+  control:
+    what: "the same loop on the host (parallel do instead of target parallel do)"
+    edits: [["!$omp target parallel do map(to: a) map(tofrom: s, host_flag) private(t)", "!$omp parallel do private(t)"], ["!$omp end target parallel do", "!$omp end parallel do"]]
+
+- id: afar-flang-ordered-wrong
+  vendor: amd
+  finding: catalog/afar-flang-ordered-wrong.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "the same parallel do on the host (the target directive removed)"
+    edits: [["  !$omp target map(to: a) map(from: b) map(tofrom: cnt) map(from: seq) map(tofrom: host_flag)\n", ""], ["  !$omp end target\n", ""]]
+
+- id: afar-flang-reduction-minus-rejected
+  vendor: amd
+  finding: catalog/afar-flang-reduction-minus-rejected.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(deprecated|not supported)"
+  expect: "out:check=pass"
+  control:
+    what: "the reduction identifier + instead of -"
+    edits: [["task_reduction(-: s)", "task_reduction(+: s)"], ["in_reduction(-: s)", "in_reduction(+: s)"]]
+
+- id: afar-flang-reduction-task-ice
+  vendor: amd
+  finding: catalog/afar-flang-reduction-task-ice.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(Call parameter type does not match|signal|error)"
+  expect: "out:check=pass"
+  control:
+    what: "reduction(+: s) without the task modifier"
+    edits: [["reduction(task, +: s)", "reduction(+: s)"]]
+
+- id: afar-flang-sections-in-target-ice
+  vendor: amd
+  finding: catalog/afar-flang-sections-in-target-ice.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(Call parameter type does not match|signal|error)"
+  expect: "out:check=pass"
+  control:
+    what: "the same sections on the host (parallel instead of target parallel)"
+    edits: [["!$omp target parallel map(to: a) map(tofrom: b, host_flag)", "!$omp parallel"], ["!$omp end target parallel", "!$omp end parallel"]]
+
+- id: afar-flang-workdistribute-ice
+  vendor: amd
+  finding: catalog/afar-flang-workdistribute-ice.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=60"}
+  symptom: "compile:(MapInfoOp|signal|error)"
+  expect: "out:check=pass"
+  control:
+    what: "a plain target construct around the array assignment instead of target teams workdistribute"
+    edits: [["!$omp target teams workdistribute map(to: a) map(from: b) default(none) shared(a, b, on_dev)", "!$omp target map(to: a) map(from: b)"], ["!$omp end target teams workdistribute", "!$omp end target"]]
+
+- id: c-allocate-const-mem-firstprivate-wrong
+  vendor: [amd, hpe]
+  finding: catalog/c-allocate-const-mem-firstprivate-wrong.c
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "the allocate and uses_allocators clauses removed (x firstprivate only)"
+    edits: [[" firstprivate(x) allocate(omp_const_mem_alloc: x) \\\n      uses_allocators(omp_const_mem_alloc)", " firstprivate(x)"]]
+
+- id: defaultmap-present-private-array-abort
+  vendor: amd
+  finding: catalog/defaultmap-present-private-array-abort.f90
+  affected: [afar@0]
+  modes: [0, 1]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:."
+  expect: "out:check=pass"
+  control:
+    what: "defaultmap(present: aggregate) removed"
+    edits: [["parallel do defaultmap(present: aggregate) &", "parallel do &"]]
+
+- id: cce-c-allocate-align-link
+  vendor: hpe
+  finding: catalog/cce-c-allocate-align-link.c
+  affected: [cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_aligned_alloc"
+  expect: "out:check=pass"
+  control:
+    what: "allocate(omp_default_mem_alloc: t) without the align modifier"
+    edits: [["allocate(allocator(omp_default_mem_alloc), align(8): t)", "allocate(omp_default_mem_alloc: t)"]]
+
+- id: cce-c-allocate-allocator-modifier-rejected
+  vendor: hpe
+  finding: catalog/cce-c-allocate-allocator-modifier-rejected.c
+  affected: [cce19]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:undeclared function 'allocator'"
+  expect: "out:check=pass"
+  control:
+    what: "allocate(omp_default_mem_alloc: t), the 5.0 spelling"
+    edits: [["allocate(allocator(omp_default_mem_alloc): t)", "allocate(omp_default_mem_alloc: t)"]]
+
+- id: cce-c-device-type-directive-name-ice
+  vendor: hpe
+  finding: catalog/cce-c-device-type-directive-name-ice.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=60", cce: "-fopenmp-version=60"}
+  symptom: "compile:(PLEASE submit a bug report|signal|crash)"
+  expect: "out:check=pass"
+  control:
+    what: "device_type(any) without the directive-name modifier"
+    edits: [["device_type(declare target: any)", "device_type(any)"]]
+
+- id: cce-c-dist-schedule-chunk
+  vendor: hpe
+  finding: catalog/cce-c-dist-schedule-chunk.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "num_teams(1) instead of num_teams(4) (every chunk on team 0)"
+    edits: [["num_teams(4)", "num_teams(1)"]]
+
+- id: cce-c-f-pointer-device-link
+  vendor: hpe
+  finding: catalog/cce-c-f-pointer-device-link.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:_C_F_POINTER"
+  expect: "out:check=pass"
+  control:
+    what: "the device loop reads a and writes b directly instead of through c_f_pointer"
+    edits: [["      call c_f_pointer(pa, pp, [n])\n      call c_f_pointer(pb, qq, [n])\n", ""], ["qq(i) = 2*pp(i) + 1", "b(i) = 2*a(i) + 1"]]
+
+- id: cce-c-lastprivate-parallel-in-seq-loop-wrong
+  vendor: hpe
+  finding: catalog/cce-c-lastprivate-parallel-in-seq-loop-wrong.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:check=pass"
+
+- id: cce-c-long-double-ice
+  vendor: hpe
+  finding: catalog/cce-c-long-double-ice.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:(PLEASE submit a bug report|signal|crash)"
+  expect: "out:check=pass"
+  control:
+    what: "double instead of long double"
+    edits: [["long double ld[n];", "double ld[n];"], ["ld[i] = 0.0L;", "ld[i] = 0.0;"], ["(long double)a[i] * 2.0L + 1.0L", "(double)a[i] * 2.0 + 1.0"]]
+
+- id: cce-c-map-iterator-ice
+  vendor: hpe
+  finding: catalog/cce-c-map-iterator-ice.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:(PLEASE submit a bug report|signal|crash)"
+  expect: "out:check=pass"
+  control:
+    what: "the same sections mapped without the iterator modifier (w[1:n/2 - 2])"
+    edits: [["map(iterator(k = 1:2), to: w[k:n / 2 - (k + 1) + 1])", "map(to: w[1:n / 2 - 2 + 1])"], ["map(iterator(k = 1:2), release: w[k:n / 2 - (k + 1) + 1])", "map(release: w[1:n / 2 - 2 + 1])"]]
+
+- id: cce-c-motion-iterator-rejected
+  vendor: hpe
+  finding: catalog/cce-c-motion-iterator-rejected.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:undeclared function 'iterator'"
+  expect: "out:check=pass"
+  control:
+    what: "from(b[0:n]) without the iterator modifier"
+    edits: [["from(iterator(k = 1:2): b[k - 1:n - k + 1])", "from(b[0:n])"]]
+
+- id: cce-c-ordered-doacross-link
+  vendor: hpe
+  finding: catalog/cce-c-ordered-doacross-link.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_doacross_init"
+  expect: "out:check=pass"
+  control:
+    what: "the ordered(1) clause removed"
+    edits: [["shared(a, b) ordered(1)", "shared(a, b)"]]
+
+- id: cce-c-ordered-link
+  vendor: hpe
+  finding: catalog/cce-c-ordered-link.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_dispatch_init_4"
+  expect: "out:check=pass"
+  control:
+    what: "the same parallel for on the host (the target directive removed)"
+    edits: [["  #pragma omp target map(to: a) map(from: b) map(tofrom: cnt) map(from: seq) \\\n      map(tofrom: host_flag)\n", ""]]
+
+- id: cce-c-recursive-function-ice
+  vendor: hpe
+  finding: catalog/cce-c-recursive-function-ice.c
+  affected: [cce19, cce20]
+  modes: [1, 0]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:(frontend command failed|signal|PLEASE)"
+  expect: "out:check=pass"
+  control:
+    what: "sumto computed without recursion (k*(k+1)/2)"
+    edits: [["int sumto(int k) { return k <= 0 ? 0 : k + sumto(k - 1); }", "int sumto(int k) { return k * (k + 1) / 2; }"]]
+
+- id: cce-c-reduction-inscan-ice
+  vendor: hpe
+  finding: catalog/cce-c-reduction-inscan-ice.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:(PLEASE submit a bug report|signal|crash)"
+  expect: "out:check=pass"
+  control:
+    what: "the same scan on the host (the target directive removed)"
+    edits: [["  #pragma omp target map(to: a) map(from: b) map(tofrom: s) map(tofrom: host_flag)\n", ""]]
+
+- id: cce-c-reduction-task-link
+  vendor: hpe
+  finding: catalog/cce-c-reduction-task-link.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_taskred_modifier_init"
+  expect: "out:check=pass"
+  control:
+    what: "reduction(+: s) without the task modifier"
+    edits: [["reduction(task, +: s)", "reduction(+: s)"]]
+
+- id: cce-c-sections-in-target-wrong
+  vendor: hpe
+  finding: catalog/cce-c-sections-in-target-wrong.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "the same sections on the host (parallel instead of target parallel)"
+    edits: [["#pragma omp target parallel map(to: a) map(tofrom: b, host_flag)", "#pragma omp parallel"]]
+
+- id: cce-c-single-masked-task-link
+  vendor: hpe
+  finding: catalog/cce-c-single-masked-task-link.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_single"
+  expect: "out:check=pass"
+  control:
+    what: "the same single on the host (parallel instead of target parallel)"
+    edits: [["#pragma omp target parallel map(tofrom: s, host_flag)", "#pragma omp parallel"]]
+
+- id: cce-c-task-in-target-link
+  vendor: hpe
+  finding: catalog/cce-c-task-in-target-link.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:__kmpc_omp_task_alloc"
+  expect: "out:check=pass"
+  control:
+    what: "the same region on the host (the target directive removed)"
+    edits: [["  #pragma omp target map(to: a) map(from: b) map(from: r) map(tofrom: host_flag)\n", ""]]
+
+- id: cce-c-uses-allocators-traits-rejected
+  vendor: hpe
+  finding: catalog/cce-c-uses-allocators-traits-rejected.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "compile:undeclared function 'traits'"
+  expect: "out:check=pass"
+  # no control: the 5.0 spelling uses_allocators(my_alloc(my_traits)), once listed here as one, is an ICE on every
+  # CCE release (and AFAR rejects it as old syntax); its rows stay in results-compact as variant "control"
+
+- id: cce19-reduction-task-addrspacecast-ice
+  vendor: hpe
+  finding: catalog/cce19-reduction-task-addrspacecast-ice.f90
+  affected: [cce19]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:invalid addrspacecast"
+  expect: "out:check=pass"
+  control:
+    what: "reduction(+: s) without the task modifier"
+    edits: [["reduction(task, +: s)", "reduction(+: s)"]]
+
+- id: cce20-c-defaultmap-private-storage-rejected
+  vendor: hpe
+  finding: catalog/cce20-c-defaultmap-private-storage-rejected.c
+  affected: [cce20]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=60", cce: "-fopenmp-version=60"}
+  symptom: "compile:expected 'alloc', 'from'"
+  expect: "out:check=pass"
+  control:
+    what: "defaultmap(firstprivate) instead of defaultmap(private)"
+    edits: [["defaultmap(private)", "defaultmap(firstprivate)"]]
+
+- id: cce20-map-self-rejected
+  vendor: hpe
+  finding: catalog/cce20-map-self-rejected.f90
+  affected: [cce20]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:ftn-810"
+  expect: "out:check=pass"
+  control:
+    what: "map(to: a) instead of map(self: a)"
+    edits: [["map(self: a)", "map(to: a)"]]
+
+- id: cce21-c-declare-target-local-rejected
+  vendor: hpe
+  finding: catalog/cce21-c-declare-target-local-rejected.c
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=60", cce: "-fopenmp-version=60"}
+  symptom: "compile:unexpected 'local' clause"
+  expect: "out:check=pass"
+  control:
+    what: "declare target enter(dv) instead of local(dv)"
+    edits: [["declare target local(dv)", "declare target enter(dv)"]]
+
+- id: cce21-c-target-loop-ice
+  vendor: hpe
+  finding: catalog/cce21-c-target-loop-ice.c
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=60", cce: "-fopenmp-version=60"}
+  symptom: "compile:(PLEASE submit a bug report|signal|crash)"
+  expect: "out:check=pass"
+  control:
+    what: "target teams loop instead of target loop"
+    edits: [["#pragma omp target loop map(to: a) map(from: b)", "#pragma omp target teams loop map(to: a) map(from: b)"]]
+
+- id: cce-acc-allocate-in-compute-crash
+  vendor: hpe
+  finding: catalog/cce-acc-allocate-in-compute-crash.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:."
+  expect: "out:check=pass"
+  control:
+    what: "w a fixed-size local array (no ALLOCATE/DEALLOCATE)"
+    edits: [["      integer, allocatable :: w(:)\n      allocate(w(n))\n", "      integer :: w(n)\n"], ["      deallocate(w)\n", ""]]
+
+- id: cce-acc-character-dummy-routine-ice
+  vendor: hpe
+  finding: catalog/cce-acc-character-dummy-routine-ice.f90
+  affected: [cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:Bad cast from fcd"
+  expect: "out:check=pass"
+  control:
+    what: "the routine takes the character's code and length as integers instead of the CHARACTER(len=*) dummy"
+    edits: [["integer function code(c)", "integer function code(k, l)"], ["    character(len=*), intent(in) :: c\n    code = ichar(c(1:1)) + len(c)", "    integer, intent(in) :: k, l\n    code = k + l"], ["b(i) = code(s(1:mod(i, 8) + 1))", "b(i) = code(ichar(s(1:1)), mod(i, 8) + 1)"]]
+
+- id: cce-acc-loop-seq-in-routine-wrong
+  vendor: hpe
+  finding: catalog/cce-acc-loop-seq-in-routine-wrong.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "the loop seq directive removed"
+    edits: [["    !$acc loop seq\n", ""]]
+
+- id: cce-acc-stop-in-compute-crash
+  vendor: hpe
+  finding: catalog/cce-acc-stop-in-compute-crash.f90
+  affected: [cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:(STOP|stopped)"
+  expect: "out:check=pass"
+  control:
+    what: "the IF with an assignment instead of STOP"
+    edits: [["if (a(i) < 0) stop 1", "if (a(i) < 0) b(i) = -1"]]
+
+- id: cce-allocators-stack-ice
+  vendor: hpe
+  finding: catalog/cce-allocators-stack-ice.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:Too few arguments on the stack"
+  expect: "out:check=pass"
+  control:
+    what: "the allocate and uses_allocators clauses removed (t private only)"
+    edits: [[" &\n  !$omp& uses_allocators(omp_default_mem_alloc)", ""], [" private(t) allocate(omp_default_mem_alloc: t)", " private(t)"]]
+
+- id: cce-atomic-default-mem-order-acquire-release-rejected
+  vendor: hpe
+  finding: catalog/cce-atomic-default-mem-order-acquire-release-rejected.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:ftn-1725"
+  expect: "out:check=pass"
+  control:
+    what: "atomic_default_mem_order(seq_cst) instead of (release)"
+    edits: [["atomic_default_mem_order(release)", "atomic_default_mem_order(seq_cst)"]]
+
+- id: cce-flang-allocate-const-mem-ice
+  vendor: hpe
+  finding: catalog/cce-flang-allocate-const-mem-ice.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:Too few arguments on the stack"
+  expect: "out:check=pass"
+  control:
+    what: "the allocate and uses_allocators clauses removed (x firstprivate only)"
+    edits: [["firstprivate(x) allocate(omp_const_mem_alloc: x) &\n  !$omp& uses_allocators(omp_const_mem_alloc)", "firstprivate(x)"]]
+
+- id: cce-flang-allocate-in-target-crash
+  vendor: hpe
+  finding: catalog/cce-flang-allocate-in-target-crash.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:."
+  expect: "out:check=pass"
+  control:
+    what: "w a fixed-size local array (no ALLOCATE/DEALLOCATE)"
+    edits: [["      integer, allocatable :: w(:)\n      allocate(w(n))\n", "      integer :: w(n)\n"], ["      deallocate(w)\n", ""]]
+
+- id: cce-flang-lastprivate-parallel-in-seq-loop-wrong
+  vendor: hpe
+  finding: catalog/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:check=pass"
+  control:
+    what: "last also mapped tofrom on the target construct (the sequential loop kept)"
+    edits: [["!$omp target map(to: a) map(tofrom: b, host_flag)", "!$omp target map(to: a) map(tofrom: b, host_flag, last)"]]
+
+- id: cce-flang-stop-in-target-crash
+  vendor: hpe
+  finding: catalog/cce-flang-stop-in-target-crash.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:(STOP|stopped)"
+  expect: "out:check=pass"
+  control:
+    what: "the IF with an assignment instead of STOP"
+    edits: [["if (a(i) < 0) stop 1", "if (a(i) < 0) b(i) = -1"]]
+
+- id: cce-iterator-link
+  vendor: hpe
+  finding: catalog/cce-iterator-link.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:OmpIt\\$k"
+  expect: "out:check=pass"
+  control:
+    what: "from(b(1:n)) without the iterator modifier"
+    edits: [["from(iterator(k = 1:1): b(k:n))", "from(b(1:n))"]]
+
+- id: cce-linear-lastprivate-ice
+  vendor: hpe
+  finding: catalog/cce-linear-lastprivate-ice.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:barrier/reset/protected last private"
+  expect: "out:check=pass"
+  control:
+    what: "the same parallel do on the host (the target directive removed)"
+    edits: [["  !$omp target map(to: a) map(from: b) map(tofrom: x) map(tofrom: host_flag)\n", ""], ["  !$omp end target\n", ""]]
+
+- id: cce-reduction-inscan-ice
+  vendor: hpe
+  finding: catalog/cce-reduction-inscan-ice.f90
+  affected: [cce19, cce20]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:analyze_object: unknown object type"
+  expect: "out:check=pass"
+  control:
+    what: "the same scan on the host (the target directive removed)"
+    edits: [["  !$omp target map(to: a) map(from: b) map(tofrom: s) map(tofrom: host_flag)\n", ""], ["  !$omp end target\n", ""]]
+
+- id: cce-reduction-task-link
+  vendor: hpe
+  finding: catalog/cce-reduction-task-link.f90
+  affected: [cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:_cray\\$mt_taskred_modifier_init"
+  expect: "out:check=pass"
+  control:
+    what: "reduction(+: s) without the task modifier"
+    edits: [["reduction(task, +: s)", "reduction(+: s)"]]
+
+- id: nvhpc-acc-associate-illegal-address
+  vendor: nvidia
+  finding: catalog/nvhpc-acc-associate-illegal-address.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "crash:."
+  expect: "out:check=pass"
+  control:
+    what: "the assignment written without the ASSOCIATE construct"
+    edits: [["    associate (x => a(i), y => b(i))\n      y = 2*x + 1\n    end associate\n", "    b(i) = 2*a(i) + 1\n"]]
+
+- id: nvhpc-c-function-pointer-kernel-missing
+  vendor: nvidia
+  finding: catalog/nvhpc-c-function-pointer-kernel-missing.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "crash:Failed to find device function"
+  expect: "out:check=pass"
+  control:
+    what: "the two functions called directly instead of through a function pointer"
+    edits: [["    int (*f)(int) = (i % 2) ? tw : th;\n    b[i] = f(a[i]);", "    b[i] = (i % 2) ? tw(a[i]) : th(a[i]);"]]
+
+- id: nvhpc-c-long-double-kernel-missing
+  vendor: nvidia
+  finding: catalog/nvhpc-c-long-double-kernel-missing.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "crash:Failed to find device function"
+  expect: "out:check=pass"
+  control:
+    what: "double instead of long double"
+    edits: [["long double ld[n];", "double ld[n];"], ["ld[i] = 0.0L;", "ld[i] = 0.0;"], ["(long double)a[i] * 2.0L + 1.0L", "(double)a[i] * 2.0 + 1.0"]]
+
+- id: nvhpc-c-static-local-kernel-missing
+  vendor: nvidia
+  finding: catalog/nvhpc-c-static-local-kernel-missing.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "crash:Failed to find device function"
+  expect: "out:check=pass"
+  control:
+    what: "cnt a file-scope variable inside the declare target region instead of a static local"
+    edits: [["int bump(void) {\n  static int cnt = 0;\n", "int cnt = 0;\nint bump(void) {\n"]]
+
+- id: nvhpc-c-vla-kernel-missing
+  vendor: nvidia
+  finding: catalog/nvhpc-c-vla-kernel-missing.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: "crash:Failed to find device function"
+  expect: "out:check=pass"
+  control:
+    what: "int t[n] (a constant size) instead of int t[m]"
+    edits: [["    int t[m];", "    int t[n];"]]
+
+- id: nvhpc-flang-type-bound-kernel-missing
+  vendor: nvidia
+  finding: catalog/nvhpc-flang-type-bound-kernel-missing.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "crash:Failed to find device function"
+  expect: "out:check=pass"
+  control:
+    what: "tw_impl called directly instead of through the type-bound name op%tw"
+    edits: [["b(i) = op%tw(a(i))", "b(i) = tw_impl(a(i))"]]
+
+# --- NVHPC findings (37) ---------------------------------------------------------
+- id: nvhpc-acc-atomic-update-sum-fort2-crash
+  vendor: nvidia
+  finding: nvhpc-acc-atomic-update-sum-fort2-crash.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "compile:(TERMINATED by signal|Invalid atomic update expression)"
+  expect: "out:sum=4224"
+  control:
+    what: "b(i) = b(i) + (2*a(i) + 1), the right-hand side in parentheses"
+    edits: [["b(i) = b(i) + 2*a(i) + 1", "b(i) = b(i) + (2*a(i) + 1)"]]
+
+- id: nvhpc-c-acc-atomic-update-sum-ice
+  vendor: nvidia
+  finding: nvhpc-c-acc-atomic-update-sum-ice.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "compile:(Internal compiler error|Invalid atomic update expression)"
+  expect: "out:x=2080"
+  control:
+    what: "x = x + (v + 1), the right-hand side in parentheses"
+    edits: [["x = x + v + 1;", "x = x + (v + 1);"]]
+
+- id: nvhpc-c-dist-schedule-chunk-compile-hang
+  vendor: nvidia
+  finding: nvhpc-c-dist-schedule-chunk-compile-hang.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  compile_s: 120
+  symptom: hang
+  expect: "out:host_flag=0"
+  control:
+    what: "dist_schedule(static, 4) removed"
+    edits: [[" dist_schedule(static, 4)", ""]]
+
+- id: nvhpc-c-map-present-ignored
+  vendor: nvidia
+  finding: nvhpc-c-map-present-ignored.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "out:continued after map(present)"
+  expect: "re:^RUN_FAIL"
+  control:
+    what: "a enclosed in target data map(to: a), so it is present (the run must reach the printf)"
+    edits: [["  #pragma omp target map(present, to: a) map(from: b)\n  for (int i = 0; i < 64; i++)\n    b[i] = a[i];\n", "  #pragma omp target data map(to: a)\n  #pragma omp target map(present, to: a) map(from: b)\n  for (int i = 0; i < 64; i++)\n    b[i] = a[i];\n"]]
+  control_expect: "out:b[63]=63"
+
+- id: nvhpc-c-parallel-for-firstprivate-in-target
+  vendor: nvidia
+  finding: nvhpc-c-parallel-for-firstprivate-in-target.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "compile:Compiler failed to translate OpenMP region"
+  expect: "out:c=1 every b[i] % 100 == 1: yes"
+  control:
+    what: "private(c) with c set to 1 in each iteration instead of firstprivate(c)"
+    edits: [["shared(b) firstprivate(c)", "shared(b) private(c)"], ["      b[i] = c;\n", "      c = 1;\n      b[i] = c;\n"]]
+
+- id: nvhpc-c-parallel-if-in-target-nvvm-ice
+  vendor: nvidia
+  finding: nvhpc-c-parallel-if-in-target-nvvm-ice.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "compile:NVVM_ERROR_COMPILATION"
+  expect: "out:sum 2080 nthr"
+  control:
+    what: "the if clause removed"
+    edits: [["#pragma omp parallel for if(use_par)", "#pragma omp parallel for"]]
+
+- id: nvhpc-defaultmap-firstprivate-explicit-map
+  vendor: nvidia
+  finding: nvhpc-defaultmap-firstprivate-explicit-map.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "outre:sum\\s+2144\\s+host_flag\\s+0"
+  control:
+    what: "defaultmap(firstprivate) removed"
+    edits: [[" defaultmap(firstprivate)", ""]]
+
+- id: nvhpc-defaultmap-from-allocatable-indexing
+  vendor: nvidia
+  finding: nvhpc-defaultmap-from-allocatable-indexing.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "outre:b\\(1\\)\\s+1\\s+b\\(64\\)\\s+64\\s+sum\\s+2080"
+  control:
+    what: "defaultmap(tofrom) instead of defaultmap(from)"
+    edits: [["defaultmap(from)", "defaultmap(tofrom)"]]
+
+- id: nvhpc-depend-inoutset-ignored
+  vendor: nvidia
+  finding: nvhpc-depend-inoutset-ignored.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "outre:sum\\(b\\)\\s+2080"
+  control:
+    what: "depend(out: w) instead of depend(inoutset: w)"
+    edits: [["depend(inoutset: w)", "depend(out: w)"]]
+
+- id: nvhpc-dist-schedule-chunk-illegal-address
+  vendor: nvidia
+  finding: nvhpc-dist-schedule-chunk-illegal-address.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "crash:(ILLEGAL_ADDRESS|Illegal address)"
+  expect: "outre:sum\\s+2080"
+  control:
+    what: "dist_schedule(static, 4) removed"
+    edits: [["num_teams(4) &\n  !$omp& dist_schedule(static, 4)", "num_teams(4)"]]
+
+- id: nvhpc-managed-acc-shutdown-host-access
+  vendor: nvidia
+  finding: nvhpc-managed-acc-shutdown-host-access.f90
+  edits: [["  print *, 'after shutdown'\n", "  print *, 'after shutdown'\n  flush(6)\n"]]
+  affected: [nvhpc@2, nvhpc269@2]
+  modes: [2, 0]
+  arch: [sm_80]
+  symptom: "crash:."
+  expect: "outre:sum\\s+64"
+  control:
+    what: "the shutdown directive removed"
+    edits: [["  !$acc shutdown\n", ""]]
+
+- id: nvhpc-parallel-if-in-target-nvvm-ice
+  vendor: nvidia
+  finding: nvhpc-parallel-if-in-target-nvvm-ice.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "compile:NVVM_ERROR_COMPILATION"
+  expect: "outre:sum\\s+2080"
+  control:
+    what: "the if clause removed"
+    edits: [["!$omp parallel do if(use_par)", "!$omp parallel do"]]
+
+# --- data/bench/fresh drafts -----------------------------------------------------------
+- id: cce19-acc-automatic-array-copyout-copy-crash
+  vendor: hpe
+  finding: fresh/cce19-acc-automatic-array-copyout-copy-crash.f90
+  affected: [cce19@0]
+  modes: [0, 1]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:."
+  expect: "outre:s\\s+3150\\."
+  control:
+    what: "w a fixed-size local array w(20, 5) instead of the automatic w(nb, nl)"
+    edits: [["real(8) :: w(nb, nl)", "real(8) :: w(20, 5)"]]
+
+- id: cce21-combined-if-runtime-expr-loop-skipped
+  vendor: hpe
+  finding: fresh/cce21-combined-if-runtime-expr-loop-skipped.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:b\\(1\\)\\s+1\\s+b\\(64\\)\\s+64\\s+dev\\s+1"
+  control:
+    what: "if (target: on) instead of if (on)"
+    edits: [["map(tofrom: b, dev) if (on)", "map(tofrom: b, dev) if (target: on)"]]
+
+- id: cce-common-block-name-in-map-rejected
+  vendor: hpe
+  finding: fresh/cce-common-block-name-in-map-rejected.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:ftn-534"
+  expect: "out:wild-check: pass"
+  control:
+    what: "the members named instead: map(to: A, B, C)"
+    edits: [["map(to: /mycommon/)", "map(to: A, B, C)"]]
+
+- id: cce-if-stop-in-target-ice
+  vendor: hpe
+  finding: fresh/cce-if-stop-in-target-ice.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:Condition statement not found"
+  expect: "outre:x\\s+11"
+  control:
+    what: "the IF with an assignment instead of STOP"
+    edits: [["if (x /= 1 .or. x > 5) stop 1", "if (x /= 1 .or. x > 5) x = -100"]]
+
+- id: cce-if-stop-in-target-ice-one-condition
+  vendor: hpe
+  finding: fresh/cce-if-stop-in-target-ice-one-condition.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:COND PDG 20 with no stmts"
+  expect: "outre:x\\s+11"
+  control:
+    what: "the IF with an assignment instead of STOP"
+    edits: [["if (x /= 1) stop 1", "if (x /= 1) x = -100"]]
+
+- id: cce-list-directed-print-in-target-copy-crash
+  vendor: hpe
+  finding: fresh/cce-list-directed-print-in-target-copy-crash.f90
+  affected: [cce19@0, cce20@0]
+  modes: [0, 1]
+  arch: [gfx942, gfx90a]
+  symptom: "crash:."
+  expect: "out:Hello, world!"
+  control:
+    what: "a formatted PRINT, print '(a)', instead of list-directed print *"
+    edits: [["print *, \"Hello, world!\"", "print '(a)', \"Hello, world!\""]]
+
+- id: nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost
+  vendor: nvidia
+  finding: fresh/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "outre:pass\\s+10000000"
+  control:
+    what: "gang collapse(2) instead of gang worker collapse(2)"
+    edits: [["!$acc loop gang worker collapse(2) reduction(+:sumA)", "!$acc loop gang collapse(2) reduction(+:sumA)"]]
+
+- id: nvhpc-teams-loop-module-allocatable-assign-fort2-crash
+  vendor: nvidia
+  finding: fresh/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: "compile:TERMINATED by signal"
+  expect: "outre:^\\s*7\\.0*(\\s|$)"
+  control:
+    what: "the element assignment A(II) = Z instead of the whole-array assignment A = Z"
+    edits: [["A = Z;", "A(II) = Z;"]]
+
+# --- stress campaign findings (43) ---------------------------------------------------
+- id: afar-target-scalar-implicit-firstprivate
+  vendor: amd
+  finding: stress/afar-target-scalar-implicit-firstprivate.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:rd= 101 s= 203 dev= 1"
+  control:
+    what: "s mapped explicitly: map(tofrom: rd, dev, s)"
+    edits: [["!$omp target map(tofrom: rd, dev)", "!$omp target map(tofrom: rd, dev, s)"]]
+
+- id: nvhpc-target-scalar-implicit-firstprivate
+  vendor: nvidia
+  finding: stress/nvhpc-target-scalar-implicit-firstprivate.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "out:rd= 101 s= 203 dev= 1"
+  control:
+    what: "s mapped explicitly: map(tofrom: rd, dev, s)"
+    edits: [["!$omp target map(tofrom: rd, dev)", "!$omp target map(tofrom: rd, dev, s)"]]
+
+- id: cce-teams-reduction-many-teams-wrap
+  vendor: hpe
+  finding: stress/cce-teams-reduction-many-teams-wrap.f90
+  affected: [cce19, cce20]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  run_s: 300
+  symptom: wrong
+  expect: "out:s= 8455717314"
+  control:
+    what: "num_teams(8192) instead of num_teams(65536)"
+    edits: [["num_teams(65536)", "num_teams(8192)"]]
+
+- id: cce21-declare-target-scalar-map-write-lost
+  vendor: hpe
+  finding: stress/cce21-declare-target-scalar-map-write-lost.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:g= 203 dev= 1"
+  control:
+    what: "g not in the map clause (implicitly tofrom)"
+    edits: [["!$omp target map(tofrom: dev, g)", "!$omp target map(tofrom: dev)"]]
+
+- id: nvhpc-declare-target-scalar-write-lost
+  vendor: nvidia
+  finding: stress/nvhpc-declare-target-scalar-write-lost.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "out:g= 203 dev= 1"
+  control:
+    what: "g mapped explicitly: map(tofrom: dev, g)"
+    edits: [["!$omp target map(tofrom: dev)", "!$omp target map(tofrom: dev, g)"]]
+
+- id: cce-lastprivate-num-threads-collapse-simd
+  vendor: hpe
+  finding: stress/cce-lastprivate-num-threads-collapse-simd.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:lp= 128"
+  control:
+    what: "num_threads(32) removed"
+    edits: [[" lastprivate(lp) num_threads(32)", " lastprivate(lp)"]]
+
+- id: cce-c-flto-offload-dropped
+  vendor: hpe
+  finding: stress/cce-c-flto-offload-dropped.c
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  opt: "-O2 -flto"
+  symptom: "crash:(OpenMP offload failed|offload)"
+  expect: "out:sum= 2016 dev= 1"
+  control:
+    what: "built without -flto"
+    edits: []
+  control_opt: "-O2"
+
+- id: nvhpc-acc-derived-type-component-not-copied
+  vendor: nvidia
+  finding: stress/nvhpc-acc-derived-type-component-not-copied.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "out:c1= 203"
+  control:
+    what: "serial copy(xc)"
+    edits: [["  !$acc serial\n", "  !$acc serial copy(xc)\n"]]
+
+- id: nvhpc-lastprivate-combined-target-not-mapped
+  vendor: nvidia
+  finding: stress/nvhpc-lastprivate-combined-target-not-mapped.f90
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  symptom: wrong
+  expect: "out:l= 2560 dev= 1"
+  control:
+    what: "map(tofrom: l) added to the target parallel do"
+    edits: [["!$omp target parallel do lastprivate(l)", "!$omp target parallel do lastprivate(l) map(tofrom: l)"]]
+
+- id: cce-acc-declare-create-scalar-serial-firstprivate
+  vendor: hpe
+  finding: stress/cce-acc-declare-create-scalar-serial-firstprivate.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "out:g= 203"
+  control:
+    what: "serial present(g)"
+    edits: [["  !$acc serial\n", "  !$acc serial present(g)\n"]]
+
+- id: nvhpc-c-lastprivate-teams-distribute-parallel-for-lost
+  vendor: nvidia
+  finding: stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c
+  affected: [nvhpc, nvhpc269]
+  modes: [0, 2]
+  arch: [sm_80]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:l= 2560 dev= 1"
+  control:
+    what: "reduction(max: l) instead of lastprivate(l)"
+    edits: [["parallel for lastprivate(l) map(tofrom: l)", "parallel for reduction(max: l) map(tofrom: l)"]]
+
+- id: afar-c-lastprivate-combined-target-not-mapped
+  vendor: amd
+  finding: stress/afar-c-lastprivate-combined-target-not-mapped.c
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:l= 2560 dev= 1"
+  control:
+    what: "map(tofrom: l) added"
+    edits: [["parallel for lastprivate(l)", "parallel for lastprivate(l) map(tofrom: l)"]]
+
+- id: cce-c-distribute-lastprivate-lost
+  vendor: hpe
+  finding: stress/cce-c-distribute-lastprivate-lost.c
+  edits: [["  long long l = 0, out[1] = {0};\n", "  long long l = 0;\n"]]
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: "out:l= 2560 dev= 1"
+  control:
+    what: "reduction(max: l) instead of lastprivate(l)"
+    edits: [["lastprivate(l) map(tofrom: l)", "reduction(max: l) map(tofrom: l)"]]
+
+# --- application corpus --------------------------------------------------------------
+- id: afar-cce-teams-private-array-nested-parallel-wrong
+  vendor: [amd, hpe]
+  finding: apps/afar-cce-teams-private-array-nested-parallel-wrong.f90
+  affected: [afar, cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:bad=\\s*0 dev= 1"
+  control:
+    what: "the same loops without the two parallel do directives (each team's initial thread runs them)"
+    file: data/findings/apps/controls/teams-private-array-seq.f90
+
+- id: cce21-private-array-loaded-subscript-wrong
+  vendor: hpe
+  finding: apps/cce21-private-array-loaded-subscript-wrong.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: wrong
+  expect: "outre:bad: mapped-subscript 0 declare-target-subscript 0 teams-distribute-parallel-do 0\\s+teams-distribute 0"
+  control:
+    what: "in the first region, the constant subscript v(3) instead of v(s(3))"
+    edits: [["zb(r) = v(s(3))", "zb(r) = v(3)"]]
+  control_expect: 'outre:bad: mapped-subscript 0 '
+
+- id: cce20-device-link-infer-address-spaces-crash
+  vendor: hpe
+  finding: apps/cce20-device-link-infer-address-spaces-crash.f90
+  affected: [cce20]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  symptom: "compile:(Infer address spaces|LLVM ERROR|Stack dump|signal)"
+  expect: "outre:bad=\\s*0"
+  control:
+    what: "the !DIR$ INLINENEVER line removed (CCE inlines the two helpers)"
+    file: data/findings/apps/controls/cbc-inline.f90
+
+- id: cce21-device-link-agpr-copy-mfma-assert
+  vendor: hpe
+  finding: apps/cce21-device-link-agpr-copy-mfma-assert.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942, gfx90a]
+  compile_s: 900
+  symptom: "compile:(Attempt to compare reserved index|AGPR|Assertion)"
+  expect: "out:bad= 0 stops= 256"
+  control:
+    what: "built at -O0"
+    edits: []
+  control_opt: "-O0"
+
+# --- fuzz campaign findings (variants; controls added for primary reproducers) ---
+- id: fuzz-1131-afar
+  vendor: amd
+  finding: fuzz/1131-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=0\b'
+
+- id: fuzz-1391-cce20
+  vendor: hpe
+  finding: fuzz/1391-cce20.f90
+  affected: [cce20, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:barrier/reset/protected last private'
+  expect: 're:^RUN_OK'
+
+- id: fuzz-14-cce20
+  vendor: hpe
+  finding: fuzz/14-cce20.f90
+  affected: [cce20, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=24\b'
+
+- id: fuzz-1505-cce20
+  vendor: hpe
+  finding: fuzz/1505-cce20.f90
+  affected: [cce20]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=1148569567\b'
+
+- id: fuzz-1540-afar
+  vendor: amd
+  finding: fuzz/1540-afar.f90
+  text: |
+    program fuzz_prog
+      implicit none
+      integer, parameter :: n = 16
+      integer :: i, lp1
+      integer(8) :: cs
+      lp1 = 0
+      !$omp target parallel do lastprivate(conditional: lp1)
+      do i = 1, n
+      end do
+      !$omp end target parallel do
+      cs = 0
+      cs = modulo(cs * 31_8 + int(lp1, 8), 2147483629_8)
+      print '(a,i0)', 'RESULT checksum=', cs
+    end program fuzz_prog
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:SPMD kernel must capture'
+  expect: 're:^RUN_OK'
+  control:
+    what: "lastprivate(lp1) without the conditional modifier"
+    edits: [["lastprivate(conditional: lp1)", "lastprivate(lp1)"]]
+  control_expect: 're:^RUN_OK'
+
+- id: fuzz-158-afar
+  vendor: amd
+  finding: fuzz/158-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=0\b'
+
+- id: fuzz-16-cce20
+  vendor: hpe
+  finding: fuzz/16-cce20.f90
+  affected: [cce20, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=535067391\b'
+
+- id: fuzz-1644-cce21
+  vendor: hpe
+  finding: fuzz/1644-cce21.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=20085\b'
+
+- id: fuzz-165-cce19
+  vendor: hpe
+  finding: fuzz/165-cce19.f90
+  affected: [cce19, afar, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:unhandled operator'
+  expect: 're:^RUN_OK'
+  control:
+    what: "the same parallel do on the host (the target directive removed)"
+    edits: [["    !$omp target depend(out: o1)\n", ""], ["    !$omp end target\n", ""]]
+
+- id: fuzz-1749-cce20
+  vendor: hpe
+  finding: fuzz/1749-cce20.f90
+  affected: [cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=63\b'
+
+- id: fuzz-1936-afar
+  vendor: amd
+  finding: fuzz/1936-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=2147483504\b'
+
+- id: fuzz-1978-cce19
+  vendor: hpe
+  finding: fuzz/1978-cce19.f90
+  affected: [cce19]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1879642524\b'
+
+- id: fuzz-2014-cce19
+  vendor: hpe
+  finding: fuzz/2014-cce19.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=0\b'
+
+- id: fuzz-2224-cce19
+  vendor: hpe
+  finding: fuzz/2224-cce19.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:unhandled (acc )?construct type'
+  expect: 're:^RUN_OK'
+
+- id: fuzz-2334-cce19
+  vendor: hpe
+  finding: fuzz/2334-cce19.f90
+  text: |
+    program fuzz_prog
+      implicit none
+      integer, parameter :: n = 100
+      integer :: i, r1b
+      integer(8) :: cs
+      r1b = -1
+      !$omp target
+        !$omp do
+        do i = 1, n
+          !$omp atomic
+          r1b = r1b * merge((-1), 1, mod(11, 13) == 0)
+        end do
+        !$omp end do
+      !$omp end target
+      cs = 0
+      cs = modulo(cs * 31_8 + int(r1b, 8), 2147483629_8)
+      print '(a,i0)', 'RESULT checksum=', cs
+    end program fuzz_prog
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:find an atomic update statement'
+  expect: 're:^RUN_OK'
+  control:
+    what: "the factor depends on i: merge(-1, 1, mod(i, 13) == 0) (seven sign changes, r1b = 1)"
+    edits: [["mod(11, 13)", "mod(i, 13)"]]
+  control_expect: 'outre:RESULT checksum=2147483628\b'
+
+- id: fuzz-536-cce19
+  vendor: hpe
+  finding: fuzz/536-cce19.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=716289326\b'
+
+- id: fuzz-591-cce19
+  vendor: hpe
+  finding: fuzz/591-cce19.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:Unhandled contexts must be fixed'
+  expect: 're:^RUN_OK'
+  control:
+    what: "nontemporal(o1) removed"
+    edits: [[" private(t1) nontemporal(o1)", " private(t1)"]]
+
+- id: fuzz-650-afar
+  vendor: amd
+  finding: fuzz/650-afar.f90
+  edits: [["  logical :: lt\n", ""], ["  lt = .true.\n", ""]]
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=649664593\b'
+  control:
+    what: "firstprivate(i) removed from the parallel construct"
+    edits: [["!$omp parallel firstprivate(i)", "!$omp parallel"]]
+
+- id: fuzz-698-afar
+  vendor: amd
+  finding: fuzz/698-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=260035799\b'
+
+- id: fuzz-700-afar
+  vendor: amd
+  finding: fuzz/700-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=785543890\b'
+
+- id: fuzz-775-cce21
+  vendor: hpe
+  finding: fuzz/775-cce21.f90
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=255\b'
+
+- id: fuzz-87-afar
+  vendor: amd
+  finding: fuzz/87-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=748154768\b'
+
+- id: fuzz-916-afar
+  vendor: amd
+  finding: fuzz/916-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=0\b'
+  control:
+    what: "the inner parallel region and its do construct removed (the team runs the j loop sequentially)"
+    edits: [["        !$omp parallel\n          !$omp do reduction(iand: r1a)\n", ""], ["          !$omp end do\n        !$omp end parallel\n", ""]]
+
+- id: fuzz-958-cce20
+  vendor: hpe
+  finding: fuzz/958-cce20.f90
+  text: |
+    program fuzz_prog
+      implicit none
+      integer, parameter :: n = 100
+      integer :: i, lp1
+      integer(8) :: cs
+      lp1 = 0
+      !$omp target parallel do lastprivate(conditional: lp1)
+      do i = 1, n
+        if (mod(i, 3) == 0) lp1 = 0
+      end do
+      cs = 0
+      cs = modulo(cs * 31_8 + int(lp1, 8), 2147483629_8)
+      print '(a,i0)', 'RESULT checksum=', cs
+    end program fuzz_prog
+  affected: [cce20, afar, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:Mismatched last induction expression for'
+  expect: 're:^RUN_OK'
+  control:
+    what: "the same loop on the host (parallel do instead of target parallel do)"
+    edits: [["!$omp target parallel do lastprivate(conditional: lp1)", "!$omp parallel do lastprivate(conditional: lp1)"]]
+
+- id: fuzz-98-cce19
+  vendor: hpe
+  finding: fuzz/98-cce19.f90
+  affected: [cce19]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1819295657\b'
+
+- id: fuzz-b1-121-afar
+  vendor: amd
+  finding: fuzz/b1-121-afar.f90
+  text: |
+    program fuzz_prog
+      implicit none
+      integer :: p1, r1a
+      integer(8) :: cs
+      p1 = -4
+      r1a = 1048575
+      !$omp target map(tofrom: r1a)
+        !$omp teams reduction(iand: r1a) firstprivate(p1)
+        !$omp end teams
+      !$omp end target
+      cs = 0
+      cs = modulo(cs * 31_8 + int(r1a, 8), 2147483629_8)
+      print '(a,i0)', 'RESULT checksum=', cs
+    end program fuzz_prog
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1048575\b'
+  control:
+    what: "firstprivate(p1) removed from the teams construct"
+    edits: [["!$omp teams reduction(iand: r1a) firstprivate(p1)", "!$omp teams reduction(iand: r1a)"]]
+
+- id: fuzz-b1-183-afar
+  vendor: amd
+  finding: fuzz/b1-183-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1123737439\b'
+
+- id: fuzz-b1-22-cce20
+  vendor: hpe
+  finding: fuzz/b1-22-cce20.f90
+  affected: [cce20, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=8\b'
+
+- id: fuzz-b1-231-afar
+  vendor: amd
+  finding: fuzz/b1-231-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=1450123117\b'
+
+- id: fuzz-b1-268-afar
+  vendor: amd
+  finding: fuzz/b1-268-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=447891769\b'
+
+- id: fuzz-b2-183-afar
+  vendor: amd
+  finding: fuzz/b2-183-afar.f90
+  affected: [afar@1]
+  modes: [1]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=0\b'
+
+- id: fuzz-b2-209-cce19
+  vendor: hpe
+  finding: fuzz/b2-209-cce19.f90
+  text: |
+    program fuzz_prog
+      implicit none
+      integer, parameter :: n = 16
+      integer :: i, jj, lp1, acc1
+      integer(8) :: cs
+      lp1 = 0
+      !$omp target simd lastprivate(conditional: lp1) private(acc1, jj)
+      do i = 1, n
+        acc1 = 0
+        if (mod(i, 2) == 0) lp1 = i
+      end do
+      cs = 0
+      cs = modulo(cs * 31_8 + int(lp1, 8), 2147483629_8)
+      print '(a,i0)', 'RESULT checksum=', cs
+    end program fuzz_prog
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=16\b'
+  control:
+    what: "lp1 also mapped explicitly: map(tofrom: lp1)"
+    edits: [["!$omp target simd lastprivate(conditional: lp1) private(acc1, jj)", "!$omp target simd lastprivate(conditional: lp1) private(acc1, jj) map(tofrom: lp1)"]]
+
+- id: fuzz-b2-213-afar
+  vendor: amd
+  finding: fuzz/b2-213-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=797202134\b'
+
+- id: fuzz-b2-52-afar
+  vendor: amd
+  finding: fuzz/b2-52-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1272193681\b'
+
+- id: fuzz-b2-68-afar
+  vendor: amd
+  finding: fuzz/b2-68-afar.f90
+  edits: [["omp_get_default_device, ", ""], ["  type :: rec_t\n  end type rec_t\n  type(rec_t) :: dr\n", ""]]
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=17631\b'
+  control:
+    what: "lpar = .true. (the parallel region is active)"
+    edits: [["lpar = .false.", "lpar = .true."]]
+
+- id: fuzz-b2-85-cce20
+  vendor: hpe
+  finding: fuzz/b2-85-cce20.f90
+  affected: [cce20, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1901273453\b'
+  control:
+    what: "defaultmap(firstprivate: aggregate) removed"
+    edits: [[" map(to: ic) defaultmap(firstprivate: aggregate)", " map(to: ic)"]]
+
+- id: fuzz-b3-188-cce19
+  vendor: hpe
+  finding: fuzz/b3-188-cce19.f90
+  text: |
+    program fuzz_prog
+      implicit none
+      integer, parameter :: n = 48
+      call kp1()
+      print '(a)', 'RESULT check=pass'
+    contains
+      subroutine kp1()
+        integer :: i
+        !$omp target teams
+          !$omp distribute parallel do schedule(dynamic) dist_schedule(static, 16)
+          do i = 1, n
+          end do
+        !$omp end target teams
+      end subroutine kp1
+    end program fuzz_prog
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:Unexpected schedule'
+  expect: 're:^RUN_OK'
+  control:
+    what: "schedule(dynamic) removed from the distribute parallel do"
+    edits: [["!$omp distribute parallel do schedule(dynamic) dist_schedule(static, 16)", "!$omp distribute parallel do dist_schedule(static, 16)"]]
+
+- id: fuzz-b3-190-cce21
+  vendor: hpe
+  finding: fuzz/b3-190-cce21.f90
+  text: |
+    module fuzz_mod
+      implicit none
+    contains
+      integer function g1(x, y)
+        !$omp declare target
+        integer, intent(in) :: x, y
+        g1 = 0
+      end function g1
+    end module fuzz_mod
+    program fuzz_prog
+      use fuzz_mod, only: g1
+      implicit none
+      integer, parameter :: n = 24, m = 3
+      integer, allocatable :: as1
+      allocate(as1)
+      as1 = 46
+      call kp1(as1)
+      print '(a)', 'RESULT check=pass'
+    contains
+      subroutine kp1(as1, zopt)
+        integer, intent(inout) :: as1
+        integer, intent(in), optional :: zopt(:)
+        integer :: i, j, t1
+        !$omp target private(t1) map(to: zopt)
+        do i = 1, n
+          do j = 1, m
+            t1 = g1((-10), as1)
+          end do
+        end do
+        !$omp end target
+      end subroutine kp1
+    end program fuzz_prog
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'out:RESULT check=pass'
+  control:
+    what: "map(to: zopt) removed (the absent dummy is not named in a map clause)"
+    edits: [["!$omp target private(t1) map(to: zopt)", "!$omp target private(t1)"]]
+
+- id: fuzz-b3-197-cce19
+  vendor: hpe
+  finding: fuzz/b3-197-cce19.f90
+  affected: [cce19, cce20]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=1030200169\b'
+
+- id: fuzz-b3-250-cce20
+  vendor: hpe
+  finding: fuzz/b3-250-cce20.f90
+  affected: [cce20, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1218074569\b'
+
+- id: fuzz-b3-278-cce19
+  vendor: hpe
+  finding: fuzz/b3-278-cce19.f90
+  affected: [cce19]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=144\b'
+  control:
+    what: "the device loop reads ib(i) instead of the allocatable component dr%q(i) (dr is not referenced in the region)"
+    edits: [["max((dr%q(i) / 8), (ic(8, (6 - j)) + ib(i)))", "max((ib(i) / 8), (ic(8, (6 - j)) + ib(i)))"]]
+  control_expect: 're:^RUN_OK'
+
+- id: fuzz-b3-45-cce21
+  vendor: hpe
+  finding: fuzz/b3-45-cce21.f90
+  affected: [cce21, afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=0\b'
+
+- id: fuzz-b3-54-afar
+  vendor: amd
+  finding: fuzz/b3-54-afar.f90
+  edits: [["module fuzz_mod\n  implicit none\ncontains\nend module fuzz_mod\n", ""], ["omp_get_thread_num, ", ""]]
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=0\b'
+  control:
+    what: "dr removed from the depend clause"
+    edits: [["depend(inout: dr, hf1, ic, o1)", "depend(inout: hf1, ic, o1)"]]
+
+- id: fuzz-b3-61-cce20
+  vendor: hpe
+  finding: fuzz/b3-61-cce20.f90
+  text: |
+    program fuzz_prog
+      use omp_lib, only: omp_is_initial_device
+      implicit none
+      integer, parameter :: n = 200
+      integer, allocatable :: o3(:)
+      integer :: i, r3a, hf3
+      integer(8) :: cs
+      allocate(o3(n))
+      o3 = 0
+      r3a = 45
+      hf3 = 0
+      call kp2(o3)
+      cs = 0
+      cs = modulo(cs * 31_8 + int(r3a, 8), 2147483629_8)
+      do i = 1, n
+        cs = modulo(cs * 31_8 + int(o3(i), 8), 2147483629_8)
+      end do
+      print '(a,i0,a,i0)', 'RESULT checksum=', cs, ' ran_on_host=', max(hf3, 0)
+    contains
+      subroutine kp2(o3)
+        integer, intent(inout) :: o3(n)
+        !$omp taskgroup task_reduction(+: r3a)
+          !$omp target map(tofrom: hf3) in_reduction(+: r3a)
+            hf3 = merge(1, 0, omp_is_initial_device())
+            do i = 1, n
+              o3(i) = 9973
+            end do
+          !$omp end target
+        !$omp end taskgroup
+      end subroutine kp2
+    end program fuzz_prog
+  affected: [cce20, cce19, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=234479309\b'
+  control:
+    what: "the taskgroup/task_reduction and the in_reduction clause removed"
+    edits: [["    !$omp taskgroup task_reduction(+: r3a)\n", ""], ["    !$omp end taskgroup\n", ""], [" in_reduction(+: r3a)", ""]]
+
+- id: fuzz-b3-9-afar
+  vendor: amd
+  finding: fuzz/b3-9-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'compile:(verification of lowering to FIR failed|must be variadic)'
+  expect: 're:^RUN_OK'
+
+- id: fuzz-b3-9-cce21
+  vendor: hpe
+  finding: fuzz/b3-9-cce21.f90
+  affected: [cce21, afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=185626446\b'
+
+- id: fuzz-b3-94-afar
+  vendor: amd
+  finding: fuzz/b3-94-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=2012829416\b'
+
+- id: fuzz-b4-39-afar
+  vendor: amd
+  finding: fuzz/b4-39-afar.f90
+  affected: [afar]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=1462161356\b'
+
+- id: fuzz-b4-86-cce19
+  vendor: hpe
+  finding: fuzz/b4-86-cce19.f90
+  affected: [cce19, cce20]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'crash:.'
+  expect: 'outre:RESULT checksum=0\b'
+
+- id: afar-c-complex-reduction-latomic
+  vendor: amd
+  finding: catalog/afar-c-complex-reduction-link.c
+  only: [afar]
+  affected: []
+  modes: [1, 0]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=52 -latomic"}
+  symptom: "compile:undefined symbol: __atomic_load"
+  expect: "out:check=pass"
+
+# --- the path-dependent ftn abort: fixed build directories, one toolchain at a time
+- id: cce-ftn-cif-record-split-abort
+  vendor: hpe
+  finding: stress/cce-ftn-cif-record-split-abort.f90
+  filename: stress.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1]
+  arch: [gfx942]
+  build_dir:
+    repro: {a: "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1aa", b: "/tmp/cce-cif/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB-1BB", c: "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1aa", d: "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1aa"}
+    control: {a: "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2aa", b: "/tmp/cce-cif/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB-2BB", c: "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2aa", d: "/tmp/cce-cif/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2aa"}
+  symptom: "compile:(free\\(\\): invalid pointer|double free)"
+  expect: "out:sum=145702"
+  control:
+    what: "the same file in a directory of the same length with -2 in place of -1"
+    edits: []
+
+# --- Fix (2026-10-26): probes, split programs, -O0 runs -----------------------------
+- id: cce21-defaultmap-device-probe
+  vendor: hpe
+  finding: cce21-defaultmap-aggregate-flag.f90
+  text: |
+    program h
+      use omp_lib
+      implicit none
+      integer :: x, flag(1)
+      integer, allocatable :: a(:)
+      allocate(a(8)); a = 1
+      x = 1; flag = -1
+      !$omp target map(tofrom: x) map(to: a) map(from: flag) defaultmap(to: aggregate)
+      x = merge(1, 0, omp_is_initial_device())
+      flag(1) = merge(1, 0, omp_is_initial_device())
+      !$omp end target
+      print *, 'x', x, 'flag', flag(1)
+    end
+  affected: [cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong:x\s+1\s+flag\s+0'
+  expect: 'outre:x\s+0\s+flag\s+0\s*$'
+
+- id: cce-c-parallel-for-in-target-static
+  vendor: hpe
+  finding: cce-c-parallel-for-in-target.c
+  filename: cce-c-parallel-for-in-target-static.c
+  text: |
+    #include <stdio.h>
+    int main(void) {
+      int b[64];
+      for (int i = 0; i < 64; i++) b[i] = 0;
+      #pragma omp target map(from: b)
+      {
+        #pragma omp parallel for schedule(static)
+        for (int i = 0; i < 64; i++) b[i] = i + 1;
+      }
+      int nb = 0;
+      for (int i = 0; i < 64; i++) nb += b[i] == i + 1;
+      printf("static %d of 64\n", nb);
+      return 0;
+    }
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: 'outre:static 64 of 64\s*$'
+  control:
+    what: "schedule(static) removed"
+    edits: [["#pragma omp parallel for schedule(static)", "#pragma omp parallel for"]]
+
+- id: cce-c-parallel-for-in-target-lastprivate
+  vendor: hpe
+  finding: cce-c-parallel-for-in-target.c
+  filename: cce-c-parallel-for-in-target-lastprivate.c
+  text: |
+    #include <stdio.h>
+    int main(void) {
+      int c[64], t = -1;
+      for (int i = 0; i < 64; i++) c[i] = 0;
+      #pragma omp target map(from: c) map(tofrom: t)
+      {
+        #pragma omp parallel for lastprivate(t)
+        for (int i = 0; i < 64; i++) { c[i] = i + 1; t = i; }
+      }
+      printf("lastprivate t=%d c[63]=%d\n", t, c[63]);
+      return 0;
+    }
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: 'outre:lastprivate t=63 c\[63\]=64\s*$'
+  control:
+    what: "reduction(max: t) instead of lastprivate(t)"
+    edits: [["lastprivate(t)", "reduction(max: t)"]]
+
+- id: cce-c-parallel-for-in-target-linear
+  vendor: hpe
+  finding: cce-c-parallel-for-in-target.c
+  filename: cce-c-parallel-for-in-target-linear.c
+  text: |
+    #include <stdio.h>
+    int main(void) {
+      int d[64], x = 0;
+      for (int i = 0; i < 64; i++) d[i] = -1;
+      #pragma omp target map(from: d) map(tofrom: x)
+      {
+        #pragma omp parallel for linear(x: 1)
+        for (int i = 0; i < 64; i++) { d[i] = x; x++; }
+      }
+      int nd = 0;
+      for (int i = 0; i < 64; i++) nd += d[i] == i;
+      printf("linear %d of 64, x=%d\n", nd, x);
+      return 0;
+    }
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  flags: {afar: "-fopenmp-version=52", cce: "-fopenmp-version=52"}
+  symptom: wrong
+  expect: 'outre:linear 64 of 64, x=64\s*$'
+  # no control: num_threads(1) added to the parallel for, once listed here as one, loses x too (x=0 on every CCE
+  # release, both modes); its rows stay in results-compact as variant "control"
+
+- id: fortran-loop-bind-thread-in-parallel-O0
+  vendor: hpe
+  finding: fortran-loop-bind-thread-in-parallel.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: wrong
+  expect: "out:threads that did not run all 64 iterations: 0 (expected 0)"
+  opt: "-O0"
+  only: [cce]
+
+- id: fuzz-536-cce19-O0
+  vendor: hpe
+  finding: fuzz/536-cce19.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=716289326\b'
+  opt: "-O0"
+  only: [cce]
+
+- id: fuzz-2014-cce19-O0
+  vendor: hpe
+  finding: fuzz/2014-cce19.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=0\b'
+  opt: "-O0"
+  only: [cce]
+
+- id: fuzz-16-cce20-O0
+  vendor: hpe
+  finding: fuzz/16-cce20.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=535067391\b'
+  opt: "-O0"
+  only: [cce]
+
+- id: fuzz-1749-cce20-O0
+  vendor: hpe
+  finding: fuzz/1749-cce20.f90
+  affected: [cce19, cce20, cce21]
+  modes: [1, 0]
+  arch: [gfx942]
+  symptom: 'wrong'
+  expect: 'outre:RESULT checksum=63\b'
+  opt: "-O0"
+  only: [cce]

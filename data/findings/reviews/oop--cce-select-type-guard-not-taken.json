@@ -1,0 +1,191 @@
+{
+ "finding": "oop/cce-select-type-guard-not-taken.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "e1, e2, b0 are non-polymorphic, non-allocatable variables, so the polymorphic-allocatable map restrictions do not apply. bump is declare target, and select type on a class dummy is ordinary Fortran; the spec restricts nothing here. e1, e2, b0 are mapped tofrom, so updates must return to the host (r1=10, r2=100, r3=-1). Spec silent on device-side type descriptors, so some residual uncertainty, but nothing permits r1=0."
+  },
+  {
+   "run": "run-20261112/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The polymorphic dummy s is not a list item of any clause; map items e1, e2, b0 are nonpolymorphic. The only polymorphic restriction found concerns ALLOCATABLE polymorphic list items, which does not apply. bump is declare target and called from a target region, so e1%u=10, e2%v=100, b0%a=-1 are required. Observed r1=0 on the host-flag-0 run is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-105",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program uses Fortran 2003 CLASS dummies and SELECT TYPE inside a declare target procedure, with explicit tofrom maps of non-polymorphic actual variables, so static and dynamic types agree. No type-bound procedures are used. Nothing in the specification forbids this, and the expected values follow from the base language. The specification does not say how run-time type information is made available on the device, so whether it is required is not settled by the text.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-15",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "e1, e2 and b0 are non-polymorphic, non-allocatable variables, so mapping them is legal. bump is a declare target procedure with a CLASS dummy and select type, which is base-language Fortran and has no OpenMP restriction. The expected values are fully determined, with no race and no unspecified behavior. Observed r1=0 and r2=0 is a wrong-answer compiler bug. The only polymorphic list-item restriction applies to ALLOCATABLE variables, and none is mapped.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-60",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2f9a62f0d763e74a8ab8c424f321cef23b10c1bdcc6166a09188f3711389a7f2",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: Both readings find the program legal. The only OpenMP polymorphism restrictions concern ALLOCATABLE polymorphic list items (map clause) or C++ types with mismatched static and dynamic types; none applies since e1, e2, b0 are non-polymorphic variables mapped tofrom. A declare target procedure with CLASS dummy and SELECT TYPE is plain Fortran, so the values are determined.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings find the program legal. The only OpenMP polymorphism restrictions concern ALLOCATABLE polymorphic list items (map clause) or C++ types with mismatched static and dynamic types; none applies since e1, e2, b0 are non-polymorphic variables mapped tofrom. A declare target procedure with CLASS dummy and SELECT TYPE is plain Fortran, so the values are determined. Reading A's doubt about run-time type information is not grounded in any specification text; Reading B is right.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-49",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "e1, e2 and b0 are non-polymorphic, non-allocatable variables mapped tofrom, so the map restrictions are met. The only polymorphic restriction found applies to ALLOCATABLE list items, and none appears. bump is a declare target procedure using CLASS and SELECT TYPE, which is Fortran 2003 and not in the list of unsupported features. The base language fixes r1=10, r2=100, r3=-1. Reading B is right; Reading A names no gap in the text. The observed r1=0 is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-15",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,4032 @@
+{
+ "afar-c-error-directive-in-target-link.c": [
+  {
+   "text": "OpenMP 6.0 §10.1",
+   "version": "OpenMP 6.0",
+   "section": "10.1",
+   "quote": null
+  }
+ ],
+ "afar-c-lastprivate-distribute-parallel-for-small-type.c": [
+  {
+   "text": "5.2 §5.4.5 p.115 l.12-16",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": "the value of each new list item from the sequentially last iteration of the associated loops ... is assigned to the original list item"
+  },
+  {
+   "text": "5.2 §17.2 p.340 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  }
+ ],
+ "afar-c-teams-distribute-reduction-first-team.c": [
+  {
+   "text": "5.2 §17.2 p.340 l.36-37",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  },
+  {
+   "text": "§5.5.8 p.134 l.18",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.5.8 p.134 l.21-24",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier. After the end of the region, the original list item is updated with the values of the private copies using the combiner associated with the reduction-identifier"
+  }
+ ],
+ "afar-c-update-iterator-copy-mode.c": [
+  {
+   "text": "5.2 §3.2.6 p.67",
+   "version": "OpenMP 5.2",
+   "section": "3.2.6",
+   "quote": null
+  },
+  {
+   "text": "5.2 §13.9 p.289",
+   "version": "OpenMP 5.2",
+   "section": "13.9",
+   "quote": null
+  }
+ ],
+ "afar-c-xnack1-target-is-present.c": [
+  {
+   "text": "5.2 §18.8.3 p.389",
+   "version": "OpenMP 5.2",
+   "section": "18.8.3",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.153",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "afar-cce19-character-defaultmap.f90": [
+  {
+   "text": "5.2 §1.2.6 p.14 l.7-8",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": "For Fortran, a scalar variable with intrinsic type, as defined by the base language, excluding character type."
+  },
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom."
+  }
+ ],
+ "afar-cce19-task-in-target-ice.f90": [],
+ "afar-clang-requires-device-safesync-hang.c": [
+  {
+   "text": "6.0 §10.5.1.7",
+   "version": "OpenMP 6.0",
+   "section": "10.5.1.7",
+   "quote": null
+  }
+ ],
+ "afar-flang-firstprivate-map-two-targets.f90": [
+  {
+   "text": "5.2 §13.8 p.284 l.19-21",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The data environment of the target task is created according to the data-sharing and data-mapping attribute clauses on the target construct"
+  },
+  {
+   "text": "5.2 §5.4.4 p.112 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "5.4.4",
+   "quote": "In addition, the new list item is initialized from the original list item that exists before the construct."
+  }
+ ],
+ "afar-flang-loop-bind-teams-reduction.f90": [
+  {
+   "text": "5.2 §11.7 p.257 l.4",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "bind, collapse, lastprivate, order, private, reduction"
+  },
+  {
+   "text": "5.2 §11.7.1 p.259 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "11.7.1",
+   "quote": "then the behavior of a reduction clause that appears on the corresponding loop construct is unspecified if the construct is not nested inside a teams construct."
+  }
+ ],
+ "afar-flang-task-reduction-max.f90": [
+  {
+   "text": "5.2 §5.5.1 p.124 l.24",
+   "version": "OpenMP 5.2",
+   "section": "5.5.1",
+   "quote": "following intrinsic procedure names: max, min, iand, ior, ieor."
+  },
+  {
+   "text": "5.2 §5.5.9 p.137 l.14-15",
+   "version": "OpenMP 5.2",
+   "section": "5.5.9",
+   "quote": "The task_reduction clause is a reduction scoping clause, as described in Section 5.5.6, that specifies a reduction among tasks."
+  },
+  {
+   "text": "5.2 §5.5.10 p.138 l.11-13",
+   "version": "OpenMP 5.2",
+   "section": "5.5.10",
+   "quote": "defines a task to be a participant in a task reduction that is defined by an enclosing region for a matching list item that appears in a task_reduction clause"
+  }
+ ],
+ "afar-flang-thread-limit-target-parallel-do.f90": [
+  {
+   "text": "5.2 §13.8 p.284 l.5",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "in_reduction, is_device_ptr, map, nowait, private, thread_limit,"
+  },
+  {
+   "text": "5.2 §17.2 p.340 l.31-32",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "The effect of the shared, default, thread_limit, or order clause is as if it is applied to all leaf constructs that permit the clause."
+  }
+ ],
+ "afar-loop-bind-thread-in-teams.f90": [
+  {
+   "text": "5.2 §11.7.1 p.258 l.24-25",
+   "version": "OpenMP 5.2",
+   "section": "11.7.1",
+   "quote": "if binding is thread then the binding region is not defined"
+  },
+  {
+   "text": "5.2 §11.7.1 p.258 l.31-32",
+   "version": "OpenMP 5.2",
+   "section": "11.7.1",
+   "quote": "If the binding region is not defined, then the binding thread set is the encountering thread."
+  },
+  {
+   "text": "5.2 §11.7 p.258 l.1-2",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "If a loop construct is not nested inside another OpenMP construct then the bind clause must be present."
+  }
+ ],
+ "afar-nontemporal-assumed-shape-ice.f90": [
+  {
+   "text": "5.2 §10.4.1 p.236 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "10.4.1",
+   "quote": "The nontemporal clause specifies that accesses to the storage locations to which the list items refer have low temporal locality across the iterations in which those storage locations are accessed."
+  },
+  {
+   "text": "5.2 §10.4.1 p.236 l.23-24",
+   "version": "OpenMP 5.2",
+   "section": "10.4.1",
+   "quote": "The list items of the nontemporal clause may also appear as list items of data-environment attribute clauses."
+  }
+ ],
+ "afar-udr-derived-type-link.f90": [
+  {
+   "text": "5.2 §5.5.11 p.139 l.18-19",
+   "version": "OpenMP 5.2",
+   "section": "5.5.11",
+   "quote": "The declare reduction directive declares a reduction-identifier that can be used in a reduction clause as a user-defined reduction."
+  },
+  {
+   "text": "5.2 §5.5.11 p.139 l.24-26",
+   "version": "OpenMP 5.2",
+   "section": "5.5.11",
+   "quote": "The reduction-identifier can later be used in a reduction clause that uses variables of the types specified in the declare reduction directive."
+  }
+ ],
+ "afar-xnack1-atomic-min-nested-parallel.f90": [
+  {
+   "text": "5.2 §4.3.1.3 p.81 l.14",
+   "version": "OpenMP 5.2",
+   "section": "4.3.1.3",
+   "quote": "x = intrinsic-procedure-name (x, expr-list)"
+  },
+  {
+   "text": "5.2 §15.8.4 p.311 l.29-30",
+   "version": "OpenMP 5.2",
+   "section": "15.8.4",
+   "quote": "The atomic construct ensures that a specific storage location is accessed atomically so that possible simultaneous reads and writes by multiple threads do not result in indeterminate values."
+  }
+ ],
+ "afar-xnack1-present-not-enforced.f90": [
+  {
+   "text": "5.2 §5.8.3 p.152",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "runtime error termination is performed"
+  }
+ ],
+ "afar-xnack1-target-is-present.f90": [
+  {
+   "text": "5.2 §18.8.3 p.389",
+   "version": "OpenMP 5.2",
+   "section": "18.8.3",
+   "quote": "returns true if ... ptr refers to storage that has corresponding storage in the device data environment"
+  },
+  {
+   "text": "5.2 §5.8.3 p.153",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§18.8.3 p.389",
+   "version": "OpenMP 5.2",
+   "section": "18.8.3",
+   "quote": null
+  }
+ ],
+ "apps/afar-cce-teams-private-array-nested-parallel-wrong.f90": [
+  {
+   "text": "§17.2 p.340 l.1-2",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "The effect of the private clause is as if it is applied only to the innermost leaf construct that permits it."
+  },
+  {
+   "text": "§5.3 p.105 l.21-30",
+   "version": "OpenMP 5.2",
+   "section": "5.3",
+   "quote": "Each task that references a privatized list item in any statement in the construct receives at least one new list item if the construct has one or more associated loops ... Inside the construct, all references to the original list item are replaced by references to a new list item received by the task ... within the same logical iteration of the loops, the same new list item replaces all references to the original list item."
+  },
+  {
+   "text": "§5.1.1 p.99 l.13-16",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": "Rules for variables with implicitly determined data-sharing attributes are as follows: ... In a parallel construct, if no default clause is present, these variables are shared."
+  },
+  {
+   "text": "§5.4.2 p.110 l.8-10",
+   "version": "OpenMP 5.2",
+   "section": "5.4.2",
+   "quote": "The shared clause declares one or more list items to be shared by tasks generated by the construct on which it appears. All references to a list item within a task refer to the storage area of the original variable at the point the directive was encountered."
+  },
+  {
+   "text": "§1.4.1 p.27 l.30-35",
+   "version": "OpenMP 5.2",
+   "section": "1.4.1",
+   "quote": null
+  },
+  {
+   "text": "§10.2 p.230 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "10.2",
+   "quote": "When a thread encounters a teams construct, a league of teams is created. Each team is an initial team, and the initial thread in each team executes the teams region."
+  },
+  {
+   "text": "§11 p.240 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "11",
+   "quote": "an implied barrier exists at the end of the worksharing region, unless a nowait clause is specified"
+  },
+  {
+   "text": "§5.1.1",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": null
+  }
+ ],
+ "apps/cce20-device-link-infer-address-spaces-crash.f90": [
+  {
+   "text": "§1.6 p.34 l.22-24",
+   "version": "OpenMP 5.2",
+   "section": "1.6",
+   "quote": "An implementation of the OpenMP API is compliant if and only if it compiles and executes all other conforming programs, and supports the tool interfaces, according to the syntax and semantics laid out in Chapters 1 through 20."
+  },
+  {
+   "text": "§7.8 p.204 l.16-17",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": "Declare target directives apply to procedures and/or variables to ensure that they can be executed or accessed on a device."
+  },
+  {
+   "text": "§7.8.1",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": null
+  },
+  {
+   "text": "§13.9 p.289 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "13.9",
+   "quote": null
+  },
+  {
+   "text": "§5.4.3 p.111 l.9-12",
+   "version": "OpenMP 5.2",
+   "section": "5.4.3",
+   "quote": null
+  },
+  {
+   "text": "§5.3 p.105 l.21-30",
+   "version": "OpenMP 5.2",
+   "section": "5.3",
+   "quote": null
+  }
+ ],
+ "apps/cce21-device-link-agpr-copy-mfma-assert.f90": [
+  {
+   "text": "§1.6 p.34 l.22-24",
+   "version": "OpenMP 5.2",
+   "section": "1.6",
+   "quote": "An implementation of the OpenMP API is compliant if and only if it compiles and executes all other conforming programs, and supports the tool interfaces, according to the syntax and semantics laid out in Chapters 1 through 20."
+  },
+  {
+   "text": "§13.8 p.285 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "If a procedure is explicitly or implicitly referenced in a target construct that does not specify a device clause in which the ancestor device-modifier appears then that procedure is treated as if its name had appeared in an enter clause on a declare target directive."
+  },
+  {
+   "text": "§7.8 p.205 l.3-6",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": null
+  },
+  {
+   "text": "§7.8 p.204 l.16-17",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": null
+  },
+  {
+   "text": "§13.9 p.289 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "13.9",
+   "quote": null
+  }
+ ],
+ "apps/cce21-private-array-loaded-subscript-wrong.f90": [
+  {
+   "text": "§5.4.3 p.111 l.9-12",
+   "version": "OpenMP 5.2",
+   "section": "5.4.3",
+   "quote": "The private clause specifies that its list items are to be privatized according to Section 5.3. Each task or SIMD lane that references a list item in the construct receives only one new list item, unless the construct has one or more associated loops and an order clause that specifies concurrent is also present."
+  },
+  {
+   "text": "§5.3 p.105 l.21-30",
+   "version": "OpenMP 5.2",
+   "section": "5.3",
+   "quote": "Inside the construct, all references to the original list item are replaced by references to a new list item received by the task or SIMD lane. If the construct has one or more associated loops then, within the same logical iteration of the loops, the same new list item replaces all references to the original list item."
+  },
+  {
+   "text": "§5.8.3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§7.8.1",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": null
+  },
+  {
+   "text": "§13.9 p.289 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "13.9",
+   "quote": "The target update directive makes the corresponding list items in the device data environment consistent with their original list items"
+  }
+ ],
+ "apps/gcc-acc-c-tile-partial-tiles-wrong.c": [
+  {
+   "text": "OpenACC 3.4 §2.9.8 l.2486-2489",
+   "version": "OpenACC 3.4",
+   "section": "2.9.8",
+   "quote": "Each loop in the nest will be split, or strip-mined, into two loops, an outer tile loop and an inner element loop. The trip count of the element loop will be limited to the corresponding tile size from the size-expr-list"
+  },
+  {
+   "text": "OpenACC 3.4 §2.9.8",
+   "version": "OpenACC 3.4",
+   "section": "2.9.8",
+   "quote": null
+  }
+ ],
+ "apps/gcc-acc-tile-partial-tiles-wrong.f90": [
+  {
+   "text": "OpenACC 3.4 §2.9.8 l.2486-2489",
+   "version": "OpenACC 3.4",
+   "section": "2.9.8",
+   "quote": "Each loop in the nest will be split, or strip-mined, into two loops, an outer tile loop and an inner element loop. The trip count of the element loop will be limited to the corresponding tile size from the size-expr-list"
+  },
+  {
+   "text": "OpenACC 3.4 §2.9.8",
+   "version": "OpenACC 3.4",
+   "section": "2.9.8",
+   "quote": null
+  }
+ ],
+ "catalog/afar-c-critical-hint-link.c": [
+  {
+   "text": "OpenMP 5.2 §15.2, p.299",
+   "version": "OpenMP 5.2",
+   "section": "15.2",
+   "quote": null
+  },
+  {
+   "text": "§15.1",
+   "version": "OpenMP 5.2",
+   "section": "15.1",
+   "quote": null
+  }
+ ],
+ "catalog/afar-c-ordered-doacross-link.c": [
+  {
+   "text": "OpenMP 5.2 §4.4.4, p.94",
+   "version": "OpenMP 5.2",
+   "section": "4.4.4",
+   "quote": "If n is not specified then the behavior is as if n is specified with the same value as is specified for the collapse clause on the construct."
+  }
+ ],
+ "catalog/afar-c-reduction-task-link.c": [
+  {
+   "text": "5.2 §5.5.8 p.135 l.16-18",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "If the task reduction-modifier is present for a parallel or worksharing construct, then each list item is privatized according to the description and restrictions in Section 5.3"
+  },
+  {
+   "text": "5.2 §5.5.8 p.135 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "After the end of the region, the original list item contains the result of the reduction."
+  }
+ ],
+ "catalog/afar-flang-absent-optional-target-crash.f90": [
+  {
+   "text": "OpenMP 5.2 §3.2.1, p.61",
+   "version": "OpenMP 5.2",
+   "section": "3.2.1",
+   "quote": null
+  }
+ ],
+ "catalog/afar-flang-critical-target-parallel-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §15.2, p.299",
+   "version": "OpenMP 5.2",
+   "section": "15.2",
+   "quote": null
+  }
+ ],
+ "catalog/afar-flang-dist-schedule-chunk.f90": [
+  {
+   "text": "5.2 §11.6.1 p.256",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": null
+  }
+ ],
+ "catalog/afar-flang-linear-parallel-ice.f90": [
+  {
+   "text": "5.2 §5.4.6 p.118",
+   "version": "OpenMP 5.2",
+   "section": "5.4.6",
+   "quote": null
+  }
+ ],
+ "catalog/afar-flang-named-critical-link.f90": [
+  {
+   "text": "OpenMP 5.2 §15.2, p.299",
+   "version": "OpenMP 5.2",
+   "section": "15.2",
+   "quote": null
+  }
+ ],
+ "catalog/afar-flang-ordered-wrong.f90": [
+  {
+   "text": "5.2 §15.10.2 p.330 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "15.10.2",
+   "quote": "the threads in the team that is executing the worksharing-loop region execute ordered regions sequentially in the order of the loop iterations."
+  },
+  {
+   "text": "5.2 §15.10.2 p.330 l.20-21",
+   "version": "OpenMP 5.2",
+   "section": "15.10.2",
+   "quote": "If no clauses are specified, the effect is as if the threads parallelization-level clause was specified."
+  }
+ ],
+ "catalog/afar-flang-reduction-minus-rejected.f90": [
+  {
+   "text": "5.2 §5.5.1 p.124 l.23",
+   "version": "OpenMP 5.2",
+   "section": "5.5.1",
+   "quote": "following operators: +, - (deprecated), *, .and., .or., .eqv., .neqv."
+  },
+  {
+   "text": "5.2 §B.2 p.627 l.18",
+   "version": "OpenMP 5.2",
+   "section": "B.2",
+   "quote": "The minus (-) operator for reductions was deprecated (see Section 5.5.5)."
+  },
+  {
+   "text": "5.2 §5.5.5 p.131 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.5.5",
+   "quote": "The reduction identifier must match a previously declared reduction identifier of the same name and type for each of the list items."
+  }
+ ],
+ "catalog/afar-flang-reduction-task-ice.f90": [],
+ "catalog/afar-flang-sections-in-target-ice.f90": [
+  {
+   "text": "OpenMP 5.2 §11.3, p.243",
+   "version": "OpenMP 5.2",
+   "section": "11.3",
+   "quote": null
+  }
+ ],
+ "catalog/afar-flang-workdistribute-ice.f90": [
+  {
+   "text": "6.0 §13.5 p.412",
+   "version": "OpenMP 6.0",
+   "section": "13.5",
+   "quote": null
+  }
+ ],
+ "catalog/c-allocate-const-mem-firstprivate-wrong.c": [
+  {
+   "text": "5.2 §6.1 p.171 l.9-10",
+   "version": "OpenMP 5.2",
+   "section": "6.1",
+   "quote": "Variables allocated in the omp_const_mem_space memory space may be initialized through the firstprivate clause"
+  },
+  {
+   "text": "5.2 §6.6 p.178 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "6.6",
+   "quote": "If a list item in the clause also appears in a data-sharing attribute clause on the same directive that privatizes the list item, allocations that arise from that list item in the clause will be provided by the memory allocator."
+  },
+  {
+   "text": "5.2 §5.4.4 p.112 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "5.4.4",
+   "quote": "In addition, the new list item is initialized from the original list item that exists before the construct."
+  }
+ ],
+ "catalog/cce-acc-allocate-in-compute-crash.f90": [
+  {
+   "text": "OpenACC 3.4 §1.8, p.16",
+   "version": "OpenACC 3.4",
+   "section": "1.8",
+   "quote": null
+  }
+ ],
+ "catalog/cce-acc-character-dummy-routine-ice.f90": [
+  {
+   "text": "OpenACC 3.4 §2.15.1 p.91 l.3321-3323",
+   "version": "OpenACC 3.4",
+   "section": "2.15.1",
+   "quote": "The routine directive is used to tell the compiler to compile the definition for a procedure, such as a function or C++ lambda, for an accelerator as well as for the host."
+  },
+  {
+   "text": "OpenACC 3.4 §2.15.1 p.93 l.3404",
+   "version": "OpenACC 3.4",
+   "section": "2.15.1",
+   "quote": "A call to this procedure may appear in any mode."
+  }
+ ],
+ "catalog/cce-acc-loop-seq-in-routine-wrong.f90": [
+  {
+   "text": "OpenACC 3.4 §2.9",
+   "version": "OpenACC 3.4",
+   "section": "2.9",
+   "quote": null
+  },
+  {
+   "text": "§2.15.1",
+   "version": "OpenACC 3.4",
+   "section": "2.15.1",
+   "quote": null
+  }
+ ],
+ "catalog/cce-acc-stop-in-compute-crash.f90": [
+  {
+   "text": "OpenACC 3.4 §1.8, p.16",
+   "version": "OpenACC 3.4",
+   "section": "1.8",
+   "quote": null
+  }
+ ],
+ "catalog/cce-allocators-stack-ice.f90": [
+  {
+   "text": "5.2 §6.8 p.182 l.2-4",
+   "version": "OpenMP 5.2",
+   "section": "6.8",
+   "quote": "The uses_allocators clause enables the use of the specified allocator in the region associated with the directive on which the clause appears. If allocator refers to a predefined allocator, that predefined allocator will be available for use in the region."
+  },
+  {
+   "text": "5.2 §6.6 p.178 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "6.6",
+   "quote": "If a list item in the clause also appears in a data-sharing attribute clause on the same directive that privatizes the list item, allocations that arise from that list item in the clause will be provided by the memory allocator."
+  },
+  {
+   "text": "5.2 §13.8 p.286 l.38-39",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "Memory allocators that do not appear in a uses_allocators clause cannot appear as an allocator in an allocate clause or be used in the target region"
+  }
+ ],
+ "catalog/cce-atomic-default-mem-order-acquire-release-rejected.f90": [],
+ "catalog/cce-c-allocate-align-link.c": [
+  {
+   "text": "5.2 §6.6 p.178 l.16-18",
+   "version": "OpenMP 5.2",
+   "section": "6.6",
+   "quote": "The allocator-complex-modifier and align-modifier have the same syntax and semantics for the allocate clause as the allocator and align clauses have for the allocate directive."
+  },
+  {
+   "text": "5.2 §6.3 p.175 l.3-6",
+   "version": "OpenMP 5.2",
+   "section": "6.3",
+   "quote": "each allocation is byte aligned to at least the maximum of the value to which alignment evaluates, the alignment trait of the allocator being used for the allocation, and the alignment required by the base language for the type of the variable that is allocated."
+  },
+  {
+   "text": "5.2 §6.6 p.179 l.8-10",
+   "version": "OpenMP 5.2",
+   "section": "6.6",
+   "quote": "allocate clauses that appear on a target construct or on constructs in a target region must specify an allocator-simple-modifier or allocator-complex-modifier unless a requires directive with the dynamic_allocators clause is present in the same compilation unit."
+  }
+ ],
+ "catalog/cce-c-allocate-allocator-modifier-rejected.c": [
+  {
+   "text": "5.2 §6.6 p.178 l.16-18",
+   "version": "OpenMP 5.2",
+   "section": "6.6",
+   "quote": "The allocator-complex-modifier and align-modifier have the same syntax and semantics for the allocate clause as the allocator and align clauses have for the allocate directive."
+  },
+  {
+   "text": "5.2 §6.4 p.175 l.21-23",
+   "version": "OpenMP 5.2",
+   "section": "6.4",
+   "quote": "The allocator clause specifies the memory allocator to be used for allocations associated with the construct on which the clause appears."
+  }
+ ],
+ "catalog/cce-c-device-type-directive-name-ice.c": [
+  {
+   "text": "5.2 §13.8 p.285",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  },
+  {
+   "text": "6.0 §15.8 p.461",
+   "version": "OpenMP 6.0",
+   "section": "15.8",
+   "quote": null
+  }
+ ],
+ "catalog/cce-c-dist-schedule-chunk.c": [
+  {
+   "text": "5.2 §11.6.1 p.256 l.18-19",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": "If the chunk_size argument is specified, iterations are divided into chunks of size chunk_size."
+  },
+  {
+   "text": "5.2 §11.6.1 p.256 l.23-24",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": "These chunks are assigned to the initial teams of the league in a round-robin fashion in the order of the initial team number."
+  }
+ ],
+ "catalog/cce-c-f-pointer-device-link.f90": [
+  {
+   "text": "5.2 §5.4.8 p.121",
+   "version": "OpenMP 5.2",
+   "section": "5.4.8",
+   "quote": null
+  },
+  {
+   "text": "§5.4.7 p.120",
+   "version": "OpenMP 5.2",
+   "section": "5.4.7",
+   "quote": null
+  }
+ ],
+ "catalog/cce-c-lastprivate-parallel-in-seq-loop-wrong.c": [],
+ "catalog/cce-c-long-double-ice.c": [
+  {
+   "text": "OpenMP 5.2 §1.7, p.35",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": null
+  }
+ ],
+ "catalog/cce-c-map-iterator-ice.c": [
+  {
+   "text": "5.2 §3.2.6 p.67 l.6-8",
+   "version": "OpenMP 5.2",
+   "section": "3.2.6",
+   "quote": "An iterator modifier is a unique, complex modifier that defines a set of iterators, each of which is an iterator-identifier and an associated set of values."
+  },
+  {
+   "text": "5.2 §5.8.3 p.151 l.13-14",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "A list item in a map clause may reference any iterator-identifier defined in its iterator modifier."
+  }
+ ],
+ "catalog/cce-c-motion-iterator-rejected.c": [],
+ "catalog/cce-c-ordered-doacross-link.c": [
+  {
+   "text": "OpenMP 5.2 §4.4.4, p.94",
+   "version": "OpenMP 5.2",
+   "section": "4.4.4",
+   "quote": "If n is not specified then the behavior is as if n is specified with the same value as is specified for the collapse clause on the construct."
+  }
+ ],
+ "catalog/cce-c-ordered-link.c": [],
+ "catalog/cce-c-recursive-function-ice.c": [
+  {
+   "text": "OpenMP 5.2 §1.7, p.35",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": null
+  }
+ ],
+ "catalog/cce-c-reduction-inscan-ice.c": [],
+ "catalog/cce-c-reduction-task-link.c": [],
+ "catalog/cce-c-sections-in-target-wrong.c": [
+  {
+   "text": "OpenMP 5.2 §11.3, p.243",
+   "version": "OpenMP 5.2",
+   "section": "11.3",
+   "quote": null
+  }
+ ],
+ "catalog/cce-c-single-masked-task-link.c": [
+  {
+   "text": "OpenMP 5.2 §11.1, p.240",
+   "version": "OpenMP 5.2",
+   "section": "11.1",
+   "quote": null
+  }
+ ],
+ "catalog/cce-c-task-in-target-link.c": [],
+ "catalog/cce-c-uses-allocators-traits-rejected.c": [
+  {
+   "text": "5.2 §6.2 p.173",
+   "version": "OpenMP 5.2",
+   "section": "6.2",
+   "quote": null
+  },
+  {
+   "text": "6.0 §8.2 p.306",
+   "version": "OpenMP 6.0",
+   "section": "8.2",
+   "quote": null
+  }
+ ],
+ "catalog/cce-flang-allocate-const-mem-ice.f90": [
+  {
+   "text": "OpenMP 5.2 §6.6",
+   "version": "OpenMP 5.2",
+   "section": "6.6",
+   "quote": null
+  },
+  {
+   "text": "§13.8, p.285",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  }
+ ],
+ "catalog/cce-flang-allocate-in-target-crash.f90": [
+  {
+   "text": "OpenMP 5.2 §1.7, pp.34-35",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": null
+  }
+ ],
+ "catalog/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90": [
+  {
+   "text": "5.2 §5.4.5 p.115 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": "the value of each new list item from the sequentially last iteration of the associated loops, or the lexically last structured block sequence associated with a sections construct, is assigned to the original list item."
+  },
+  {
+   "text": "5.2 §5.8.1 p.149 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"
+  }
+ ],
+ "catalog/cce-flang-stop-in-target-crash.f90": [
+  {
+   "text": "OpenMP 5.2 §4.3, p.76",
+   "version": "OpenMP 5.2",
+   "section": "4.3",
+   "quote": null
+  }
+ ],
+ "catalog/cce-iterator-link.f90": [
+  {
+   "text": "§13.9 p.289",
+   "version": "OpenMP 5.2",
+   "section": "13.9",
+   "quote": null
+  },
+  {
+   "text": "5.2 §3.2.6 p.67",
+   "version": "OpenMP 5.2",
+   "section": "3.2.6",
+   "quote": null
+  }
+ ],
+ "catalog/cce-linear-lastprivate-ice.f90": [
+  {
+   "text": "5.2 §5.4.6 p.118",
+   "version": "OpenMP 5.2",
+   "section": "5.4.6",
+   "quote": null
+  }
+ ],
+ "catalog/cce-reduction-inscan-ice.f90": [
+  {
+   "text": "5.2 §5.6 p.141",
+   "version": "OpenMP 5.2",
+   "section": "5.6",
+   "quote": null
+  }
+ ],
+ "catalog/cce-reduction-task-link.f90": [
+  {
+   "text": "5.2 §5.5.8 p.135 l.16-18",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "If the task reduction-modifier is present for a parallel or worksharing construct, then each list item is privatized according to the description and restrictions in Section 5.3"
+  },
+  {
+   "text": "5.2 §5.5.8 p.135 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "After the end of the region, the original list item contains the result of the reduction."
+  }
+ ],
+ "catalog/cce19-reduction-task-addrspacecast-ice.f90": [
+  {
+   "text": "5.2 §5.5.8 p.135 l.16-18",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "If the task reduction-modifier is present for a parallel or worksharing construct, then each list item is privatized according to the description and restrictions in Section 5.3"
+  },
+  {
+   "text": "5.2 §5.5.8 p.135 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "After the end of the region, the original list item contains the result of the reduction."
+  }
+ ],
+ "catalog/cce20-c-defaultmap-private-storage-rejected.c": [
+  {
+   "text": "6.0 §7.9.9 p.292 l.2-4",
+   "version": "OpenMP 6.0",
+   "section": "7.9.9",
+   "quote": "The defaultmap clause controls the implicitly determined data-mapping attributes or implicitly determined data-sharing attributes of certain variables that are referenced in a target construct"
+  },
+  {
+   "text": "6.0 §7.9.3 p.276 l.21-23",
+   "version": "OpenMP 6.0",
+   "section": "7.9.3",
+   "quote": "If a defaultmap clause is present for the category of the variable and specifies an implicit behavior other than default, the data-mapping attribute or data-sharing attribute is determined by that clause."
+  }
+ ],
+ "catalog/cce20-map-self-rejected.f90": [
+  {
+   "text": "6.0 §7.9.6 p.285",
+   "version": "OpenMP 6.0",
+   "section": "7.9.6",
+   "quote": null
+  }
+ ],
+ "catalog/cce21-c-declare-target-local-rejected.c": [],
+ "catalog/cce21-c-target-loop-ice.c": [
+  {
+   "text": "6.0 §19.3 p.531 l.2-3",
+   "version": "OpenMP 6.0",
+   "section": "19.3",
+   "quote": "The semantics of combined constructs are identical to that of explicitly specifying the first construct containing one instance of the second construct and no other statements."
+  },
+  {
+   "text": "6.0 §19.1 p.525 l.11-13",
+   "version": "OpenMP 6.0",
+   "section": "19.1",
+   "quote": "If the construct named by directive-name-B can be immediately nested inside the construct named by directive-name-A, the compound-directive name is a combined-directive name"
+  }
+ ],
+ "catalog/defaultmap-present-private-array-abort.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.7, p.161",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": null
+  }
+ ],
+ "catalog/nvhpc-acc-associate-illegal-address.f90": [
+  {
+   "text": "OpenACC 3.4 §1.8, p.16",
+   "version": "OpenACC 3.4",
+   "section": "1.8",
+   "quote": null
+  }
+ ],
+ "catalog/nvhpc-c-function-pointer-kernel-missing.c": [
+  {
+   "text": "OpenMP 5.2 §13.8, p.287",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  }
+ ],
+ "catalog/nvhpc-c-long-double-kernel-missing.c": [
+  {
+   "text": "OpenMP 5.2 §1.7, p.35",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": null
+  }
+ ],
+ "catalog/nvhpc-c-static-local-kernel-missing.c": [
+  {
+   "text": "OpenMP 5.2 §7.8, p.204",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": null
+  },
+  {
+   "text": "OpenMP 5.2 §7.8, p.204",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": null
+  }
+ ],
+ "catalog/nvhpc-c-vla-kernel-missing.c": [
+  {
+   "text": "OpenMP 5.2 §1.7, p.35",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": null
+  }
+ ],
+ "catalog/nvhpc-flang-type-bound-kernel-missing.f90": [
+  {
+   "text": "OpenMP 5.2 §1.7, pp.34-35",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": null
+  }
+ ],
+ "cce-acc-init-set-runtime-assert.f90": [
+  {
+   "text": "OpenACC 3.4 §2.14.1",
+   "version": "OpenACC 3.4",
+   "section": "2.14.1",
+   "quote": null
+  },
+  {
+   "text": "§2.14.3",
+   "version": "OpenACC 3.4",
+   "section": "2.14.3",
+   "quote": null
+  }
+ ],
+ "cce-acc-reduction-200-int8-scalars-wrong.f90": [
+  {
+   "text": "OpenACC 3.4 §2.11 p.76 l.2790-2792",
+   "version": "OpenACC 3.4",
+   "section": "2.11",
+   "quote": null
+  },
+  {
+   "text": "§2.9.11 p.71",
+   "version": "OpenACC 3.4",
+   "section": "2.9.11",
+   "quote": null
+  }
+ ],
+ "cce-acc-routine-bind-module-ice.f90": [
+  {
+   "text": "OpenACC 3.4 §2.15.1",
+   "version": "OpenACC 3.4",
+   "section": "2.15.1",
+   "quote": null
+  }
+ ],
+ "cce-c-dist-schedule-segv.c": [
+  {
+   "text": "5.2 §11.6.1",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": null
+  }
+ ],
+ "cce-c-map-delete-refcount.c": [
+  {
+   "text": "5.2 §5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If the map-type is delete and the reference count of the corresponding storage block is finite then the reference count is set to zero"
+  }
+ ],
+ "cce-c-map-present-assert.c": [
+  {
+   "text": "5.2 §5.8.3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "cce-c-openmp45-device-link.c": [
+  {
+   "text": "4.5 §3.2.34",
+   "version": "OpenMP 4.5",
+   "section": "3.2.34",
+   "quote": null
+  }
+ ],
+ "cce-c-parallel-for-in-target.c": [
+  {
+   "text": "5.2 §11.5",
+   "version": "OpenMP 5.2",
+   "section": "11.5",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.4.5",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.4.6",
+   "version": "OpenMP 5.2",
+   "section": "5.4.6",
+   "quote": null
+  }
+ ],
+ "cce-defaultmap-tofrom-explicit-map.f90": [
+  {
+   "text": "5.2 §5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "if the map-type is from or tofrom"
+  },
+  {
+   "text": "5.2 §5.8.7 p.161",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables"
+  },
+  {
+   "text": "5.2 §5.8.1 p.148",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.153",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "cce-mapper-next-map-copy-back.f90": [
+  {
+   "text": "5.2 §5.8.8 p.163",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.151",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "the map-type is replaced with a final map type ... according to the rules of map-type decay"
+  }
+ ],
+ "cce-uses-allocators-traits-omp50.f90": [
+  {
+   "text": "OpenMP 5.0 §2.12.5 p.170",
+   "version": "OpenMP 5.0",
+   "section": "2.12.5",
+   "quote": null
+  },
+  {
+   "text": "5.0 §2.12.5 p.175",
+   "version": "OpenMP 5.0",
+   "section": "2.12.5",
+   "quote": null
+  }
+ ],
+ "cce19-c-reduction-63-scalars-one-wrong.c": [
+  {
+   "text": "OpenMP 5.2 §5.5.8 p.134",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": null
+  },
+  {
+   "text": "§17.2 p.341 l.10-13",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  }
+ ],
+ "cce19-target-parallel-guarded-loop.f90": [
+  {
+   "text": "5.2 §10.1 p.223 l.27-28",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "Each thread can execute a path of statements that is different from that of the other threads."
+  },
+  {
+   "text": "5.2 §10.1 p.223 l.16-17",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "All threads in the new team, including the primary thread, execute the region."
+  }
+ ],
+ "cce19-target-parallel-single-ice.f90": [
+  {
+   "text": "5.2 §11.1 p.241 l.2-3",
+   "version": "OpenMP 5.2",
+   "section": "11.1",
+   "quote": "The single construct specifies that the associated structured block is executed by only one of the threads in the team"
+  },
+  {
+   "text": "5.2 §11.1 p.241 l.5-6",
+   "version": "OpenMP 5.2",
+   "section": "11.1",
+   "quote": "An implicit barrier occurs at the end of a single region if the nowait clause is not specified."
+  }
+ ],
+ "cce21-alloc-2e32-sum-wrong.f90": [
+  {
+   "text": "5.2 §11.6 p.254",
+   "version": "OpenMP 5.2",
+   "section": "11.6",
+   "quote": null
+  },
+  {
+   "text": "§11.5 p.247",
+   "version": "OpenMP 5.2",
+   "section": "11.5",
+   "quote": null
+  },
+  {
+   "text": "§13.6 p.280",
+   "version": "OpenMP 5.2",
+   "section": "13.6",
+   "quote": null
+  },
+  {
+   "text": "§5.5.8 p.134",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": null
+  },
+  {
+   "text": "§17.2 p.341 l.10-13",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  }
+ ],
+ "cce21-defaultmap-aggregate-flag.f90": [
+  {
+   "text": "5.2 §5.8.7 p.161 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables that are referenced in a target construct"
+  },
+  {
+   "text": "5.2 §5.8.3 p.154 l.2-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "if the map-type is from or tofrom"
+  }
+ ],
+ "cce21-in-reduction-assumed-shape-write-lost.f90": [
+  {
+   "text": "5.2 §5.8.3 p.150",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.5.10 p.138",
+   "version": "OpenMP 5.2",
+   "section": "5.5.10",
+   "quote": null
+  },
+  {
+   "text": "§5.5.9 p.137",
+   "version": "OpenMP 5.2",
+   "section": "5.5.9",
+   "quote": null
+  }
+ ],
+ "cce21-in-reduction-taskwait-link.f90": [
+  {
+   "text": "5.2 §5.5.10 p.138 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.10",
+   "quote": "For the target construct, the target task becomes the participating task."
+  },
+  {
+   "text": "5.2 §5.5.10 p.138 l.23-24",
+   "version": "OpenMP 5.2",
+   "section": "5.5.10",
+   "quote": "This private copy will be implicitly mapped into the device data environment of the target device, if the target device is not the parent device."
+  }
+ ],
+ "cce21-linear-modifier-default-none.f90": [
+  {
+   "text": "5.2 §5.4.6 pp.117-120",
+   "version": "OpenMP 5.2",
+   "section": "5.4.6",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.4.1 p.109",
+   "version": "OpenMP 5.2",
+   "section": "5.4.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.4.6 p.118",
+   "version": "OpenMP 5.2",
+   "section": "5.4.6",
+   "quote": "The value corresponding to the sequentially last logical iteration of the associated loops is assigned to the original list item"
+  }
+ ],
+ "clang-c-declare-target-to-omp52.c": [
+  {
+   "text": "5.2 §5.8.4 p.158",
+   "version": "OpenMP 5.2",
+   "section": "5.8.4",
+   "quote": "The clause-name to may be used as a synonym for the clause-name enter. This use has been deprecated."
+  },
+  {
+   "text": "5.2 §1.2.7 p.20",
+   "version": "OpenMP 5.2",
+   "section": "1.2.7",
+   "quote": "the property that it is normative in the current specification but is considered obsolescent and will be removed in the future"
+  }
+ ],
+ "clang-c-linear-directive-name-hang.c": [
+  {
+   "text": "6.0 §5.4, p.174",
+   "version": "OpenMP 6.0",
+   "section": "5.4",
+   "quote": "The directive-name-modifier is a universal modifier that can be used on any clause"
+  },
+  {
+   "text": "6.0 §7.5.6, p.232",
+   "version": "OpenMP 6.0",
+   "section": "7.5.6",
+   "quote": null
+  }
+ ],
+ "clang-c-map-iterator-omp51.c": [
+  {
+   "text": "5.1 §2.21.7.1 p.347",
+   "version": "OpenMP 5.1",
+   "section": "2.21.7.1",
+   "quote": null
+  },
+  {
+   "text": "5.1 §2.1.6 p.49",
+   "version": "OpenMP 5.1",
+   "section": "2.1.6",
+   "quote": null
+  },
+  {
+   "text": "5.1 §2.21.7.1 p.353",
+   "version": "OpenMP 5.1",
+   "section": "2.21.7.1",
+   "quote": "the list item instances that would result from different values of the iterator must not have the same containing array"
+  }
+ ],
+ "clang-c-shared-declare-target-combined.c": [
+  {
+   "text": "5.2 §7.8.1",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §17.2",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.1",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  }
+ ],
+ "dataenv/cce-value-dummy-target-write-visible.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.1 p.149 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If the above rules do not apply then a scalar variable is not mapped but instead has an implicit data-sharing attribute of firstprivate"
+  },
+  {
+   "text": "5.0 §2.19.7 p.315 l.9-10",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7",
+   "quote": null
+  },
+  {
+   "text": "6.0 §7.9.3 p.277 l.22-23",
+   "version": "OpenMP 6.0",
+   "section": "7.9.3",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.1.1 p.99 l.19-20",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": "In a target construct, variables that are not mapped after applying data-mapping attribute rules (see Section 5.8) are firstprivate"
+  },
+  {
+   "text": "OpenMP 5.0 §1.7",
+   "version": "OpenMP 5.0",
+   "section": "1.7",
+   "quote": null
+  }
+ ],
+ "defaultmap-none-loop-variable.f90": [
+  {
+   "text": "5.2 §5.8.7 p.162",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "If implicit-behavior is none, each variable that is specified by variable-category and is referenced in the construct but does not have a predetermined data-sharing and does not appear in an enter or link clause on a declare target directive must be explicitly listed in a data-environment attribute clause on the construct"
+  },
+  {
+   "text": "5.2 §5.1.1 p.97",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": null
+  }
+ ],
+ "fortran-loop-bind-thread-in-parallel.f90": [
+  {
+   "text": "5.2 §11.7.1 p.257-258",
+   "version": "OpenMP 5.2",
+   "section": "11.7.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §11.7 p.257",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "Each logical iteration is executed once per instance of the loop region that is encountered by exactly one thread that is a member of the binding thread set"
+  }
+ ],
+ "fortran-schedule-static-in-target.f90": [
+  {
+   "text": "5.2 §11.5.3 p.252",
+   "version": "OpenMP 5.2",
+   "section": "11.5.3",
+   "quote": "iterations are divided into chunks of size chunk_size, and the chunks are assigned to the threads in the team in a round-robin fashion in the order of the thread number"
+  }
+ ],
+ "fresh/cce-common-block-name-in-map-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §3.2.1 p.61 l.6",
+   "version": "OpenMP 5.2",
+   "section": "3.2.1",
+   "quote": "a common block name (enclosed in slashes)"
+  },
+  {
+   "text": "§5.8.3 p.150",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§3.2.1 p.61 l.7-8",
+   "version": "OpenMP 5.2",
+   "section": "3.2.1",
+   "quote": null
+  },
+  {
+   "text": "5.0 §2.1 p.39 l.11-20",
+   "version": "OpenMP 5.0",
+   "section": "2.1",
+   "quote": "A list item is a variable, array section or common block name (enclosed in slashes) ... a common block name specified in a data-sharing attribute, a data copying or a data-mapping attribute clause must be declared to be a common block in the same scoping unit"
+  }
+ ],
+ "fresh/cce-if-stop-in-target-ice-one-condition.f90": [
+  {
+   "text": "OpenMP 5.2 §4.3 p.76 l.13-21",
+   "version": "OpenMP 5.2",
+   "section": "4.3",
+   "quote": "A structured block ... may contain STOP or ERROR STOP statements"
+  }
+ ],
+ "fresh/cce-if-stop-in-target-ice.f90": [
+  {
+   "text": "OpenMP 5.2 §4.3 p.76 l.13-21",
+   "version": "OpenMP 5.2",
+   "section": "4.3",
+   "quote": "A structured block ... may contain STOP or ERROR STOP statements"
+  }
+ ],
+ "fresh/cce-list-directed-print-in-target-copy-crash.f90": [
+  {
+   "text": "§4.3 p.76-77",
+   "version": "OpenMP 5.2",
+   "section": "4.3",
+   "quote": null
+  },
+  {
+   "text": "§1.6 p.34 l.22-24",
+   "version": "OpenMP 5.2",
+   "section": "1.6",
+   "quote": "compiles and executes all other conforming programs"
+  }
+ ],
+ "fresh/cce19-acc-automatic-array-copyout-copy-crash.f90": [
+  {
+   "text": "OpenACC 3.4 §2.7.9 p.56 l.1932-1953",
+   "version": "OpenACC 3.4",
+   "section": "2.7.9",
+   "quote": null
+  }
+ ],
+ "fresh/cce21-combined-if-runtime-expr-loop-skipped.f90": [
+  {
+   "text": "OpenMP 5.2 §3.4 p.72 l.15-18",
+   "version": "OpenMP 5.2",
+   "section": "3.4",
+   "quote": "For a combined or composite construct, if no directive-name-modifier is specified then the if clause applies to all constituent constructs to which an if clause can apply"
+  },
+  {
+   "text": "§3.4 p.72 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "3.4",
+   "quote": null
+  },
+  {
+   "text": "§10.2 p.230 l.7-8",
+   "version": "OpenMP 5.2",
+   "section": "10.2",
+   "quote": null
+  },
+  {
+   "text": "6.0 §B.3 p.904 l.16",
+   "version": "OpenMP 6.0",
+   "section": "B.3",
+   "quote": null
+  }
+ ],
+ "fresh/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90": [
+  {
+   "text": "OpenACC 3.4 §2.6.2 p.42 l.1403-1409",
+   "version": "OpenACC 3.4",
+   "section": "2.6.2",
+   "quote": null
+  },
+  {
+   "text": "OpenACC 3.4 §2.9.11 p.71 l.2549-2555",
+   "version": "OpenACC 3.4",
+   "section": "2.9.11",
+   "quote": null
+  }
+ ],
+ "fresh/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §11.7 p.257 l.29-34, p.258 l.1-4",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": null
+  },
+  {
+   "text": "5.2 §11.7 p.257 l.29-34, p.258 l.1-4",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": null
+  },
+  {
+   "text": "§10.3 p.234 l.14-24",
+   "version": "OpenMP 5.2",
+   "section": "10.3",
+   "quote": null
+  }
+ ],
+ "fuzz/1131-afar.f90": [],
+ "fuzz/1391-cce20.f90": [],
+ "fuzz/14-cce20.f90": [],
+ "fuzz/1505-cce20.f90": [
+  {
+   "text": "5.2 §10.1.1 p.226 l.27-28",
+   "version": "OpenMP 5.2",
+   "section": "10.1.1",
+   "quote": "if (IfClauseValue = false) then number of threads = 1;"
+  },
+  {
+   "text": "5.2 §5.5.8 p.135 l.7-10",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "At the end of a region that corresponds to a construct for which the reduction clause was specified, the original list item is updated by combining its original value with the final value of each of the private copies, using the combiner of the specified reduction-identifier."
+  }
+ ],
+ "fuzz/1540-afar.f90": [
+  {
+   "text": "5.2 §5.4.5 p.115 l.16-19",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": "When the conditional modifier appears on the clause or the list item is an iteration variable of one of the associated loops, if sequential execution of the loop nest would assign a value to the list item then the original list item is assigned the value that the list item would have after sequential execution of the loop nest."
+  },
+  {
+   "text": "5.2 §17.2 p.340 l.27-30",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "If the target construct is among the constituent constructs and the list item is not the base variable or base pointer of a list item that appears in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom."
+  }
+ ],
+ "fuzz/158-afar.f90": [],
+ "fuzz/16-cce20.f90": [],
+ "fuzz/1644-cce21.f90": [],
+ "fuzz/165-cce19.f90": [],
+ "fuzz/1749-cce20.f90": [],
+ "fuzz/1936-afar.f90": [],
+ "fuzz/1978-cce19.f90": [
+  {
+   "text": "5.2 §5.8.1 p.148 l.2-3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "When specified, explicit data-environment attribute clauses on target directives determine the attributes for variables referenced in a target construct."
+  },
+  {
+   "text": "5.2 §5.8.1 p.148 l.18-20",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a defaultmap clause is present for the category of the variable and specifies an implicit behavior other than default, the data-mapping or data-sharing attribute is determined by that clause."
+  }
+ ],
+ "fuzz/2014-cce19.f90": [],
+ "fuzz/2224-cce19.f90": [],
+ "fuzz/2334-cce19.f90": [
+  {
+   "text": "5.2 §4.3.1.3 p.81 l.12",
+   "version": "OpenMP 5.2",
+   "section": "4.3.1.3",
+   "quote": "x = x operator expr"
+  },
+  {
+   "text": "5.2 §4.3.1.3 p.79 l.23",
+   "version": "OpenMP 5.2",
+   "section": "4.3.1.3",
+   "quote": "expr is a scalar expression."
+  }
+ ],
+ "fuzz/536-cce19.f90": [],
+ "fuzz/591-cce19.f90": [
+  {
+   "text": "5.2 §10.4.1 p.236 l.21-24",
+   "version": "OpenMP 5.2",
+   "section": "10.4.1",
+   "quote": "The nontemporal clause specifies that accesses to the storage locations to which the list items refer have low temporal locality across the iterations in which those storage locations are accessed. The list items of the nontemporal clause may also appear as list items of data-environment attribute clauses."
+  },
+  {
+   "text": "5.2 §17.2 p.340 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "The effect of the lastprivate clause is as if it is applied to all leaf constructs that permit the clause. If the parallel construct is among the constituent constructs and the list item is not also"
+  }
+ ],
+ "fuzz/650-afar.f90": [
+  {
+   "text": "5.2 §5.4.4 p.112 l.11-14",
+   "version": "OpenMP 5.2",
+   "section": "5.4.4",
+   "quote": "In addition, the new list item is initialized from the original list item that exists before the construct. The initialization of the new list item is done once for each task that references the list item in any statement in the construct. The initialization is done prior to the execution of the construct."
+  },
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom."
+  }
+ ],
+ "fuzz/698-afar.f90": [],
+ "fuzz/700-afar.f90": [],
+ "fuzz/775-cce21.f90": [],
+ "fuzz/87-afar.f90": [],
+ "fuzz/916-afar.f90": [
+  {
+   "text": "5.2 §5.5.8 p.135 l.4-10",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For the teams construct, one or more private copies of each list item are created for the initial task of each team in the league, as if the private clause had been used. For the loop construct, private copies are created and used in the construct according to the description and restrictions in Section 5.3. At the end of a region that corresponds to a construct for which the reduction clause was specified, the original list item is updated by combining its original value with the final value of each of the private copies, using the combiner of the specified reduction-identifier."
+  },
+  {
+   "text": "5.2 §5.5.8 p.135 l.26-27",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "A list item that appears in a reduction clause on a worksharing construct must be shared in the parallel region to which a corresponding worksharing region binds."
+  }
+ ],
+ "fuzz/958-cce20.f90": [],
+ "fuzz/98-cce19.f90": [
+  {
+   "text": "5.2 §5.8.1 p.148 l.2-3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "When specified, explicit data-environment attribute clauses on target directives determine the attributes for variables referenced in a target construct."
+  },
+  {
+   "text": "5.2 §5.8.1 p.148 l.18-20",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a defaultmap clause is present for the category of the variable and specifies an implicit behavior other than default, the data-mapping or data-sharing attribute is determined by that clause."
+  }
+ ],
+ "fuzz/b1-121-afar.f90": [
+  {
+   "text": "5.2 §5.5.8 p.134 l.20-24",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "The reduction clause is a reduction scoping clause and a reduction participating clause, as described in Section 5.5.6 and Section 5.5.7. For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier. After the end of the region, the original list item is updated with the values of the private copies using the combiner associated with the reduction-identifier."
+  },
+  {
+   "text": "5.2 §5.5.8 p.135 l.7-10",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "At the end of a region that corresponds to a construct for which the reduction clause was specified, the original list item is updated by combining its original value with the final value of each of the private copies, using the combiner of the specified reduction-identifier."
+  }
+ ],
+ "fuzz/b1-183-afar.f90": [],
+ "fuzz/b1-22-cce20.f90": [],
+ "fuzz/b1-231-afar.f90": [],
+ "fuzz/b1-268-afar.f90": [],
+ "fuzz/b2-183-afar.f90": [],
+ "fuzz/b2-209-cce19.f90": [
+  {
+   "text": "5.2 §17.2 p.340 l.27-30",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "If the target construct is among the constituent constructs and the list item is not the base variable or base pointer of a list item that appears in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom."
+  },
+  {
+   "text": "5.2 §5.4.5 p.115 l.16-19",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": "When the conditional modifier appears on the clause or the list item is an iteration variable of one of the associated loops, if sequential execution of the loop nest would assign a value to the list item then the original list item is assigned the value that the list item would have after sequential execution of the loop nest."
+  }
+ ],
+ "fuzz/b2-213-afar.f90": [],
+ "fuzz/b2-52-afar.f90": [],
+ "fuzz/b2-68-afar.f90": [
+  {
+   "text": "5.2 §10.1.1 p.226 l.27-28",
+   "version": "OpenMP 5.2",
+   "section": "10.1.1",
+   "quote": "if (IfClauseValue = false) then number of threads = 1;"
+  },
+  {
+   "text": "5.2 §5.5.8 p.135 l.7-10",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "At the end of a region that corresponds to a construct for which the reduction clause was specified, the original list item is updated by combining its original value with the final value of each of the private copies, using the combiner of the specified reduction-identifier."
+  }
+ ],
+ "fuzz/b2-85-cce20.f90": [
+  {
+   "text": "5.2 §5.8.1 p.148",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  }
+ ],
+ "fuzz/b3-188-cce19.f90": [
+  {
+   "text": "5.2 §17.2 p.339 l.31-33",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "Some clauses are permitted only on a single leaf construct of the combined or composite construct, in which case the effect is as if the clause is applied to that specific construct."
+  },
+  {
+   "text": "5.2 §11.5.3 p.252 l.23-26",
+   "version": "OpenMP 5.2",
+   "section": "11.5.3",
+   "quote": "If the kind argument is dynamic, each thread executes a chunk, then requests another chunk, until no chunks remain to be assigned. Each chunk contains chunk_size iterations, except for the chunk that contains the sequentially last iteration, which may have fewer iterations. If chunk_size is not specified, it defaults to 1."
+  },
+  {
+   "text": "5.2 §11.6.1 p.256 l.13-17",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": "The dist_schedule clause specifies how iterations of associated loops of a distribute construct are divided into contiguous non-empty subsets, called chunks, and how these chunks are distributed among the teams of the league. if chunk_size is not specified, the iteration space is divided into chunks that are approximately equal in size, and at most one chunk is distributed to each initial team of the league."
+  }
+ ],
+ "fuzz/b3-190-cce21.f90": [],
+ "fuzz/b3-197-cce19.f90": [],
+ "fuzz/b3-250-cce20.f90": [],
+ "fuzz/b3-278-cce19.f90": [
+  {
+   "text": "5.2 §5.8.2 p.150 l.2-4",
+   "version": "OpenMP 5.2",
+   "section": "5.8.2",
+   "quote": "A structure type T has a predefined default mapper that is defined as if by a declare mapper directive that specifies v in a map clause with the alloc map-type and each structure element of v in a map clause with the tofrom map-type."
+  },
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom."
+  }
+ ],
+ "fuzz/b3-45-cce21.f90": [],
+ "fuzz/b3-54-afar.f90": [
+  {
+   "text": "5.2 §13.8 p.284 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct generates a target task. The generated task region encloses the target region. If a depend clause is present, it is associated with the target task. The device clause determines the device on which the target region executes. If the nowait clause is present,"
+  },
+  {
+   "text": "5.2 §15.9.5 p.323 l.16-18",
+   "version": "OpenMP 5.2",
+   "section": "15.9.5",
+   "quote": "The depend clause enforces additional constraints on the scheduling of tasks. These constraints establish dependences only between sibling tasks. Task dependences are derived from the task-dependence-type and the list items."
+  }
+ ],
+ "fuzz/b3-61-cce20.f90": [
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom."
+  },
+  {
+   "text": "5.2 §5.8.1 p.148 l.15-17",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is the base variable of a list item in an in_reduction clause on a target construct then it is treated as if the list item had appeared in a map clause with a map-type of tofrom and a map-type-modifier of always."
+  }
+ ],
+ "fuzz/b3-9-afar.f90": [],
+ "fuzz/b3-9-cce21.f90": [],
+ "fuzz/b3-94-afar.f90": [],
+ "fuzz/b4-39-afar.f90": [],
+ "fuzz/b4-86-cce19.f90": [
+  {
+   "text": "5.2 §5.8.8 p.163 l.8-10",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": "The type and an optional mapper-identifier uniquely identify the mapper for use in a map clause or motion clause later in the program. The visibility and accessibility of this declaration are the same as those of a variable declared at the same location in the program."
+  },
+  {
+   "text": "5.2 §5.8.8 p.163 l.14-17",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": "The effect that a user-defined mapper has on either a map clause that maps a list item of the given base language type or a motion clause that invokes the mapper and updates a list item of the given base language type is to replace the map or update with a set of map clauses or updates derived from the map clauses specified by the mapper, as described in Section 5.8.3 and Section 5.9."
+  }
+ ],
+ "fuzz/gcc-declare-reduction-module-not-found.f90": [
+  {
+   "text": "5.2 §5.5.5 p.133 l.10-11",
+   "version": "OpenMP 5.2",
+   "section": "5.5.5",
+   "quote": "If the reduction identifier is defined in a declare reduction directive, the declare reduction directive must be in the same subprogram, or accessible by host or use association"
+  }
+ ],
+ "fuzz/gcc-strided-target-update-rejected.f90": [
+  {
+   "text": "5.2 §B.4 p.634 l.3-4",
+   "version": "OpenMP 5.2",
+   "section": "B.4",
+   "quote": "The target update construct ... was modified to allow array sections that specify discontiguous storage"
+  },
+  {
+   "text": "5.2 §5.8.3 p.155 l.10",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "fuzz/gcc-target-simd-map-nontemporal-rejected.f90": [
+  {
+   "text": "5.2 §17.2 p.341",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  }
+ ],
+ "fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90": [
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom."
+  },
+  {
+   "text": "5.2 §5.8.3 p.151 l.29-30",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If a component of a derived type list item is a map clause list item that results from the predefined default mapper for that derived type"
+  },
+  {
+   "text": "5.2 §5.8.3 p.151 l.34-37",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "is present in the device data environment when the construct is encountered"
+  }
+ ],
+ "fuzz/nvhpc-assumed-length-character-dummy-map-ice.f90": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "The map clause specifies how an original list item is mapped from the current task's data environment to a corresponding list item in the device data environment"
+  }
+ ],
+ "fuzz/nvhpc-default-none-reduction-lastprivate-fort1-crash.f90": [
+  {
+   "text": "5.2 §5.4.1 p.109 l.15-17",
+   "version": "OpenMP 5.2",
+   "section": "5.4.1",
+   "quote": "If data-sharing-attribute is none, each variable that is referenced in the construct and does not have a predetermined data-sharing attribute must have its data-sharing attribute explicitly determined by being listed in a data-sharing attribute clause."
+  }
+ ],
+ "fuzz/nvhpc-defaultmap-firstprivate-lastprivate-ice.f90": [
+  {
+   "text": "5.2 §5.8.7 p.162 l.5-6",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "If implicit-behavior is firstprivate, the attribute is a data-sharing attribute of firstprivate."
+  }
+ ],
+ "fuzz/nvhpc-defaultmap-to-scalar-reduction-lost.f90": [
+  {
+   "text": "5.2 §5.8.1 p.148 l.2-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "When specified, explicit data-environment attribute clauses on target directives determine the attributes for variables referenced in a target construct. Otherwise, the first matching rule from the following list determines the implicit data-mapping (or data-sharing) attribute"
+  },
+  {
+   "text": "5.2 §5.8.1 p.148 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is the base variable of a list item in a reduction, lastprivate or linear clause on a combined target construct then the list item is treated as if it had appeared in a map clause with a map-type of tofrom if Section 17.2 specifies this behavior"
+  },
+  {
+   "text": "5.2 §5.8.1 p.148 l.18-19",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §17.2 p.341 l.10-13",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "If a list item in a reduction clause on a combined target construct does not have the same base variable or base pointer as a list item in a map clause on the construct, then the effect is as if the list item in the reduction clause appears as a list item in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "5.0 §2.19.7 p.314 l.14-16",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7",
+   "quote": "If a list item appears in a reduction, lastprivate or linear clause on a combined target construct then it is treated as if it also appears in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "5.0 §2.19.7 p.314 l.20-21",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7",
+   "quote": null
+  }
+ ],
+ "fuzz/nvhpc-depend-implicit-map-illegal-address.f90": [
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "5.2 §13.8 p.284 l.14-15",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "If a depend clause is present, it is associated with the target task"
+  }
+ ],
+ "fuzz/nvhpc-distribute-parallel-num-threads-writes-lost.f90": [
+  {
+   "text": "5.2 §10.1.2 p.227 l.23",
+   "version": "OpenMP 5.2",
+   "section": "10.1.2",
+   "quote": "The num_threads clause specifies the desired number of threads to execute a parallel region."
+  },
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"
+  }
+ ],
+ "fuzz/nvhpc-end-distribute-simd-rejected.f90": [
+  {
+   "text": "5.2 §17.3 p.342 l.17",
+   "version": "OpenMP 5.2",
+   "section": "17.3",
+   "quote": "If directive-name-A is distribute then directive-name-B may be simd"
+  },
+  {
+   "text": "5.2 §3.1 p.49 l.14",
+   "version": "OpenMP 5.2",
+   "section": "3.1",
+   "quote": "end directive-name unless otherwise specified"
+  },
+  {
+   "text": "5.2 §3.1 p.52 l.26",
+   "version": "OpenMP 5.2",
+   "section": "3.1",
+   "quote": "For a loop-associated directive, the paired end directive is optional."
+  }
+ ],
+ "fuzz/nvhpc-loop-character-achar-unsupported.f90": [
+  {
+   "text": "5.2 §11.7 p.257 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "A loop construct specifies that the logical iterations of the associated loops may execute concurrently and permits the encountering threads to execute the loop accordingly."
+  }
+ ],
+ "fuzz/nvhpc-map-always-after-map-to-not-copied-back.f90": [
+  {
+   "text": "5.2 §5.8.3 p.154 l.2-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated as if the list item appeared in a from clause on a target update directive."
+  }
+ ],
+ "fuzz/nvhpc-num-threads-reduction-identity-lost.f90": [
+  {
+   "text": "5.2 §5.5.8 p.134 l.21-24",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier. After the end of the region, the original list item is updated with the values of the private copies using the combiner associated with the reduction-identifier."
+  }
+ ],
+ "fuzz/nvhpc-target-parallel-firstprivate-translate-failure.f90": [
+  {
+   "text": "5.2 §13.8 p.284 l.4-6",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  },
+  {
+   "text": "5.2 §17.4 p.343 l.7-8",
+   "version": "OpenMP 5.2",
+   "section": "17.4",
+   "quote": "The semantics of the combined constructs are identical to that of explicitly specifying the first construct containing one instance of the second construct and no other statements."
+  }
+ ],
+ "fuzz/nvhpc-target-parallel-single-hang.f90": [
+  {
+   "text": "5.2 §11.1 p.241 l.5-6",
+   "version": "OpenMP 5.2",
+   "section": "11.1",
+   "quote": "An implicit barrier occurs at the end of a single region if the nowait clause is not specified."
+  },
+  {
+   "text": "5.2 §17.4 p.343 l.7-8",
+   "version": "OpenMP 5.2",
+   "section": "17.4",
+   "quote": "The semantics of the combined constructs are identical to that of explicitly specifying the first construct containing one instance of the second construct and no other statements."
+  }
+ ],
+ "fuzz/nvhpc-target-simd-collapse-translate-failure.f90": [
+  {
+   "text": "5.2 §4.4.3 p.93 l.23-25",
+   "version": "OpenMP 5.2",
+   "section": "4.4.3",
+   "quote": "The collapse clause associates one or more loops with the directive on which it appears for the purpose of identifying the portion of the depth of the canonical loop nest to which to apply the semantics of the directive."
+  },
+  {
+   "text": "5.2 §4.4.3 p.93 l.21",
+   "version": "OpenMP 5.2",
+   "section": "4.4.3",
+   "quote": "distribute, do, for, loop, simd, taskloop"
+  },
+  {
+   "text": "5.2 §17.3 p.342 l.22",
+   "version": "OpenMP 5.2",
+   "section": "17.3",
+   "quote": "If directive-name-A is target then directive-name-B may be simd"
+  }
+ ],
+ "fuzz/nvhpc-target-simd-no-end-directive-rejected.f90": [
+  {
+   "text": "5.2 §3.1 p.52 l.26",
+   "version": "OpenMP 5.2",
+   "section": "3.1",
+   "quote": "For a loop-associated directive, the paired end directive is optional."
+  },
+  {
+   "text": "5.2 §17.3 p.342 l.22",
+   "version": "OpenMP 5.2",
+   "section": "17.3",
+   "quote": "If directive-name-A is target then directive-name-B may be simd"
+  }
+ ],
+ "fuzz/par-s1-2082-gcc_g90.f90": [
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom."
+  },
+  {
+   "text": "5.2 §5.8.3 p.152 l.1-4",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If a list item in a map clause is an associated pointer and the pointer is not the base pointer of another list item in a map clause on the same construct, then it is treated as if its pointer target is implicitly mapped in the same clause. For the purposes of the map clause, the mapped pointer target is treated as if its base pointer is the associated pointer."
+  }
+ ],
+ "fuzz/s1-2370-cce21.f90": [
+  {
+   "text": "5.2 §17.2 p.340",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "If the parallel construct is among the constituent constructs and the effect is not as if the firstprivate clause is applied to it by the above rules, then the effect is as if the shared clause with the same list item is applied to the parallel construct"
+  },
+  {
+   "text": "5.2 §5.4.1 p.109",
+   "version": "OpenMP 5.2",
+   "section": "5.4.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.4.4",
+   "version": "OpenMP 5.2",
+   "section": "5.4.4",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.1.1 p.97",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": "The loop iteration variable in any associated loop of a loop-associated construct is otherwise private"
+  }
+ ],
+ "fuzz/s1-2592-cce21.f90": [
+  {
+   "text": "5.2 §5.5.10",
+   "version": "OpenMP 5.2",
+   "section": "5.5.10",
+   "quote": null
+  },
+  {
+   "text": "§5.5.9",
+   "version": "OpenMP 5.2",
+   "section": "5.5.9",
+   "quote": null
+  }
+ ],
+ "fuzz/s1-3463-cce21.f90": [
+  {
+   "text": "5.2 §5.8.3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "fuzz/s1-4339-afar.f90": [
+  {
+   "text": "5.2 §5.8.3 p.155 l.12",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "The close map-type-modifier is a hint to the runtime to allocate memory close to the target device"
+  },
+  {
+   "text": "5.2 §5.8.1",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  }
+ ],
+ "fuzz/s1-6085-cce21.f90": [
+  {
+   "text": "§5.5.11",
+   "version": "OpenMP 5.2",
+   "section": "5.5.11",
+   "quote": null
+  },
+  {
+   "text": "§5.5.8",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "fuzz/s1-6760-cce20.f90": [
+  {
+   "text": "5.2 §5.8.4 p.158",
+   "version": "OpenMP 5.2",
+   "section": "5.8.4",
+   "quote": "The clause-name to may be used as a synonym for the clause-name enter. This use has been deprecated."
+  }
+ ],
+ "fuzz/s1-6888-cce21.f90": [
+  {
+   "text": "5.2 §3.2.5 p.66",
+   "version": "OpenMP 5.2",
+   "section": "3.2.5",
+   "quote": "A stride expression may not be specified unless otherwise stated"
+  },
+  {
+   "text": "5.2 §5.9 p.165",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": "The list items may include array sections with stride expressions"
+  },
+  {
+   "text": "5.2 §B.4 p.634",
+   "version": "OpenMP 5.2",
+   "section": "B.4",
+   "quote": "The target update construct (see Section 13.9) was modified to allow array sections that specify discontiguous storage"
+  },
+  {
+   "text": "5.2 §5.8.3 p.156",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "fuzz/s1-7882-cce20.f90": [
+  {
+   "text": "5.2 §5.8.3 p.152 l.25-27",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If a map clause with a present map-type-modifier appears on a construct and on entry to the region the corresponding list item is not present in the device data environment, runtime error termination is performed"
+  }
+ ],
+ "fuzz/s1-8634-cce21.f90": [
+  {
+   "text": "5.2 §5.8.3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§13.6",
+   "version": "OpenMP 5.2",
+   "section": "13.6",
+   "quote": null
+  },
+  {
+   "text": "§13.7",
+   "version": "OpenMP 5.2",
+   "section": "13.7",
+   "quote": null
+  }
+ ],
+ "fuzz/s1-91-cce21.f90": [
+  {
+   "text": "5.2 §5.4.1 p.109",
+   "version": "OpenMP 5.2",
+   "section": "5.4.1",
+   "quote": "each variable that is referenced in the construct"
+  }
+ ],
+ "fuzz/s1-9443-afar.f90": [
+  {
+   "text": "5.2 §5.8.3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "fuzz/s1-9914-cce19.f90": [
+  {
+   "text": "5.2 §13.8 p.284 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct generates a target task. The generated task region encloses the target region. If a depend clause is present, it is associated with the target task. The device clause determines the device on which the target region executes. If the nowait clause is present,"
+  },
+  {
+   "text": "5.2 §13.3 p.277 l.19-20",
+   "version": "OpenMP 5.2",
+   "section": "13.3",
+   "quote": "If the thread_limit clause is specified, the number of threads will be less than or equal to threadlim. Otherwise, if the"
+  }
+ ],
+ "gcc/gcc-acc-bind-device-type-rejected.f90": [
+  {
+   "text": "OpenACC 3.4 §2.4 l.1013-1015",
+   "version": "OpenACC 3.4",
+   "section": "2.4",
+   "quote": null
+  },
+  {
+   "text": "§2.15.1 l.3405-3407",
+   "version": "OpenACC 3.4",
+   "section": "2.15.1",
+   "quote": "The bind clause specifies the name to use when calling the procedure on a device other than the host"
+  },
+  {
+   "text": "OpenACC 3.4 §2.4, p.32",
+   "version": "OpenACC 3.4",
+   "section": "2.4",
+   "quote": "The supported device types are implementation-defined."
+  }
+ ],
+ "gcc/gcc-acc-c-bind-device-type-rejected.c": [
+  {
+   "text": "OpenACC 3.4 §2.4 l.1013-1015",
+   "version": "OpenACC 3.4",
+   "section": "2.4",
+   "quote": null
+  },
+  {
+   "text": "§2.15.1 l.3405-3407",
+   "version": "OpenACC 3.4",
+   "section": "2.15.1",
+   "quote": "The bind clause specifies the name to use when calling the procedure on a device other than the host"
+  },
+  {
+   "text": "OpenACC 3.4 §2.4, p.32",
+   "version": "OpenACC 3.4",
+   "section": "2.4",
+   "quote": "The supported device types are implementation-defined."
+  }
+ ],
+ "gcc/gcc-acc-c-detach-delete-attach-underflow.c": [
+  {
+   "text": "OpenACC 3.4 §2.7.12 l.2022-2025",
+   "version": "OpenACC 3.4",
+   "section": "2.7.12",
+   "quote": null
+  },
+  {
+   "text": "§2.7.2 l.1733-1735",
+   "version": "OpenACC 3.4",
+   "section": "2.7.2",
+   "quote": "If the reference counter is already zero, its value is left unchanged"
+  },
+  {
+   "text": "§2.7.2 l.1794-1796",
+   "version": "OpenACC 3.4",
+   "section": "2.7.2",
+   "quote": null
+  },
+  {
+   "text": "§2.7.3",
+   "version": "OpenACC 3.4",
+   "section": "2.7.3",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-acc-c-gang-dim-rejected.c": [
+  {
+   "text": "OpenACC 3.4 §2.9.2 l.2371",
+   "version": "OpenACC 3.4",
+   "section": "2.9.2",
+   "quote": null
+  },
+  {
+   "text": "OpenACC 3.4 §2.9.2, p.66",
+   "version": "OpenACC 3.4",
+   "section": "2.9.2",
+   "quote": "The associated dimension is the value of the dim argument, if it appears, or is dimension one."
+  },
+  {
+   "text": "3.4 §2.12",
+   "version": "OpenACC 3.4",
+   "section": "2.12",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-acc-c-link-in-routine-rejected.c": [
+  {
+   "text": "OpenACC 3.4 §2.13.3 l.3083-3084",
+   "version": "OpenACC 3.4",
+   "section": "2.13.3",
+   "quote": "The global variable or common block variables may be used in accelerator routines"
+  },
+  {
+   "text": "OpenACC 3.4 §2.13.3",
+   "version": "OpenACC 3.4",
+   "section": "2.13.3",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-acc-detach-delete-attach-underflow.f90": [
+  {
+   "text": "OpenACC 3.4 §2.7.12 l.2022-2025",
+   "version": "OpenACC 3.4",
+   "section": "2.7.12",
+   "quote": null
+  },
+  {
+   "text": "§2.7.2 l.1733-1735",
+   "version": "OpenACC 3.4",
+   "section": "2.7.2",
+   "quote": "If the reference counter is already zero, its value is left unchanged"
+  },
+  {
+   "text": "§2.7.2 l.1794-1796",
+   "version": "OpenACC 3.4",
+   "section": "2.7.2",
+   "quote": null
+  },
+  {
+   "text": "§2.7.3",
+   "version": "OpenACC 3.4",
+   "section": "2.7.3",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-acc-gang-dim-collapse-force-rejected.f90": [
+  {
+   "text": "OpenACC 3.4 §2.9.1 l.2340-2341",
+   "version": "OpenACC 3.4",
+   "section": "2.9.1",
+   "quote": "If the force modifier does not appear, then the associated loops must be tightly nested"
+  },
+  {
+   "text": "§2.9.2 l.2371",
+   "version": "OpenACC 3.4",
+   "section": "2.9.2",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-acc-init-set-shutdown-rejected.f90": [
+  {
+   "text": "OpenACC 3.4 §2.14.1 l.3089-3100",
+   "version": "OpenACC 3.4",
+   "section": "2.14.1",
+   "quote": null
+  },
+  {
+   "text": "§2.14.2",
+   "version": "OpenACC 3.4",
+   "section": "2.14.2",
+   "quote": null
+  },
+  {
+   "text": "§2.14.3",
+   "version": "OpenACC 3.4",
+   "section": "2.14.3",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-acc-link-in-routine-rejected.f90": [
+  {
+   "text": "OpenACC 3.4 §2.13.3 l.3083-3084",
+   "version": "OpenACC 3.4",
+   "section": "2.13.3",
+   "quote": "The global variable or common block variables may be used in accelerator routines"
+  },
+  {
+   "text": "OpenACC 3.4 §2.13.3",
+   "version": "OpenACC 3.4",
+   "section": "2.13.3",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-acc-use-device-allocatable-rejected.f90": [
+  {
+   "text": "OpenACC 3.4 §2.8 l.2230",
+   "version": "OpenACC 3.4",
+   "section": "2.8",
+   "quote": "A var in a use_device clause must be the name of a variable or array"
+  }
+ ],
+ "gcc/gcc-c-motion-mapper-rejected.c": [
+  {
+   "text": "5.2 §5.9.1 p.166",
+   "version": "OpenMP 5.2",
+   "section": "5.9.1",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-c-omp60-undocumented-rejected.c": [
+  {
+   "text": "6.0 §5.4 p.173",
+   "version": "OpenMP 6.0",
+   "section": "5.4",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-c-omp60-unimplemented-rejected.c": [
+  {
+   "text": "6.0 §7.6.13 p.257",
+   "version": "OpenMP 6.0",
+   "section": "7.6.13",
+   "quote": null
+  },
+  {
+   "text": "6.0 §5.4 p.173",
+   "version": "OpenMP 6.0",
+   "section": "5.4",
+   "quote": null
+  },
+  {
+   "text": "6.0 §14.6 p.440",
+   "version": "OpenMP 6.0",
+   "section": "14.6",
+   "quote": null
+  },
+  {
+   "text": "6.0 §17.9.6 p.510",
+   "version": "OpenMP 6.0",
+   "section": "17.9.6",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-c-target-in-task-mandatory-device-not-found.c": [
+  {
+   "text": "5.2 §13.2 p.276 l.21-23",
+   "version": "OpenMP 5.2",
+   "section": "13.2",
+   "quote": "if no device clause is present, the behavior is as if the device clause appears without a device-modifier and with a device-description that evaluates to the value of the default-device-var ICV"
+  },
+  {
+   "text": "5.2 §2.4 p.45 l.10-12",
+   "version": "OpenMP 5.2",
+   "section": "2.4",
+   "quote": "When a task construct, a parallel construct or a teams construct is encountered, each generated task inherits the values of the data environment scoped ICVs from each generating task's ICV values"
+  },
+  {
+   "text": "5.2 §21.2.8 p.610 l.28-30",
+   "version": "OpenMP 5.2",
+   "section": "21.2.8",
+   "quote": "The mandatory value specifies that the effect of any device construct or device memory routine that uses a device that is unavailable or not supported by the implementation, or uses a non-conforming device number, is as if the omp_invalid_device device number was used"
+  },
+  {
+   "text": "5.2 §21.2.8",
+   "version": "OpenMP 5.2",
+   "section": "21.2.8",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-c-uses-allocators-traits-unimplemented.c": [
+  {
+   "text": "5.2 §6.8 p.181",
+   "version": "OpenMP 5.2",
+   "section": "6.8",
+   "quote": null
+  },
+  {
+   "text": "5.2 §6.2 p.173",
+   "version": "OpenMP 5.2",
+   "section": "6.2",
+   "quote": null
+  },
+  {
+   "text": "6.0 §8.2 p.306",
+   "version": "OpenMP 6.0",
+   "section": "8.2",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-declare-mapper-rejected.f90": [
+  {
+   "text": "5.2 §5.8.8 p.162",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.8 p.163",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-defaultmap-to-pointer-copy-back.f90": [
+  {
+   "text": "5.2 §5.8.7 p.162 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "If implicit-behavior is the name of a map type, the attribute is a data-mapping attribute determined by an implicit map clause with the specified map type"
+  },
+  {
+   "text": "5.2 §5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-loop-bind-default-none-rejected.f90": [
+  {
+   "text": "5.2 §5.1.1 p.97 l.18",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": "The loop iteration variable in any associated loop of a loop construct is lastprivate"
+  },
+  {
+   "text": "5.2 §5.1.1 p.97 l.22-23",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": "Loop iteration variables inside parallel, teams, or task generating constructs are private in the innermost such construct that encloses the loop"
+  },
+  {
+   "text": "5.2 §11.7 p.257",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": null
+  },
+  {
+   "text": "§11.7.1 p.258",
+   "version": "OpenMP 5.2",
+   "section": "11.7.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §11.7 p.257",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": null
+  },
+  {
+   "text": "§11.7.1 p.258",
+   "version": "OpenMP 5.2",
+   "section": "11.7.1",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-omp60-undocumented-rejected.f90": [
+  {
+   "text": "6.0 §5.4 p.173",
+   "version": "OpenMP 6.0",
+   "section": "5.4",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-omp60-unimplemented-rejected.f90": [
+  {
+   "text": "6.0 §7.6.13 p.257",
+   "version": "OpenMP 6.0",
+   "section": "7.6.13",
+   "quote": null
+  },
+  {
+   "text": "6.0 §5.4 p.173",
+   "version": "OpenMP 6.0",
+   "section": "5.4",
+   "quote": null
+  },
+  {
+   "text": "6.0 §14.6 p.440",
+   "version": "OpenMP 6.0",
+   "section": "14.6",
+   "quote": null
+  },
+  {
+   "text": "6.0 §17.9.6 p.510",
+   "version": "OpenMP 6.0",
+   "section": "17.9.6",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-target-in-task-mandatory-device-not-found.f90": [
+  {
+   "text": "5.2 §13.2 p.276 l.21-23",
+   "version": "OpenMP 5.2",
+   "section": "13.2",
+   "quote": "if no device clause is present, the behavior is as if the device clause appears without a device-modifier and with a device-description that evaluates to the value of the default-device-var ICV"
+  },
+  {
+   "text": "5.2 §2.4 p.45 l.10-12",
+   "version": "OpenMP 5.2",
+   "section": "2.4",
+   "quote": "When a task construct, a parallel construct or a teams construct is encountered, each generated task inherits the values of the data environment scoped ICVs from each generating task's ICV values"
+  },
+  {
+   "text": "5.2 §21.2.8 p.610 l.28-30",
+   "version": "OpenMP 5.2",
+   "section": "21.2.8",
+   "quote": "The mandatory value specifies that the effect of any device construct or device memory routine that uses a device that is unavailable or not supported by the implementation, or uses a non-conforming device number, is as if the omp_invalid_device device number was used"
+  },
+  {
+   "text": "5.2 §21.2.8",
+   "version": "OpenMP 5.2",
+   "section": "21.2.8",
+   "quote": null
+  }
+ ],
+ "gcc/gcc-uses-allocators-traits-unimplemented.f90": [
+  {
+   "text": "5.2 §6.8 p.181",
+   "version": "OpenMP 5.2",
+   "section": "6.8",
+   "quote": null
+  },
+  {
+   "text": "5.2 §6.2 p.173",
+   "version": "OpenMP 5.2",
+   "section": "6.2",
+   "quote": null
+  },
+  {
+   "text": "6.0 §8.2 p.306",
+   "version": "OpenMP 6.0",
+   "section": "8.2",
+   "quote": null
+  }
+ ],
+ "harvest/afar-flang-strided-target-update.f90": [
+  {
+   "text": "OpenMP 5.2 §5.9 p.165 l.13-17",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": "The list items may include array sections with stride expressions ... If a list item is an array or array section then it is treated as if it is replaced by each of its array elements in the clause"
+  },
+  {
+   "text": "5.2 §5.9",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": null
+  }
+ ],
+ "harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90": [
+  {
+   "text": "OpenACC 3.4 §2.13.2 p.83 l.3053-3057",
+   "version": "OpenACC 3.4",
+   "section": "2.13.2",
+   "quote": null
+  }
+ ],
+ "harvest/cce-c-implicit-struct-map-partly-present.c": [
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.152 l.28-31",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "a single mappable storage block"
+  },
+  {
+   "text": "5.2 §5.8.3 p.154 l.18-21",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If a single contiguous part of the original storage of a list item with an implicit data-mapping attribute has corresponding storage in the device data environment prior to a task encountering the construct on which the map clause appears, only that part of the original storage will have corresponding storage in the device data environment as a result of the map clause"
+  },
+  {
+   "text": "5.0 §2.19.7.1 p.320 l.18-21",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.154 l.22-27",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.1 p.148 l.9-11",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.154 l.18-21",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "harvest/cce-c-strided-target-update.c": [
+  {
+   "text": "OpenMP 5.2 §5.9 p.165 l.13-17",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": "The list items may include array sections with stride expressions ... If a list item is an array or array section then it is treated as if it is replaced by each of its array elements in the clause"
+  },
+  {
+   "text": "5.2 §3.2.5 p.64 l.22-23",
+   "version": "OpenMP 5.2",
+   "section": "3.2.5",
+   "quote": "{ lower-bound, lower-bound + stride, lower-bound + 2 * stride, ... , lower-bound + ((length - 1) * stride) }"
+  }
+ ],
+ "harvest/cce-ftn-target-parallel-thread-query-ice.f90": [
+  {
+   "text": "OpenMP 5.2 §10.1",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": null
+  },
+  {
+   "text": "§18.2.2",
+   "version": "OpenMP 5.2",
+   "section": "18.2.2",
+   "quote": null
+  },
+  {
+   "text": "§18.2.4",
+   "version": "OpenMP 5.2",
+   "section": "18.2.4",
+   "quote": null
+  }
+ ],
+ "harvest/cce-named-constant-array-declare-target-routine-rejected.f90": [
+  {
+   "text": "§13.8 p.286 l.31-32",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "A variable referenced in a target region but not the target construct that is not declared in the target region must appear in a declare target directive"
+  },
+  {
+   "text": "§5.1.1 p.98 l.11",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": "Assumed-size arrays and named constants are shared"
+  },
+  {
+   "text": "§3.2.1 p.61 l.10",
+   "version": "OpenMP 5.2",
+   "section": "3.2.1",
+   "quote": "in clauses where it is explicitly allowed"
+  },
+  {
+   "text": "OpenACC 3.4 §2.15.2 p.98 l.3623-3625",
+   "version": "OpenACC 3.4",
+   "section": "2.15.2",
+   "quote": null
+  }
+ ],
+ "harvest/cce-use-device-ptr-c-ptr-not-converted.f90": [
+  {
+   "text": "OpenMP 5.2 §5.4.8 p.122 l.1-5",
+   "version": "OpenMP 5.2",
+   "section": "5.4.8",
+   "quote": "If a list item that appears in a use_device_ptr clause is of type C_PTR and points to a data entity that is mapped to the device data environment, references to the list item in the structured block ... are converted into references to a device pointer that is local to the structured block and that refers to the device address of the corresponding entity"
+  },
+  {
+   "text": "§3.8.11",
+   "version": "OpenMP 5.1",
+   "section": "3.8.11",
+   "quote": null
+  }
+ ],
+ "harvest/cce21-declare-target-link-module-variable-write-lost.f90": [
+  {
+   "text": "5.2 §5.8.5 p.159 l.24-27",
+   "version": "OpenMP 5.2",
+   "section": "5.8.5",
+   "quote": "does not map the list items. Instead, they are mapped according to the data-mapping rules described in Section 5.8"
+  },
+  {
+   "text": "5.2 §5.8.3 p.154 l.3-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "the original list item is updated as if the list item appeared in a from clause on a target update directive"
+  },
+  {
+   "text": "5.2 §5.8.3 p.154 l.3-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "harvest/cce21-internal-procedure-calls-internal-in-target-fault.f90": [
+  {
+   "text": "5.2 §13.8 p.285 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "If a procedure is explicitly or implicitly referenced in a target construct that does not specify a device clause in which the ancestor device-modifier appears then that procedure is treated as if its name had appeared in an enter clause on a declare target directive"
+  },
+  {
+   "text": "5.2 §7.8 p.205 l.3-6",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": null
+  }
+ ],
+ "harvest/gcc-acc-declare-create-allocatable-not-mapped.f90": [
+  {
+   "text": "OpenACC 3.4 §2.13.2 l.3056-3057",
+   "version": "OpenACC 3.4",
+   "section": "2.13.2",
+   "quote": "memory will be allocated in both local memory as well as in the current device memory and the dynamic reference counter will be set to one"
+  }
+ ],
+ "harvest/gcc-c-same-item-two-maps-rejected.c": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.14-15",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "A list item may appear more than once in the map clauses that are specified on the same directive"
+  }
+ ],
+ "harvest/gcc-c-strided-section-rejected.c": [
+  {
+   "text": "5.2 §3.2.5 p.64 l.3-5",
+   "version": "OpenMP 5.2",
+   "section": "3.2.5",
+   "quote": null
+  },
+  {
+   "text": "5.2 §1.4.2 p.28 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "1.4.2",
+   "quote": "The corresponding variable in the device data environment may share storage with the original variable. Writes to the corresponding variable may alter the value of the original variable"
+  }
+ ],
+ "harvest/gcc-c-target-data-struct-pointer-section-ice.c": [
+  {
+   "text": "5.2 §5.8.3 p.152 l.29-31",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "All map clause list items that have the same containing structure or share storage result in a single mappable storage block that contains the storage of the list items"
+  }
+ ],
+ "harvest/gcc-c-target-data-two-maps-ice.c": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.14-15",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "A list item may appear more than once in the map clauses that are specified on the same directive"
+  }
+ ],
+ "harvest/gcc-same-item-two-maps-rejected.f90": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.14-15",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "A list item may appear more than once in the map clauses that are specified on the same directive"
+  }
+ ],
+ "harvest/gcc-teams-simd-matmul-allocatable-ice.f90": [
+  {
+   "text": "5.2 §17.1 p.338 l.25-27",
+   "version": "OpenMP 5.2",
+   "section": "17.1",
+   "quote": null
+  }
+ ],
+ "harvest/nvhpc-c-target-data-if-false-use-device-ptr-garbage.c": [
+  {
+   "text": "OpenMP 5.2 §13.5 p.279 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "13.5",
+   "quote": "When an if clause is present and the if clause expression evaluates to false, the target device is the host"
+  },
+  {
+   "text": "§5.4.8 p.121 l.15-21",
+   "version": "OpenMP 5.2",
+   "section": "5.4.8",
+   "quote": null
+  },
+  {
+   "text": "§5.4.8 p.121 l.15-18",
+   "version": "OpenMP 5.2",
+   "section": "5.4.8",
+   "quote": null
+  }
+ ],
+ "harvest/nvhpc-named-constant-array-declare-target-routine-rejected.f90": [
+  {
+   "text": "§13.8 p.286 l.31-32",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "A variable referenced in a target region but not the target construct that is not declared in the target region must appear in a declare target directive"
+  },
+  {
+   "text": "§5.1.1 p.98 l.11",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": "Assumed-size arrays and named constants are shared"
+  },
+  {
+   "text": "§3.2.1 p.61 l.10",
+   "version": "OpenMP 5.2",
+   "section": "3.2.1",
+   "quote": "in clauses where it is explicitly allowed"
+  }
+ ],
+ "harvest/nvhpc-use-device-ptr-c-ptr-not-found.f90": [
+  {
+   "text": "OpenMP 5.2 §5.4.8 p.122 l.1-5",
+   "version": "OpenMP 5.2",
+   "section": "5.4.8",
+   "quote": "If a list item that appears in a use_device_ptr clause is of type C_PTR and points to a data entity that is mapped to the device data environment, references to the list item in the structured block ... are converted into references to a device pointer that is local to the structured block and that refers to the device address of the corresponding entity"
+  },
+  {
+   "text": "§3.8.11",
+   "version": "OpenMP 5.1",
+   "section": "3.8.11",
+   "quote": null
+  }
+ ],
+ "harvest/nvhpc2511-target-nowait-in-parallel-for-ice.c": [
+  {
+   "text": "OpenMP 5.2 §13.8 p.284 l.14-17",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct generates a target task ... If the nowait clause is present, execution of the target task may be deferred"
+  }
+ ],
+ "hecbench/gcc-c-float16-array-in-target-lto-ice.c": [
+  {
+   "text": "5.2 §13.8 p.284 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The functionality added to the target directive is the inclusion of an executable region to be executed on a device"
+  }
+ ],
+ "hecbench/gcc-c-swar-popcount-assembler-error.c": [
+  {
+   "text": "5.2 §13.8 p.284 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The functionality added to the target directive is the inclusion of an executable region to be executed on a device"
+  }
+ ],
+ "malloc/afar-device-malloc-in-kernel-corrupts-records.c": [
+  {
+   "text": "5.2 §1.3 p.24 l.10-11",
+   "version": "OpenMP 5.2",
+   "section": "1.3",
+   "quote": "sequentially, as if the target region is part of an initial task region"
+  },
+  {
+   "text": "5.2 §1.3 p.24 l.15-16",
+   "version": "OpenMP 5.2",
+   "section": "1.3",
+   "quote": "The implementation must ensure that the target region executes as if it were executed in the data environment of the target device"
+  },
+  {
+   "text": "5.2 §5.1.1",
+   "version": "OpenMP 5.2",
+   "section": "5.1.1",
+   "quote": null
+  }
+ ],
+ "multithread-allocatable-section-maps.f90": [
+  {
+   "text": "5.2 §5.8.1, p.148",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "References to structure elements or array elements are treated as references to the structure or array, respectively, for the purposes of determining implicit data-mapping or data-sharing attributes"
+  },
+  {
+   "text": "5.2 §5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If a list item with an implicit data-mapping attribute does not have any corresponding storage in the device data environment prior to a task encountering the construct associated with the map clause, and one or more contiguous parts of the original storage are either list items or base pointers to list items that are explicitly mapped on the construct, only those parts of the original storage will have corresponding storage in the device data environment as a result of the map clauses on the construct."
+  },
+  {
+   "text": "p.154",
+   "version": "OpenMP 5.2",
+   "section": "",
+   "quote": "If a single contiguous part of the original storage of a list item with an implicit data-mapping attribute has corresponding storage in the device data environment prior to a task encountering the construct on which the map clause appears, only that part of the original storage will have corresponding storage in the device data environment as a result of the map clause."
+  },
+  {
+   "text": "p.152",
+   "version": "OpenMP 5.2",
+   "section": "",
+   "quote": "The storage for each other map clause list item becomes a distinct mappable storage block"
+  },
+  {
+   "text": "p.156",
+   "version": "OpenMP 5.2",
+   "section": "",
+   "quote": "If an array appears as a list item in a map clause, multiple parts of the array have corresponding storage in the device data environment prior to a task encountering the construct associated with the map clause, and the corresponding storage for those parts was created by maps from more than one earlier construct, the behavior is unspecified."
+  },
+  {
+   "text": "5.1 §2.21.7.1 p.354",
+   "version": "OpenMP 5.1",
+   "section": "2.21.7.1",
+   "quote": "If an array appears as a list item in a map clause, multiple parts of the array have corresponding storage in the device data environment prior to a task encountering the construct associated with the map clause, and the corresponding storage for those parts was created by maps from more than one earlier construct, the behavior is unspecified."
+  },
+  {
+   "text": "6.0 §7.9.6 p.287",
+   "version": "OpenMP 6.0",
+   "section": "7.9.6",
+   "quote": null
+  }
+ ],
+ "nested/afar-cce-c-call-result-member-in-target-rejected.c": [
+  {
+   "text": "5.2 §5.8.1 p.148 l.3-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "the first matching rule from the following list determines the implicit data-mapping (or data-sharing) attribute for variables referenced in a target construct"
+  }
+ ],
+ "nested/afar-cce-c-update-struct-and-member-rejected.c": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "The list items that appear in a map clause may include array sections and structure elements"
+  },
+  {
+   "text": "§5.9 p.165 l.7-14",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.9 p.166 l.13-14",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": "Each list item clause must have a mappable type."
+  },
+  {
+   "text": "§13.9 p.289",
+   "version": "OpenMP 5.2",
+   "section": "13.9",
+   "quote": null
+  }
+ ],
+ "nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90": [
+  {
+   "text": "5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "If a variable is not a scalar then it is treated as if it had appeared in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "5.2 §5.8.2 p.150 l.2-4",
+   "version": "OpenMP 5.2",
+   "section": "5.8.2",
+   "quote": null
+  }
+ ],
+ "nested/cce-c-struct-and-nested-pointee-sections-ice.c": [
+  {
+   "text": "5.2 §5.8.3 p.156 l.6-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.151 l.13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "nested/cce-fortran-nested-allocatable-component-copy-fault.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.2 p.150 l.2-4",
+   "version": "OpenMP 5.2",
+   "section": "5.8.2",
+   "quote": "A structure type T has a predefined default mapper that is defined as if by a declare mapper directive that specifies v in a map clause with the alloc map-type"
+  },
+  {
+   "text": "§5.8.8 p.164 l.1",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": "All map clauses that are introduced by a mapper are further subject to mappers that are in scope"
+  }
+ ],
+ "nested/cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.2 p.150 l.2-4",
+   "version": "OpenMP 5.2",
+   "section": "5.8.2",
+   "quote": "A structure type T has a predefined default mapper that is defined as if by a declare mapper directive that specifies v in a map clause with the alloc map-type"
+  }
+ ],
+ "nested/cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object.f90": [
+  {
+   "text": "OpenMP 5.2 §5.9 p.165 l.28-29",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": "If a list item or a subobject of a list item has the ALLOCATABLE attribute, its assignment is performed only if its allocation status is allocated"
+  },
+  {
+   "text": "§5.8.2 p.150 l.2-4",
+   "version": "OpenMP 5.2",
+   "section": "5.8.2",
+   "quote": null
+  }
+ ],
+ "nested/gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs.c": [
+  {
+   "text": "OpenACC 3.4 §2.7.1 p.49 l.1686-1688",
+   "version": "OpenACC 3.4",
+   "section": "2.7.1",
+   "quote": null
+  },
+  {
+   "text": "3.4 §2.7.12 p.58 l.2023-2024",
+   "version": "OpenACC 3.4",
+   "section": "2.7.12",
+   "quote": null
+  }
+ ],
+ "nested/gcc-acc-c-parent-and-shared-pointee-one-directive.c": [
+  {
+   "text": "OpenACC 3.4 §2.7.8 p.55 l.1902-1903",
+   "version": "OpenACC 3.4",
+   "section": "2.7.8",
+   "quote": "If var is a pointer reference, an attach pointer action is performed followed by an increment counter action"
+  },
+  {
+   "text": "§2.7.2 p.52 l.1785-1786",
+   "version": "OpenACC 3.4",
+   "section": "2.7.2",
+   "quote": null
+  }
+ ],
+ "nested/gcc-acc-c-struct-and-member-array-one-directive.c": [
+  {
+   "text": "OpenACC 3.4 §2.7.8 p.55 l.1902-1903",
+   "version": "OpenACC 3.4",
+   "section": "2.7.8",
+   "quote": "If var is a pointer reference, an attach pointer action is performed followed by an increment counter action"
+  },
+  {
+   "text": "§2.7.2 p.52 l.1785-1786",
+   "version": "OpenACC 3.4",
+   "section": "2.7.2",
+   "quote": "The implementation schedules pointer updates after any data transfers due to transfer in actions that are performed for the same directive."
+  }
+ ],
+ "nested/gcc-c-always-on-pointer-member-section-ice.c": [
+  {
+   "text": "OpenMP 5.2 §5.8.3 p.153 l.15-17",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "nested/gcc-c-declare-mapper-pointer-member-section-gpu-fault.c": [
+  {
+   "text": "OpenMP 5.2 §5.8.8 p.164 l.1-2",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": "All map clauses that are introduced by a mapper are further subject to mappers that are in scope, except a map clause with list item var maps var without invoking a mapper"
+  }
+ ],
+ "nested/gcc-c-from-struct-and-pointee-section-rejected.c": [
+  {
+   "text": "5.2 §13.8 p.286 l.33",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "A map-type in a map clause must be to, from, tofrom or alloc."
+  },
+  {
+   "text": "5.2 §5.8.3 p.156 l.6-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "Two list items of the map clauses on the same construct must not share original storage unless they are the same list item or unless one is the containing structure of the other."
+  }
+ ],
+ "nested/gcc-fortran-pointer-component-alloc-bounds-lost.f90": [
+  {
+   "text": "5.2 §5.8.3 p.152 l.11-13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "is associated with a pointer target that has the same rank and bounds as the pointer target of the original pointer, such that the corresponding list item can be accessed through the pointer in a target region"
+  }
+ ],
+ "nested/gcc-fortran-root-and-element-pointer-components-ice.f90": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "The list items that appear in a map clause may include array sections and structure elements"
+  },
+  {
+   "text": "5.2 §5.8.3 p.152 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "nested/nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault.c": [
+  {
+   "text": "OpenMP 6.0 §7.9.6 p.284 l.8-10",
+   "version": "OpenMP 6.0",
+   "section": "7.9.6",
+   "quote": "for which a corresponding pointer exists in the device data environment after all mappable storage blocks are mapped"
+  },
+  {
+   "text": "§5.8.3 p.152 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "nested/nvhpc-c-update-from-structure-overwrites-attached-pointer-segv.c": [
+  {
+   "text": "OpenMP 5.2 §5.9 p.166 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "5.9",
+   "quote": "if the corresponding list item is an attached pointer, the original list item will have the value it had on entry to the region"
+  }
+ ],
+ "nvhpc-acc-atomic-update-sum-fort2-crash.f90": [
+  {
+   "text": "OpenACC 3.4 §2.12, p.79-80",
+   "version": "OpenACC 3.4",
+   "section": "2.12",
+   "quote": "The expression x operator expr must be mathematically equivalent to x operator (expr). This requirement is satisfied if the operators in expr have precedence greater than operator, or by using parentheses around expr or subexpressions of expr"
+  }
+ ],
+ "nvhpc-c-acc-atomic-update-sum-ice.c": [
+  {
+   "text": "OpenACC 3.4 §2.12, p.77-78",
+   "version": "OpenACC 3.4",
+   "section": "2.12",
+   "quote": "The expression x binop expr must be mathematically equivalent to x binop (expr). This requirement is satisfied if the operators in expr have precedence greater than binop, or by using parentheses around expr or subexpressions of expr"
+  }
+ ],
+ "nvhpc-c-dist-schedule-chunk-compile-hang.c": [
+  {
+   "text": "5.2 §11.6.1 p.256",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": "are assigned to the initial teams of the league in a round-robin fashion in the order of the initial team number"
+  }
+ ],
+ "nvhpc-c-map-present-ignored.c": [
+  {
+   "text": "5.2 §5.8.3 p.152",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If a map clause with a present map-type-modifier appears on a construct and on entry to the region the corresponding list item is not present in the device data environment, runtime error termination is performed"
+  }
+ ],
+ "nvhpc-c-ordered-in-target-nvcpfe-crash.c": [
+  {
+   "text": "5.2 §15.10.2 p.331 l.16-17",
+   "version": "OpenMP 5.2",
+   "section": "15.10.2",
+   "quote": "An ordered clause with a parameter value equal to one must appear on the construct that corresponds to the binding region"
+  },
+  {
+   "text": "§4.4.4 p.94 l.18-19",
+   "version": "OpenMP 5.2",
+   "section": "4.4.4",
+   "quote": "If n is not specified then the behavior is as if n is specified with the same value as is specified for the collapse clause on the construct"
+  },
+  {
+   "text": "§17.2",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  }
+ ],
+ "nvhpc-c-parallel-for-firstprivate-in-target.c": [
+  {
+   "text": "5.2 §5.4.4 p.112",
+   "version": "OpenMP 5.2",
+   "section": "5.4.4",
+   "quote": "is initialized from the original list item that exists before the construct"
+  }
+ ],
+ "nvhpc-c-parallel-if-in-target-nvvm-ice.c": [
+  {
+   "text": "5.2 §10.1.1 p.226",
+   "version": "OpenMP 5.2",
+   "section": "10.1.1",
+   "quote": "are used to determine the number of threads to use in the region"
+  }
+ ],
+ "nvhpc-defaultmap-firstprivate-explicit-map.f90": [
+  {
+   "text": "5.2 §5.8.7 p.161",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables"
+  },
+  {
+   "text": "5.2 §5.8.1 p.148",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  }
+ ],
+ "nvhpc-defaultmap-from-allocatable-indexing.f90": [
+  {
+   "text": "5.2 §5.8.7 p.161",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables"
+  },
+  {
+   "text": "5.2 §5.8.1 p.148",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  }
+ ],
+ "nvhpc-depend-inoutset-ignored.f90": [
+  {
+   "text": "5.2 §15.9.5 p.323",
+   "version": "OpenMP 5.2",
+   "section": "15.9.5",
+   "quote": "For the in task-dependence-type, if the storage location of at least one of the list items matches the storage location of a list item appearing in a depend clause with an out, inout, mutexinoutset, or inoutset task-dependence-type on a construct from which a sibling task was previously generated, then the generated task will be a dependent task of that sibling task"
+  }
+ ],
+ "nvhpc-dist-schedule-chunk-illegal-address.f90": [
+  {
+   "text": "5.2 §11.6.1 p.256",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": "are assigned to the initial teams of the league in a round-robin fashion in the order of the initial team number"
+  }
+ ],
+ "nvhpc-managed-acc-shutdown-host-access.f90": [
+  {
+   "text": "OpenACC 3.4 §2.14.2 p.86",
+   "version": "OpenACC 3.4",
+   "section": "2.14.2",
+   "quote": "The shutdown directive shuts down the connection to the given device or devices of the given device type, and frees any associated runtime resources. This ends all data lifetimes in device memory"
+  }
+ ],
+ "nvhpc-parallel-if-in-target-nvvm-ice.f90": [
+  {
+   "text": "5.2 §10.1.1 p.226",
+   "version": "OpenMP 5.2",
+   "section": "10.1.1",
+   "quote": "are used to determine the number of threads to use in the region"
+  }
+ ],
+ "oop/afar-final-dealloc-device-link.f90": [
+  {
+   "text": "5.2 §1.2.6 p.19",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/afar-pdt-length-parameter-not-implemented.f90": [
+  {
+   "text": "5.2 §5.8.3 p.155 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/cce-class-is-device-link.f90": [
+  {
+   "text": "5.2 §1.7 p.36 l.6-8",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": "While future versions of the OpenMP specification are expected to address the following features, currently their use may result in unspecified behavior."
+  },
+  {
+   "text": "5.2 §7.8 p.204 l.16-17",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": "Declare target directives apply to procedures and/or variables to ensure that they can be executed or accessed on a device."
+  }
+ ],
+ "oop/cce-copy-alloc-component-section-fault.f90": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.157 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/cce-copy-parent-to-component-tofrom-lost.f90": [
+  {
+   "text": "5.2 §5.8.3 p.156 l.6-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/cce-copy-second-member-section-lost.f90": [
+  {
+   "text": "5.2 §5.8.3 p.152 l.28-31",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§13.8 p.286 l.27-28",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  }
+ ],
+ "oop/cce-element-component-map-lost.f90": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/cce-final-dealloc-device-abort.f90": [
+  {
+   "text": "5.2 §1.2.6 p.19",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/cce-pdt-default-mapper-rejected.f90": [
+  {
+   "text": "5.2 §5.8.3 p.155 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "5.2 §1.2.6 p.18-19",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/cce-polymorphic-dispatch-device-link.f90": [
+  {
+   "text": "5.2 §1.2.6 p.19 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/cce-section-of-element-component-overlap.f90": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.156 l.19-22",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/cce-select-type-guard-not-taken.f90": [
+  {
+   "text": "5.2 §1.2.6 p.19 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/cce-udr-derived-type-unsupported.f90": [
+  {
+   "text": "5.2 §5.5.11 p.139-140",
+   "version": "OpenMP 5.2",
+   "section": "5.5.11",
+   "quote": null
+  },
+  {
+   "text": "§5.5.2 p.125 l.25-27",
+   "version": "OpenMP 5.2",
+   "section": "5.5.2",
+   "quote": null
+  }
+ ],
+ "oop/cce21-element-component-map-lost.f90": [
+  {
+   "text": "5.2 §5.8.3 p.151 l.13",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.154",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/gcc-acc-parent-and-member-data-rejected.f90": [
+  {
+   "text": "OpenACC 3.4 §2.7.1 p.50 l.1711-1713",
+   "version": "OpenACC 3.4",
+   "section": "2.7.1",
+   "quote": null
+  },
+  {
+   "text": "§2.6.4 p.43 l.1449-1458",
+   "version": "OpenACC 3.4",
+   "section": "2.6.4",
+   "quote": null
+  }
+ ],
+ "oop/gcc-pdt-length-parameter-abort.f90": [
+  {
+   "text": "5.2 §5.8.3 p.155 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/gcc-polymorphic-dispatch-abort.f90": [
+  {
+   "text": "5.2 §1.2.6 p.19 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/gcc-vtab-not-marked-for-offload.f90": [
+  {
+   "text": "5.2 §1.7 p.36 l.6-8",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": "While future versions of the OpenMP specification are expected to address the following features, currently their use may result in unspecified behavior."
+  },
+  {
+   "text": "5.2 §7.8 p.204 l.25-26",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": "If a variable with static storage duration is declared in a device routine then the named variable is treated as if it had appeared in an enter clause on a declare target directive."
+  }
+ ],
+ "oop/nvhpc-copy-alloc-component-illegal-address.f90": [
+  {
+   "text": "5.2 §5.8.2 p.150 l.2-4",
+   "version": "OpenMP 5.2",
+   "section": "5.8.2",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.151 l.29-37",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "6.0 §B.5 p.909 l.35-37",
+   "version": "OpenMP 6.0",
+   "section": "B.5",
+   "quote": null
+  }
+ ],
+ "oop/nvhpc-copy-pdt-length-parameter-illegal-address.f90": [
+  {
+   "text": "5.2 §5.8.3 p.155 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "oop/nvhpc-named-mapper-rejected.f90": [
+  {
+   "text": "5.2 §5.8.8 p.162-164",
+   "version": "OpenMP 5.2",
+   "section": "5.8.8",
+   "quote": null
+  },
+  {
+   "text": "§5.8.2",
+   "version": "OpenMP 5.2",
+   "section": "5.8.2",
+   "quote": null
+  }
+ ],
+ "oop/nvhpc-polymorphic-dispatch-translate-failure.f90": [
+  {
+   "text": "5.2 §1.2.6 p.19 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/nvhpc-polymorphism-runtime-unsupported.f90": [
+  {
+   "text": "5.2 §1.7 p.36 l.6-8",
+   "version": "OpenMP 5.2",
+   "section": "1.7",
+   "quote": "While future versions of the OpenMP specification are expected to address the following features, currently their use may result in unspecified behavior."
+  },
+  {
+   "text": "5.2 §7.8 p.204 l.16-17",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": "Declare target directives apply to procedures and/or variables to ensure that they can be executed or accessed on a device."
+  }
+ ],
+ "oop/nvhpc-type-bound-call-rejected.f90": [
+  {
+   "text": "5.2 §1.2.6 p.19 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "1.2.6",
+   "quote": null
+  }
+ ],
+ "oop/nvhpc-udr-derived-type-rejected.f90": [
+  {
+   "text": "5.2 §5.5.11 p.139-140",
+   "version": "OpenMP 5.2",
+   "section": "5.5.11",
+   "quote": null
+  }
+ ],
+ "stress/afar-c-lastprivate-combined-target-not-mapped.c": [
+  {
+   "text": "5.2 §5.4.5",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": null
+  },
+  {
+   "text": "5.2 §17.2 p.340 l.27-30",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "If the target construct is among the constituent constructs and the list item is not the base variable ... of a list item that appears in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "5.0 §2.14 p.219 l.18-20",
+   "version": "OpenMP 5.0",
+   "section": "2.14",
+   "quote": null
+  }
+ ],
+ "stress/afar-target-scalar-implicit-firstprivate.f90": [
+  {
+   "text": "OpenMP 5.0 §2.19.7 p.315",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.1 p.149",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "6.0 §7.9.3 p.277",
+   "version": "OpenMP 6.0",
+   "section": "7.9.3",
+   "quote": "If a scalar variable has the TARGET, ALLOCATABLE or POINTER attribute then it is treated as if it had appeared in a map clause with a map-type of tofrom"
+  }
+ ],
+ "stress/cce-acc-declare-create-scalar-serial-firstprivate.f90": [
+  {
+   "text": "OpenACC 3.4 §2.6 p.40 l.1331-1334",
+   "version": "OpenACC 3.4",
+   "section": "2.6",
+   "quote": null
+  },
+  {
+   "text": "§2.6.2 p.41 l.1372-1373",
+   "version": "OpenACC 3.4",
+   "section": "2.6.2",
+   "quote": null
+  },
+  {
+   "text": "§2.13 p.81 l.2983-2986",
+   "version": "OpenACC 3.4",
+   "section": "2.13",
+   "quote": null
+  },
+  {
+   "text": "§2.13.2 p.83 l.3051-3052",
+   "version": "OpenACC 3.4",
+   "section": "2.13.2",
+   "quote": null
+  }
+ ],
+ "stress/cce-c-distribute-lastprivate-lost.c": [
+  {
+   "text": "5.2 §5.4.5",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": null
+  },
+  {
+   "text": "§11.6",
+   "version": "OpenMP 5.2",
+   "section": "11.6",
+   "quote": null
+  },
+  {
+   "text": "§17.2 p.340 l.21-30",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  },
+  {
+   "text": "5.2 §13.8 p.286 l.29-30",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  },
+  {
+   "text": "5.0 §2.19.7.1",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7.1",
+   "quote": null
+  }
+ ],
+ "stress/cce-c-flto-offload-dropped.c": [
+  {
+   "text": "5.2 §13.8 p.284 l.11-13",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct provides a superset of the functionality provided by the target data directive, except for the use_device_ptr and use_device_addr clauses. The functionality added to the target directive is the inclusion of an executable region to be executed on a device."
+  },
+  {
+   "text": "5.2 §21.2.8 p.610 l.28-30",
+   "version": "OpenMP 5.2",
+   "section": "21.2.8",
+   "quote": "The mandatory value specifies that the effect of any device construct or device memory routine that uses a device that is unavailable or not supported by the implementation, or uses a non-conforming device number, is as if the omp_invalid_device device number was used."
+  }
+ ],
+ "stress/cce-ftn-cif-record-split-abort.f90": [
+  {
+   "text": "5.0 §2.12.7 p.181 l.15",
+   "version": "OpenMP 5.0",
+   "section": "2.12.7",
+   "quote": null
+  },
+  {
+   "text": "p.182 l.19-22",
+   "version": "OpenMP 5.0",
+   "section": "",
+   "quote": "initialized once ... never removed"
+  },
+  {
+   "text": "p.183 l.21-23",
+   "version": "OpenMP 5.0",
+   "section": "",
+   "quote": "an implicit extended-list ... of one item is formed from the name of the enclosing ... function subprogram"
+  },
+  {
+   "text": "§2.12.6",
+   "version": "OpenMP 5.0",
+   "section": "2.12.6",
+   "quote": null
+  },
+  {
+   "text": "5.0 §1.6 p.31 l.11-12",
+   "version": "OpenMP 5.0",
+   "section": "1.6",
+   "quote": "An implementation of the OpenMP API is compliant if and only if it compiles and executes all other conforming programs"
+  }
+ ],
+ "stress/cce-lastprivate-num-threads-collapse-simd.f90": [
+  {
+   "text": "OpenMP 5.2 §5.4.5 p.115 l.12-16",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": "the value of each new list item from the sequentially last iteration of the associated loops ... is assigned to the original list item"
+  },
+  {
+   "text": "§17.2 p.340 l.27-30",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  }
+ ],
+ "stress/cce-teams-reduction-many-teams-wrap.f90": [
+  {
+   "text": "5.2 §5.5.8 p.135 l.4-10",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For the teams construct, one or more private copies of each list item are created for the initial task of each team in the league, as if the private clause had been used. For the loop construct, private copies are created and used in the construct according to the description and restrictions in Section 5.3. At the end of a region that corresponds to a construct for which the reduction clause was specified, the original list item is updated by combining its original value with the final value of each of the private copies, using the combiner of the specified reduction-identifier."
+  },
+  {
+   "text": "5.2 §10.2.1 p.233 l.10-15",
+   "version": "OpenMP 5.2",
+   "section": "10.2.1",
+   "quote": "The num_teams clause specifies the bounds on the number of teams created by the construct on which it appears. lower-bound specifies the lower bound and upper-bound specifies the upper bound on the number of teams requested. If lower-bound is not specified, the effect is as if lower-bound is specified as equal to upper-bound. The number of teams created is implementation defined, but it will be greater than or equal to the lower bound and less than or equal to the upper bound."
+  }
+ ],
+ "stress/cce21-declare-target-scalar-map-write-lost.f90": [
+  {
+   "text": "5.2 §5.8.4 p.159 l.10-14",
+   "version": "OpenMP 5.2",
+   "section": "5.8.4",
+   "quote": "is never removed from those device data environments as if its reference count was initialized to positive infinity"
+  },
+  {
+   "text": "5.0 §2.12.7 p.182 l.19-22",
+   "version": "OpenMP 5.0",
+   "section": "2.12.7",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.153 l.1-17",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.1 p.148 l.9-11",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.8.3 p.156-157",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§7.8 p.205",
+   "version": "OpenMP 5.2",
+   "section": "7.8",
+   "quote": null
+  },
+  {
+   "text": "§7.8.1 p.206",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": null
+  },
+  {
+   "text": "§13.8 p.286-287",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  }
+ ],
+ "stress/gcc-declare-target-allocatable-component-ice.f90": [
+  {
+   "text": "5.2 §7.8.1 p.206 l.27-28",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": "If an extended list item is a variable name, the directive must appear in the specification part of a subroutine subprogram, function subprogram, program or module"
+  }
+ ],
+ "stress/nvhpc-acc-derived-type-component-not-copied.f90": [
+  {
+   "text": "OpenACC 3.4 §2.6.2 p.41 l.1388-1391",
+   "version": "OpenACC 3.4",
+   "section": "2.6.2",
+   "quote": "An aggregate variable will be treated as if it appears either: ... In a copy clause otherwise"
+  },
+  {
+   "text": "§2.6.2 l.1374",
+   "version": "OpenACC 3.4",
+   "section": "2.6.2",
+   "quote": null
+  }
+ ],
+ "stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c": [
+  {
+   "text": "5.2 §17.2",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  },
+  {
+   "text": "5.2 §5.4.5",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": null
+  },
+  {
+   "text": "§17.2 p.340 l.21-30",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": null
+  },
+  {
+   "text": "5.2 §13.8 p.286 l.29-30",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": null
+  },
+  {
+   "text": "5.0 §2.19.7.1",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7.1",
+   "quote": null
+  }
+ ],
+ "stress/nvhpc-declare-target-scalar-write-lost.f90": [
+  {
+   "text": "5.2 §5.8.1 p.148 l.9-11",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": null
+  },
+  {
+   "text": "§5.8.4 p.159 l.10-14",
+   "version": "OpenMP 5.2",
+   "section": "5.8.4",
+   "quote": "as if its reference count was initialized to positive infinity"
+  },
+  {
+   "text": "§5.8.3 p.153 l.1-17, p.153 l.31-35, p.154 l.1-11",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.153 l.1-17, p.153 l.31-35, p.154 l.1-11",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  },
+  {
+   "text": "§5.8.3 p.153 l.1-17, p.153 l.31-35, p.154 l.1-11",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": null
+  }
+ ],
+ "stress/nvhpc-lastprivate-combined-target-not-mapped.f90": [
+  {
+   "text": "5.2 §5.4.5",
+   "version": "OpenMP 5.2",
+   "section": "5.4.5",
+   "quote": null
+  },
+  {
+   "text": "5.2 §17.2 p.340 l.27-30",
+   "version": "OpenMP 5.2",
+   "section": "17.2",
+   "quote": "If the target construct is among the constituent constructs and the list item is not the base variable ... of a list item that appears in a map clause, the effect of the lastprivate clause is as if the same list item appears in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "5.0 §2.14 p.219 l.18-20",
+   "version": "OpenMP 5.0",
+   "section": "2.14",
+   "quote": null
+  }
+ ],
+ "stress/nvhpc-target-scalar-implicit-firstprivate.f90": [
+  {
+   "text": "5.2 §5.8.1 p.149 l.6-7",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "is treated as if it had appeared in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "5.0 §2.19.7 p.315 l.7-8",
+   "version": "OpenMP 5.0",
+   "section": "2.19.7",
+   "quote": null
+  },
+  {
+   "text": "6.0 §7.9.3 p.277 l.17-18",
+   "version": "OpenMP 6.0",
+   "section": "7.9.3",
+   "quote": null
+  }
+ ],
+ "target-update-sections-in-parallel.f90": [
+  {
+   "text": "5.2 §5.9.2",
+   "version": "OpenMP 5.2",
+   "section": "5.9.2",
+   "quote": null
+  }
+ ]
+}

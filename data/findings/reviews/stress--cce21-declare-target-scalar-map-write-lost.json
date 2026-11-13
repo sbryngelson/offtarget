@@ -1,0 +1,113 @@
+{
+ "finding": "stress/cce21-declare-target-scalar-map-write-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "g is in a declare target(g) extended-list, so it acts as an enter clause: a device copy with infinite reference count. target update to(g) sets the device copy to 101. The target region's map(tofrom: g) finds it present, so no transfer, and the device doubles it to 203. target update from(g) copies 203 back, so g=203 is required. The observed 101 means a failed update or mapping."
+  },
+  {
+   "run": "run-20261112/batch-34",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "g is a module variable with declare target (list form, allowed in 5.2), so it is mapped for all device executions and has a device copy with infinite reference count. update to(g) sets the device copy to 101; the target map(tofrom: g) finds it already present and does not transfer (reference count not one, no always); the device sets g=203; update from(g) copies 203 to the host. Expected g=203; observed 101 means the update from did not transfer."
+  },
+  {
+   "run": "run-v2-20261113/batch-117",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "g is declared target in the module, so its device copy has an infinite reference count and is never removed. The map(tofrom: g) on the target region therefore does not copy on entry or exit (copies occur only at count one or zero). target update to(g) sends 101, the device computes 203, and target update from(g) copies 203 back. Printing 101 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-52",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-59",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 4,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "g appears in a declare target directive with an extended-list, so it acts as an enter clause; its device copy has an infinite reference count and is never removed. The tofrom map on the target construct therefore does not copy g either way (count is not one), so the device copy is 101 from target update to, becomes 203 in the region, and target update from copies 203 back. No race or other violation. Printing 101 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "22963a305a12d689988f07b473faf9ab047d3aef33cc97595d8d63c4a81df76a",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

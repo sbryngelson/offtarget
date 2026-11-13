@@ -1,0 +1,83 @@
+# Data/evidence/gate_probe/lastprivate/*.f90 and simdred/*.f90, Tuolumne MI300A, -O2,
+# OMP_TARGET_OFFLOAD=mandatory, HSA_XNACK as named (results/t48/batch5, batch6; 2026-10-26).
+# program/toolchain/xnack: value x runs (COMPILE: the compile failed)
+lp/collapsent2/afar/0 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/collapsent2/afar/1 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/collapsent2/cce19/0 0 x4, 189 x6
+lp/collapsent2/cce19/1 0 x1, 125 x2, 189 x4, 61 x3
+lp/collapsent2/cce20/0 0 x8, 189 x2
+lp/collapsent2/cce20/1 0 x1, 125 x3, 189 x2, 61 x4
+lp/collapsent2/cce21/0 0 x7, 125 x1, 189 x2
+lp/collapsent2/cce21/1 0 x4, 125 x2, 189 x2, 61 x2
+lp/ifpar/afar/0 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/ifpar/afar/1 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/ifpar/cce19/0 0 x4, 189 x6
+lp/ifpar/cce19/1 0 x2, 125 x2, 189 x2, 61 x4
+lp/ifpar/cce20/0 0 x5, 189 x5
+lp/ifpar/cce20/1 0 x3, 125 x3, 189 x1, 61 x3
+lp/ifpar/cce21/0 0 x6, 125 x3, 189 x1
+lp/ifpar/cce21/1 0 x3, 125 x1, 189 x3, 61 x3
+lp/nont/afar/0 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/nont/afar/1 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/nont/cce19/0 200 x10
+lp/nont/cce19/1 200 x10
+lp/nont/cce20/0 200 x10
+lp/nont/cce20/1 200 x10
+lp/nont/cce21/0 200 x10
+lp/nont/cce21/1 200 x10
+lp/nt2/afar/0 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/nt2/afar/1 COMPILE rc1: error: loc("lp.f90":10:9): /__w/TheRock/TheRock/compiler/amd-llvm/flang/lib/Lower/OpenMP/DataSharingProcessor. x1
+lp/nt2/cce19/0 0 x3, 125 x1, 189 x6
+lp/nt2/cce19/1 0 x4, 125 x2, 189 x2, 61 x2
+lp/nt2/cce20/0 0 x6, 125 x1, 189 x3
+lp/nt2/cce20/1 0 x2, 125 x4, 189 x2, 61 x2
+lp/nt2/cce21/0 0 x9, 125 x1
+lp/nt2/cce21/1 0 x2, 125 x2, 189 x2, 61 x4
+lp/simdnt2/afar/0 200 x10
+lp/simdnt2/afar/1 200 x10
+lp/simdnt2/cce19/0 0 x5, 189 x5
+lp/simdnt2/cce19/1 0 x2, 125 x5, 189 x1, 61 x2
+lp/simdnt2/cce20/0 0 x7, 189 x3
+lp/simdnt2/cce20/1 0 x5, 125 x2, 189 x1, 61 x2
+lp/simdnt2/cce21/0 0 x6, 125 x2, 189 x2
+lp/simdnt2/cce21/1 0 x2, 125 x2, 189 x5, 61 x1
+sr/iffalse_nosimd/afar/0 20800 x8
+sr/iffalse_nosimd/afar/1 20800 x8
+sr/iffalse_nosimd/cce19/0 20800 x8
+sr/iffalse_nosimd/cce19/1 20800 x8
+sr/iffalse_nosimd/cce20/0 20800 x8
+sr/iffalse_nosimd/cce20/1 20800 x8
+sr/iffalse_nosimd/cce21/0 20800 x8
+sr/iffalse_nosimd/cce21/1 20800 x8
+sr/iffalse_simd/afar/0 20800 x8
+sr/iffalse_simd/afar/1 20800 x8
+sr/iffalse_simd/cce19/0 20800 x8
+sr/iffalse_simd/cce19/1 20800 x8
+sr/iffalse_simd/cce20/0 20800 x8
+sr/iffalse_simd/cce20/1 20800 x8
+sr/iffalse_simd/cce21/0 20800 x8
+sr/iffalse_simd/cce21/1 20800 x8
+sr/nt1_simd/afar/0 20800 x8
+sr/nt1_simd/afar/1 20800 x8
+sr/nt1_simd/cce19/0 20800 x8
+sr/nt1_simd/cce19/1 20800 x8
+sr/nt1_simd/cce20/0 20800 x8
+sr/nt1_simd/cce20/1 20800 x8
+sr/nt1_simd/cce21/0 20800 x8
+sr/nt1_simd/cce21/1 20800 x8
+sr/nt4_nosimd/afar/0 20800 x8
+sr/nt4_nosimd/afar/1 20800 x8
+sr/nt4_nosimd/cce19/0 20800 x8
+sr/nt4_nosimd/cce19/1 20800 x8
+sr/nt4_nosimd/cce20/0 20800 x8
+sr/nt4_nosimd/cce20/1 20800 x8
+sr/nt4_nosimd/cce21/0 20800 x8
+sr/nt4_nosimd/cce21/1 20800 x8
+sr/nt4_simd/afar/0 20800 x8
+sr/nt4_simd/afar/1 20800 x8
+sr/nt4_simd/cce19/0 20800 x8
+sr/nt4_simd/cce19/1 20800 x8
+sr/nt4_simd/cce20/0 20800 x8
+sr/nt4_simd/cce20/1 20800 x8
+sr/nt4_simd/cce21/0 20800 x8
+sr/nt4_simd/cce21/1 20800 x8

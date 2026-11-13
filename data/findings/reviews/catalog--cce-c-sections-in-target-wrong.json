@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-c-sections-in-target-wrong.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "target parallel creates a team on the device; sections is a worksharing construct binding to that parallel region. The two sections write disjoint halves of b. host_flag is written by exactly one section, and read on the host only after the target region ends. a and b are mapped; n is an enumeration constant. No race, no restriction broken. The observed host_flag=0 shows device execution, so check=fail means b holds wrong values, a compiler error for sections inside target parallel."
+  },
+  {
+   "run": "run-20261112/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each section is a distinct structured block sequence executed once by some thread of the parallel team; sections write disjoint parts of b, and host_flag is written by exactly one section. No race; a, b, host_flag mapped. Any thread count gives b[i]=2a[i]+1, so check=pass is required."
+  },
+  {
+   "run": "run-v2-20261113/batch-35",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The sections construct inside the parallel region of target parallel is legal. The two sections write disjoint halves of b, and only one section writes host_flag, so no data race exists. Each structured block sequence is executed by one of the team's threads, so b must be fully computed whatever the thread count. A wrong b is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-72",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each section writes disjoint elements of b; host_flag is written by one section only, so no data race. The sections construct has an implicit barrier at its end, and the parallel region ends before the target region completes, so b and host_flag are copied back fully. Each section is executed by one thread of the team. Expected check=pass is required; wrong answer is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "89df02534f49c7f04093a762c83988693aaa2b394535228b7af0b700dad2321d",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,162 @@
+start 2026-10-26T02:45:22-04:00 wingtip-gpu3.cc.gatech.edu
+00 A_1 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ1 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_2 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ2 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_3 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ3 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_4 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ4 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_5 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ5 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_6 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ6 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_7 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ7 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_8 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ8 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_9 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ9 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_10 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ10 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_11 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ11 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_12 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ12 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_13 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ13 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_14 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ14 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_15 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ15 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_16 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ16 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_17 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ17 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_18 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ18 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_19 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ19 1 RC 2 S-0155-Invalid atomic update expression  
+00 A_20 1 RC 2 S-0155-Invalid atomic update expression  
+00 GATEXQ20 1 RC 2 S-0155-Invalid atomic update expression  
+53 A_1 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ1 0 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_2 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ2 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_3 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ3 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_4 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ4 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_5 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ5 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_6 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ6 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_7 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ7 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_8 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ8 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_9 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ9 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_10 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ10 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_11 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ11 0 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_12 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ12 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_13 0 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ13 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_14 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ14 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_15 0 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ15 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_16 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ16 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_17 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ17 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_18 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ18 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_19 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ19 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 A_20 0 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+53 GATEXQ20 1 RC 2 S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL 
+95 A_1 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ1 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_2 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ2 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_3 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ3 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_4 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ4 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_5 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ5 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_6 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ6 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_7 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ7 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_8 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ8 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_9 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ9 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_10 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ10 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_11 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ11 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_12 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ12 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_13 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ13 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_14 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ14 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_15 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ15 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_16 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ16 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_17 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ17 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_18 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ18 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_19 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ19 0 RC 2 S-0155-for must have the ordered clause specified  
+95 A_20 0 RC 2 S-0155-for must have the ordered clause specified  
+95 GATEXQ20 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_1 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ1 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_2 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ2 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_3 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ3 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_4 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ4 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_5 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ5 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_6 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ6 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_7 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ7 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_8 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ8 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_9 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ9 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_10 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ10 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_11 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ11 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_12 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ12 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_13 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ13 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_14 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ14 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_15 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ15 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_16 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ16 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_17 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ17 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_18 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ18 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_19 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ19 0 RC 2 S-0155-for must have the ordered clause specified  
+96 A_20 0 RC 2 S-0155-for must have the ordered clause specified  
+96 GATEXQ20 0 RC 2 S-0155-for must have the ordered clause specified  
+end 2026-10-26T02:49:00-04:00

@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-linear-lastprivate-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "linear(x:1) is permitted on the Fortran do construct with an integer list item; x is not a loop iteration variable and no ordered clause is present. The body x = x + 1 changes x by exactly the linear-step per iteration, satisfying the restriction. In iteration i the new item equals 3+(i-1)=i+2, so the check term is 0; the last iteration's value (n+3) is assigned to the original x. default(none) is satisfied since x and the loop variable have data-sharing attributes. A compiler crash is not a permitted outcome."
+  },
+  {
+   "run": "run-20261113/batch-56",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "linear(x:1) on parallel do is allowed. x is mapped tofrom, so the linear item's original is the device copy: each iteration i sees 3+(i-1), so b(i)=2a(i)+1 holds, and the last iteration's value is assigned back, giving x==n+3 as the program expects (the private copy is incremented in the last iteration). Modifying a linear item in the body is permitted. A conforming compiler must accept it; the crash is a defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "parallel do with linear(x: 1) on an integer x is allowed, and the body advances x by exactly the linear step, meeting the restriction on a loop-associated construct. default(none) is satisfied because a, b, x appear in clauses and i is the predetermined loop variable. x is mapped tofrom so its final value is n+3. The program is conforming and a conforming compiler must compile it, so the crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-87",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "linear(x: 1) on parallel do over an integer scalar is permitted; x is explicitly determined by linear so default(none) is satisfied, i is the loop variable, a and b are shared. x on iteration i equals 3+(i-1), so the check term is 0, and the last value n+3 is assigned back to the original x, which is mapped tofrom. No race. Compiler must accept it; the crash is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-24",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "40278af56ff16e81af9943c81b460c40ce24814541c4a209d833689311ca9372",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

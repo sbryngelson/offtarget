@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/b4-86-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The mapper mmap for mt_t maps v%a and is used with map(mapper(mmap), tofrom: ms). Only iteration i==1 of the distribute loop writes hf2, so there is no race; ms is not otherwise used on the device. The declare mapper in a module specification part is allowed. Nothing makes the device memory fault permitted, so the abort is a compiler or runtime error."
+  },
+  {
+   "run": "run-20261113/batch-53",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A declare mapper in a module specification part is permitted and map(mapper(mmap), tofrom: ms) names it. Only iteration 1 writes hf2, so no race. Empty derived types and empty contains are valid Fortran 2008. The runtime memory fault is a compiler or runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The mapper is declared in a module and used on target teams with map(mapper(mmap), tofrom: ms). hf2 is written by one iteration only, i is the distribute loop variable, no race. Empty derived types are valid Fortran. A device memory fault is not permitted for a conforming program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-06",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-80",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target teams contains only the distribute construct, so it is strictly nested in teams. The declare mapper is valid and map(mapper(mmap), tofrom: ms) is allowed. Only iteration i==1 writes hf2; ms is not modified. No rule is broken, so a memory fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "18153695e78468a5807ceb8a3e7f7fdc0d9a78812931b5b095519ac463497350",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

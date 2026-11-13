@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/1505-cce20.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Allocatable arrays o2,o3 are implicitly mapped, r3b is mapped tofrom, g1 is declare target. The do loop reduction(min: r3b) is valid; j is a sequential-loop variable and private in the parallel region; o3(i,j) writes are disjoint; if(parallel: lpar) is valid in 5.2. No race or unspecified behavior found. A run-time crash is not permitted."
+  },
+  {
+   "run": "run-20261113/batch-80",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Allocatable arrays o2, o3 are implicitly mapped tofrom; p1 is an implicit firstprivate scalar; g1 is declare target. Distinct o3(i,j) elements are written per iteration, o2 is only read, r3b uses a min reduction, j is private in the parallel region. if(parallel: lpar) is valid. Result is deterministic, so a run-time crash is a compiler or runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o2 and o3 are allocatable variables referenced in the target region and are implicitly mapped; r3b is mapped tofrom. Each (i,j) writes a distinct o3 element, r3b is a min reduction on the worksharing loop, the index into o2 stays within 1..m, and g1 is declared target. The if(parallel: lpar) clause is valid on parallel. No race or unspecified behavior, so the deterministic checksum is required and a run-time crash is a compiler or runtime fault.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-70",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program has no races. Each o3(i,j) is written once and o2 is only read. The reduction on r3b is valid, and if(parallel: lpar) is valid on parallel. The module function g1 is declared target and the allocatables are implicitly mapped. A run-time crash is a compiler or runtime bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "0128bd1dbee84fe82526b53c8fd7489ff86c2da27e8565a6aa7df9bbefcbb7bb",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

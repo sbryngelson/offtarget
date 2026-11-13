@@ -1,0 +1,113 @@
+{
+ "finding": "nvhpc-c-parallel-for-firstprivate-in-target.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-24",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "c is firstprivate in the parallel region (private copy per thread), b is shared and each iteration writes a distinct element, i is the loop iteration variable. No race. Host c stays 1 since the firstprivate copies are not written back; b[i]%100==1 holds for any per-thread increment sequence. Conforming, so the crash is a compiler bug."
+  },
+  {
+   "run": "run-20261113/batch-46",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "c is mapped tofrom on target and firstprivate on the parallel for, so each thread modifies its own copy; the host c stays 1 and every b[i] is 1 mod 100. No race on c. default(none) is satisfied (b shared, c firstprivate, i predetermined). A conforming compiler must compile it."
+  },
+  {
+   "run": "run-v2-20261113/batch-39",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Inside the target region, parallel for privatizes c by firstprivate and shares the mapped array b. Each iteration writes a distinct b[i], so there is no race. The loop variable i is private. Updates to c stay in the private copies, so the mapped c remains 1 after the region. A conforming compiler must accept and run it, and the observed crash is an error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-91",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Every variable referenced in the parallel for has an explicit attribute under default(none): b is shared, c is firstprivate, and i is the associated loop iteration variable, which is private. Updating the firstprivate copy of c is allowed, and each thread's copy only takes the values 1, 101, ... so b[i] % 100 == 1 holds. The original c in the target region is unchanged, so c stays 1. A conforming compiler must accept and compile this program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-13",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "a9874c3dc4b8a9b6e7e4863f0bf23dbf69f37ca5b3dbd74fd80f173953f123dc",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

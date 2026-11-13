@@ -1,0 +1,12 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: craycc ... -fopenmp-version=60 -O2 (CCE 19.0.0) on offload.engine.c_gen omp60-c-clause-message
+# exit status: 0
+==== verbatim output below ====
+omp60-c-clause-message.c:20:46: warning: COMPLIANCE_PROBE_MESSAGE [-Wuser-defined-warnings]
+   20 |   #pragma omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+      |                                              ^
+1 warning generated.
+omp60-c-clause-message.c:20:46: warning: COMPLIANCE_PROBE_MESSAGE [-Wuser-defined-warnings]
+   20 |   #pragma omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+      |                                              ^
+1 warning generated.

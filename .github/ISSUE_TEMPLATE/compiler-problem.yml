@@ -1,0 +1,51 @@
+name: Compiler problem
+description: A legal OpenMP or OpenACC device-offload program that a compiler gets wrong
+labels: [compiler-problem]
+body:
+  - type: markdown
+    attributes:
+      value: Before filing, search the known problems with `offload issues WORDS` or on the website's issue list.
+  - type: textarea
+    id: program
+    attributes:
+      label: The program
+      description: One file, C or free-form Fortran, as small as you can make it.
+      render: text
+    validations: {required: true}
+  - type: input
+    id: version
+    attributes:
+      label: Specification version and section
+      description: The OpenMP or OpenACC version it follows and, if you can, the section that makes it legal.
+    validations: {required: true}
+  - type: textarea
+    id: control
+    attributes:
+      label: A variant that differs by one change and passes
+      description: A clause removed or a construct unwrapped. It shows which construct is at fault.
+      render: text
+  - type: textarea
+    id: compiler
+    attributes:
+      label: The compiler
+      description: The full `--version` output and the module or container it came from.
+      render: text
+    validations: {required: true}
+  - type: input
+    id: command
+    attributes:
+      label: The command line
+      description: Offload flags, optimisation level, device architecture.
+    validations: {required: true}
+  - type: input
+    id: machine
+    attributes:
+      label: The machine
+      description: GPU model and driver or ROCm/CUDA version. For AMD GPUs, `HSA_XNACK`; for NVHPC, the `-gpu=mem:` setting.
+    validations: {required: true}
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected, and what you saw
+      description: The compiler message, crash signal, hang or wrong values. Does it happen every time? Does another compiler run it correctly?
+    validations: {required: true}

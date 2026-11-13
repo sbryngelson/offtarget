@@ -1,0 +1,303 @@
+# The steps the wingtip offline lane runs (tools/lanes/wingtip_offline.sh;
+# docs/tooling/wingtip.md, "Offline lane"). Every step here needs no GPU, no
+# Tuolumne compiler and no AFAR front end; what it reads outside the
+# tracked tree is its `inputs` (paths or globs relative to the repository
+# root; a directory is copied whole; `?` marks one that may be absent), and
+# what it writes that Tuolumne's copy of the step would write is its
+# `outputs` (copied back after a successful run; ${VAR:-default} is the
+# step's environment). The inputs were measured by tracing each step on
+# wingtip (WINGTIP_OFFLINE_TRACE: tools/lanes/wingtip_offline.sh --trace STEP,
+# whose report lists every git-ignored file the step opened that is not
+# named here). Steps that need AFAR's front end stay on Tuolumne: the
+# legality pre-check (offload/engine/prerun.py), the gate report's review
+# queue, and the dashboard datasets (tools/site/dashboard_data.py computes the
+# fuzz programs' elision values with amdflang and gfortran). Every run
+# records the programs the step executes and fails (exit 3) when it tried
+# one wingtip does not have (`exec_guard`, on unless false).
+host: wingtip
+# the shared data directory (results/, corpus/, spec/ and the Python
+# environment env/), on wingtip's /fastscratch: the home quota is 50 GB
+data_root: offload-data
+# one code copy per tree (lane), named after the tree's directory
+lane_root: offload-lanes
+defaults:
+  limit: 1800
+
+# inputs several steps share (`@NAME` in a step's inputs)
+groups:
+  measurements:            # the merged campaigns and the omp_vv baselines
+    - results/matrix.jsonl
+    - results/matrix_c.jsonl
+    - results/acc_matrix.jsonl
+    - results/acc_matrix_c.jsonl
+    - ?results/*.canaries.jsonl  # the canaries of runs merged into them (offload.engine.canary.files_for)
+    - ?results/gcc/gate*/verdicts.jsonl  # the GCC lane's gate verdicts (the support tables' gate column)
+    - results/baseline.jsonl
+    - results/baseline_c.jsonl
+    - results/widen/matrix.jsonl
+  expected:                # the expected values (tools/derive/expected.py)
+    - results/expected/*.jsonl
+  fuzz:                    # every campaign's programs and host checks
+    - results/fuzz/*/meta.json
+    - results/fuzz/*/programs.jsonl
+    - ?results/fuzz/*/hostcheck.jsonl
+    - ?results/fuzz/*/elision.jsonl
+  confirmer:               # what a confirmer run reads besides the above
+    - "@measurements"
+    - "@expected"
+    - "@fuzz"
+    - results/confirm/evidence.jsonl
+    - results/gate/verdicts.jsonl
+    - corpus/omp_vv
+  batches:                 # the installed confirmer batches
+    - results/confirm/batch_full.jsonl
+    - results/confirm/batch_s1.jsonl
+    - results/confirm/batch_s1.final.jsonl
+    - results/confirm/batch_widen.jsonl
+steps:
+  regen-check:
+    doc: "every offline artifact current? (tools/regenerate.py --check; writes nothing)"
+    cmd: [python3, -I, tools/regenerate.py, --check]
+    limit: 1800
+    inputs:
+      - "@confirmer"
+      - "@batches"
+      - results/*.jsonl.meta.json
+      - results/expected/*.meta.json
+      - results/support_table.csv
+      - results/support_table.md
+      - results/support_table_c.csv
+      - results/support_table_c.md
+      - results/acc_support_table.csv
+      - results/acc_support_table.md
+      - results/acc_support_table_c.csv
+      - results/acc_support_table_c.md
+      - results/ompvv_compare.csv
+      - results/ompvv_compare_c.csv
+      - results/confirm/batch_full.stamp.json
+      - results/confirm/batch_widen.stamp.json
+      - results/spec_cache
+      - results/dash/atoms.json   # site-inputs
+      - results/widen/audit
+      - corpus/rocm_llvm_afar/flang/test/Lower/OpenMP/Todo
+      - spec                 # the support tables check the PDFs exist
+    outputs: []
+
+  confirm-batch:
+    doc: "the confirmer's full and s1 batches from stored evidence (tools/jobs/run_regen_confirm.sh; INSTALL=1 installs them, then confirm decide, the stamp and the change log)"
+    cmd: [bash, tools/jobs/run_regen_confirm.sh]
+    env: [INSTALL, TAG, N]
+    limit: 3600
+    inputs: ["@confirmer", "@batches", results/confirm/batch_full.stamp.json]
+    outputs:
+      - results/confirm/shards/${TAG:-regen}.*
+      - results/confirm/batch_full.jsonl
+      - results/confirm/batch_s1.jsonl
+      - results/confirm/batch_s1.final.jsonl
+      - results/confirm/batch_full.pre-${TAG:-regen}.jsonl
+      - results/confirm/batch_s1.pre-${TAG:-regen}.jsonl
+      - results/confirm/batch_s1.final.pre-${TAG:-regen}.jsonl
+      - results/confirm/batch_full.stamp.json
+      - data/reports/gate-changes/confirm-batches.tsv
+
+  widen-batch:
+    doc: "the confirmer on the widened catalog's failing cells (tools/jobs/run_widen_confirm.sh), stamped"
+    cmd: [bash, tools/jobs/run_widen_confirm.sh]
+    env: [TAG]
+    limit: 1800
+    inputs: ["@confirmer", results/confirm/batch_widen.jsonl]
+    outputs:
+      - results/confirm/batch_widen.jsonl
+      - results/confirm/batch_widen.pre-${TAG:-widen}.jsonl
+      - results/confirm/batch_widen.stamp.json
+      - data/reports/gate-changes/confirm-batches.tsv
+
+  confirm-decide:
+    doc: "the agent decisions (catalog/triage_28.yaml) applied to the s1 batch"
+    cmd: [python3, -I, tools/confirm.py, decide, --batch, results/confirm/batch_s1.jsonl,
+          --out, results/confirm/batch_s1.final.jsonl]
+    limit: 900
+    inputs: [results/confirm/batch_s1.jsonl]
+    outputs: [results/confirm/batch_s1.final.jsonl]
+
+  confirm-index:
+    doc: "the findings index scope (confirm.py index --scope; pass --write to write it)"
+    cmd: [python3, -I, tools/confirm.py, index, --scope]
+    limit: 900
+    inputs: ["@measurements", results/confirm/batch_full.jsonl, corpus/omp_vv]
+    outputs: [data/findings/index.yaml]
+
+  confirm-backlog:
+    doc: "the bug backlog, data/reports/unlinked-bugs.md (confirm.py backlog --write)"
+    cmd: [python3, -I, tools/confirm.py, backlog, --write]
+    limit: 900
+    inputs: [results/confirm/batch_full.jsonl]
+    outputs: [data/reports/unlinked-bugs.md]
+
+  confirm-triage:
+    doc: "claim-mismatch and omp_vv triage (confirm.py triage)"
+    cmd: [python3, -I, tools/confirm.py, triage]
+    limit: 1800
+    inputs: ["@confirmer", results/confirm/batch_full.jsonl, results/support_table.csv,
+             results/support_table_c.csv]
+    outputs:
+      - results/confirm/triage27b.jsonl
+      - data/reports/triage-2026-10.md
+      - docs/upstream.md
+
+  confirm-validate:
+    doc: "the confirmer against the hand verdicts (confirm.py validate)"
+    cmd: [python3, -I, tools/confirm.py, validate]
+    limit: 1800
+    inputs: ["@confirmer", results/confirm/validate_live.log,
+             results/confirm/validation_live.jsonl]
+    outputs:
+      - results/confirm/validation.jsonl
+      - results/confirm/validation_nvhpc.jsonl
+      - data/reports/confirm-validation.md
+
+  citations:
+    doc: "every spec citation of the findings, drafts and rulings against the spec text"
+    cmd: [python3, -I, tools/repo/check_citations.py]
+    limit: 900
+    inputs: [results/spec_cache, spec]
+    outputs: []
+
+  site-inputs:
+    doc: "the site's committed inputs, site/inputs/ (tools/site/site_inputs.py): feature support from the dashboard's atom table and the published findings' verified citations from the spec cache"
+    cmd: [python3, -I, tools/site/site_inputs.py]
+    limit: 900
+    inputs: [results/dash/atoms.json, results/spec_cache, spec]
+    outputs: [site/inputs/atoms.json.gz, site/inputs/citations.json]
+
+  site-build:
+    doc: "the public issue site (tools/site/site_build.py results/site [--repo-url URL]) from committed data only: the findings, the finding matrix (data/vendor/checks/results-compact and results-site) and site/inputs/"
+    cmd: [python3, -I, tools/site/site_build.py, results/site]
+    limit: 1800
+    inputs: []
+    outputs: [results/site]
+
+  harvest2-rules:
+    doc: "The pre-run check's rules witness (rules, restrictions, race rule) on every harvest2 program (tools/campaigns/harvest2.py rules)"
+    cmd: [python3, -I, tools/campaigns/harvest2.py, rules]
+    env: [WORKERS]
+    limit: 3600
+    inputs: [results/harvest2/programs.jsonl, results/harvest2/src]
+    outputs: [results/harvest2/rules.jsonl]
+
+  tests:
+    doc: "the CPU-only test subset in parallel (tools/lanes/wingtip_suite.py); the GPU and AFAR tests are left for Tuolumne"
+    cmd: [python3, -I, tools/lanes/wingtip_suite.py]
+    env: [WORKERS]
+    exec_guard: false      # tests probe for compilers on purpose
+    limit: 3600
+    inputs_from: [all]
+    inputs:                # besides every other step's
+      - results/fuzz/n0x0/summary.json
+      - results/fuzz/n1x0/summary.json
+      - results/gate/*/reruns          # tests/cluster/test_standing_rules.py (rule gate-c-other-node)
+      - results/devtemps/kbody-heap.jsonl       # tests/engine/test_nested_oop.py (the detector's rows)
+      - results/malloc-dd/exp_rows.jsonl        # tests/engine/test_nested_oop.py
+      - results/nested/big/meta.json            # tests/cluster/test_campaigns.py (the seed-11 draw)
+      - results/nested/big/programs.jsonl
+      - results/oop/main                        # tests/cluster/test_campaigns.py (oop confirm against the stored snapshot)
+      - results/student-repro/malloc/cmp/omp    # tests/engine/test_nested_oop.py (the saved temporaries)
+    outputs: [results/offline/suite]
+    # run alone after the parallel part
+    serial_tests:
+      tests/engine/test_findings_nogpu.py::test_no_watchdog_outlives_a_run: "counts every harness watchdog of the user"
+    # the tests that need Tuolumne (measured: the suite on wingtip,
+    # 2026-10-27); every parametrization of a listed function is left
+    tuolumne_tests:
+      tests/engine/test_acc.py::test_acc_present_probe_reads_the_runtime_message: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_acc.py::test_acc_run_is_a_single_trial: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/bench/test_apps.py::test_manifest_sources_exist_in_the_clones: "the application clones (corpus/apps, 3 GB)"
+      tests/engine/test_findings_nogpu.py::test_baseline_exit_code_only: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_copy_semantics_paths_and_rerun_baseline: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_include_dir_copied_next_to_source: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_suite_result_line_overrides_a_wrapped_exit_status: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_c.py::test_clang_oracle_accepts_a_legal_program: "AFAR front end"
+      tests/engine/test_c.py::test_clang_oracle_compare: "AFAR front end"
+      tests/engine/test_findings_afar.py::test_presence_probe: "AFAR front end"
+      tests/engine/test_findings_afar.py::test_rewrites_of_seed18_are_legal: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_bare_declare_target_is_accepted_via_subroutine_wrapper: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_compare_agree: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_compare_agree_across_wrappers: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_compare_agree_at_6_0_spellings: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_compare_disagree_recorded: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_compare_unscannable_directive_is_a_parse_rejection: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_flang_lists_map_and_collapse: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_flang_rejection_is_reported_not_hidden: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_sema_false_fallback_dumps_a_semantically_bad_program: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_verdicts_on_real_directives: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_workdistribute_needs_version_60: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_wrapper_artifact_style_rejection_is_reported_with_stage: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_minimizer_shrinks_with_a_fake_oracle: "gfortran: Ubuntu 13.3.0 on wingtip, Red Hat 13.3.1 on Tuolumne"
+      tests/engine/test_fuzz_afar.py::test_sample_passes_the_three_checks: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_alloc_sample_passes_every_check: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_declare_sample_passes_every_check: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_definedness_check: "gfortran: Ubuntu 13.3.0 on wingtip, Red Hat 13.3.1 on Tuolumne"
+      tests/engine/test_fuzz_afar.py::test_derived_sample_passes_every_check: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_multitu_sample_passes_every_check: "AFAR front end"
+      tests/engine/test_fuzz_afar.py::test_types_sample_passes_every_check: "AFAR front end"
+      tests/cluster/test_campaigns_nogpu.py::test_gate_hook_receives_every_failing_row: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/cluster/test_campaigns_nogpu.py::test_not_reproduced_sets_legality_review: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/cluster/test_campaigns_nogpu.py::test_verdict_confirmed: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/cluster/test_campaigns_nogpu.py::test_verdict_environment_dir_name: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/cluster/test_campaigns_nogpu.py::test_verdict_nondeterministic: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_agreeing_repeats_run_full_count_and_are_not_flaky: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_cce_c_present_assertion_is_no_error_termination: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_cce_present_miss_must_be_at_the_probe_line: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_cce_present_miss_on_a_continued_directive: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_cce_reason_carries_the_message_text: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_check_fail_is_wrong_answer: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_error_is_rejected: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_error_termination_is_correct: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_error_where_a_warning_is_required_fails: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_message_missing_is_a_check_failure: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_message_shown_then_run: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_probe_rejection_without_the_token_is_rejected: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_success_without_executable_is_harness_error: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_compile_without_error_termination_fails: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_crash_is_wrong_answer_with_reason_crash: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_declarative_is_unobservable: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_device_pass_is_correct_on_device: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_disagreeing_repeats_are_flaky: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_error_termination_reason_has_no_host_address: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_error_termination_with_the_runtime_message_is_correct: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_host_run_is_fallback: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_ice_is_rejected_with_reason_ice: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_ignored_warning_is_accepted_ignored: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_killed_compiler_is_harness_error_not_ice: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_link_failure_is_harness_error: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_mandatory_failure_then_host_check_fail_is_wrong_answer: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_mandatory_failure_then_host_run_is_fallback: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_messages_of_a_plain_rejection_is_its_one_message: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_missing_result_line_is_wrong_answer: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_multiple_result_lines_have_their_own_reason: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_not_implemented_is_rejected: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_nvhpc_c_rejection_and_ice: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_nvhpc_dropped_feature_compiles_as_ignored: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_nvhpc_failed_compile_with_a_dropped_feature_is_rejected: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_other_warnings_do_not_make_accepted_ignored: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_prelude_resetting_tmpdir_does_not_escape_the_run_dir: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_probe_crash_without_the_message_is_wrong_answer: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_probe_message_of_the_other_toolchain_does_not_count: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_probe_that_continues_is_a_check_failure: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_program_sees_core_dumps_off_xnack_and_tmpdir: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_recognised_notes_are_appended_to_the_reason: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_reject_followed_by_front_end_signal_is_an_ice: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_rejected_is_not_repeated: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_second_run_timeout_stops_repeats: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_temp_dir_is_removed: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_temp_dir_name_is_scrubbed_from_results: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_timeout_is_wrong_answer_with_reason: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_undefined_symbol_from_compiler_code_is_rejected: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_undefined_symbol_referenced_by_a_system_library_is_harness_error: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_unobservable_program_that_falls_back_is_still_fallback: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_unrecognised_compile_failure_is_harness_error: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_xnack_value_reaches_the_program: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_findings_nogpu.py::test_every_harness_row_has_provenance: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/cluster/test_campaigns_nogpu.py::test_matrix_writes_one_row_per_cell: "harness node check: wingtip's GPU is sm_80, the fake AMD/Cray toolchains target gfx942"
+      tests/engine/test_spec_text.py::test_cache_not_in_git: "results/ is a link in a lane or worktree (git check-ignore); passes in the main tree"
+      tests/cluster/test_toolchains.py::test_rocm_version_recorded: "CCE modules"

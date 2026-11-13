@@ -1,0 +1,932 @@
+# Where the OpenMP spec overrides the TableGen skeleton (skeleton.yaml).
+#
+# This is the one place for such overrides, in both directions. Every entry
+# cites the spec text that contradicts TableGen and is `status: provisional`
+# until the project owner reviews it. Read by offload/engine/catalog.py
+# (load_grammar), which the parser and slice_atoms use.
+#
+# directive_spellings: spellings the spec allows beyond the TableGen version
+#   range, valid from `since` on.
+# clause_rules: a skeleton clause rule for one directive that the spec
+#   removes (`remove: true`), re-ranges (`since`/`until` each replace the
+#   skeleton's bound, inclusive, so the range may narrow or widen; a bound
+#   left out keeps the skeleton's), or adds (`add: true`, with `once`,
+#   `since`, `until`) where the skeleton lacks a clause the spec allows. A
+#   removed clause raises clause_not_allowed; a clause outside its range
+#   raises version. `also_cited` lists further citations. The loader rejects
+#   entries that name an unknown directive or clause, and a re-range that
+#   leaves the skeleton's bounds unchanged.
+# directive_versions: the version that introduced a directive, where
+#   TableGen gives every spelling min version 0. Before `since` every
+#   spelling raises version. Method (sweep of the slice): a directive
+#   exists at 5.2 when each leaf construct has a construct section in the 5.2
+#   text (offload.engine.spec_text) and a compound name follows the 5.2 naming
+#   rules (§17.3); same at 6.0 with §19.1. The loader rejects unknown
+#   directives, duplicate entries and entries that change nothing.
+
+# skeleton_directives: directives TableGen lacks: `clauses_of` a
+#   directive whose clause rules it shares, its `association` and
+#   `spellings`. directive_languages: the languages of a
+#   directive where TableGen's are wrong ([] for both). repeatable_clauses
+#: clauses TableGen marks once that the spec lets repeat,
+#   restricted instead by a rule of rules.yaml.
+
+skeleton_directives:
+  begin metadirective:
+    clauses_of: metadirective
+    association: Block
+    spellings:
+      - {text: begin metadirective, min_ver: 50, max_ver: null}
+    citation: "OpenMP 5.2 §7.4.4, p.192"
+    also_cited: ["OpenMP 5.0 §2.3.4, p.56", "OpenMP 6.0 §9.4.4, p.327"]
+    status: provisional
+    notes: "A delimited metadirective in C/C++ and Fortran; its paired end directive is end metadirective. TableGen has no record."
+
+directive_languages:
+  declare variant:
+    languages: []
+    citation: "OpenMP 5.2 §7.5.4, p.197"
+    also_cited: ["OpenMP 5.0 §2.3.5, p.58"]
+    status: provisional
+    notes: "The Fortran form is !$omp declare variant([base-proc-name:]variant-proc-name) clause (5.0 §2.3.5 l.17); TableGen lists C only."
+
+repeatable_clauses:
+  defaultmap:
+    citation: "OpenMP 5.2 §5.8.7, p.162"
+    also_cited: ["OpenMP 5.0 §2.12.5, p.174", "OpenMP 6.0 §7.9.9, p.292"]
+    status: provisional
+    notes: "Once per variable category, not once per construct: rules.yaml defaultmap-map-001 and -002 check it."
+
+directive_spellings:
+  - directive: target data
+    spelling: target data
+    since: 60
+    citation: "OpenMP 6.0 §15.7, p.458"
+    status: provisional
+  - directive: target enter data
+    spelling: target enter data
+    since: 60
+    citation: "OpenMP 6.0 §15.5, p.454"
+    status: provisional
+  - directive: target exit data
+    spelling: target exit data
+    since: 60
+    citation: "OpenMP 6.0 §15.6, p.456"
+    status: provisional
+  - directive: target update
+    spelling: target update
+    since: 60
+    citation: "OpenMP 6.0 §15.9, p.465"
+    status: provisional
+  - directive: declare target
+    spelling: declare target
+    since: 60
+    citation: "OpenMP 6.0 §9.9.1, p.346"
+    status: provisional
+
+  - directive: begin declare target
+    spelling: begin declare target
+    since: 60
+    citation: "OpenMP 6.0 §9.9.2, p.349"
+    status: provisional
+    notes: "(C): 'The begin declare_target directive may alternatively be specified with begin declare target as the directive-name.'"
+  - directive: end declare target
+    spelling: end declare target
+    since: 60
+    citation: "OpenMP 6.0 §5.1, p.150"
+    status: provisional
+    notes: "(C): the paired end directive of begin declare target: 'If the directive-name of such a directive starts with begin, the end directive has the same directive name except begin is replaced with end.'"
+
+directive_versions:
+  - directive: begin declare target
+    since: 51
+    citation: "OpenMP 5.1 §2.14.7, p.211"
+    status: provisional
+    notes: "(the C 5.0 slice): the begin declare target directive first appears in 5.1 (#pragma omp begin declare target, 5.1 §2.14.7); 5.0's delimited form is declare target ... end declare target (5.0 §2.12.7, p.181), which the 5.0 C slice does not have as an atom of its own."
+  - directive: workdistribute
+    since: 60
+    citation: "OpenMP 6.0 §13.5, p.412"
+    status: provisional
+    notes: "No workdistribute construct in the 5.2 text; the 6.0 features history lists it as added in 6.0."
+  - directive: teams workdistribute
+    since: 60
+    citation: "OpenMP 6.0 §13.5, p.412"
+    status: provisional
+    notes: "Leaf workdistribute is new in 6.0."
+  - directive: target teams workdistribute
+    since: 60
+    citation: "OpenMP 6.0 §13.5, p.412"
+    status: provisional
+    notes: "Leaf workdistribute is new in 6.0."
+  - directive: target loop
+    since: 60
+    citation: "OpenMP 5.2 §17.3, p.342"
+    also_cited: ["OpenMP 6.0 §19.1, p.526"]
+    status: provisional
+    notes: "5.2: if directive-name-A is target then directive-name-B may be simd, parallel, teams, a teams compound, or a parallel compound with a loop, for or do leaf; plain loop is not listed. 6.0 allows target (parallelism-generating) with loop (partitioned)."
+
+clause_rules:
+  - directive: begin declare target
+    clause: to
+    remove: true
+    citation: "OpenMP 5.2 §7.8.2, p.207"
+    also_cited: ["OpenMP 6.0 §9.9.2, p.349"]
+    status: provisional
+    notes: "(C): the begin declare target directive takes device_type and indirect only (5.2 §7.8.2, 6.0 §9.9.2); TableGen also lists to and link."
+  - directive: begin declare target
+    clause: link
+    remove: true
+    citation: "OpenMP 5.2 §7.8.2, p.207"
+    also_cited: ["OpenMP 6.0 §9.9.2, p.349"]
+    status: provisional
+    notes: "(C): see the to entry."
+  - directive: declare target
+    clause: to
+    until: 52
+    citation: "OpenMP 6.0 §9.9.1, p.346"
+    also_cited: ["OpenMP 6.0 §7.10.1, p.297"]
+    status: provisional
+    notes: "6.0 lists device_type, enter, indirect, link and local on declare_target, and puts to only on target_update; 5.2 §5.8.4 keeps to as a deprecated synonym of enter."
+  - directive: target parallel do
+    clause: allocator
+    remove: true
+    citation: "OpenMP 5.2 §6.4, p.175"
+    also_cited: ["OpenMP 6.0 §8.4, p.310"]
+    status: provisional
+    notes: "The allocator clause appears only on the allocate directive in both versions; TableGen allows it on target parallel do."
+  - directive: target parallel do
+    clause: allocate
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §6.6, p.178"
+    also_cited: ["OpenMP 5.2 §17.2, p.341", "OpenMP 6.0 §8.6, p.312", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The allocate clause section lists target, parallel and do; a clause on a combined construct must apply to at least one leaf construct (§17.2 / §19.2). TableGen gives allocate (from 5.0) to target parallel, parallel do and target, but not to target parallel do."
+  - directive: target parallel do
+    clause: thread_limit
+    add: true
+    once: true
+    since: 51
+    citation: "OpenMP 5.2 §13.3, p.277"
+    also_cited: ["OpenMP 5.2 §17.2, p.340", "OpenMP 6.0 §15.3, p.452", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "thread_limit is a target clause, and §17.2 applies thread_limit on a combined construct to all leaves that permit it. TableGen gives it (from 5.1, once) to target and target parallel, but not to target parallel do."
+  - directive: target parallel do simd
+    clause: thread_limit
+    add: true
+    once: true
+    since: 51
+    citation: "OpenMP 5.2 §13.3, p.277"
+    also_cited: ["OpenMP 5.2 §17.2, p.340", "OpenMP 6.0 §15.3, p.452", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "Same leaves as target parallel do plus simd, which adds no restriction; §17.2 applies thread_limit to all leaves that permit it. TableGen omits it here."
+  - directive: target loop
+    clause: default
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §7.5.1, p.223"
+    also_cited: ["OpenMP 6.0 §19.2, p.528", "OpenMP 5.2 §17.2, p.340"]
+    status: provisional
+    notes: "The 6.0 default clause section lists target (5.2 does not, so since 60, as on the target leaf); §19.2 gives every clause the default all-constituents property unless otherwise specified, and 5.2 §17.2 names default among the clauses applied to all leaves that permit them. loop adds no restriction. TableGen omits default on target loop."
+  - directive: target simd
+    clause: default
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §7.5.1, p.223"
+    also_cited: ["OpenMP 6.0 §19.2, p.528", "OpenMP 5.2 §17.2, p.340"]
+    status: provisional
+    notes: "As for target loop: the target leaf permits default from 6.0 and simd adds no restriction (the argument used for thread_limit on target parallel do simd). TableGen omits default on target simd."
+  - directive: target teams distribute simd
+    clause: default
+    since: 1
+    citation: "OpenMP 5.2 §5.4.1, p.109"
+    also_cited: ["OpenMP 5.2 §17.2, p.340", "OpenMP 6.0 §7.5.1, p.223", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The teams leaf permits default at every version (the 5.2 and 6.0 default clause sections both list teams) and §17.2 applies default to all leaves that permit it, so the compound permits it at 5.2 as its sibling target teams distribute already does in TableGen (min_ver 1 there, hence since 1 here). TableGen gives target teams distribute simd default only from 6.0."
+  - directive: target parallel
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) excludes in_reduction only when directive-name-A is parallel, which is not the case here."
+  - directive: target parallel do
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) says \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" and that the restrictions of directive-name-A and directive-name-B apply; here directive-name-A is target, so the catalog reads the restriction non-recursively (as it does for nowait on target parallel do, which TableGen allows at 5.2). Read recursively it would exclude in_reduction at 5.2 wherever parallel is a nested name-A (target parallel do, target parallel do simd, target parallel loop, target teams distribute parallel do [simd]); maintainer decision."
+  - directive: target parallel do simd
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) says \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" and that the restrictions of directive-name-A and directive-name-B apply; here directive-name-A is target, so the catalog reads the restriction non-recursively (as it does for nowait on target parallel do, which TableGen allows at 5.2). Read recursively it would exclude in_reduction at 5.2 wherever parallel is a nested name-A (target parallel do, target parallel do simd, target parallel loop, target teams distribute parallel do [simd]); maintainer decision."
+  - directive: target parallel loop
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) says \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" and that the restrictions of directive-name-A and directive-name-B apply; here directive-name-A is target, so the catalog reads the restriction non-recursively (as it does for nowait on target parallel do, which TableGen allows at 5.2). Read recursively it would exclude in_reduction at 5.2 wherever parallel is a nested name-A (target parallel do, target parallel do simd, target parallel loop, target teams distribute parallel do [simd]); maintainer decision."
+  - directive: target simd
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) excludes in_reduction only when directive-name-A is parallel, which is not the case here."
+  - directive: target teams
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) excludes in_reduction only when directive-name-A is parallel, which is not the case here."
+  - directive: target teams distribute
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) excludes in_reduction only when directive-name-A is parallel, which is not the case here."
+  - directive: target teams distribute parallel do
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) says \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" and that the restrictions of directive-name-A and directive-name-B apply; here directive-name-A is target, so the catalog reads the restriction non-recursively (as it does for nowait on target parallel do, which TableGen allows at 5.2). Read recursively it would exclude in_reduction at 5.2 wherever parallel is a nested name-A (target parallel do, target parallel do simd, target parallel loop, target teams distribute parallel do [simd]); maintainer decision."
+  - directive: target teams distribute parallel do simd
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) says \"If directive-name-A is parallel, the nowait and in_reduction clauses must not be specified\" and that the restrictions of directive-name-A and directive-name-B apply; here directive-name-A is target, so the catalog reads the restriction non-recursively (as it does for nowait on target parallel do, which TableGen allows at 5.2). Read recursively it would exclude in_reduction at 5.2 wherever parallel is a nested name-A (target parallel do, target parallel do simd, target parallel loop, target teams distribute parallel do [simd]); maintainer decision."
+  - directive: target teams distribute simd
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) excludes in_reduction only when directive-name-A is parallel, which is not the case here."
+  - directive: target teams loop
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) excludes in_reduction only when directive-name-A is parallel, which is not the case here."
+  - directive: target teams workdistribute
+    clause: in_reduction
+    add: true
+    since: 50
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §5.5.10, p.138", "OpenMP 6.0 §7.6.12, p.256", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "in_reduction is permitted only on the target leaf (5.2 §5.5.10 and 6.0 §7.6.12 list target, task and taskloop; 6.0 adds target_data); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and no exclusion is stated. TableGen gives it to target and target loop (from 5.0) only. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 (no expected error) and aomp smoke-fails FNew-flang-270386. 5.2 §17.4 (p.343) excludes in_reduction only when directive-name-A is parallel, which is not the case here."
+  - directive: target parallel
+    clause: copyin
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §19.2, p.528"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §17.2, p.339", "OpenMP 5.2 §5.7.1, p.144", "OpenMP 6.0 §7.8.1, p.271", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "5.2 excludes it: \"If directive-name-A is target, the copyin clause must not be specified\" (5.2 §17.4, p.343; 5.1 §2.16.16 to §2.16.19 say \"except for copyin\"), so not before 6.0. 6.0 drops that restriction (§19.3 keeps only the distribute one) and gives copyin the outermost-leaf property (§7.8.1), so a clause permitted only on the parallel leaf applies to it (§19.2). TableGen omits it on this compound. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 uses copyin on teams distribute parallel do simd only."
+  - directive: target parallel do
+    clause: copyin
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §19.2, p.528"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §17.2, p.339", "OpenMP 5.2 §5.7.1, p.144", "OpenMP 6.0 §7.8.1, p.271", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "5.2 excludes it: \"If directive-name-A is target, the copyin clause must not be specified\" (5.2 §17.4, p.343; 5.1 §2.16.16 to §2.16.19 say \"except for copyin\"), so not before 6.0. 6.0 drops that restriction (§19.3 keeps only the distribute one) and gives copyin the outermost-leaf property (§7.8.1), so a clause permitted only on the parallel leaf applies to it (§19.2). TableGen omits it on this compound. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 uses copyin on teams distribute parallel do simd only."
+  - directive: target parallel do simd
+    clause: copyin
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §19.2, p.528"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §17.2, p.339", "OpenMP 5.2 §5.7.1, p.144", "OpenMP 6.0 §7.8.1, p.271", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "5.2 excludes it: \"If directive-name-A is target, the copyin clause must not be specified\" (5.2 §17.4, p.343; 5.1 §2.16.16 to §2.16.19 say \"except for copyin\"), so not before 6.0. 6.0 drops that restriction (§19.3 keeps only the distribute one) and gives copyin the outermost-leaf property (§7.8.1), so a clause permitted only on the parallel leaf applies to it (§19.2). TableGen omits it on this compound. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 uses copyin on teams distribute parallel do simd only."
+  - directive: target parallel loop
+    clause: copyin
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §19.2, p.528"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §17.2, p.339", "OpenMP 5.2 §5.7.1, p.144", "OpenMP 6.0 §7.8.1, p.271", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "5.2 excludes it: \"If directive-name-A is target, the copyin clause must not be specified\" (5.2 §17.4, p.343; 5.1 §2.16.16 to §2.16.19 say \"except for copyin\"), so not before 6.0. 6.0 drops that restriction (§19.3 keeps only the distribute one) and gives copyin the outermost-leaf property (§7.8.1), so a clause permitted only on the parallel leaf applies to it (§19.2). TableGen omits it on this compound. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 uses copyin on teams distribute parallel do simd only."
+  - directive: target teams distribute parallel do
+    clause: copyin
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §19.2, p.528"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §17.2, p.339", "OpenMP 5.2 §5.7.1, p.144", "OpenMP 6.0 §7.8.1, p.271", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "5.2 excludes it: \"If directive-name-A is target, the copyin clause must not be specified\" (5.2 §17.4, p.343; 5.1 §2.16.16 to §2.16.19 say \"except for copyin\"), so not before 6.0. 6.0 drops that restriction (§19.3 keeps only the distribute one) and gives copyin the outermost-leaf property (§7.8.1), so a clause permitted only on the parallel leaf applies to it (§19.2). TableGen omits it on this compound. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 uses copyin on teams distribute parallel do simd only."
+  - directive: target teams distribute parallel do simd
+    clause: copyin
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §19.2, p.528"
+    also_cited: ["OpenMP 5.2 §17.4, p.343", "OpenMP 5.2 §17.2, p.339", "OpenMP 5.2 §5.7.1, p.144", "OpenMP 6.0 §7.8.1, p.271", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "5.2 excludes it: \"If directive-name-A is target, the copyin clause must not be specified\" (5.2 §17.4, p.343; 5.1 §2.16.16 to §2.16.19 say \"except for copyin\"), so not before 6.0. 6.0 drops that restriction (§19.3 keeps only the distribute one) and gives copyin the outermost-leaf property (§7.8.1), so a clause permitted only on the parallel leaf applies to it (§19.2). TableGen omits it on this compound. Corpus: gcc gfortran.dg/gomp/clauses-1.f90 uses copyin on teams distribute parallel do simd only."
+  - directive: teams distribute parallel do simd
+    clause: copyin
+    add: true
+    since: 1
+    citation: "OpenMP 5.2 §17.2, p.339"
+    also_cited: ["OpenMP 5.2 §5.7.1, p.144", "OpenMP 6.0 §7.8.1, p.271", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "copyin is permitted only on the parallel leaf (5.2 §5.7.1, 6.0 §7.8.1); a clause permitted on a single leaf of a compound construct applies to that leaf (5.2 §17.2, 6.0 §19.2), and 6.0 gives copyin the outermost-leaf property for exactly this case. No exclusion is stated. TableGen omits it on this compound. Corpus: gcc gfortran.dg/gomp/clauses-1.f90:396 (no expected error)."
+  - directive: target
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 target construct lists device_type among its clauses and the 6.0 device_type section lists target (5.2 lists only declare target). TableGen allows device_type only on declarative directives. Corpus: gcc gfortran.dg/gomp/target-device-type-1.f90 (no expected error)."
+  - directive: target loop
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target parallel
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target parallel do
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target parallel do simd
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target parallel loop
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target simd
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target teams
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target teams distribute
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target teams distribute parallel do
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target teams distribute parallel do simd
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target teams distribute simd
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target teams loop
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target teams workdistribute
+    clause: device_type
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §15.1, p.450", "OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "device_type is permitted only on the target leaf (6.0 §15.1, §15.8); it has the default all-constituents property, so on a compound it applies to the target leaf (6.0 §19.2). Added with target so the combined-construct consistency holds. Corpus (target teams): gcc libgomp.fortran/groupprivate-1.f90:72."
+  - directive: target data
+    clause: depend
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §15.7, p.458"
+    also_cited: ["OpenMP 6.0 §17.9.5, p.507"]
+    status: provisional
+    notes: "6.0 makes target_data a composite construct and lists depend among its clauses; the 6.0 depend section lists target_data (5.2 §15.9.5 does not). Corpus: omp_examples devices/sources/target_data_semantics_new.1.f90:48."
+  - directive: target data
+    clause: nogroup
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.7, p.458"
+    also_cited: ["OpenMP 6.0 §17.7, p.483"]
+    status: provisional
+    notes: "6.0 lists nogroup among the target_data clauses; the 6.0 nogroup section (unique) lists target_data. Corpus: omp_examples devices/sources/target_data_semantics_new.1.f90:31."
+  - directive: target data
+    clause: nowait
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.7, p.458"
+    also_cited: ["OpenMP 6.0 §17.6, p.481"]
+    status: provisional
+    notes: "6.0 lists nowait among the target_data clauses; the 6.0 nowait section (unique, end-clause) lists target_data. Corpus: omp_examples devices/sources/target_data_semantics_new.1.f90:67."
+  - directive: distribute
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: distribute parallel do
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: distribute parallel do simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: distribute simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: parallel do
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: parallel do simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: target parallel do
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: target parallel do simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: target simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: target teams distribute
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: target teams distribute parallel do
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: target teams distribute parallel do simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: target teams distribute simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: teams distribute
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: teams distribute parallel do
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: teams distribute parallel do simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+  - directive: teams distribute simd
+    clause: induction
+    add: true
+    since: 60
+    citation: "OpenMP 6.0 §7.6.13, p.257"
+    also_cited: ["OpenMP 6.0 §19.2, p.528"]
+    status: provisional
+    notes: "The 6.0 induction clause section lists distribute, do, for, simd and taskloop; on a compound it applies to all leaves that permit it (default all-constituents property, 6.0 §19.2). New in 6.0; TableGen has the clause but allows it nowhere. Corpus: omp_examples data_environment/sources/induction.1.f90:21 (parallel do)."
+
+  - directive: target loop
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target parallel
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target parallel do
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target parallel do simd
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target parallel loop
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target simd
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target teams
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target teams distribute
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target teams distribute parallel do
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target teams distribute parallel do simd
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target teams distribute simd
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target teams loop
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  - directive: target teams workdistribute
+    clause: replayable
+    add: true
+    once: true
+    since: 60
+    citation: "OpenMP 6.0 §15.8, p.460"
+    also_cited: ["OpenMP 6.0 §14.6, p.440", "OpenMP 6.0 §19.2, p.528", "OpenMP 6.0 §19.3, p.531"]
+    status: provisional
+    notes: "The 6.0 target construct lists replayable and the 6.0 replayable section lists target; on a compound it applies to the target leaf (default all-constituents property, 6.0 §19.2) and §19.3 states no exclusion. Same situation as device_type. TableGen gives replayable (once, from 6.0) to target but not to this compound; once follows the target rule. Not exercised by the corpus; added for consistency with the target leaf (review)."
+  # Review sweep (5.2 clause lists): every (slice directive, clause)
+  # allowed at 5.2 was checked against the "Directives" list of the clause's
+  # 5.2 section (6.0 likewise); a clause on a compound needs a leaf in that
+  # list (5.2 §17.2 / 6.0 §19.2). Narrowing only.
+  - directive: requires
+    clause: self_maps
+    since: 60
+    citation: "OpenMP 6.0 §10.5.1.6, p.361"
+    also_cited: ["OpenMP 5.2 §8.2, p.210"]
+    status: provisional
+    notes: "self_maps is a 6.0 requires clause; the 5.2 text has no self_maps (the 5.2 requires directive lists none). TableGen allows it from version 1."
+  - directive: teams
+    clause: if
+    since: 60
+    citation: "OpenMP 5.2 §3.4, p.72"
+    also_cited: ["OpenMP 6.0 §5.5, p.179"]
+    status: provisional
+    notes: "The 5.2 if clause lists cancel, parallel, simd, target, target data, target enter data, target exit data, target update, task and taskloop, not teams; 6.0 adds teams. TableGen allows it from 5.2. Provisional also because 5.2 contradicts itself: 5.2 §10.2 (teams) says the number of teams created \"is determined by evaluating the if and num_teams clauses\"."
+  - directive: teams distribute
+    clause: if
+    since: 60
+    citation: "OpenMP 5.2 §3.4, p.72"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §5.5, p.179"]
+    status: provisional
+    notes: "Neither leaf (teams, distribute) takes if at 5.2; teams does at 6.0. TableGen allows it from version 1. Provisional also because 5.2 contradicts itself: 5.2 §10.2 (teams) says the number of teams created \"is determined by evaluating the if and num_teams clauses\"."
+  - directive: teams loop
+    clause: if
+    since: 60
+    citation: "OpenMP 5.2 §3.4, p.72"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §5.5, p.179"]
+    status: provisional
+    notes: "Neither leaf (teams, loop) takes if at 5.2; teams does at 6.0. TableGen allows it from 5.2. Provisional also because 5.2 contradicts itself: 5.2 §10.2 (teams) says the number of teams created \"is determined by evaluating the if and num_teams clauses\"."
+  - directive: distribute simd
+    clause: copyin
+    remove: true
+    citation: "OpenMP 5.2 §5.7.1, p.144"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The copyin clause section does not list distribute or simd (copyin lists only parallel, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: distribute simd
+    clause: default
+    remove: true
+    citation: "OpenMP 5.2 §5.4.1, p.109"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The default clause section does not list distribute or simd (default lists parallel, task, taskloop, teams; 6.0 also target, target_data, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: distribute simd
+    clause: num_threads
+    remove: true
+    citation: "OpenMP 5.2 §10.1.2, p.227"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The num_threads clause section does not list distribute or simd (num_threads lists only parallel, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: distribute simd
+    clause: proc_bind
+    remove: true
+    citation: "OpenMP 5.2 §10.1.4, p.229"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The proc_bind clause section does not list distribute or simd (proc_bind lists only parallel, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: distribute simd
+    clause: schedule
+    remove: true
+    citation: "OpenMP 5.2 §11.5.3, p.252"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The schedule clause section does not list distribute or simd (schedule lists do and for, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: distribute simd
+    clause: message
+    remove: true
+    citation: "OpenMP 6.0 §10.3, p.353"
+    also_cited: ["OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The message clause section does not list distribute or simd (the 5.2 message clause lists only error, 5.2 §8.5.2; 6.0 lists error and parallel); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: distribute simd
+    clause: severity
+    remove: true
+    citation: "OpenMP 6.0 §10.4, p.354"
+    also_cited: ["OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The severity clause section does not list distribute or simd (the 5.2 severity clause lists only error, 5.2 §8.5.1; 6.0 lists error and parallel); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: target simd
+    clause: num_threads
+    remove: true
+    citation: "OpenMP 5.2 §10.1.2, p.227"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The num_threads clause section does not list target or simd (num_threads lists only parallel, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: target simd
+    clause: proc_bind
+    remove: true
+    citation: "OpenMP 5.2 §10.1.4, p.229"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The proc_bind clause section does not list target or simd (proc_bind lists only parallel, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: target simd
+    clause: schedule
+    remove: true
+    citation: "OpenMP 5.2 §11.5.3, p.252"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The schedule clause section does not list target or simd (schedule lists do and for, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: target simd
+    clause: shared
+    remove: true
+    citation: "OpenMP 5.2 §5.4.2, p.110"
+    also_cited: ["OpenMP 5.2 §17.2, p.339", "OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The shared clause section does not list target or simd (shared lists parallel, task, taskloop, teams; 6.0 also target_data, in 5.2 and 6.0); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: target simd
+    clause: message
+    remove: true
+    citation: "OpenMP 6.0 §10.3, p.353"
+    also_cited: ["OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The message clause section does not list target or simd (the 5.2 message clause lists only error, 5.2 §8.5.2; 6.0 lists error and parallel); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+  - directive: target simd
+    clause: severity
+    remove: true
+    citation: "OpenMP 6.0 §10.4, p.354"
+    also_cited: ["OpenMP 6.0 §19.2, p.530"]
+    status: provisional
+    notes: "The severity clause section does not list target or simd (the 5.2 severity clause lists only error, 5.2 §8.5.1; 6.0 lists error and parallel); a clause on a combined or composite construct must be allowed on one of its leaves. TableGen allows it."
+
+  # --- OpenMP 5.0: clauses the 5.0 text does not allow ---------------
+  - directive: distribute
+    clause: order
+    since: 51
+    citation: "OpenMP 5.0 §2.9.4.1, p.121"
+    also_cited: ["OpenMP 5.1 §2.11.6.1, p.143"]
+    status: provisional
+    notes: "The 5.0 distribute clause list (private, firstprivate, lastprivate, collapse, dist_schedule, allocate) has no order clause; 5.1 adds order([order-modifier:]concurrent). On distribute no other leaf takes order (teams does not), so order is 5.1+ here. TableGen allows it from 5.0."
+  - directive: teams distribute
+    clause: order
+    since: 51
+    citation: "OpenMP 5.0 §2.9.4.1, p.121"
+    also_cited: ["OpenMP 5.1 §2.11.6.1, p.143"]
+    status: provisional
+    notes: "The 5.0 distribute clause list (private, firstprivate, lastprivate, collapse, dist_schedule, allocate) has no order clause; 5.1 adds order([order-modifier:]concurrent). On teams distribute no other leaf takes order (teams does not), so order is 5.1+ here. TableGen allows it from 5.0."
+  - directive: target teams distribute
+    clause: order
+    since: 51
+    citation: "OpenMP 5.0 §2.9.4.1, p.121"
+    also_cited: ["OpenMP 5.1 §2.11.6.1, p.143"]
+    status: provisional
+    notes: "The 5.0 distribute clause list (private, firstprivate, lastprivate, collapse, dist_schedule, allocate) has no order clause; 5.1 adds order([order-modifier:]concurrent). On target teams distribute no other leaf takes order (teams does not), so order is 5.1+ here. TableGen allows it from 5.0."
+  - directive: distribute parallel do
+    clause: linear
+    since: 52
+    citation: "OpenMP 5.0 §2.9.4.3, p.126"
+    also_cited: ["OpenMP 5.1 §2.11.6.3, p.149", "OpenMP 5.2 §17.5, p.344"]
+    status: provisional
+    notes: "5.0 and 5.1 restrict the distribute parallel worksharing-loop construct: 'No linear clause can be specified.' 5.2 allows linear when distribute is a constituent, for loop iteration variables only (§17.5). The restriction applies to the compounds that contain it (distribute parallel do). TableGen allows linear at every version."
+  - directive: teams distribute parallel do
+    clause: linear
+    since: 52
+    citation: "OpenMP 5.0 §2.9.4.3, p.126"
+    also_cited: ["OpenMP 5.1 §2.11.6.3, p.149", "OpenMP 5.2 §17.5, p.344"]
+    status: provisional
+    notes: "5.0 and 5.1 restrict the distribute parallel worksharing-loop construct: 'No linear clause can be specified.' 5.2 allows linear when distribute is a constituent, for loop iteration variables only (§17.5). The restriction applies to the compounds that contain it (teams distribute parallel do). TableGen allows linear at every version."
+  - directive: target teams distribute parallel do
+    clause: linear
+    since: 52
+    citation: "OpenMP 5.0 §2.9.4.3, p.126"
+    also_cited: ["OpenMP 5.1 §2.11.6.3, p.149", "OpenMP 5.2 §17.5, p.344"]
+    status: provisional
+    notes: "5.0 and 5.1 restrict the distribute parallel worksharing-loop construct: 'No linear clause can be specified.' 5.2 allows linear when distribute is a constituent, for loop iteration variables only (§17.5). The restriction applies to the compounds that contain it (target teams distribute parallel do). TableGen allows linear at every version."

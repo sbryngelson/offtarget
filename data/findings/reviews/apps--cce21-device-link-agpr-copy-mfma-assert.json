@@ -1,0 +1,113 @@
+{
+ "finding": "apps/cce21-device-link-agpr-copy-mfma-assert.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Module variables used on the device are listed in declare target. Procedures referenced in the target construct (f_advance_step) are implicitly declare target, and the Fortran rule extends this to procedures they reference. Double use association of glob is valid Fortran. No data race: each iteration works on its own element and local scratch. Optional dummies are only referenced when present. The device and host results are compared with a tolerance and the compiler is only asked to compile; a crash in the back end is not permitted behavior for a conforming program."
+  },
+  {
+   "run": "run-20261113/batch-77",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Module procedures referenced from the target region are implicitly declare target, transitively. Module variables used on the device are declare target and updated with target update. Optional arguments are used only when present, and the repeated module use association is permitted. A conforming compiler must compile it; an internal assertion crash is a defect. The exact numeric output is not what is required here. Legality is checked by reading, not exhaustively."
+  },
+  {
+   "run": "run-v2-20261113/batch-17",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Variables used on the device are declared target and the rest are explicitly mapped. f_advance_step is referenced in the target construct, so it is treated as declare target, and the procedures it references from declare target context follow. Iterations write only their own elements, with no race. The loop body is ordinary Fortran. An optimizer assertion failure in the linker is a compiler fault; accepting the program is required. The host/device numeric comparison itself is not guaranteed.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-57",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-75",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program uses module variables with declare target and calls module procedures from a target region. Procedures referenced in a target construct are implicitly declared target, transitively through their callees, and every module variable used on the device is listed in a declare target directive. No data race (each iteration touches element k only, shared scalars are read-only firstprivate). A compiler crash (LLVM assertion in lld) is not a permitted outcome for a conforming program, so acceptance is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-60",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ee544e7a86df39a3bb28dce57cd514784ea01bd4884581f06ead02f5d9719ab1",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

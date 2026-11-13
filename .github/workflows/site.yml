@@ -1,0 +1,72 @@
+# Build, check and deploy the public offload-issue site to GitHub Pages
+# (docs/tooling/publishing.md). CPU only: the committed data, Python, node and the
+# runner's Chrome; no compiler, no scheduler, nothing git-ignored. Every
+# action is pinned to a commit (its release tag named beside it); the jobs
+# hold the least permissions Pages needs and no secret. Deploying needs the
+# maintainer's switch (the repository variable SITE_PUBLISH).
+name: site
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - name: Set up node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Install the Python packages
+        run: python3 -m pip install --no-cache-dir -r tools/site/site_requirements.txt
+      - name: Show the browser and node the check will use
+        run: google-chrome --version && node --version
+      - name: Build and check the site
+        run: tools/site_publish.sh _site --repo-url "$REPO_URL" --source-branch "$REPO_BRANCH"
+        env:
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          REPO_BRANCH: ${{ github.event.repository.default_branch }}
+      - name: Run the tests that guard the site
+        run: python3 -I -m pytest -q tests/site
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  # publishes only while the maintainer's switch is on: the repository variable SITE_PUBLISH set
+  # to 'true' (docs/tooling/publishing.md, "Turning it on"); until then every push builds and checks
+  # and this job is skipped
+  deploy:
+    if: ${{ vars.SITE_PUBLISH == 'true' }}
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

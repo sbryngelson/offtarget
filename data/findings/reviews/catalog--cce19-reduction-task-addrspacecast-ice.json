@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce19-reduction-task-addrspacecast-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The task reduction-modifier may appear on a worksharing-loop construct; the list item s is shared in the enclosing parallel region as required; the loop variable i is predetermined private so default(none) is satisfied; b(i) writes are disjoint. The reduction does not use nowait. The program is conforming and a conforming compiler must compile it; the invalid addrspacecast crash is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-44",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The task reduction modifier is permitted on a worksharing loop; s is shared in the enclosing parallel region, no nowait, no simd/loop constituent. The s update is the reduction itself, so there is no race. Mapped scalar s is tofrom. Conforming; a conforming compiler must compile and link it, so the undefined runtime symbols are a compiler/runtime defect. Fortran loop variable i is predetermined private; allocatable a,b are mapped before use."
+  },
+  {
+   "run": "run-v2-20261113/batch-43",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "reduction(task, +: s) on a worksharing loop is allowed; s is shared in the enclosing parallel, nowait is absent, and neither simd nor loop is a constituent. default(none) lists a, b, s; the loop variable is predetermined private and n is a named constant. Legal, so an invalid addrspacecast crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-59",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-83",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The reduction clause with the task modifier appears on a worksharing-loop construct, which is permitted (no simd or loop constituent, no nowait). s is shared in the parallel region with default(none) and listed, i is a predetermined loop variable, b(i) writes are disjoint. The program conforms; a compiler crash (invalid addrspacecast) is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "fbb48545f931e6e9cd9ae81a96acbb8beda010c48b8b600c5688253674c419d7",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

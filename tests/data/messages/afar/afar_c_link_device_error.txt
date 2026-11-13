@@ -1,0 +1,18 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-21.
+# source: amdclang -fopenmp --offload-arch=gfx942 -fopenmp-version=60 -O2 (AFAR 24.0.0git) on offload.engine.c_gen omp60-c-clause-message (Error at(compilation) severity(warning) inside a target region; the device image calls __kmpc_error, which the device runtime lacks)
+# exit status: 1
+==== verbatim output below ====
+omp60-c-clause-message.c:33:48: warning: COMPLIANCE_PROBE_MESSAGE [-Wuser-defined-warnings]
+   33 |     #pragma omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+      |                                                ^
+1 warning generated.
+omp60-c-clause-message.c:33:48: warning: COMPLIANCE_PROBE_MESSAGE [-Wuser-defined-warnings]
+   33 |     #pragma omp error at(compilation) severity(warning) message("COMPLIANCE_PROBE_MESSAGE")
+      |                                                ^
+1 warning generated.
+ld.lld: error: undefined symbol: __kmpc_error
+>>> referenced by <site>/omp60-c-clause-message.out.amdgpu9.42.gfx942-9f268d.img.lto.o:(__omp_offloading_14_c7cde03_main_l31)
+>>> referenced by <site>/omp60-c-clause-message.out.amdgpu9.42.gfx942-9f268d.img.lto.o:(__omp_offloading_14_c7cde03_main_l31)
+clang: error: ld.lld command failed with exit code 1 (use -v to see invocation)
+<site>/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c/lib/llvm/bin/clang-linker-wrapper: error: 'clang' failed
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

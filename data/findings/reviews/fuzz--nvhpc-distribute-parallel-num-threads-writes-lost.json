@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-distribute-parallel-num-threads-writes-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-33",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "distribute is strictly nested in teams; a parallel region with a do inside the distribute loop is permitted. Each (i,j) written once; h written only by iteration i=1. o2 is implicitly mapped tofrom, so on the device sum must be 2432 and h 0. Observed sum 0 is a defect."
+  },
+  {
+   "run": "run-20261113/batch-82",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Target/teams/distribute with a nested parallel and worksharing loop is conforming. Only the i==1 iteration writes h, and each o2(i,j) is written once, so there is no race. o2 is referenced in the target region and is implicitly mapped tofrom, so the sum 2432 must return to the host. Observed sum=0 is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o2 is a non-scalar referenced in the target construct with no explicit map, so it is implicitly mapped tofrom. Only iteration i==1 writes h, so there is no race. Each o2(i,j) is written by exactly one thread. The program is conforming; o2 must be copied back, so sum 2432 is required. Observed sum=0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-45",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-98",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 4,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "teams is strictly nested in target, distribute in teams, and parallel with an inner do inside the distribute loop is allowed. h is written by only one iteration, and o2(i,j) elements are distinct, so there is no race. Expected sum is 2432 with h=0, so the observed zeros are wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-20",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b1414fda87efa77b873d2f38a6b559b49ae747e5800864b0a0d7714b07a686d9",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

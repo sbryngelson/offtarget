@@ -1,0 +1,42 @@
+# Dev programs that assume separate host and device storage.
+# Their unified (AMD HSA_XNACK=1) and managed (NVHPC) rows are not applicable: not run, not gated,
+# not confirmed, not counted (tools/campaigns/harvest.py rows and cells). Written by
+# `tools/campaigns/harvest.py copy-only`. Criterion: the copy cell passes on some compiler and every unified or
+# managed cell fails on every compiler that ran one. Caveat: a unified-memory defect shared by every
+# compiler looks the same. Holdout programs are never listed (scored on copy cells only:
+# catalog/harvest_holdout_excluded.yaml scored_modes).
+rows_not_applicable: 198
+programs:
+- hv-llvm-mapping-mapper-map-mbr-ptee-then-present-mbr-ptee
+- hv-llvm-mapping-mapper-map-ptee-only
+- hv-llvm-mapping-mapper-map-ptee-only-2-ptr-indirections-array
+- hv-llvm-mapping-mapper-map-ptee-only-always-array
+- hv-llvm-mapping-mapper-map-ptr-ptee-nomapper-del-ptee
+- hv-llvm-mapping-target-has-device-addr
+- hv-llvm-offloading-fortran-double-target-call-with-declare-target
+- hv-llvm-offloading-fortran-target-data-use-device-addr-common-block
+- hv-llvm-offloading-fortran-target-defaultmap
+- hv-llvm-offloading-fortran-target-is-device-ptr
+- hv-llvm-offloading-fortran-target-map-dtype-arr-bounds-member-enter-exit
+- hv-llvm-offloading-fortran-target-map-dtype-multi-explicit-array-member-bounds
+- hv-llvm-offloading-fortran-target-map-enter-exit-array-bounds
+- hv-llvm-offloading-fortran-target-map-two-dtype-multi-member-array-1d-bounds
+- hv-llvm-offloading-fortran-target-update
+- hv-llvm-offloading-schedule
+- hv-llvm-offloading-strided-update-strided-update-count-expression
+- hv-llvm-offloading-strided-update-strided-update-from
+- hv-llvm-offloading-strided-update-strided-update-from-pointer
+- hv-llvm-offloading-strided-update-strided-update-multidim-offset
+- hv-llvm-offloading-strided-update-strided-update-multiple-arrays-variable-stride
+- hv-llvm-offloading-strided-update-strided-update-multiple-from
+- hv-llvm-offloading-strided-update-strided-update-partial-from
+- hv-llvm-offloading-strided-update-strided-update-ptr-multiple-from
+- hv-llvm-offloading-strided-update-strided-update-ptr-partial-from
+- hv-llvm-offloading-strided-update-strided-update-ptr-variable-count-and-stride
+- hv-llvm-offloading-strided-update-strided-update-ptr-variable-stride
+- hv-llvm-offloading-strided-update-strided-update-struct-count-expression
+- hv-llvm-offloading-strided-update-strided-update-struct-from
+- hv-llvm-offloading-strided-update-strided-update-struct-multiple-from
+- hv-llvm-offloading-strided-update-strided-update-struct-partial-from
+- hv-llvm-offloading-strided-update-strided-update-struct-variable-stride
+- hv-llvm-offloading-strided-update-strided-update-variable-stride-misc

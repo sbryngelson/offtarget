@@ -1,0 +1,270 @@
+{
+ "finding": "malloc/afar-device-malloc-in-kernel-corrupts-records.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The target region calls malloc, memcpy and free, which are external functions without a declare target directive and are not defined in the translation unit; the specification gives no guarantee they are device routines, so acceptance and behavior are not clearly required. tmp is also used without a null check. The pointer gpp is implicitly a zero-length-section base pointer and attaches to the alloc-mapped gps storage; indices li are unique per iteration, so no race otherwise. Because the device heap is not specified by the standard, the observed wrong answer is not clearly a spec violation."
+  },
+  {
+   "run": "run-20261112/batch-32",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each iteration writes a distinct element, so no race, and gpp (a firstprivate pointer) is translated to the mapped gps storage per 5.8.6. But the program calls malloc on the device for ~48M concurrent iterations and dereferences the result unchecked; device heap size and malloc failure behaviour are not specified by OpenMP, so a failed or exhausted device allocation (bad 4220 in trial 1 only) is not something the specification rules out. No clause of the spec requires the expected result."
+  },
+  {
+   "run": "run-v2-20261113/batch-25",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "gpp is a pointer used in the target region without a clause, so it is implicitly mapped as a zero-length array section and resolves to the device copy of gps (mapped with alloc). The program is conforming. The kernel calls device malloc/free and memcpy on 4 million-plus threads and dereferences tmp without a null check. The specification says nothing about device-side malloc, its heap size or its failure behavior, so wrong results from heap exhaustion or races in the device allocator are not excluded by the specification.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-45",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-73",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The device code calls malloc, memcpy and free, which have no visible definition, so the implicit declare target rule does not cover them and the specification does not define their behavior on a device. The device-side allocator is not specified to be thread-safe or visible across teams. The wrong answer is therefore not clearly a violation of a required result.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-60",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "malloc/memcpy/free have no visible definition so the implicit declare target rule does not cover them"
+     ],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f291e10383fcfb60d06c380264ab5d7f738b0410b6bb411f58f4ab0a28fde77c",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The failure is in device-side malloc, memcpy and free, which the specification treats only as procedures referenced in a target construct. Nothing in the specification defines their device behavior, heap size or failure handling for millions of threads, so wrong results from an exhausted device heap are not excluded.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings reach the same verdict and it holds. Each iteration writes a distinct element, so there is no race and gpp is attached to the mapped gps storage. The specification does not define device heap capacity or behaviour of malloc called in a target region, and the program dereferences the result without a null check; a failed device allocation under 48M concurrent iterations is not excluded. Nothing in the text requires check=pass."
+  },
+  {
+   "run": "adj-20261112/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings reach the same verdict and it holds. Each iteration writes a distinct element, so there is no race, and gpp is translated via the mapped gps storage. The risk is the target region calling malloc, memcpy and free, which are external functions that are neither declared target nor defined in the translation unit; the implicit declare target rules cover only functions referenced from declare target procedures. The specification does not guarantee device versions of these, nor device heap capacity or malloc success, and the code dereferences malloc results unchecked, so the observed bad entries in one trial are not excluded."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A is mostly right on mapping: gpp is implicitly a zero-length array section and attaches to the present gps storage. The failure is in device-side malloc, memcpy and free, which the specification treats only as procedures referenced in a target construct. Nothing in the specification defines their device behavior, heap size or failure handling for millions of threads, so wrong results from an exhausted device heap are not excluded. Reading B is right that the result is not required, but legality of the unspecified library behavior is not decided.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-19",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "gpp is a pointer referenced in the target region, so it is treated as a zero-length array section and attaches to the device copy of gps. The program is legal. The specification says nothing about device-side malloc, memcpy or free behavior under heavy concurrency, so the wrong answer is not shown to violate a requirement. Reading B's claim that legality is uncertain is not supported.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "cce-acc-routine-bind-module-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-21",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "host_val has routine seq bind(dev_val); dev_val is a visible accelerator routine (seq) without its own bind clause, so the restriction on binding to a routine with a bind clause is not violated. The call in the compute region calls dev_val on the device and host_val on the host. Both routines are in the module specification part, which allows a named routine directive. A compiler must accept; the internal compiler error is a defect."
+  },
+  {
+   "run": "run-20261113/batch-61",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The routine directive with bind(dev_val) is allowed; dev_val is a visible seq routine with no bind clause of its own, so the restriction on binding to a bound routine is not violated. A call on the device calls dev_val and the host calls host_val. The internal compiler error is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-28",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "host_val has routine seq with bind(dev_val). dev_val is a distinct routine with its own routine seq and no bind clause, so the bind restriction is met. The bind clause only sets the name used when calling on a device. A compiler must accept the program, so the internal error is a compiler fault.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-79",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "routine seq bind(dev_val) names a visible procedure; dev_val has no bind clause of its own, host_val is not compiled for the device, and a device call goes to dev_val. No restriction is broken, so a conforming compiler must accept it. The internal error is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-26",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "c0fe696c89cad024d44073f7fb6cd3971a393d66446646863bcb8b4fc220fc29",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

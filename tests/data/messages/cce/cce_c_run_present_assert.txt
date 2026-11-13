@@ -1,0 +1,6 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: run of a C program whose only present map names an array mapped by an enclosing target data (target data map(to: a) { target map(present, to: a) map(from: b) }; data/findings/cce-c-map-present-assert.c) built by craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -fopenmp-version=52 -O2 (CCE 19.0.0), HSA_XNACK=0 OMP_TARGET_OFFLOAD=mandatory: an assertion in CCE's offload runtime, not a present-table message
+# exit status: 134
+==== verbatim output below ====
+pok19: libcrayacc/acc_clang_wrapper.c:761: void TransferList::validate_clang_flags(int64_t): Assertion `clang_flags == 0' failed.
+bash: line 1: 4187409 Aborted                 HSA_XNACK=0 OMP_TARGET_OFFLOAD=mandatory ./pok19

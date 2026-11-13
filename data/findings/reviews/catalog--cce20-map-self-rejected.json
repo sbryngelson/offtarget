@@ -1,0 +1,204 @@
+{
+ "finding": "catalog/cce20-map-self-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-39",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 1
+   },
+   "reasoning": "In OpenMP 6.0 self is a map-type-modifying modifier, and an omitted map-type defaults to tofrom. map(self: a) is therefore syntactically valid, and the compiler's message cites the older 5.2 rule. That makes the refusal a compiler error. The self map requires the original item to be accessible from the device. With separate host and device memory, runtime error termination is permitted, so the run result is not guaranteed."
+  },
+  {
+   "run": "run-20261113/batch-43",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "In 6.0 self is a map-type-modifier and a missing map-type defaults to tofrom, so the older rule that a modifier requires a map-type no longer applies. A self map with separate memory may end in runtime error termination if a is not accessible from the device, which is defined behavior, but a compile-time refusal is not permitted. Some doubt about modifier-only syntax."
+  },
+  {
+   "run": "run-20261113b/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "In OpenMP 6.0, self is a map-type-modifier (self-modifier), and when no map-type is given the map-type defaults to tofrom, so map(self: a) is syntactically valid. Mapper-free, single occurrence of a. Where the original storage is not accessible from the device, the self map leads to runtime error termination, but that is defined behavior, not a compile-time rule. The compile-time refusal citing a required map-type is wrong for 6.0, so acceptance is required. Runtime outcome with separate memory is uncertain, but compile acceptance is required."
+  },
+  {
+   "run": "run-v2-20261113/batch-51",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "In OpenMP 6.0, self is a map-type-modifier and map-type may be omitted (default tofrom), so map(self: a) is syntactically legal and the compiler error reflects the older rule. However a self map causes runtime error termination if the original item is not accessible from the device and cannot be made so. With separate memory that is implementation dependent, so successful execution is not required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-99",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 6.0 adds the self map-type-modifier; with no map-type given, the type defaults to tofrom, so map(self: a) is syntactically valid in 6.0. A self map requires the original storage to be accessible from the target device; with separate host and device memory the allocatable a may not be accessible, and the specification then mandates runtime error termination. The program is legal, but the specification does not require it to compile and print a result on separate-memory devices, so the refusal is not a required-acceptance violation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-54",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f51bf6d6b6072933b5f3edfebb6c81ab4aa32d2209c73ced0c3904c679bb32a4",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: Both readings agree. In 6.0 self is a map-type-modifier and map-type is optional (default), so map(self: a) is syntactically valid and the compiler error reflects the pre-6.0 rule. A self map causes runtime error termination when the original item is not accessible from the target device and cannot be made so. With separate memory the allocatable a may not be accessible, so successful execution is not required.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree. In 6.0 self is a map-type-modifier and map-type is optional (default), so map(self: a) is syntactically valid and the compiler error reflects the pre-6.0 rule. A self map causes runtime error termination when the original item is not accessible from the target device and cannot be made so. With separate memory the allocatable a may not be accessible, so successful execution is not required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "In 6.0 self is a map-type-modifier and the map-type may be omitted, so map(self: a) is conforming and the compiler's 5.2-style error is wrong. But a self map requires the original item to be accessible from the device; with separate memory runtime error termination is permitted, so a successful run is not required. Both readings agree on this.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-45",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

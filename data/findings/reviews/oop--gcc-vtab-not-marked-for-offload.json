@@ -1,0 +1,113 @@
+{
+ "finding": "oop/gcc-vtab-not-marked-for-offload.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "bump is a declare target procedure with a class dummy and select type. The actual arguments e1, e2, b0 are non-polymorphic, mapped tofrom, so the polymorphic-mapping restrictions do not apply. Each type guard selects the expected branch, giving r1=10, r2=100, r3=-1. The link-time failure about the vtab not being marked for offload is an implementation limitation."
+  },
+  {
+   "run": "run-20261113/batch-74",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "e1, e2, b0 are non-polymorphic variables, so the polymorphic-allocatable map restriction does not apply. bump is declare target and uses select type on a class(base_t) dummy. Nothing in the specification makes this non-conforming, and the implied type descriptors are compiler-generated, so the expected values 10, 100, -1 are required. The link error about the vtab is a compiler defect. Slight uncertainty because the spec is silent on implicit device availability of type descriptors."
+  },
+  {
+   "run": "run-v2-20261113/batch-59",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Fortran derived types have no restriction beyond type-bound procedures needing declare target; none are used. bump has declare target, is called in the target region, and select type is ordinary Fortran. The mapped variables e1, e2, b0 are non-polymorphic. Nothing in the specification makes the vtab references illegal, so refusing at link time is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-87",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Mapped variables e1,e2,b0 are non-polymorphic, fixed-type, non-allocatable. bump is declare target with class(base_t) dummy and select type. No OpenMP rule forbids this; the only polymorphic restrictions found concern ALLOCATABLE polymorphic list items (copyin, 5.7.1), not applicable. A conforming compiler must compile and link it; the missing vtab marking is an implementation defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-24",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2f9a62f0d763e74a8ab8c424f321cef23b10c1bdcc6166a09188f3711389a7f2",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,141 @@
+{
+ "finding": "nested/gcc-acc-c-struct-and-member-array-one-directive.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "copyin(r, r.a[0:4]) copies the struct (pointer member holds the host address) and the subarray of the pointer member. For the pointer member whose target is now present, copyin performs an attach pointer action, so the device r.a points to the device copy and the serial region sums 5+1+2+3+4 = 15. present(r) holds. The libgomp message that the outer struct is not mapped for attach contradicts the order of clauses (r first, then r.a). Some residual ambiguity because 'pointer reference' is not defined in the text."
+  },
+  {
+   "run": "run-20261112/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A struct and a member subarray may appear in data clauses. copyin(r) does not copy the pointed-to data, and r.a[0:4] copies it; an attach of the pointer member is then expected so that device r.a points to the device copy. The text only says attach occurs when var is a pointer reference, a term it does not define for a subarray of a pointer member, so whether attach is required here is not fully pinned down."
+  },
+  {
+   "run": "run-v2-20261113/batch-18",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "copyin(r, r.a[0:4]) copies the whole struct without the pointee, then the subarray of member a is copied and attached, the manual deep copy pattern. Subarray notation is used only on the member, not on a parent. The serial region with present(r) then reads r.v and r.a[q] on the device; tot must be 15. Refusing or mis-attaching is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-66",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-91",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "copyin(r) copies the struct, with the host pointer value in r.a. copyin(r.a[0:4]) names a subarray of a pointer member, which the data-clause rules permit in C. Its attach pointer action then updates the device r.a to the device copy of the data. The serial region requires r to be present and reads r.a[q] on the device, so the sum is 15. The pointer reference wording is loose, so a reading that skips the attach is conceivable.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "bbb29dac870dda430ed39511fd261a05159dee2f0cc254f1784f935199857814",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program is conforming: a pointer member is a data-clause var and r is copied with the host pointer value. Reading A overreaches: attach occurs only when var is a pointer reference, a term the text never defines, so it is not settled whether the subarray r.a[0:4] of a member counts. Neither the clause order nor the subarray form is addressed. Reading B is right that the requirement is not pinned down."
+  },
+  {
+   "run": "adj-20261112/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings agree the program is conforming: a struct and a subarray of a pointer member of a struct may appear in data clauses. Reading A overreaches: the attach pointer action occurs only when var is a pointer reference, a term the specification does not define for a member subarray, so the text does not clearly require the device r.a to be attached to the device copy of r.a[0:4]. Reading B is right that this is not pinned down. The intent is plausible (attach), but the normative text stops short."
+  }
+ ]
+}

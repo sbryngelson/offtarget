@@ -1,0 +1,113 @@
+{
+ "finding": "cce-c-openmp45-device-link.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "omp_is_initial_device is an OpenMP 4.5 runtime routine and may be called in a target region. The program is conforming OpenMP 4.5. A link failure of an API routine at the 4.5 version setting is a compiler or runtime defect, not allowed by the specification."
+  },
+  {
+   "run": "run-20261113/batch-77",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program calls omp_is_initial_device in a target region, which OpenMP 4.5 allows; the routine returns false on a device. Nothing in the specification allows an undefined symbol at link time, so a conforming implementation must link and print on_host=0."
+  },
+  {
+   "run": "run-v2-20261113/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "omp_is_initial_device is a 4.5 runtime routine callable in a target region; the program is race-free and maps on_host tofrom. The failure is an unresolved symbol at link time for a routine the specification defines, so a conforming implementation must accept and link it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-29",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-113",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "omp_is_initial_device is a 4.5 runtime routine and a call from a target region is conforming. The link must resolve the routine, so an undefined-symbol error is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-67",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "e42ba6bfdac5bd07f7b97e7aa569fc8e22a981df937483c1e04d6dc553c7f5ff",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

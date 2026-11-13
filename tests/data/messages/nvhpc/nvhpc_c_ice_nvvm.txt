@@ -1,0 +1,7 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-clause-if (OpenMP/OpenACC version 52), compile sweep
+# exit status: 2
+==== verbatim output below ====
+nvvmCompileProgram: failed with error 9: NVVM_ERROR_COMPILATION
+nvnvvmd: error: <tmpdir>/nvacct_iX5br5Rfdk.gpu (161, 33): parse '@nvkernel_main_F1L33_2_F1L36_4' defined with type 'void (i8*, i8*, i8*)*'
+NVC++-W-0155-Compiler failed to translate accelerator region (see -Minfo messages): Device compiler exited with error status code (<tmpdir>/p.c: 36)

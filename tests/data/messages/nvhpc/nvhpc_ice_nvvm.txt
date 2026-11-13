@@ -1,0 +1,7 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.gen omp50-clause-if (OpenMP/OpenACC version 50), compile sweep
+# exit status: 2
+==== verbatim output below ====
+nvvmCompileProgram: failed with error 9: NVVM_ERROR_COMPILATION
+nvnvvmd: error: <tmpdir>/nvacccj0Ugn0QsN8r.gpu (424, 14): parse invalid forward reference to function 'nvkernel_MAIN__F1L29_2__F1L31_4_' with wrong type!
+NVFORTRAN-W-0155-Compiler failed to translate accelerator region (see -Minfo messages): Device compiler exited with error status code (<tmpdir>/p.f90: 31)

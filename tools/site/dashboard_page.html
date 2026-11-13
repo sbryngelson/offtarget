@@ -1,0 +1,986 @@
+<style>
+.os{max-width:78rem;margin-inline:auto;display:flex;flex-direction:column;gap:var(--cds-gap-lg);font-family:var(--font-anthropic-sans)}
+.os h1{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:0;text-wrap:balance}
+.os h2{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0}
+.os p{margin:0;color:var(--color-fg-muted);max-width:68ch;line-height:1.5}
+.os .card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);display:flex;flex-direction:column;gap:var(--cds-gap-md);min-width:0}
+.os .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:var(--cds-gap-md)}
+.os .tile{display:flex;flex-direction:column;gap:2px}
+.os .tile b{font-family:var(--font-anthropic-serif);font-weight:400;font-size:2.25rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.os .tile span{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.os .bars{display:flex;flex-direction:column;gap:6px;min-height:14rem}
+.os .brow{display:grid;grid-template-columns:minmax(7.5rem,11rem) 1fr;gap:var(--cds-gap-sm);align-items:center;font-size:var(--cds-font-size-caption)}
+.os .brow .bar{display:flex;height:22px;border-radius:4px;overflow:hidden;gap:1px}
+.os .seg{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-bg);font-variant-numeric:tabular-nums;min-width:0;overflow:hidden}
+.os .s-ok{background:var(--color-ok)} .os .s-wrong{background:var(--color-bad)} .os .s-suspect{background:var(--color-warn)}
+.os .s-rejected{background:var(--color-fg-muted)} .os .s-unverified{background:var(--color-border-line);color:var(--color-fg)}
+.os .s-excluded{background:repeating-linear-gradient(45deg,var(--color-border-line) 0 4px,transparent 4px 8px);color:var(--color-fg)}
+.os .legend{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.os .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.os .ctl{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm);align-items:center}
+.os .ctl input,.os .ctl select{max-width:100%;font:inherit;font-size:var(--cds-font-size-caption);padding:6px 8px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:var(--color-bg);color:var(--color-fg)}
+.os .ctl input{flex:1 1 12rem;min-width:0}
+.os .box{max-height:34rem;overflow:auto;border:1px solid var(--color-border-line);border-radius:var(--cds-radius)}
+.os table{border-collapse:collapse;width:100%;font-size:var(--cds-font-size-caption);font-variant-numeric:tabular-nums}
+.os th{position:sticky;top:0;background:var(--color-panel);text-align:left;font-weight:var(--cds-font-weight-medium);padding:6px 8px;border-bottom:1px solid var(--color-border-line);white-space:nowrap}
+.os td{padding:5px 8px;border-bottom:1px solid var(--color-border-line);vertical-align:middle}
+.os tbody tr{cursor:pointer} .os tbody tr:hover{background:var(--color-bg)} .os tr.sel{outline:2px solid var(--color-fg-muted);outline-offset:-2px}
+.os td.id{font-family:ui-monospace,monospace;font-size:11.5px}
+.os .chip.wd{margin-left:6px;border:1px solid var(--color-border-line);color:var(--color-fg-muted);font-family:var(--font-anthropic-sans)}
+.os .chip{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;white-space:nowrap}
+.os .chip.s-ok{color:var(--color-bg)} .os .chip.s-wrong,.os .chip.s-suspect{color:var(--color-bg)} .os .chip.s-rejected{color:var(--color-bg)}
+.os .detail{font-size:var(--cds-font-size-caption);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:var(--cds-gap-md);color:var(--color-fg-muted);line-height:1.45}
+.os .detail div{min-width:0;overflow-wrap:anywhere} .os .detail strong{color:var(--color-fg);display:block}
+.os .full{margin-top:6px} .os .full summary{cursor:pointer;color:var(--color-fg)} .os .full pre{margin:4px 0 0;padding:8px 10px;max-height:22rem;overflow:auto;background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:6px;font-family:ui-monospace,monospace;font-size:11px;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--color-fg)}
+.os .src{margin-top:var(--cds-gap-md)} .os .src strong{display:block;font-size:var(--cds-font-size-caption);color:var(--color-fg);margin-bottom:4px}
+.os .src pre{margin:0;padding:10px 12px;max-height:28rem;overflow:auto;background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:6px;font-family:ui-monospace,monospace;font-size:11.5px;line-height:1.4;white-space:pre;color:var(--color-fg)}
+.os ul{margin:0;padding-left:1.1rem;color:var(--color-fg-muted);line-height:1.55;max-width:80ch;font-size:var(--cds-font-size-caption)}
+.os .count{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.os thead tr.flt th{top:30px;padding:3px 6px;background:var(--color-panel)}
+.os thead tr.flt select{width:100%;min-width:5.5rem;font:inherit;font-size:11px;padding:2px 4px;border:1px solid var(--color-border-line);border-radius:4px;background:var(--color-bg);color:var(--color-fg)}
+.os th.sortable{cursor:pointer;user-select:none} .os th.sortable:hover{color:var(--color-fg)}
+.os th.sortable::after{content:" ⇅";color:var(--color-fg-muted);font-size:10px}
+.os th.sortable[data-dir="1"]::after{content:" ▲";color:var(--color-fg)} .os th.sortable[data-dir="-1"]::after{content:" ▼";color:var(--color-fg)}
+.os td.id,.os th:first-child{position:sticky;left:0;z-index:1;background:var(--color-panel)}
+.os th:first-child{z-index:3}
+.os tbody tr:hover td.id{background:var(--color-bg)}
+.os .ctl label{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+.os .ctl button{font:inherit;font-size:var(--cds-font-size-caption);padding:6px 10px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:var(--color-bg);color:var(--color-fg);cursor:pointer}
+.os .ctl button:hover{background:var(--color-panel)}
+.os tbody tr:focus-visible{outline:2px solid var(--color-fg);outline-offset:-2px}
+.os .empty{padding:14px;color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
+.os h3{font-size:var(--cds-font-size-body);font-weight:var(--cds-font-weight-medium);margin:var(--cds-gap-md) 0 0}
+.os .switch{display:inline-flex;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);overflow:hidden;align-self:flex-start}
+.os .switch button{font:inherit;font-size:var(--cds-font-size-caption);padding:6px 16px;border:0;background:var(--color-bg);color:var(--color-fg-muted);cursor:pointer}
+.os .switch button+button{border-left:1px solid var(--color-border-line)}
+.os .switch button[aria-checked="true"]{background:var(--color-fg);color:var(--color-bg)}
+.os .switch button:focus-visible{outline:2px solid var(--color-fg);outline-offset:-2px}
+.os .tl{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:0}
+.os .tiles+.tl{margin-top:var(--cds-gap-sm)}
+.os .t-trusted{color:var(--color-ok)} .os .t-disputed{color:var(--color-bad)} .os .t-provisional{color:var(--color-fg-muted)} .os .t-derived{color:var(--color-warn)} .os .t-implementation_defined{color:var(--color-fg-muted)}
+.os td.tv{font-size:11.5px;font-weight:var(--cds-font-weight-medium)}
+.os .prog{display:flex;flex-direction:column;gap:var(--cds-gap-sm);min-width:0}
+.os .prog:empty{display:none}
+.os .prog .phead{font-size:var(--cds-font-size-body);font-weight:var(--cds-font-weight-medium);color:var(--color-fg)}
+.os .prog .note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);line-height:1.45;max-width:96ch;margin:0;overflow-wrap:anywhere}
+.os .prog .note b{color:var(--color-fg);font-weight:var(--cds-font-weight-medium)}
+.os .prog .note.warn{color:var(--color-fg);border-left:3px solid var(--color-warn);padding-left:8px}
+.os .prog .note.ok{border-left:3px solid var(--color-ok);padding-left:8px}
+.os .prog .rbox{overflow:auto;border:1px solid var(--color-border-line);border-radius:var(--cds-radius)}
+.os .prog .rbox th:first-child,.os .prog .rbox td:first-child{position:static}
+.os .prog .rbox tbody tr{cursor:default}
+.os .ptabs{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.os .ptabs button,.os .seedbtn{font:inherit;font-size:var(--cds-font-size-caption);padding:5px 10px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:var(--color-bg);color:var(--color-fg-muted);cursor:pointer}
+.os .ptabs button[aria-selected="true"],.os .seedbtn[aria-pressed="true"]{background:var(--color-fg);color:var(--color-bg);border-color:var(--color-fg)}
+.os .ptabs button:focus-visible,.os .seedbtn:focus-visible{outline:2px solid var(--color-fg);outline-offset:1px}
+.os .ptabs .cp{margin-left:auto;color:var(--color-fg)}
+.os .seeds{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.os .seedbtn{font-family:ui-monospace,monospace;font-size:11.5px;padding:3px 8px}
+.os .code{margin:0;padding:8px 0;max-height:34rem;overflow:auto;background:var(--color-bg);border:1px solid var(--color-border-line);border-radius:6px;font-family:ui-monospace,monospace;font-size:11.5px;line-height:1.5;counter-reset:ln;tab-size:4}
+.os .code span{display:block;white-space:pre;padding-right:12px;min-height:1.5em}
+.os .code span::before{counter-increment:ln;content:counter(ln);display:inline-block;width:3.2em;padding-right:8px;margin-right:10px;text-align:right;color:var(--color-fg-muted);border-right:1px solid var(--color-border-line);user-select:none;-webkit-user-select:none;position:sticky;left:0;background:var(--color-bg)}
+</style>
+<div class="os">
+ <header>
+  <h1 id="top">Offload support by compiler</h1>
+  <p>Target offload on three GPU platforms, -O2, one run per cell, in free-form Fortran and in C. Each row is one OpenMP 5.0, 5.2 or 6.0 feature (or an OpenACC 3.4 feature near the bottom), built as a self-checking program; a pass means the program ran on the GPU and gave the right answer. <b>AMD MI300A</b> (gfx942, Tuolumne): AFAR (amdflang, amdclang) and Cray CCE 19.0.0, 20.0.2 and 21.0.3, at XNACK 1 (zero-copy, the headline) and XNACK 0 (copy mode). <b>AMD MI250X</b> (gfx90a, Tioga, a discrete GPU): the same four compilers at XNACK 0. <b>NVIDIA A100</b> (wingtip): the NVIDIA HPC SDK 25.11 and 26.9 (nvfortran, nvc) in separate memory (its default, the headline) and in managed memory. Every program ran on every compiler in every mode; OpenACC runs on CCE and NVHPC only (AFAR has no OpenACC). <span id="introcounts"></span> Use the language switch to move the OpenMP tables between Fortran and C, click a column heading to sort, use the menus under it to filter, and click a row for the program and full compiler output. The random-program section shows compiler bugs found by differential testing, and the Expected column says how far the expected result of a program is backed by independent sources.</p>
+  <div class="switch" role="radiogroup" aria-label="Language of the OpenMP tables"><button type="button" role="radio" aria-checked="true" data-lang="f90">Fortran</button><button type="button" role="radio" aria-checked="false" data-lang="c">C</button></div>
+ </header>
+
+ <section class="card" id="headline">
+  <h2>Correct on the device: AMD MI300A and NVIDIA A100</h2>
+  <p>Features whose program ran on the GPU and gave the right answer, per compiler and OpenMP version, in each platform's headline memory mode. The other modes (MI300A copy mode, the discrete MI250X, A100 managed memory) are in the bars and tables below.</p>
+  <h3>AMD MI300A, zero-copy memory (HSA_XNACK=1), AFAR and Cray CCE</h3>
+  <p class="tl">Fortran</p>
+  <div class="tiles">
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.0&amp;toolchain=AFAR&amp;xnack=1&amp;status=ok">—</b><span>AFAR, OpenMP 5.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.0&amp;toolchain=CCE&amp;xnack=1&amp;status=ok">—</b><span>CCE 19, OpenMP 5.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.0&amp;toolchain=CCE%2020&amp;xnack=1&amp;status=ok">—</b><span>CCE 20, OpenMP 5.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.0&amp;toolchain=CCE%2021&amp;xnack=1&amp;status=ok">—</b><span>CCE 21, OpenMP 5.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.2&amp;toolchain=AFAR&amp;xnack=1&amp;status=ok">—</b><span>AFAR, OpenMP 5.2</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.2&amp;toolchain=CCE&amp;xnack=1&amp;status=ok">—</b><span>CCE 19, OpenMP 5.2</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.2&amp;toolchain=CCE%2020&amp;xnack=1&amp;status=ok">—</b><span>CCE 20, OpenMP 5.2</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.2&amp;toolchain=CCE%2021&amp;xnack=1&amp;status=ok">—</b><span>CCE 21, OpenMP 5.2</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=6.0&amp;toolchain=AFAR&amp;xnack=1&amp;status=ok">—</b><span>AFAR, OpenMP 6.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=6.0&amp;toolchain=CCE&amp;xnack=1&amp;status=ok">—</b><span>CCE 19, OpenMP 6.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=6.0&amp;toolchain=CCE%2020&amp;xnack=1&amp;status=ok">—</b><span>CCE 20, OpenMP 6.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=6.0&amp;toolchain=CCE%2021&amp;xnack=1&amp;status=ok">—</b><span>CCE 21, OpenMP 6.0</span></div>
+  </div>
+  <p class="tl">C</p>
+  <div class="tiles">
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.0&amp;toolchain=AFAR&amp;xnack=1&amp;status=ok">—</b><span>AFAR, OpenMP 5.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.0&amp;toolchain=CCE&amp;xnack=1&amp;status=ok">—</b><span>CCE 19, OpenMP 5.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.0&amp;toolchain=CCE%2020&amp;xnack=1&amp;status=ok">—</b><span>CCE 20, OpenMP 5.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.0&amp;toolchain=CCE%2021&amp;xnack=1&amp;status=ok">—</b><span>CCE 21, OpenMP 5.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.2&amp;toolchain=AFAR&amp;xnack=1&amp;status=ok">—</b><span>AFAR, OpenMP 5.2, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.2&amp;toolchain=CCE&amp;xnack=1&amp;status=ok">—</b><span>CCE 19, OpenMP 5.2, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.2&amp;toolchain=CCE%2020&amp;xnack=1&amp;status=ok">—</b><span>CCE 20, OpenMP 5.2, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.2&amp;toolchain=CCE%2021&amp;xnack=1&amp;status=ok">—</b><span>CCE 21, OpenMP 5.2, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=6.0&amp;toolchain=AFAR&amp;xnack=1&amp;status=ok">—</b><span>AFAR, OpenMP 6.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=6.0&amp;toolchain=CCE&amp;xnack=1&amp;status=ok">—</b><span>CCE 19, OpenMP 6.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=6.0&amp;toolchain=CCE%2020&amp;xnack=1&amp;status=ok">—</b><span>CCE 20, OpenMP 6.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=6.0&amp;toolchain=CCE%2021&amp;xnack=1&amp;status=ok">—</b><span>CCE 21, OpenMP 6.0, C</span></div>
+  </div>
+  <h3>NVIDIA A100, separate memory (its default), NVHPC</h3>
+  <p class="tl">Fortran (nvfortran)</p>
+  <div class="tiles">
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.0&amp;toolchain=NVHPC&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 25.11, OpenMP 5.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.0&amp;toolchain=NVHPC%2026.9&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 26.9, OpenMP 5.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.2&amp;toolchain=NVHPC&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 25.11, OpenMP 5.2</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=5.2&amp;toolchain=NVHPC%2026.9&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 26.9, OpenMP 5.2</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=6.0&amp;toolchain=NVHPC&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 25.11, OpenMP 6.0</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=f90&amp;version=6.0&amp;toolchain=NVHPC%2026.9&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 26.9, OpenMP 6.0</span></div>
+  </div>
+  <p class="tl">C (nvc)</p>
+  <div class="tiles">
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.0&amp;toolchain=NVHPC&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 25.11, OpenMP 5.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.0&amp;toolchain=NVHPC%2026.9&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 26.9, OpenMP 5.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.2&amp;toolchain=NVHPC&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 25.11, OpenMP 5.2, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=5.2&amp;toolchain=NVHPC%2026.9&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 26.9, OpenMP 5.2, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=6.0&amp;toolchain=NVHPC&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 25.11, OpenMP 6.0, C</span></div>
+   <div class="tile"><b data-source="summary" data-field="n" data-where="lang=c&amp;version=6.0&amp;toolchain=NVHPC%2026.9&amp;xnack=sep&amp;status=ok">—</b><span>NVHPC 26.9, OpenMP 6.0, C</span></div>
+  </div>
+ </section>
+
+ <section class="card" id="outcomes">
+  <h2>What happened to each feature</h2>
+  <p>Showing <b id="langname">Fortran</b>. <span id="barcounts"></span> One bar per compiler and memory mode: AFAR and CCE on the MI300A (XNACK 1 and 0) and the MI250X (gfx90a), NVHPC on the A100 (separate and managed). Device offload only: host-only features are out of scope, and host+device pattern programs are listed in the table below but not counted here. Bars add up to those totals.</p>
+  <div class="bars" id="bars" data-source="summary"></div>
+  <div class="legend" id="legend"></div>
+ </section>
+
+ <section class="card" id="portable">
+  <h2>Portable: correct with unified memory, separate memory and a discrete GPU</h2>
+  <p>Every program ran on the MI300A at XNACK 1 (unified memory) and at XNACK 0 (copy mode: separate host and device memory, as on a discrete GPU), and on Tioga's MI250X (gfx90a, a discrete GPU with its own memory, XNACK 0 only). A feature is portable on a compiler when it is correct in all three. For NVHPC (A100, 25.11 and 26.9) portable means correct in separate and in managed memory; managed not verifiable means a copy-mode check of data managed memory shares. MI300A only means correct in both MI300A modes and failed on gfx90a; gfx90a not verifiable means the gfx90a run gives no verdict. XNACK 1 only means correct with unified memory but not in copy mode, where a mapping error shows. Failed in both means an observed failure (rejected, wrong answer, crash) in both modes; failed at XNACK 0, XNACK 1 unverified means the copy-mode run failed and the XNACK 1 run cannot tell (nothing observable, or a check that runs only in copy mode); requirement refused is a conforming refusal of a requires directive; not verifiable means neither mode gives an observable verdict (no oracle, unobservable, ignored). OpenMP device-offload features, both languages, every compiler; the OpenACC portable verdicts are in the OpenACC section.</p>
+  <div class="box">
+   <table id="ptbl" data-source="portable_summary" data-row-key="id">
+    <thead><tr><th data-field="id">Language and compiler</th><th data-field="portable">Portable</th><th data-field="x1_only">XNACK 1 only</th><th data-field="x0_only">XNACK 0 only</th><th data-field="neither">Failed in both</th><th data-field="x0_fail_x1_unverified">Failed at XNACK 0, XNACK 1 unverified</th><th data-field="x1_fail_x0_unverified">Failed at XNACK 1, XNACK 0 unverified</th><th data-field="requirement_refused">Requirement refused</th><th data-field="not_verifiable">Not verifiable</th><th data-field="needs_zero_copy">Needs unified memory</th><th data-field="gfx942_only">MI300A only (failed on gfx90a)</th><th data-field="gfx90a_unverified">gfx90a not verifiable</th><th data-field="managed_unverified">NVHPC: managed not verifiable</th><th data-field="other">Other</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+ </section>
+
+ <section class="card" id="atoms">
+  <h2>Every OpenMP feature (<span id="langname2">Fortran</span>)</h2>
+  <div class="ctl" id="ctl-omp"></div>
+  <div class="box">
+   <table id="tbl" data-source="atoms" data-row-key="id">
+    <thead><tr><th data-field="id">Feature</th><th data-field="version">Version</th><th data-field="scope">Scope</th><th data-field="evidence">Evidence</th><th data-field="trust">Expected</th><th data-field="afar_x1">AFAR · XNACK 1</th><th data-field="afar_x0">AFAR · XNACK 0</th><th data-field="afar_g90">AFAR · gfx90a</th><th data-field="cce_x1">CCE 19 · XNACK 1</th><th data-field="cce_x0">CCE 19 · XNACK 0</th><th data-field="cce_g90">CCE 19 · gfx90a</th><th data-field="cce20_x1">CCE 20 · XNACK 1</th><th data-field="cce20_x0">CCE 20 · XNACK 0</th><th data-field="cce20_g90">CCE 20 · gfx90a</th><th data-field="cce21_x1">CCE 21 · XNACK 1</th><th data-field="cce21_x0">CCE 21 · XNACK 0</th><th data-field="cce21_g90">CCE 21 · gfx90a</th><th data-field="nvhpc_x0">NVHPC 25.11 · A100 separate</th><th data-field="nvhpc_x2">NVHPC 25.11 · A100 managed</th><th data-field="nvhpc269_x0">NVHPC 26.9 · A100 separate</th><th data-field="nvhpc269_x2">NVHPC 26.9 · A100 managed</th><th data-field="portable">Portable on (XNACK 0, 1 and gfx90a)</th><th data-field="nvhpc_portable">NVHPC 25.11 portable (separate and managed)</th><th data-field="nvhpc269_portable">NVHPC 26.9 portable</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="detail" data-source="atoms runs runs_x0 runs_g90 runs_nvhpc"><div>Select a row to see the compiler message or check result behind each cell.</div></div>
+  <div class="src" id="src" data-source="programs"></div>
+ </section>
+
+ <section class="card" id="ompvv">
+  <h2>The OpenMP_VV suite on the same compilers</h2>
+  <p><span id="vvcount">218 existing Fortran tests</span> from the OpenMP Validation and Verification suite (OpenMP_VV, commit f7d95b34 of 2026-09-17), run as an independent cross-check. Pass means the test's own checks passed (exit code 0 and no "Test failed" line). Every test ran at XNACK 1 and at XNACK 0 on the MI300A and at XNACK 0 on the gfx90a (MI250X). NVHPC 25.11 and 26.9 ran every test on an NVIDIA A100 in separate and in managed memory. The suite is not audited, so a test that passes in one mode or on one GPU only is a flag for review, not a finding.</p>
+  <div class="ctl" id="ctl-vv"></div>
+  <div class="box">
+   <table id="vtbl" data-source="ompvv" data-row-key="id">
+    <thead><tr><th data-field="id">Test</th><th data-field="spec_dir">Spec dir</th><th data-field="afar_x1">AFAR · XNACK 1</th><th data-field="afar_x0">AFAR · XNACK 0</th><th data-field="afar_g90">AFAR · gfx90a</th><th data-field="cce_x1">CCE 19 · XNACK 1</th><th data-field="cce_x0">CCE 19 · XNACK 0</th><th data-field="cce_g90">CCE 19 · gfx90a</th><th data-field="cce20_x1">CCE 20 · XNACK 1</th><th data-field="cce20_x0">CCE 20 · XNACK 0</th><th data-field="cce20_g90">CCE 20 · gfx90a</th><th data-field="cce21_x1">CCE 21 · XNACK 1</th><th data-field="cce21_x0">CCE 21 · XNACK 0</th><th data-field="cce21_g90">CCE 21 · gfx90a</th><th data-field="nvhpc_x0">NVHPC 25.11 · A100 separate</th><th data-field="nvhpc_x2">NVHPC 25.11 · A100 managed</th><th data-field="nvhpc269_x0">NVHPC 26.9 · A100 separate</th><th data-field="nvhpc269_x2">NVHPC 26.9 · A100 managed</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="vdetail" data-source="ompvv ompvv_nvhpc"><div>Select a test to see its output.</div></div>
+  <div class="src" id="vsrc" data-source="ompvv"></div>
+ </section>
+
+ <section class="card" id="fuzz">
+  <h2>Random-program testing (Fortran OpenMP: AFAR, CCE and NVHPC)</h2>
+  <p><b>Coverage:</b> Fortran only (there is no C generator yet). Campaigns c1, b0 to b5, the x0 campaigns, s1 and s1x0 use the OpenMP 5.2 spellings and ran on AFAR and Cray CCE 19, 20 and 21 on the MI300A; NVHPC rejected almost all of their programs (193 of a 200-program sample) for the 5.2 syntax alone. Campaigns <b>n0x0</b> and <b>n1x0</b> use generator fuzz-4s50: the same programs with the OpenMP 5.0/5.1 spellings NVHPC accepts (declare target to, defaultmap without the all category, order(concurrent); the same model, still legal OpenMP 5.2), 1000 seeds each (n0x0 without base-language groups, n1x0 with all five), run on AFAR and CCE at HSA_XNACK=0 and on NVHPC 25.11 and 26.9 in separate memory on the A100; NVHPC compiled about 20% of the n0x0 programs (the rest use features it lacks: masked, task_reduction, nontemporal, thread_limit on target) and 8% of n1x0 (most rejections there are base-language features: an intrinsic in an initialization expression, declare reduction or declare mapper). Use the campaign menu to switch. Seeded random offload programs, each checked against a Python model and run on those compilers at XNACK 1 (the x0 campaigns, s1x0, n0x0 and n1x0 at XNACK 0). Agree means the compiler gave the model's answer. Every program passed the legality checks, so compile rejected means a compiler refused a legal program, crash means an internal compiler error, and wrong code means the run finished with another answer. The first campaign (c1, 2400 programs) varies only the OpenMP constructs and clauses. Campaigns b1 to b5 (300 programs each) add one group of base-language features per stage, and b0 is the control: the same seeds without a group. Campaign s1 (10000 programs) combines all five groups, and s1x0 runs its first 2500 seeds at XNACK 0 (copy mode). A program that fails on the host with every compiler is noncompliant and is counted nowhere. Select any program in the tables below to read its generated source, the program sequential elision builds and runs on the host (the same source with its directives removed) and any shrunk reproducer.</p>
+  <div class="ctl" id="ctl-fzrun"><select id="fzrun" aria-label="Campaign"></select><span class="count" id="fzruncap"></span></div>
+  <div class="bars" id="fzbars" data-source="fuzz"></div>
+  <div class="legend" id="fzlegend"></div>
+
+  <h3>Compiler bugs found, shrunk to a few lines</h3>
+  <p>Each row is a smallest program the minimizer could keep failing, with a reference outside the failing compiler's family. Not reproduced means no such reference exists, so the failure is listed but not confirmed. Withdrawn means the reproducer was found to be illegal and the generator or minimizer was fixed.</p>
+  <div class="ctl" id="ctl-fzf"></div>
+  <div class="box">
+   <table id="fztbl" data-source="fuzz" data-row-key="id">
+    <thead><tr><th data-field="id">Finding</th><th data-field="tc_name">Compiler</th><th data-field="group">Group</th><th data-field="fkind">Kind</th><th data-field="status">Status</th><th data-field="also">Also fails on</th><th data-field="lines_after">Lines</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="fzdetail" data-source="fuzz"><div>Select a finding to see what was expected, what happened, the reproducer, the generated program and its sequential elision.</div></div>
+  <div class="prog" id="fzprog" data-source="fuzz_sources" aria-live="polite"></div>
+
+  <h3>Do base-language features add failures?</h3>
+  <p id="fgcap">Failure rate: wrong code, run error and timeout among the programs a compiler compiled (not rejected, no crash). The control rate, from b0, is in the detail.</p>
+  <div class="ctl" id="ctl-fg"></div>
+  <div class="box">
+   <table id="fgtbl" data-source="fuzz" data-row-key="id">
+    <thead><tr><th data-field="id">Group</th><th data-field="programs">Programs</th><th data-field="afar_rate">AFAR fail %</th><th data-field="cce19_rate">CCE 19 fail %</th><th data-field="cce20_rate">CCE 20 fail %</th><th data-field="cce21_rate">CCE 21 fail %</th><th data-field="nvhpc_rate">NVHPC 25.11 fail %</th><th data-field="nvhpc269_rate">NVHPC 26.9 fail %</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="fgdetail"><div>Select a row to see the counts and the control rate.</div></div>
+
+  <h3>By base-language feature</h3>
+  <p>One row per feature of a group. A blank rate means fewer than 10 programs with that feature were compiled. Compile rejections are features a compiler does not support, not failures, and show in the detail.</p>
+  <div class="ctl" id="ctl-fb"></div>
+  <div class="box">
+   <table id="fbtbl" data-source="fuzz" data-row-key="id">
+    <thead><tr><th data-field="id">Feature</th><th data-field="programs">Programs</th><th data-field="afar_rate">AFAR fail %</th><th data-field="cce19_rate">CCE 19 fail %</th><th data-field="cce20_rate">CCE 20 fail %</th><th data-field="cce21_rate">CCE 21 fail %</th><th data-field="nvhpc_rate">NVHPC 25.11 fail %</th><th data-field="nvhpc269_rate">NVHPC 26.9 fail %</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="fbdetail"><div>Select a feature to see the outcome counts per compiler against the control.</div></div>
+
+  <h3>Appendix: failures on the host, without offload (not offload findings)</h3>
+  <p>Out of scope: this project measures device offload only, and host runs are references for the expected answer, never results. These programs gave the model's answer with at least one compiler (or sequential elision) when run on the host, so they are valid, and the compilers listed got another answer or crashed even without offload. Each is a bug outside the offload path, kept as a record. Only programs whose reference host run failed or disagreed were rebuilt on every compiler, so the counts are a lower bound.</p>
+  <div class="ctl" id="ctl-fh"></div>
+  <div class="box">
+   <table id="fhtbl" data-source="fuzz" data-row-key="id">
+    <thead><tr><th data-field="id">Campaign and compiler</th><th data-field="tc_name">Compiler</th><th data-field="group">Group</th><th data-field="programs">Programs</th><th data-field="seeds">Seeds</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="fhdetail" data-source="fuzz"><div>Select a row to list its programs, then select a program to read it.</div></div>
+  <div class="prog" id="fhprog" data-source="fuzz_sources" aria-live="polite"></div>
+
+  <h3>Expected result without a host reference</h3>
+  <p id="ftcap">In c1, programs where no compiler's host run reproduced the model. Each got an expected result from independent sources: sequential elision (directives removed, run on the host), metamorphic rewrites that must not change the answer, the Python model and a state probe. Trusted means two independent sources agree. Disputed means they disagree. Provisional means there is not enough evidence. Cross-compiler agreement is only a hint and never counts. Programs that no host build can run are listed in the next table.</p>
+  <div class="ctl" id="ctl-fzt"></div>
+  <div class="box">
+   <table id="fttbl" data-source="fuzz" data-row-key="id">
+    <thead><tr><th data-field="id">Program</th><th data-field="verdict">Expected result</th><th data-field="settled_by">Settled by</th><th data-field="wrong_on">Compilers wrong on it</th><th data-field="host_path">Host check</th><th data-field="model">Model</th><th data-field="elision">Elision</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="ftdetail" data-source="fuzz"><div>Select a program to see every source and to read the program and its sequential elision.</div></div>
+  <div class="prog" id="ftprog" data-source="fuzz_sources" aria-live="polite"></div>
+
+  <h3>Noncompliant programs</h3>
+  <p>No host build and no sequential elision prints the model's answer, so the program or the model is wrong, not the compilers. These are left out of every count above. Where the elision does not apply (internal procedures, module variables, the present modifier) the model may be the part that is wrong.</p>
+  <div class="ctl" id="ctl-fn"></div>
+  <div class="box">
+   <table id="fntbl" data-source="fuzz" data-row-key="id">
+    <thead><tr><th data-field="id">Program</th><th data-field="group">Group</th><th data-field="model">Model</th><th data-field="host">Host builds</th><th data-field="classes">Device outcomes</th><th data-field="elision">Elision</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="prog" id="fnprog" data-source="fuzz_sources" aria-live="polite"></div>
+ </section>
+
+ <section class="card" id="acc">
+  <h2>OpenACC 3.4: Cray CCE and NVIDIA HPC SDK</h2>
+  <p><span id="acccount">The OpenACC features</span>, built the same way as the OpenMP ones (self-checking programs, -O2, one run per cell). Cray CCE 19, 20 and 21 (-h acc) ran every feature at XNACK 1 and XNACK 0 on the MI300A and on the gfx90a (MI250X, XNACK 0); portable there means correct in all three. NVHPC 25.11 and 26.9 (-acc) ran every feature on the A100 in separate and in managed memory; portable there means correct in both. AFAR has no OpenACC support, so it has no OpenACC column. The C rows (ids <code>acc34-c-</code>, since ) are the C ports of the Fortran programs and run on NVHPC only: CCE's C compiler and AFAR's amdclang accept the pragmas but implement no OpenACC (a probe of each, ), so their C cells read "not run".</p>
+  <h3>Correct on the device (CCE at XNACK 1, NVHPC in separate memory), Fortran</h3>
+  <div class="tiles">
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=cce19&amp;status=ok">—</b><span>CCE 19, correct on device</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=cce20&amp;status=ok">—</b><span>CCE 20, correct on device</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=cce21&amp;status=ok">—</b><span>CCE 21, correct on device</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=nvhpc&amp;status=ok">—</b><span>NVHPC 25.11, correct on device</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=nvhpc269&amp;status=ok">—</b><span>NVHPC 26.9, correct on device</span></div>
+  </div>
+  <h3>Correct on the device, C (NVHPC nvc, separate memory)</h3>
+  <div class="tiles">
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=c&amp;tc=nvhpc&amp;status=ok">—</b><span>NVHPC 25.11, correct on device, C</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=c&amp;tc=nvhpc269&amp;status=ok">—</b><span>NVHPC 26.9, correct on device, C</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=c&amp;tc=nvhpc&amp;status=portable">—</b><span>NVHPC 25.11, portable (separate and managed), C</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=c&amp;tc=nvhpc269&amp;status=portable">—</b><span>NVHPC 26.9, portable (separate and managed), C</span></div>
+  </div>
+  <h3>Portable, Fortran</h3>
+  <div class="tiles">
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=cce19&amp;status=portable">—</b><span>CCE 19, portable (XNACK 0, 1 and gfx90a)</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=cce20&amp;status=portable">—</b><span>CCE 20, portable (XNACK 0, 1 and gfx90a)</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=cce21&amp;status=portable">—</b><span>CCE 21, portable (XNACK 0, 1 and gfx90a)</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=nvhpc&amp;status=portable">—</b><span>NVHPC 25.11, portable (separate and managed)</span></div>
+   <div class="tile"><b data-source="acc_summary" data-field="n" data-where="lang=f90&amp;tc=nvhpc269&amp;status=portable">—</b><span>NVHPC 26.9, portable (separate and managed)</span></div>
+  </div>
+  <div class="ctl" id="ctl-acc"></div>
+  <div class="box">
+   <table id="atbl" data-source="acc_atoms" data-row-key="id">
+    <thead><tr><th data-field="id">Feature</th><th data-field="evidence">Evidence</th><th data-field="cce19_x1">CCE 19 · XNACK 1</th><th data-field="cce19_x0">CCE 19 · XNACK 0</th><th data-field="cce19_g90">CCE 19 · gfx90a</th><th data-field="cce20_x1">CCE 20 · XNACK 1</th><th data-field="cce20_x0">CCE 20 · XNACK 0</th><th data-field="cce20_g90">CCE 20 · gfx90a</th><th data-field="cce21_x1">CCE 21 · XNACK 1</th><th data-field="cce21_x0">CCE 21 · XNACK 0</th><th data-field="cce21_g90">CCE 21 · gfx90a</th><th data-field="nvhpc_x0">NVHPC 25.11 · A100 separate</th><th data-field="nvhpc_x2">NVHPC 25.11 · A100 managed</th><th data-field="nvhpc269_x0">NVHPC 26.9 · A100 separate</th><th data-field="nvhpc269_x2">NVHPC 26.9 · A100 managed</th><th data-field="portable">Portable on (XNACK 0, 1 and gfx90a)</th><th data-field="nvhpc_portable">NVHPC 25.11 portable (separate and managed)</th><th data-field="nvhpc269_portable">NVHPC 26.9 portable</th></tr></thead>
+    <tbody></tbody>
+   </table>
+  </div>
+  <div class="detail" id="adetail" data-source="acc_atoms acc_runs"><div>Select a feature to see the compiler message or check result behind each cell.</div></div>
+  <div class="src" id="asrc" data-source="acc_programs"></div>
+ </section>
+
+ <section class="card" id="notes">
+  <h2>How to read this</h2>
+  <ul>
+   <li><b>Rejected</b> counts the compiler refusing the feature. <b>Rejection not counted</b> means the compiler refused something else in the program, such as <code>declare simd</code> or <code>uses_allocators</code>, so the feature itself was not tested.</li>
+   <li><b>Accepted, not checkable</b> means the program compiled and ran, but a single run cannot tell the feature from its absence. That covers clauses equal to a default and clauses with no observable effect.</li>
+   <li><b>Wrong answer, oracle unaudited</b> covers schedule, ordered and bind(thread). The check could not be validated against a mutant, so treat those as measurements.</li>
+   <li>"Only where compilers differ" keeps rows whose headline results (XNACK 1 on the MI300A, separate memory on the A100) are not all the same, which is the quickest way to see where a compiler or a version changed something.</li>
+   <li><b>XNACK 1</b> is unified memory (the MI300A default here); <b>XNACK 0</b> is copy mode, where host and device memory are separate as on a discrete GPU. At XNACK 1 a missing or wrong map often still gives the right answer, so <b>Portable on</b> lists the compilers that are correct in both modes: that is the result to rely on for portable code. Every program ran in both modes (the XNACK 0 runs on other nodes than most XNACK 1 runs).</li>
+   <li><b>NVHPC</b> (NVIDIA HPC SDK 25.11 and 26.9, nvfortran and nvc) ran every OpenMP and OpenACC program and every omp_vv test on an NVIDIA A100 (wingtip) in <b>separate</b> memory (-gpu=mem:separate, the headline: host and device memory apart, so a missing map shows) and in <b>managed</b> memory (-gpu=mem:managed). Its portable verdict asks for both modes; it has no XNACK or gfx90a column. NVHPC rejects more programs at compile time than the AMD compilers, most of all at OpenMP 6.0.</li>
+   <li><b>widened</b> (a chip next to the id, and the Catalog filter) marks programs added by the widened catalog: base-language features in device code (derived types, allocatables, character, block, ...), directives outside the spec slice, and pairs of features combined in one program. They are OpenMP 5.2 (Fortran and C) or OpenACC 3.4 (Fortran). The other rows are the spec slice, one feature of the OpenMP or OpenACC specification per program.</li>
+   <li><b>gfx90a</b> is the same compiler on Tioga's AMD Instinct MI250X, a discrete GPU with its own memory, at XNACK 0 only (XNACK is not recommended there). <b>Portable on</b> needs it correct too. Every cell agreed with the MI300A XNACK 0 cell except one intermittent AFAR failure.</li>
+   <li>Illegal-variant programs, vendor claims and the findings (compiler bugs with reproducers) are in the full report and are not drawn here.</li>
+   <li><b>Expected</b> (OpenMP table) says how far the program's expected result is backed by independent sources, for the programs where a compiler's result disagreed with the claim. Trusted: two independent sources agree. Provisional: not enough evidence. Disputed: the sources disagree. Empty: no check was needed, or the program is a C 5.2/6.0 port (the expected-result check covers Fortran and, since The C 5.0 slice: the program's own oracle and sequential elision by gcc and amdclang).</li>
+   <li>C and Fortran programs of the same feature are separate rows (C ids contain <code>-c-</code>). The C slice covers 5.0, 5.2 and 6.0 (5.0 since The ports of the 5.0 Fortran programs, with C 5.0's forms, e.g. default(shared | none) only).</li>
+   <li>All entries are provisional: the restriction rules and clause grammar are still waiting for owner review.</li>
+  </ul>
+ </section>
+</div>
+<script>
+(function(){
+  var ST=[['ok','Correct on device'],['wrong','Wrong answer, confirmed'],['suspect','Wrong answer, oracle unaudited'],['rejected','Rejected'],['unverified','Accepted, not checkable'],['excluded','Rejection not counted']];
+  var LAB={}; ST.forEach(function(s){LAB[s[0]]=s[1];});
+  LAB.pass='Pass'; LAB.fail='Fail';
+  var ORDER={ok:0,pass:0,unverified:1,suspect:2,wrong:3,fail:3,rejected:4,excluded:5,'':9};
+  window.NAV={ST:ST,LAB:LAB,ORDER:ORDER};
+
+  function chip(st){var c=document.createElement('span'); if(!st){c.textContent='not run'; c.style.color='var(--color-fg-muted)'; c.style.fontSize='11px'; return c;} c.className='chip s-'+(st==='pass'?'ok':st==='fail'?'wrong':st); c.textContent=LAB[st]||st; return c;}
+  window.NAV.chip=chip;
+
+  // mount(cfg): sortable, filterable table.
+  //  cfg.ctl, cfg.tbl: elements; cfg.cols: [{key, kind:'id'|'text'|'status'}]; cfg.get(): rows;
+  //  cfg.search: fields searched; cfg.select: row-key setter; cfg.noun
+  window.NAV.mount=function(cfg){
+    var tbl=cfg.tbl, thead=tbl.querySelector('thead'), tb=tbl.querySelector('tbody');
+    var st={q:'',any:'',diff:false,f:{},sort:null,dir:1,sel:null};
+    var rows=[];
+    var ctl=cfg.ctl;
+    var q=document.createElement('input'); q.type='search'; q.placeholder=cfg.placeholder; q.setAttribute('aria-label','Search'); ctl.appendChild(q);
+    var selects={};
+    function mkSelect(label,opts,onchange){var s=document.createElement('select'); s.setAttribute('aria-label',label); opts.forEach(function(o){var op=document.createElement('option'); op.value=o[0]; op.textContent=o[1]; s.appendChild(op);}); s.addEventListener('change',onchange); ctl.appendChild(s); return s;}
+    (cfg.pickers||[]).forEach(function(p){
+      selects[p.key]=mkSelect(p.label,[['',p.all]].concat(p.options),function(){st.f[p.key]=selects[p.key].value; draw();});
+    });
+    var anySel=(cfg.outcomes&&cfg.outcomes.length)?mkSelect('Outcome in any column',[['','Any outcome']].concat(cfg.outcomes),function(){st.any=anySel.value; draw();}):{value:''};
+    var dl=null;
+    if(cfg.diffKeys){
+      dl=document.createElement('label'); var cb=document.createElement('input'); cb.type='checkbox'; dl.appendChild(cb); dl.appendChild(document.createTextNode('Only where compilers differ'));
+      cb.addEventListener('change',function(){st.diff=cb.checked; draw();}); ctl.appendChild(dl);
+    }
+    var reset=document.createElement('button'); reset.type='button'; reset.textContent='Clear filters'; ctl.appendChild(reset);
+    var cnt=document.createElement('span'); cnt.className='count'; cnt.setAttribute('aria-live','polite'); ctl.appendChild(cnt);
+
+    // second header row: per-column outcome filters
+    var frow=document.createElement('tr'); frow.className='flt';
+    var colSel={};
+    var heads=thead.querySelectorAll('tr:first-child th');
+    cfg.cols.forEach(function(c,i){
+      var th=document.createElement('th');
+      if(c.kind==='status'){
+        var s=document.createElement('select'); s.setAttribute('aria-label','Filter '+c.key);
+        var o=document.createElement('option'); o.value=''; o.textContent='all'; s.appendChild(o);
+        cfg.outcomes.forEach(function(x){var op=document.createElement('option'); op.value=x[0]; op.textContent=x[1]; s.appendChild(op);});
+        var nr=document.createElement('option'); nr.value='__none'; nr.textContent='not run'; s.appendChild(nr);
+        s.addEventListener('change',function(){draw();}); colSel[c.key]=s; th.appendChild(s);
+      }
+      frow.appendChild(th);
+      var h=heads[i]; if(!h) return; h.classList.add('sortable'); h.tabIndex=0; h.setAttribute('role','columnheader');
+      function doSort(){
+        if(st.sort===c.key){ if(st.dir===1) st.dir=-1; else {st.sort=null; st.dir=1;} } else {st.sort=c.key; st.dir=1;}
+        heads.forEach(function(x,j){x.removeAttribute('data-dir'); x.removeAttribute('aria-sort');});
+        if(st.sort){h.setAttribute('data-dir',String(st.dir)); h.setAttribute('aria-sort',st.dir===1?'ascending':'descending');}
+        draw();
+      }
+      h.addEventListener('click',doSort);
+      h.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault(); doSort();}});
+    });
+    thead.appendChild(frow);
+
+    q.addEventListener('input',function(){st.q=q.value; draw();});
+    reset.addEventListener('click',function(){
+      st.q=''; q.value=''; st.any=''; anySel.value=''; st.diff=false; if(dl) dl.querySelector('input').checked=false;
+      Object.keys(selects).forEach(function(k){selects[k].value=''; st.f[k]='';});
+      Object.keys(colSel).forEach(function(k){colSel[k].value='';});
+      st.sort=null; st.dir=1; heads.forEach(function(x){x.removeAttribute('data-dir'); x.removeAttribute('aria-sort');});
+      draw();
+    });
+
+    function key(r,c){return r[c.key]||'';}
+    function visible(){
+      var t=st.q.trim().toLowerCase();
+      var statusCols=cfg.cols.filter(function(c){return c.kind==='status';});
+      var out=rows.filter(function(r){
+        for(var k in st.f){ if(st.f[k] && r[k]!==st.f[k]) return false; }
+        if(t && (cfg.search.map(function(f){return r[f]||'';}).join(' ')).toLowerCase().indexOf(t)<0) return false;
+        if(st.any && !statusCols.some(function(c){return r[c.key]===st.any;})) return false;
+        for(var i=0;i<statusCols.length;i++){
+          var c=statusCols[i], v=colSel[c.key].value;
+          if(v==='__none'){ if(r[c.key]) return false; }
+          else if(v && r[c.key]!==v) return false;
+        }
+        if(st.diff){
+          var vals=cfg.diffKeys.map(function(k){return r[k];}).filter(function(x){return x;});
+          var ok=vals.some(function(x){return x!==vals[0];});
+          if(!ok) return false;
+        }
+        return true;
+      });
+      if(st.sort){
+        var c=cfg.cols.filter(function(x){return x.key===st.sort;})[0], d=st.dir;
+        out=out.map(function(r,i){return [r,i];}).sort(function(a,b){
+          var x=key(a[0],c), y=key(b[0],c), r;
+          if(c.kind==='status'){ r=(ORDER[x]===undefined?8:ORDER[x])-(ORDER[y]===undefined?8:ORDER[y]); }
+          else { r=x<y?-1:x>y?1:0; }
+          return r? r*d : a[1]-b[1];
+        }).map(function(p){return p[0];});
+      }
+      return out;
+    }
+    function draw(){
+      var vis=visible();
+      cnt.textContent=vis.length+' of '+rows.length+' '+cfg.noun;
+      tb.textContent='';
+      if(!vis.length){var tr0=document.createElement('tr'); var td0=document.createElement('td'); td0.colSpan=cfg.cols.length; td0.className='empty'; td0.textContent='No rows match. Clear the filters to see all.'; tr0.appendChild(td0); tb.appendChild(tr0); return;}
+      vis.forEach(function(r){
+        var tr=document.createElement('tr'); tr.dataset.key=r.id; tr.tabIndex=0; if(r.id===st.sel) tr.className='sel';
+        cfg.cols.forEach(function(c){
+          var td=document.createElement('td');
+          if(c.kind==='id'){td.className='id'; td.textContent=r.id; if(r.widened){var w=document.createElement('span'); w.className='chip wd'; w.textContent='widened'; w.title='Added by the widened catalog (base-language features in device code, directives outside the slice, pairs)'; td.appendChild(w);}}
+          else if(c.kind==='status'){td.appendChild(chip(r[c.key]));}
+          else {td.textContent=String(r[c.key]===undefined?'':r[c.key]).replace(/_/g,' '); if(c.key==='trust'||c.key==='verdict'){td.className='tv t-'+(r[c.key]||'');}}
+          tr.appendChild(td);
+        });
+        tb.appendChild(tr);
+      });
+    }
+    function pick(tr){ if(!tr||!tr.dataset.key) return; st.sel=tr.dataset.key; cfg.select(st.sel); draw(); }
+    tb.addEventListener('click',function(e){pick(e.target.closest('tr[data-key]'));});
+    tb.addEventListener('keydown',function(e){
+      var tr=e.target.closest('tr[data-key]'); if(!tr) return;
+      if(e.key==='Enter'||e.key===' '){e.preventDefault(); pick(tr); var again=tb.querySelector('tr.sel'); if(again) again.focus();}
+      else if(e.key==='ArrowDown'&&tr.nextElementSibling){e.preventDefault(); tr.nextElementSibling.focus();}
+      else if(e.key==='ArrowUp'&&tr.previousElementSibling){e.preventDefault(); tr.previousElementSibling.focus();}
+    });
+    return {set:function(r){rows=r; draw();}, selected:function(){return st.sel;}};
+  };
+})();
+</script>
+
+<script>
+(function(){
+  var N=window.NAV, ST=N.ST;
+  // Every table's columns, declared once; each <th data-field> row
+  // matches its list (tests/site/test_site_web.py)
+  var COLS={};
+  COLS.tbl=[{key:'id',kind:'id'},{key:'version',kind:'text'},{key:'scope',kind:'text'},{key:'evidence',kind:'text'},{key:'trust',kind:'text'},{key:'afar_x1',kind:'status'},{key:'afar_x0',kind:'status'},{key:'afar_g90',kind:'status'},{key:'cce_x1',kind:'status'},{key:'cce_x0',kind:'status'},{key:'cce_g90',kind:'status'},{key:'cce20_x1',kind:'status'},{key:'cce20_x0',kind:'status'},{key:'cce20_g90',kind:'status'},{key:'cce21_x1',kind:'status'},{key:'cce21_x0',kind:'status'},{key:'cce21_g90',kind:'status'},{key:'nvhpc_x0',kind:'status'},{key:'nvhpc_x2',kind:'status'},{key:'nvhpc269_x0',kind:'status'},{key:'nvhpc269_x2',kind:'status'},{key:'portable',kind:'text'},{key:'nvhpc_portable',kind:'text'},{key:'nvhpc269_portable',kind:'text'}];
+  COLS.vtbl=[{key:'id',kind:'id'},{key:'spec_dir',kind:'text'},{key:'afar_x1',kind:'status'},{key:'afar_x0',kind:'status'},{key:'afar_g90',kind:'status'},{key:'cce_x1',kind:'status'},{key:'cce_x0',kind:'status'},{key:'cce_g90',kind:'status'},{key:'cce20_x1',kind:'status'},{key:'cce20_x0',kind:'status'},{key:'cce20_g90',kind:'status'},{key:'cce21_x1',kind:'status'},{key:'cce21_x0',kind:'status'},{key:'cce21_g90',kind:'status'},{key:'nvhpc_x0',kind:'status'},{key:'nvhpc_x2',kind:'status'},{key:'nvhpc269_x0',kind:'status'},{key:'nvhpc269_x2',kind:'status'}];
+  COLS.atbl=[{key:'id',kind:'id'},{key:'evidence',kind:'text'},{key:'cce19_x1',kind:'status'},{key:'cce19_x0',kind:'status'},{key:'cce19_g90',kind:'status'},{key:'cce20_x1',kind:'status'},{key:'cce20_x0',kind:'status'},{key:'cce20_g90',kind:'status'},{key:'cce21_x1',kind:'status'},{key:'cce21_x0',kind:'status'},{key:'cce21_g90',kind:'status'},{key:'nvhpc_x0',kind:'status'},{key:'nvhpc_x2',kind:'status'},{key:'nvhpc269_x0',kind:'status'},{key:'nvhpc269_x2',kind:'status'},{key:'portable',kind:'text'},{key:'nvhpc_portable',kind:'text'},{key:'nvhpc269_portable',kind:'text'}];
+  COLS.ptbl=[{key:'id',kind:'id'},{key:'portable',kind:'text'},{key:'x1_only',kind:'text'},{key:'x0_only',kind:'text'},{key:'neither',kind:'text'},{key:'x0_fail_x1_unverified',kind:'text'},{key:'x1_fail_x0_unverified',kind:'text'},{key:'requirement_refused',kind:'text'},{key:'not_verifiable',kind:'text'},{key:'needs_zero_copy',kind:'text'},{key:'gfx942_only',kind:'text'},{key:'gfx90a_unverified',kind:'text'},{key:'managed_unverified',kind:'text'},{key:'other',kind:'text'}];
+  COLS.fztbl=[{key:'id',kind:'id'},{key:'tc_name',kind:'text'},{key:'group',kind:'text'},{key:'fkind',kind:'text'},{key:'status',kind:'text'},{key:'also',kind:'text'},{key:'lines_after',kind:'text'}];
+  COLS.fgtbl=[{key:'id',kind:'id'},{key:'programs',kind:'text'},{key:'afar_rate',kind:'text'},{key:'cce19_rate',kind:'text'},{key:'cce20_rate',kind:'text'},{key:'cce21_rate',kind:'text'},{key:'nvhpc_rate',kind:'text'},{key:'nvhpc269_rate',kind:'text'}];
+  COLS.fbtbl=[{key:'id',kind:'id'},{key:'programs',kind:'text'},{key:'afar_rate',kind:'text'},{key:'cce19_rate',kind:'text'},{key:'cce20_rate',kind:'text'},{key:'cce21_rate',kind:'text'},{key:'nvhpc_rate',kind:'text'},{key:'nvhpc269_rate',kind:'text'}];
+  COLS.fhtbl=[{key:'id',kind:'id'},{key:'tc_name',kind:'text'},{key:'group',kind:'text'},{key:'programs',kind:'text'},{key:'seeds',kind:'text'}];
+  COLS.fttbl=[{key:'id',kind:'id'},{key:'verdict',kind:'text'},{key:'settled_by',kind:'text'},{key:'wrong_on',kind:'text'},{key:'host_path',kind:'text'},{key:'model',kind:'text'},{key:'elision',kind:'text'}];
+  COLS.fntbl=[{key:'id',kind:'id'},{key:'group',kind:'text'},{key:'model',kind:'text'},{key:'host',kind:'text'},{key:'classes',kind:'text'},{key:'elision',kind:'text'}];
+  var TCS=['afar_x1','afar_x0','afar_g90','cce_x1','cce_x0','cce_g90','cce20_x1','cce20_x0','cce20_g90','cce21_x1','cce21_x0','cce21_g90','nvhpc_x0','nvhpc_x2','nvhpc269_x0','nvhpc269_x2'];
+  // headline cells: XNACK 1 on the MI300A, separate memory on the A100
+  var HEAD=['afar_x1','cce_x1','cce20_x1','cce21_x1','nvhpc_x0','nvhpc269_x0'];
+  var NAMES={afar_x1:'AFAR, XNACK 1',afar_x0:'AFAR, XNACK 0',cce_x1:'CCE 19, XNACK 1',cce_x0:'CCE 19, XNACK 0',cce20_x1:'CCE 20, XNACK 1',cce20_x0:'CCE 20, XNACK 0',cce21_x1:'CCE 21, XNACK 1',cce21_x0:'CCE 21, XNACK 0',afar_g90:'AFAR, gfx90a (MI250X, XNACK 0)',cce_g90:'CCE 19, gfx90a (MI250X, XNACK 0)',cce20_g90:'CCE 20, gfx90a (MI250X, XNACK 0)',cce21_g90:'CCE 21, gfx90a (MI250X, XNACK 0)',nvhpc_x0:'NVHPC 25.11, A100, separate memory',nvhpc_x2:'NVHPC 25.11, A100, managed memory',nvhpc269_x0:'NVHPC 26.9, A100, separate memory',nvhpc269_x2:'NVHPC 26.9, A100, managed memory'};
+  // The runs dataset of a cell key and the run row's (tc, x)
+  function runsOf(k){
+    if(/_g90$/.test(k)) return {ds:'runs_g90',tc:k,x:'0'};
+    if(/^nvhpc(269)?_x/.test(k)) return {ds:'runs_nvhpc',tc:k.split('_x')[0],x:k.slice(-1)};  // var p=k.split('_x'); return {ds:p[1]==='0'?'runs_x0':'runs',tc:p[0],x:p[1]};
+  }
+  var PTC=[['afar','AFAR'],['cce','CCE 19'],['cce20','CCE 20'],['cce21','CCE 21'],['nvhpc','NVHPC 25.11 (separate and managed)'],['nvhpc269','NVHPC 26.9 (separate and managed)']];
+  var MAPC={both:'in both modes: the check sees a dropped or wrong map even with unified memory.',x0_only:'at XNACK 0 only: the check sees a dropped or wrong map in copy mode and is blind to it with unified memory.',x1_only:'at XNACK 1 only.',neither:'in neither mode: the map mutants ran and the check still passed.',inconclusive:'no conclusive run (the original did not pass, or the mutants were illegal or rejected).'};
+  var PNAME={portable:'portable (correct at XNACK 0 and 1)',x1_only:'correct at XNACK 1 only',x0_only:'correct at XNACK 0 only',neither:'failed in both modes',x0_fail_x1_unverified:'failed at XNACK 0; XNACK 1 not verifiable (nothing observable there, or the check runs only in copy mode)',x1_fail_x0_unverified:'failed at XNACK 1; XNACK 0 not verifiable',requirement_refused:'the runtime refuses a requires directive in one mode (a conforming refusal, not a failure)',not_verifiable:'not verifiable in either mode (no oracle, unobservable or ignored)',needs_zero_copy:'needs zero-copy memory by design',x0_not_run:'no XNACK 0 run',gfx942_only:'correct in both MI300A modes, failed on the discrete gfx90a (MI250X)',gfx90a_unverified:'correct in both MI300A modes; gfx90a gives no verdict',gfx90a_not_run:'correct in both MI300A modes; no gfx90a run',managed_unverified:'NVHPC: correct in separate memory; managed memory not verifiable (it shares the checked storage)',managed_not_run:'NVHPC: no managed-memory run'};
+  PNAME.portable='portable (correct at XNACK 0 and 1 on MI300A and on the discrete gfx90a)';
+
+  dash.calc('summary',{
+    title:'Outcome counts',
+    description:'Features per version, compiler, memory mode and outcome.',
+    inputs:['atoms'],
+    fn:function(atoms){
+      var m={};
+      atoms.forEach(function(a){
+        if(a.scope && a.scope!=='device') return;
+        [['AFAR','1','afar_x1'],['AFAR','0','afar_x0'],['AFAR','g90','afar_g90'],['CCE','1','cce_x1'],['CCE','0','cce_x0'],['CCE','g90','cce_g90'],['CCE 20','1','cce20_x1'],['CCE 20','0','cce20_x0'],['CCE 20','g90','cce20_g90'],['CCE 21','1','cce21_x1'],['CCE 21','0','cce21_x0'],['CCE 21','g90','cce21_g90'],['NVHPC','sep','nvhpc_x0'],['NVHPC','man','nvhpc_x2'],['NVHPC 26.9','sep','nvhpc269_x0'],['NVHPC 26.9','man','nvhpc269_x2']].forEach(function(t){
+          if(!a[t[2]]) return;
+          var k=a.lang+'|'+a.version+'|'+t[0]+'|'+t[1]+'|'+a[t[2]];
+          m[k]=(m[k]||0)+1;
+        });
+      });
+      return Object.keys(m).map(function(k){var p=k.split('|');return {lang:p[0],version:p[1],toolchain:p[2],xnack:p[3],status:p[4],n:m[k]};});
+    }
+  });
+
+  dash.calc('portable_summary',{
+    title:'Portable verdict counts',
+    description:'Device-offload features per language and compiler by portable verdict: correct at XNACK 0 and 1 on the MI300A and on the gfx90a, XNACK 1 only or XNACK 0 only; correct on the MI300A only (failed on gfx90a), gfx90a not verifiable; failed in both modes, failed at XNACK 0 with XNACK 1 unverified, failed at XNACK 1 with XNACK 0 unverified; requirement refused; not verifiable; needs unified memory.',
+    inputs:['atoms'],
+    fn:function(atoms){
+      var NM={afar:'AFAR',cce:'CCE 19',cce20:'CCE 20',cce21:'CCE 21',nvhpc:'NVHPC 25.11 (A100)',nvhpc269:'NVHPC 26.9 (A100)'}, LN={f90:'Fortran',c:'C'}, m={};
+      atoms.forEach(function(a){
+        if(a.scope && a.scope!=='device') return;
+        ['afar','cce','cce20','cce21','nvhpc','nvhpc269'].forEach(function(t){
+          var v=a[t+'_portable']; if(!v) return;
+          var id=LN[a.lang]+' · '+NM[t];
+          var r=m[id]||(m[id]={id:id,lang:a.lang,portable:0,x1_only:0,x0_only:0,neither:0,x0_fail_x1_unverified:0,x1_fail_x0_unverified:0,requirement_refused:0,not_verifiable:0,needs_zero_copy:0,gfx942_only:0,gfx90a_unverified:0,managed_unverified:0,other:0});
+          if(r[v]===undefined) r.other++; else r[v]++;
+        });
+      });
+      return Object.keys(m).map(function(k){return m[k];});
+    }
+  });
+  var ptb=document.querySelector('#ptbl tbody');
+  function drawPortable(){
+    ptb.textContent='';
+    var s=dash.data('portable_summary');
+    if(s.status!=='ok'){return;}
+    s.data.forEach(function(r){
+      var tr=document.createElement('tr');
+      COLS.ptbl.forEach(function(c){var td=document.createElement('td'); td.textContent=String(r[c.key]); if(c.kind==='id') td.className='id'; tr.appendChild(td);});
+      ptb.appendChild(tr);
+    });
+  }
+
+  var LANG='f90', LANGNAME={f90:'Fortran',c:'C'};
+  var bars=document.getElementById('bars'), legend=document.getElementById('legend');
+  legend.innerHTML=ST.map(function(s){return '<span><i class="s-'+s[0]+'"></i>'+s[1]+'</span>';}).join('');
+  bars.classList.add('dash-skeleton');
+  var detail=document.getElementById('detail'), srcbox=document.getElementById('src');
+  var rows=[], selected=null;
+
+  function drawBars(){
+    var s=dash.data('summary');
+    if(s.status!=='ok'){return;}
+    bars.classList.remove('dash-skeleton'); bars.textContent='';
+    ['5.0','5.2','6.0'].forEach(function(v){
+      ['AFAR','CCE','CCE 20','CCE 21','NVHPC','NVHPC 26.9'].forEach(function(t){
+        ['1','0','g90','sep','man'].forEach(function(x){
+          if(!s.data.some(function(d){return d.lang===LANG&&d.version===v&&d.toolchain===t&&d.xnack===x;})) return;
+          var r=document.createElement('div'); r.className='brow';
+          var l=document.createElement('div'); l.textContent=(t==='CCE'?'CCE 19':t==='NVHPC'?'NVHPC 25.11':t)+' · '+v+' · '+(x==='g90'?'gfx90a':x==='sep'?'A100 separate':x==='man'?'A100 managed':'XNACK '+x); r.appendChild(l);
+          var b=document.createElement('div'); b.className='bar';
+          ST.forEach(function(st){
+            var hit=s.data.filter(function(d){return d.lang===LANG&&d.version===v&&d.toolchain===t&&d.xnack===x&&d.status===st[0];})[0];
+            if(!hit) return;
+            var g=document.createElement('div'); g.className='seg s-'+st[0]; g.style.flex=hit.n+' 1 0'; g.textContent=hit.n>=12?String(hit.n):'';
+            g.title=st[1]+': '+hit.n;
+            b.appendChild(g);
+          });
+          r.appendChild(b); bars.appendChild(r);
+        });
+      });
+    });
+  }
+
+  function drawSource(id){
+    srcbox.textContent='';
+    var p=dash.data('programs');
+    if(p.status!=='ok'){return;}
+    var hit=p.data.filter(function(x){return x.id===id;})[0];
+    if(!hit){return;}
+    var h=document.createElement('strong'); h.textContent='Program that ran ('+id+(hit.lang==='c'?'.c':'.f90')+')'; srcbox.appendChild(h);
+    var pre=document.createElement('pre'); pre.textContent=hit.source; srcbox.appendChild(pre);
+  }
+
+  function drawDetail(){
+    detail.textContent=''; srcbox.textContent='';
+    var r=rows.filter(function(x){return x.id===selected;})[0];
+    if(!r){var d=document.createElement('div'); d.textContent='Select a row to see the compiler message or check result behind each cell.'; detail.appendChild(d); return;}
+    var h=document.createElement('div'); var s1=document.createElement('strong'); s1.textContent=r.id; h.appendChild(s1); h.appendChild(document.createTextNode(r.citation+'. Audit: '+r.audit.replace(/_/g,' ')+'.')); detail.appendChild(h);
+    if(r.trust){var tdv=document.createElement('div'); var ts=document.createElement('strong'); ts.textContent='Expected result: '+r.trust+(r.trust_by&&r.trust_by!=='open'?' ('+r.trust_by+')':''); tdv.appendChild(ts); tdv.appendChild(document.createTextNode(r.trust_why)); detail.appendChild(tdv);}
+    drawSource(r.id);
+    var pv=document.createElement('div'); var ps=document.createElement('strong'); ps.textContent='Portable verdict'; pv.appendChild(ps);
+    pv.appendChild(document.createTextNode(PTC.map(function(t){var v=r[t[0]+'_portable']; return t[1]+': '+(PNAME[v]||'n/a')+(r[t[0]+'_mode_class']?' ('+r[t[0]+'_mode_class'].replace(/_/g,' ')+')':'')+(r[t[0]+'_arch_class']?' (gfx90a: '+r[t[0]+'_arch_class'].replace(/_/g,' ')+')':'');}).join('; ')+'.'));
+    detail.appendChild(pv);
+    if(r.map_caught){var mv=document.createElement('div'); var ms=document.createElement('strong'); ms.textContent='Map mutants caught'; mv.appendChild(ms); mv.appendChild(document.createTextNode(MAPC[r.map_caught]||r.map_caught)); detail.appendChild(mv);}
+    TCS.forEach(function(k){
+      if(!r[k]) return;
+      var d=document.createElement('div'); var s=document.createElement('strong'); s.textContent=NAMES[k]; d.appendChild(s); d.appendChild(document.createTextNode(r['note_'+k]));
+      var ro=runsOf(k), rn=dash.data(ro.ds), hit=rn.status==='ok'?rn.data.filter(function(q){return q.id===r.id&&q.tc===ro.tc&&q.x===ro.x;})[0]:null;
+      if(hit){var dt=document.createElement('details'); dt.className='full'; var sm=document.createElement('summary'); sm.textContent='Full compiler and run output'; dt.appendChild(sm); var pre=document.createElement('pre'); pre.textContent=(hit.flags?'flags: '+hit.flags+'\n':'')+hit.output; dt.appendChild(pre); d.appendChild(dt);}
+      detail.appendChild(d);
+    });
+  }
+
+  var omp=N.mount({
+    ctl:document.getElementById('ctl-omp'), tbl:document.getElementById('tbl'),
+    placeholder:'Search features, for example map or reduction', noun:'features',
+    cols:COLS.tbl,
+    search:['id','atom'], outcomes:ST, diffKeys:HEAD,
+    pickers:[{key:'version',label:'OpenMP version',all:'All versions',options:[['5.0','OpenMP 5.0'],['5.2','OpenMP 5.2'],['6.0','OpenMP 6.0']]},
+             {key:'scope',label:'Scope',all:'Device and host+device',options:[['device','device offload (headline)'],['host+device','host+device pattern']]},
+             {key:'evidence',label:'Evidence',all:'Any evidence',options:[['construct','construct'],['probe','probe'],['copy_mode_only','copy mode only'],['unverified','unverified'],['hint_only','hint only'],['implementation_defined','implementation defined'],['equivalent_default','equivalent default']]},
+             {key:'trust',label:'Expected result',all:'Any expected result',options:[['trusted','trusted'],['derived','derived (oracle + derivation, no executed witness)'],['provisional','provisional'],['disputed','disputed'],['implementation_defined','implementation defined']]},
+             {key:'catalog',label:'Catalog',all:'Slice and widened',options:[['slice','spec slice'],['widened','widened catalog']]}],
+    select:function(id){selected=id; drawDetail();}
+  });
+
+  // ---- OpenMP_VV
+  var vrows=[], vsel=null;
+  var VT=[['afar_x1','AFAR, XNACK 1'],['afar_x0','AFAR, XNACK 0'],['cce_x1','CCE 19, XNACK 1'],['cce_x0','CCE 19, XNACK 0'],['cce20_x1','CCE 20, XNACK 1'],['cce20_x0','CCE 20, XNACK 0'],['cce21_x1','CCE 21, XNACK 1'],['cce21_x0','CCE 21, XNACK 0'],['afar_g90','AFAR, gfx90a (XNACK 0)'],['cce_g90','CCE 19, gfx90a (XNACK 0)'],['cce20_g90','CCE 20, gfx90a (XNACK 0)'],['cce21_g90','CCE 21, gfx90a (XNACK 0)'],['nvhpc_x0','NVHPC 25.11, A100 separate'],['nvhpc_x2','NVHPC 25.11, A100 managed'],['nvhpc269_x0','NVHPC 26.9, A100 separate'],['nvhpc269_x2','NVHPC 26.9, A100 managed']];
+  var vdetail=document.getElementById('vdetail'), vsrc=document.getElementById('vsrc');
+  function drawVDetail(){
+    vdetail.textContent=''; vsrc.textContent='';
+    var r=vrows.filter(function(x){return x.id===vsel;})[0];
+    if(!r){var d0=document.createElement('div'); d0.textContent='Select a test to see its output.'; vdetail.appendChild(d0); return;}
+    var h=document.createElement('div'); var s1=document.createElement('strong'); s1.textContent=r.id; h.appendChild(s1); h.appendChild(document.createTextNode('OpenMP '+r.spec_dir+' directory of the suite ('+LANGNAME[r.lang]+').')); vdetail.appendChild(h);
+    VT.forEach(function(k){
+      if(!r[k[0]]) return;
+      var d=document.createElement('div'); var s=document.createElement('strong'); s.textContent=k[1]; d.appendChild(s); d.appendChild(document.createTextNode(r['note_'+k[0]]));
+      var dt=document.createElement('details'); dt.className='full'; var sm=document.createElement('summary'); sm.textContent='Full compiler and run output'; dt.appendChild(sm); var pre=document.createElement('pre'); pre.textContent=r['out_'+k[0]]; dt.appendChild(pre); d.appendChild(dt);
+      vdetail.appendChild(d);
+    });
+    var hs=document.createElement('strong'); hs.textContent='Test source'; vsrc.appendChild(hs);
+    var sp=document.createElement('pre'); sp.textContent=r.source; vsrc.appendChild(sp);
+  }
+  var vv=N.mount({
+    ctl:document.getElementById('ctl-vv'), tbl:document.getElementById('vtbl'),
+    placeholder:'Search tests', noun:'tests',
+    cols:COLS.vtbl,
+    search:['id'], outcomes:[['pass','Pass'],['fail','Fail']], diffKeys:HEAD,
+    pickers:[{key:'spec_dir',label:'Spec directory',all:'All spec directories',options:[['4.5','4.5'],['5.0','5.0'],['5.1','5.1'],['5.2','5.2'],['6.0','6.0']]}],
+    select:function(id){vsel=id; drawVDetail();}
+  });
+
+  // ---- OpenACC
+  var ACC=[['cce19_x1','CCE 19, XNACK 1'],['cce19_x0','CCE 19, XNACK 0'],['cce19_g90','CCE 19, gfx90a (XNACK 0)'],['cce20_x1','CCE 20, XNACK 1'],['cce20_x0','CCE 20, XNACK 0'],['cce20_g90','CCE 20, gfx90a (XNACK 0)'],['cce21_x1','CCE 21, XNACK 1'],['cce21_x0','CCE 21, XNACK 0'],['cce21_g90','CCE 21, gfx90a (XNACK 0)'],['nvhpc_x0','NVHPC 25.11, A100 separate'],['nvhpc_x2','NVHPC 25.11, A100 managed'],['nvhpc269_x0','NVHPC 26.9, A100 separate'],['nvhpc269_x2','NVHPC 26.9, A100 managed']];
+  var arows=[], asel=null;
+  var adet=document.getElementById('adetail'), asrc=document.getElementById('asrc');
+  dash.calc('acc_summary',{
+    title:'OpenACC outcome counts',
+    description:'OpenACC features per language, compiler and outcome in the headline mode (CCE: HSA_XNACK=1; NVHPC: separate memory), and the portable features (status portable).',
+    inputs:['acc_atoms'],
+    fn:function(acc_atoms){
+      var m={};
+      acc_atoms.forEach(function(a){
+        var lang=a.lang||'f90';
+        // headline mode: XNACK 1 on the MI300A (CCE), separate memory on the A100 (NVHPC)
+        [['cce19','_x1'],['cce20','_x1'],['cce21','_x1'],['nvhpc','_x0'],['nvhpc269','_x0']].forEach(function(t){
+          var s=a[t[0]+t[1]]; if(s){var k=lang+'|'+t[0]+'|'+s; m[k]=(m[k]||0)+1;}
+          if(a[t[0]+'_portable']==='portable'){var kp=lang+'|'+t[0]+'|portable'; m[kp]=(m[kp]||0)+1;}
+        });
+      });
+      return Object.keys(m).map(function(k){var p=k.split('|');return {lang:p[0],tc:p[1],status:p[2],n:m[k]};});
+    }
+  });
+  function drawADetail(){
+    adet.textContent=''; asrc.textContent='';
+    var r=arows.filter(function(x){return x.id===asel;})[0];
+    if(!r){var d0=document.createElement('div'); d0.textContent='Select a feature to see the compiler message or check result behind each cell.'; adet.appendChild(d0); return;}
+    var h=document.createElement('div'); var s1=document.createElement('strong'); s1.textContent=r.id; h.appendChild(s1); h.appendChild(document.createTextNode(r.citation+'. Audit: '+r.audit.replace(/_/g,' ')+'.')); adet.appendChild(h);
+    var p=dash.data('acc_programs');
+    if(p.status==='ok'){
+      var hit=p.data.filter(function(x){return x.id===r.id;})[0];
+      if(hit){var hs=document.createElement('strong'); hs.textContent='Program that ran ('+r.id+((hit.lang||r.lang)==='c'?'.c':'.f90')+')'; asrc.appendChild(hs); var pre=document.createElement('pre'); pre.textContent=hit.source; asrc.appendChild(pre);}
+    }
+    var apv=document.createElement('div'); var aps=document.createElement('strong'); aps.textContent='Portable verdict'; apv.appendChild(aps);
+    apv.appendChild(document.createTextNode([['cce19','CCE 19'],['cce20','CCE 20'],['cce21','CCE 21'],['nvhpc','NVHPC 25.11 (separate and managed)'],['nvhpc269','NVHPC 26.9 (separate and managed)']].map(function(t){var v=r[t[0]+'_portable']; return t[1]+': '+(PNAME[v]||'n/a')+(r[t[0]+'_mode_class']?' ('+r[t[0]+'_mode_class'].replace(/_/g,' ')+')':'')+(r[t[0]+'_arch_class']?' (gfx90a: '+r[t[0]+'_arch_class'].replace(/_/g,' ')+')':'');}).join('; ')+'.'));
+    adet.appendChild(apv);
+    if(r.map_caught){var amv=document.createElement('div'); var ams=document.createElement('strong'); ams.textContent='Map mutants caught'; amv.appendChild(ams); amv.appendChild(document.createTextNode(MAPC[r.map_caught]||r.map_caught)); adet.appendChild(amv);}
+    ACC.forEach(function(k){
+      if(!r[k[0]]) return;
+      var d=document.createElement('div'); var s=document.createElement('strong'); s.textContent=k[1]; d.appendChild(s); d.appendChild(document.createTextNode(r['note_'+k[0]]));
+      var ao=runsOf(k[0]), rn=dash.data('acc_runs'), hit=rn.status==='ok'?rn.data.filter(function(q){return q.id===r.id&&q.tc===ao.tc&&q.x===ao.x;})[0]:null;
+      if(hit){var dt=document.createElement('details'); dt.className='full'; var sm=document.createElement('summary'); sm.textContent='Full compiler and run output'; dt.appendChild(sm); var pr=document.createElement('pre'); pr.textContent=(hit.flags?'flags: '+hit.flags+'\n':'')+hit.output; dt.appendChild(pr); d.appendChild(dt);}
+      adet.appendChild(d);
+    });
+  }
+  var accT=N.mount({
+    ctl:document.getElementById('ctl-acc'), tbl:document.getElementById('atbl'),
+    placeholder:'Search features, for example copyin or reduction', noun:'features',
+    cols:COLS.atbl,
+    search:['id','atom'], outcomes:ST, diffKeys:['cce19_x1','cce20_x1','cce21_x1','nvhpc_x0','nvhpc269_x0'],
+    pickers:[{key:'evidence',label:'Evidence',all:'Any evidence',options:[['construct','construct'],['copy_mode_only','copy mode only'],['probe','probe'],['unverified','unverified'],['hint_only','hint only'],['implementation_defined','implementation defined'],['equivalent_default','equivalent default']]},
+             {key:'catalog',label:'Catalog',all:'Slice and widened',options:[['slice','spec slice'],['widened','widened catalog']]},
+             {key:'lang',label:'Language',all:'Fortran and C',options:[['f90','Fortran'],['c','C (NVHPC only)']]}],
+    select:function(id){asel=id; drawADetail();}
+  });
+
+  // ---- random-program testing
+  var FZC=[['agree','s-ok','Agrees with the model'],['wrong_code','s-wrong','Wrong code'],['compile_reject','s-rejected','Compile rejected'],['ice','s-suspect','Compiler crash (ICE)'],['run_error','s-excluded','Run error'],['timeout','s-unverified','Timeout']];
+  var FTC=[['afar','AFAR'],['cce19','CCE 19'],['cce20','CCE 20'],['cce21','CCE 21'],['nvhpc','NVHPC 25.11'],['nvhpc269','NVHPC 26.9']];
+  var fzl=document.getElementById('fzlegend'); fzl.innerHTML=FZC.map(function(c){return '<span><i class="'+c[1]+'"></i>'+c[2]+'</span>';}).join('');
+  var fzrows=[], fzsel=null, ftsel=null, fgsel=null, fbsel=null, fzrun='c1';
+  var fzdet=document.getElementById('fzdetail'), ftdet=document.getElementById('ftdetail'), fhdet=document.getElementById('fhdetail'), fhsel=null;
+  function kind(k){return fzrows.filter(function(x){return x.kind===k;});}
+  function byId(k,id){return kind(k).filter(function(x){return x.id===id;})[0];}
+  function drawFzBars(){
+    var d=fzrows.filter(function(x){return x.kind==='class'&&x.run===fzrun;});
+    var run=byId('run',fzrun);
+    var cap=document.getElementById('fzruncap');
+    cap.textContent=run?(run.judged+' programs judged'+(run.noncompliant?', '+run.noncompliant+' noncompliant left out':'')):'';
+    var b=document.getElementById('fzbars'); b.textContent='';
+    FTC.forEach(function(t){
+      if(!d.some(function(x){return x.tc===t[0];})) return;  // Only the run's toolchains
+      var r=document.createElement('div'); r.className='brow';
+      var l=document.createElement('div'); l.textContent=t[1]; r.appendChild(l);
+      var bar=document.createElement('div'); bar.className='bar';
+      FZC.forEach(function(c){
+        var hit=d.filter(function(x){return x.tc===t[0]&&x.cls===c[0];})[0];
+        if(!hit) return;
+        var g=document.createElement('div'); g.className='seg '+c[1]; g.style.flex=hit.n+' 1 0'; g.textContent=hit.n>=(run&&run.judged>1000?60:15)?String(hit.n):''; g.title=c[2]+': '+hit.n; bar.appendChild(g);
+      });
+      r.appendChild(bar); b.appendChild(r);
+    });
+  }
+  function line(parent,label,text){var d=document.createElement('div'); var s=document.createElement('strong'); s.textContent=label; d.appendChild(s); d.appendChild(document.createTextNode(text)); parent.appendChild(d);}
+  function drawFzDetail(){
+    fzdet.textContent='';
+    var r=byId('finding',fzsel);
+    if(!r){var d0=document.createElement('div'); d0.textContent='Select a finding to see what was expected, what happened and the reproducer.'; fzdet.appendChild(d0); return;}
+    line(fzdet,r.id+' ('+r.status.replace(/_/g,' ')+')',r.signature||r.fkind);
+    if(r.why) line(fzdet,'Why',r.why);
+    if(r.expected) line(fzdet,'Expected',r.expected);
+    if(r.observed) line(fzdet,'Observed',r.observed);
+    if(r.lines_after!=='') line(fzdet,'Size','Shrunk from '+r.lines_before+' to '+r.lines_after+' lines. Also fails on: '+(r.also||'no other compiler')+'.');
+  }
+  function drawFtDetail(){
+    ftdet.textContent='';
+    var r=byId('trust',ftsel);
+    if(!r){var d0=document.createElement('div'); d0.textContent='Select a program to see every source.'; ftdet.appendChild(d0); return;}
+    line(ftdet,r.id+': '+r.verdict,'Settled by '+r.settled_by+'. Compilers wrong on the original: '+(r.wrong_on||'none')+'.');
+    line(ftdet,'Host check',r.host_path);
+    line(ftdet,'Model',r.model); line(ftdet,'Sequential elision',r.elision); line(ftdet,'Metamorphic rewrites',r.metamorphic); line(ftdet,'State probe',r.probe); line(ftdet,'Cross-compiler agreement (hint only)',r.consensus);
+  }
+
+  // ---- program sources (generated, elided, reproducers), loaded on first use
+  var PROG={fz:{el:'fzprog',key:null,tab:null},ft:{el:'ftprog',key:null,tab:null},fh:{el:'fhprog',key:null,tab:null},fn:{el:'fnprog',key:null,tab:null}};
+  var SRCIDX=null, SRCDATA=null;
+  var CLSNAME={agree:'agrees',wrong_code:'wrong code',compile_reject:'compile rejected',ice:'compiler crash (ICE)',run_error:'run error',timeout:'timeout'};
+  function showProgram(name,key,tab){PROG[name].key=key; PROG[name].tab=tab||null; drawProg(name);}
+  function srcRows(){
+    var d=dash.data('fuzz_sources');
+    if(d.status==='ok'&&d.data!==SRCDATA){SRCDATA=d.data; SRCIDX={}; d.data.forEach(function(r){SRCIDX[r.id]=r;});}
+    return d;
+  }
+  function pnote(el,text,cls){var p=document.createElement('p'); p.className='note'+(cls?' '+cls:''); p.textContent=text; el.appendChild(p); return p;}
+  function pnoteB(el,label,text,cls){var p=pnote(el,'',cls); var b=document.createElement('b'); b.textContent=label+' '; p.appendChild(b); p.appendChild(document.createTextNode(text)); return p;}
+  function codeBlock(text){
+    var pre=document.createElement('pre'); pre.className='code'; pre.setAttribute('tabindex','0');
+    var lines=text.replace(/\n$/,'').split('\n');
+    lines.forEach(function(l){var sp=document.createElement('span'); sp.textContent=l; pre.appendChild(sp);});
+    return pre;
+  }
+  function copyText(text,btn,host){
+    function done(ok){btn.textContent=ok?'Copied':'Copy blocked here: select the text instead'; setTimeout(function(){btn.textContent='Copy';},1800);}
+    function fallback(){
+      try{var ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; host.appendChild(ta); ta.select(); var ok=document.execCommand('copy'); host.removeChild(ta); return ok;}catch(e){return false;}
+    }
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(fallback());}); return;}
+    }catch(e){}
+    done(fallback());
+  }
+  function resultsTable(r){
+    var box=document.createElement('div'); box.className='rbox';
+    var t=document.createElement('table'), th=document.createElement('thead'), tr=document.createElement('tr');
+    ['Compiler','On the device','Device checksum','Host checksum','Reason'].forEach(function(h){var c=document.createElement('th'); c.textContent=h; tr.appendChild(c);});
+    th.appendChild(tr); t.appendChild(th);
+    var tb=document.createElement('tbody');
+    r.results.forEach(function(x){
+      var row=document.createElement('tr');
+      [x.tc,CLSNAME[x.cls]||x.cls,x.checksum==null?'':String(x.checksum),x.host==null?'':String(x.host),x.reason||''].forEach(function(v){var c=document.createElement('td'); c.textContent=v; row.appendChild(c);});
+      tb.appendChild(row);
+    });
+    t.appendChild(tb); box.appendChild(t); return box;
+  }
+  function drawProg(name){
+    var P=PROG[name], el=document.getElementById(P.el); el.textContent='';
+    if(!P.key) return;
+    var d=srcRows();
+    if(d.status!=='ok'){pnote(el,d.status==='loading'?'Loading the program sources…':'The program sources did not load ('+d.status+(d.message?': '+d.message:'')+').'); return;}
+    var r=SRCIDX[P.key];
+    if(!r){pnote(el,'No source is stored for '+P.key+'.'); return;}
+    var h=document.createElement('div'); h.className='phead'; h.textContent='Program '+r.run+', seed '+r.seed; el.appendChild(h);
+    pnote(el,'Generator '+r.gen_version+', base-language groups: '+r.base+', '+r.lines+' lines, regenerated from the seed (it matches the campaign\'s model checksum and length). Model checksum: '+r.model+'.');
+    if(r.elision_value!=null) pnoteB(el,'Sequential elision:','checksum='+r.elision_value+(r.elision_agrees?', the model\'s value.':', not the model\'s value ('+r.model+').'),r.elision_agrees?'ok':'warn');
+    else pnoteB(el,'Sequential elision does not apply:',r.elision.replace(/^inapplicable:\s*/,'')+'.','warn');
+    if(r.validity) pnoteB(el,'Host check ('+r.validity+'):',r.host+'.');
+    if(r.results.length) el.appendChild(resultsTable(r));
+    var tabs=[['gen','Generated program',r.source],['el','Sequential elision',r.elided]];
+    r.minimized.forEach(function(m,i){if(m.source) tabs.push(['m'+i,'Reproducer · '+m.tc+(m.status!=='minimized'?' ('+m.status.replace(/_/g,' ')+')':''),m.source,m]);});
+    var lib=SRCIDX['omp_lib']; if(lib) tabs.push(['lib','omp_lib of the elision',lib.source]);
+    var cur=P.tab;
+    if(cur&&cur.indexOf('mtc:')===0){var want=cur.slice(4), hit=tabs.filter(function(t){return t[3]&&t[3].tc===want;})[0]; cur=hit?hit[0]:'gen'; P.tab=cur;}
+    if(!tabs.some(function(t){return t[0]===cur;})) cur=tabs[0][0];
+    var bar=document.createElement('div'); bar.className='ptabs'; bar.setAttribute('role','tablist'); bar.setAttribute('aria-label','Program sources');
+    var btns=[];
+    tabs.forEach(function(t){
+      var b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab'); b.textContent=t[1];
+      b.setAttribute('aria-selected',t[0]===cur?'true':'false'); b.tabIndex=t[0]===cur?0:-1;
+      b.addEventListener('click',function(){P.tab=t[0]; drawProg(name); var nb=document.getElementById(P.el).querySelector('[role=tab][aria-selected=true]'); if(nb) nb.focus();});
+      b.addEventListener('keydown',function(e){
+        var k=btns.indexOf(b), n=null;
+        if(e.key==='ArrowRight') n=(k+1)%btns.length; else if(e.key==='ArrowLeft') n=(k-1+btns.length)%btns.length;
+        if(n!==null){e.preventDefault(); btns[n].click();}
+      });
+      btns.push(b); bar.appendChild(b);
+    });
+    var tab=tabs.filter(function(t){return t[0]===cur;})[0];
+    var cp=document.createElement('button'); cp.type='button'; cp.className='cp'; cp.textContent='Copy'; cp.setAttribute('aria-label','Copy this source');
+    cp.addEventListener('click',function(){copyText(tab[2],cp,el);});
+    bar.appendChild(cp); el.appendChild(bar);
+    if(cur==='el'){
+      if(r.elision_value!=null) pnote(el,'What sequential elision builds and runs on the host: the generated program built without OpenMP (gfortran -O0 and amdflang -O0, both must print the same checksum), where every line starting with !$ is a comment. Those lines are left out here; every other line is unchanged. It links the sequential omp_lib in the last tab.');
+      else pnote(el,'Not run as a reference, because elision does not apply. This is the generated program with every !$ line removed, for reading only.','warn');
+    } else if(cur==='gen') pnote(el,'The program every compiler built and ran, as the generator wrote it.');
+    else if(cur==='lib') pnote(el,'The omp_lib the elided build links: one initial thread on the host with no devices.');
+    else pnote(el,'Shrunk from the generated program while it kept failing on '+tab[3].tc+(tab[3].file?' ('+tab[3].file+')':'')+'.');
+    if(/^!@file /m.test(tab[2])) pnote(el,'Several source files: each starts at a !@file line.');
+    el.appendChild(codeBlock(tab[2]));
+  }
+  function drawProgs(){Object.keys(PROG).forEach(drawProg);}
+  function drawFhDetail(){
+    fhdet.textContent='';
+    var r=byId('host_path_failure',fhsel);
+    if(!r){var d0=document.createElement('div'); d0.textContent='Select a row to list its programs, then select a program to read it.'; fhdet.appendChild(d0); return;}
+    var d=document.createElement('div'); var s=document.createElement('strong'); s.textContent=r.id+': '+r.programs+' programs that failed on the host with '+r.tc_name; d.appendChild(s);
+    var w=document.createElement('div'); w.className='seeds';
+    r.seeds.split(', ').filter(Boolean).forEach(function(sd){
+      var key=r.run+'-'+sd, b=document.createElement('button'); b.type='button'; b.className='seedbtn'; b.textContent='seed '+sd;
+      b.setAttribute('aria-pressed',PROG.fh.key===key?'true':'false');
+      b.addEventListener('click',function(){showProgram('fh',key,'el'); Array.prototype.forEach.call(w.children,function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});});
+      w.appendChild(b);
+    });
+    d.appendChild(w); fhdet.appendChild(d);
+  }
+  function drawRate(el,kindName,sel,emptyText){
+    el.textContent='';
+    var r=byId(kindName,sel);
+    if(!r){var d0=document.createElement('div'); d0.textContent=emptyText; el.appendChild(d0); return;}
+    line(el,r.id,r.programs+' programs.');
+    FTC.forEach(function(t){
+      if(r[t[0]+'_n']===undefined) return;
+      var rate=r[t[0]+'_rate'], ctl=r[t[0]+'_ctl'];
+      line(el,t[1],(rate===''?'too few compiled programs for a rate':r[t[0]+'_fail']+' of '+r[t[0]+'_n']+' compiled failed = '+rate+'%')+'. Control b0: '+(ctl===''?'n/a':ctl+'%')+'.'+(r[t[0]+'_counts']?' Outcomes: '+r[t[0]+'_counts']+'.':''));
+    });
+  }
+  var RUNOPT=[['c1','c1'],['b0','b0'],['b1','b1'],['b2','b2'],['b3','b3'],['b4','b4'],['b5','b5'],['x0-types','x0-types'],['x0-derived','x0-derived'],['x0-alloc','x0-alloc'],['x0-declare','x0-declare'],['x0-multitu','x0-multitu'],['s1','s1'],['s1x0','s1x0'],['n0x0','n0x0'],['n1x0','n1x0']];
+  var GRPOPT=[['types','types'],['derived','derived'],['alloc','alloc'],['declare','declare'],['multitu','multitu'],['all','all groups combined']];
+  var fzT=N.mount({
+    ctl:document.getElementById('ctl-fzf'), tbl:document.getElementById('fztbl'),
+    placeholder:'Search findings, for example lastprivate or reduction', noun:'findings',
+    cols:COLS.fztbl,
+    search:['id','signature','also','source','why'], outcomes:[],
+    pickers:[{key:'run',label:'Campaign',all:'All campaigns',options:RUNOPT},
+             {key:'group',label:'Base-language group',all:'All groups',options:[['none','none']].concat(GRPOPT)},
+             {key:'tc_name',label:'Compiler',all:'All compilers',options:[['AFAR','AFAR'],['CCE 19','CCE 19'],['CCE 20','CCE 20'],['CCE 21','CCE 21'],['NVHPC 25.11','NVHPC 25.11'],['NVHPC 26.9','NVHPC 26.9']]},
+             {key:'fkind',label:'Kind',all:'All kinds',options:[['wrong_code','wrong code'],['ice','compiler crash'],['run_error','run error'],['link_error','link error'],['compile_reject','compile rejected']]},
+             {key:'status',label:'Status',all:'Any status',options:[['minimized','minimized'],['covered_by','covered by another'],['not_reproduced','not reproduced'],['withdrawn','withdrawn']]}],
+    select:function(id){fzsel=id; drawFzDetail(); var r=byId('finding',id); if(r) showProgram('fz',r.run+'-'+r.seed,'mtc:'+r.tc_name);}
+  });
+  var fgT=N.mount({
+    ctl:document.getElementById('ctl-fg'), tbl:document.getElementById('fgtbl'),
+    placeholder:'Search groups', noun:'campaigns', cols:COLS.fgtbl, search:['id','group'], outcomes:[],
+    pickers:[{key:'group',label:'Base-language group',all:'All groups',options:GRPOPT}],
+    select:function(id){fgsel=id; drawRate(document.getElementById('fgdetail'),'stage',fgsel,'Select a row to see the counts and the control rate.');}
+  });
+  var fbT=N.mount({
+    ctl:document.getElementById('ctl-fb'), tbl:document.getElementById('fbtbl'),
+    placeholder:'Search features, for example derived or optional', noun:'features', cols:COLS.fbtbl, search:['id','group'], outcomes:[],
+    pickers:[{key:'run',label:'Campaign',all:'All campaigns',options:RUNOPT.slice(2)}],
+    select:function(id){fbsel=id; drawRate(document.getElementById('fbdetail'),'base_feature',fbsel,'Select a feature to see the outcome counts per compiler against the control.');}
+  });
+  var fhT=N.mount({
+    ctl:document.getElementById('ctl-fh'), tbl:document.getElementById('fhtbl'),
+    placeholder:'Search by seed or compiler', noun:'rows',
+    cols:COLS.fhtbl,
+    search:['id','seeds'], outcomes:[],
+    pickers:[{key:'tc_name',label:'Compiler',all:'All compilers',options:[['AFAR','AFAR'],['CCE 19','CCE 19'],['CCE 20','CCE 20'],['CCE 21','CCE 21'],['NVHPC 25.11','NVHPC 25.11'],['NVHPC 26.9','NVHPC 26.9']]},{key:'run',label:'Campaign',all:'All campaigns',options:RUNOPT}],
+    select:function(id){fhsel=id; drawFhDetail();}
+  });
+  var ftT=N.mount({
+    ctl:document.getElementById('ctl-fzt'), tbl:document.getElementById('fttbl'),
+    placeholder:'Search programs by seed', noun:'programs',
+    cols:COLS.fttbl,
+    search:['id','settled_by','wrong_on','host_path'], outcomes:[],
+    pickers:[{key:'verdict',label:'Expected result',all:'Any expected result',options:[['trusted','trusted'],['provisional','provisional'],['disputed','disputed']]}],
+    select:function(id){ftsel=id; drawFtDetail(); var r=byId('trust',id); if(r) showProgram('ft','c1-'+r.seed,'el');}
+  });
+  var fnT=N.mount({
+    ctl:document.getElementById('ctl-fn'), tbl:document.getElementById('fntbl'),
+    placeholder:'Search by seed', noun:'programs',
+    cols:COLS.fntbl,
+    search:['id','host','elision'], outcomes:[],
+    pickers:[{key:'run',label:'Campaign',all:'All campaigns',options:RUNOPT}],
+    select:function(id){var r=byId('noncompliant',id); if(r) showProgram('fn',r.run+'-'+r.seed,'el');}
+  });
+  (function(){
+    var sel=document.getElementById('fzrun');
+    RUNOPT.forEach(function(o){var op=document.createElement('option'); op.value=o[0]; op.textContent=o[0]; sel.appendChild(op);});
+    sel.addEventListener('change',function(){fzrun=sel.value; drawFzBars();});
+  })();
+
+  // ---- language switch
+  var allAtoms=[], allVv=[];
+  function showLang(){
+    rows=allAtoms.filter(function(r){return r.lang===LANG;}); omp.set(rows); drawDetail();
+    vrows=allVv.filter(function(r){return r.lang===LANG;}); vv.set(vrows); drawVDetail();
+    document.getElementById('langname').textContent=LANGNAME[LANG]; document.getElementById('langname2').textContent=LANGNAME[LANG];
+    document.getElementById('vvcount').textContent=vrows.length+' existing '+LANGNAME[LANG]+' tests';
+    drawBars();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.switch button'),function(b){
+    b.addEventListener('click',function(){
+      LANG=b.getAttribute('data-lang'); selected=null; vsel=null;
+      Array.prototype.forEach.call(document.querySelectorAll('.switch button'),function(x){x.setAttribute('aria-checked',x===b?'true':'false');});
+      showLang();
+    });
+  });
+
+  // Headline tiles: each <b data-source data-field data-where> shows the calc row it names
+  // (a count the calc does not list is 0).
+  function fillMarks(){
+    Array.prototype.forEach.call(document.querySelectorAll('#dash-root [data-where][data-field]'),function(el){
+      var s=dash.data(el.getAttribute('data-source'));
+      if(s.status!=='ok'){el.textContent='—'; return;}
+      var w={};
+      el.getAttribute('data-where').split('&').forEach(function(kv){var p=kv.split('='); w[decodeURIComponent(p[0])]=decodeURIComponent(p[1]);});
+      var r=s.data.filter(function(x){return Object.keys(w).every(function(k){return String(x[k])===w[k];});})[0];
+      el.textContent=r?String(r[el.getAttribute('data-field')]):'0';
+    });
+  }
+
+  // Counts in the text come from the data
+  function plural(n,w){return n+' '+w+(n===1?'':'s');}
+  function widenedOf(rs){return rs.filter(function(r){return r.widened;}).length;}
+  function drawCounts(){
+    var dev=allAtoms.filter(function(r){return !r.scope||r.scope==='device';});
+    var parts=[];
+    ['f90','c'].forEach(function(l){
+      var rl=dev.filter(function(r){return r.lang===l;}); if(!rl.length) return;
+      var vs=[];
+      ['5.0','5.2','6.0'].forEach(function(v){
+        var rv=rl.filter(function(r){return r.version===v;}), w=widenedOf(rv);
+        if(rv.length) vs.push(rv.length+' at '+v+(w?' ('+w+' of them widened)':''));
+      });
+      var missing=['5.0','5.2','6.0'].filter(function(v){return !rl.some(function(r){return r.version===v;});});
+      parts.push(LANGNAME[l]+' has '+vs.join(', ')+(missing.length?' (no '+missing.join(' or ')+' '+LANGNAME[l]+' slice)':''));
+    });
+    document.getElementById('barcounts').textContent=parts.length?parts.join('; ')+'.':'';
+    var accRows=dash.data('acc_atoms'), acc=accRows.status==='ok'?accRows.data:[];
+    var langsOf=function(rs){var o=[]; rs.forEach(function(r){var n=LANGNAME[r.lang||'f90']; if(o.indexOf(n)<0) o.push(n);}); return o;};
+    var wd=widenedOf(dev), wa=widenedOf(acc);
+    document.getElementById('introcounts').textContent=dev.length?('The catalog has '+plural(dev.length,'OpenMP device-offload feature')+' ('+dev.filter(function(r){return r.lang==='f90';}).length+' Fortran, '+dev.filter(function(r){return r.lang==='c';}).length+' C; '+wd+' from the widened catalog) and '+plural(acc.length,'OpenACC feature')+' ('+langsOf(acc).join(' and ')+'; '+wa+' widened).'):'';
+    document.getElementById('acccount').textContent=acc.length?(plural(acc.length,'OpenACC 3.4 feature')+' in '+langsOf(acc).join(' and ')+' ('+(acc.length-wa)+' from the specification, '+wa+' from the widened catalog)'):'The OpenACC 3.4 features';
+  }
+
+  dash.onData(function(){
+    fillMarks();
+    var a=dash.data('atoms');
+    if(a.status==='ok'){allAtoms=a.data; allAtoms.forEach(function(r){r.catalog=r.widened?'widened':'slice';});}
+    var v=dash.data('ompvv');
+    if(v.status==='ok'){allVv=v.data;
+      // NVHPC's omp_vv cells come from their own dataset
+      var vn=dash.data('ompvv_nvhpc');
+      if(vn.status==='ok'){var byk={}; vn.data.forEach(function(q){byk[q.lang+'|'+q.id]=q;});
+        allVv=allVv.map(function(q){var n=byk[q.lang+'|'+q.id]; if(!n) return q; var o={}; Object.keys(q).forEach(function(k){o[k]=q[k];}); ['nvhpc_x0','nvhpc_x2','nvhpc269_x0','nvhpc269_x2'].forEach(function(k){o[k]=n[k]; o['note_'+k]=n['note_'+k]; o['out_'+k]=n['out_'+k];}); return o;});}}
+    showLang();
+    drawPortable();
+    var f=dash.data('fuzz');
+    if(f.status==='ok'){
+      fzrows=f.data; drawFzBars();
+      var labels={}; kind('run').forEach(function(r){labels[r.run]=r.label;});
+      var sel=document.getElementById('fzrun'); Array.prototype.slice.call(sel.options).forEach(function(o){if(labels[o.value]) o.textContent=labels[o.value]; else if(Object.keys(labels).length) sel.removeChild(o);});
+      fzT.set(kind('finding')); drawFzDetail();
+      fgT.set(kind('stage'));
+      var st0=kind('stage')[0];
+      if(st0){document.getElementById('fgcap').textContent='Failure rate: wrong code, run error and timeout among the programs a compiler compiled (not rejected, no crash). The control b0 has '+FTC.filter(function(t){return st0[t[0]+'_ctl']!==undefined&&st0[t[0]+'_ctl']!=='';}).map(function(t){return t[1]+' '+st0[t[0]+'_ctl']+'%';}).join(', ')+' (NVHPC has no control run). A group adds failures where its rate is above that.';}
+      fbT.set(kind('base_feature'));
+      fhT.set(kind('host_path_failure'));
+      ftT.set(kind('trust').filter(function(x){return x.validity==='valid';})); drawFtDetail();
+      fnT.set(kind('noncompliant')); drawFhDetail();
+    }
+    drawProgs();
+    var c=dash.data('acc_atoms');
+    if(c.status==='ok'){arows=c.data; arows.forEach(function(r){r.catalog=r.widened?'widened':'slice'; if(!r.lang) r.lang='f90';}); accT.set(arows); drawADetail();}
+    drawCounts();
+  });
+})();
+</script>

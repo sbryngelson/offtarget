@@ -1,0 +1,851 @@
+# Programs from training material, example collections and
+# applications made self-checking by recorded edits (offload/engine/harvest2/hand.py;
+# tools/campaigns/harvest2.py hand). `repos`: each source's clone (root: git/<owner>__<name>
+# under HARVEST2_SRC, or corpus/apps/<name>), its license, and the files looked at
+# and not converted (`skipped`, with the reason). `programs`: one entry per
+# program: the file, its edits (each an exact replacement and why), and `why`,
+# the expected result and where it comes from (the program's own reference
+# computation or the source's documented values; never a compiler's output).
+# `modes: [unified]` for a program that requires unified shared memory (its own
+# requires directive, or one added because it dereferences host memory in a
+# target region without a map).
+# `programs` lists the dev programs only: the holdout's
+# recipes are not committed; its labels are sealed in data/bench/harvest2-holdout.
+_edits:
+  stdlib: &stdlib
+    old: "#include <stdio.h>\n"
+    new: "#include <stdio.h>\n#include <stdlib.h>\n"
+    why: "#include <stdlib.h> added (malloc and exit are used; an implicit declaration is not C99)"
+  usm_c: &usm_c
+    old: "#include <stdio.h>\n"
+    new: "#include <stdio.h>\n#pragma omp requires unified_shared_memory\n"
+    why: "requires unified_shared_memory added (the example dereferences host memory in target regions without a map; written for the MI300A APU)"
+  stdlib_usm_c: &stdlib_usm_c
+    old: "#include <stdio.h>\n"
+    new: "#include <stdio.h>\n#include <stdlib.h>\n#pragma omp requires unified_shared_memory\n"
+    why: "#include <stdlib.h> and requires unified_shared_memory added (malloc/exit used; host memory dereferenced in target regions without a map; written for the MI300A APU)"
+  n_small: &n_small
+    old: "int N=1000000;"
+    new: "int N=100000;"
+    why: "N from 1000000 to 100000 (two float stack arrays of N would take 8 MB of stack)"
+  saxpy_y1d_check: &saxpy_y1d_check
+    old: "   printf(\"y[N-1] %lf\\n\",y[N-1]);\n"
+    new: "   printf(\"y[N-1] %lf\\n\",y[N-1]);\n   for (int i = 0; i < N; i++) if (y[i] != 4.0f) { printf(\"FAIL y[%d] = %f\\n\", i, y[i]); exit(1); }\n"
+    why: "check: every y[i] is 2*1+2 = 4 exactly (x = 1, y = 2, a = 2; the example's own plausibility values)"
+  saxpy_y2d_check: &saxpy_y2d_check
+    old: "   printf(\"y[N-1][M-1] %lf\\n\",y[N-1][M-1]);\n"
+    new: "   printf(\"y[N-1][M-1] %lf\\n\",y[N-1][M-1]);\n   for (int j = 0; j < N; j++) for (int i = 0; i < M; i++) if (y[j][i] != 4.0f) { printf(\"FAIL y[%d][%d] = %f\\n\", j, i, y[j][i]); exit(1); }\n"
+    why: "check: every y[j][i] is 2*1+2 = 4 exactly (x = 1, y = 2, a = 2)"
+  vecadd_check: &vecadd_check
+    old: "  printf(\"Final result: %lf\\n\",sum);\n"
+    new: "  printf(\"Final result: %lf\\n\",sum);\n  if (fabs(sum - 1.0) > 1e-9) { printf(\"FAIL sum = %.15f\\n\", sum); return 1; }\n"
+    why: "check: the mean of sin^2+cos^2 is 1 (the example's own statement), within 1e-9"
+  f_saxpy_check: &f_saxpy_check
+    old: "end subroutine saxpy\n"
+    new: "   if (any(y /= 4.0_real32)) stop 1\nend subroutine saxpy\n"
+    why: "check: every y is 2 + 2*1 = 4 exactly (x = 1, y = 2, a = 2; the example's own plausibility values); a wrong value stops with code 1"
+  f_n_small: &f_n_small
+    old: "integer,parameter :: n = 10000000"
+    new: "integer,parameter :: n = 100000"
+    why: "n from 10^7 to 10^5 (the loop runs on one device thread)"
+  f_sum_n: &f_sum_n
+    old: "        Write(*,'(A,F0.12)') \"Result: sum of x is \",sum\n"
+    new: "        Write(*,'(A,F0.12)') \"Result: sum of x is \",sum\n        if (sum /= real(N, rk)) stop 1\n"
+    why: "check: compute sets each x to 1, so the sum is N exactly"
+  f_vecadd_check: &f_vecadd_check
+    old: "    write(*,'(\"Final result: \",f10.6)') sum\n"
+    new: "    write(*,'(\"Final result: \",f10.6)') sum\n    if (abs(sum - 1.0d0) > 1.0d-9) stop 1\n"
+    why: "check: the mean of sin^2+cos^2 is 1 (the example's own statement), within 1e-9"
+  f_dtype_check: &f_dtype_check
+    old: "        write(*,*) my_instance%values(10)\n"
+    new: "        write(*,*) my_instance%values(10)\n        if (any(my_instance%values /= [(i, i=1,1024)])) stop 1\n"
+    why: "check: every values(i) is i (the kernel's assignment), not only values(10)"
+  f_mem_check: &f_mem_check
+    old: "  print \"(A, I0, A, F0.5)\", \"Last Value: z(\", n, \")=\", z(n)\n"
+    new: "  print \"(A, I0, A, F0.5)\", \"Last Value: z(\", n, \")=\", z(n)\n  if (any(z /= 7.0d0)) stop 1\n"
+    why: "check: every z = a*x + y = 3*2 + 1 = 7 exactly, not only the last"
+  f_saxpy_dealloc_check: &f_saxpy_dealloc_check
+    old: "   deallocate(x,y)\nend subroutine saxpy\n"
+    new: "   if (any(y /= 4.0_real32)) stop 1\n   deallocate(x,y)\nend subroutine saxpy\n"
+    why: "check: every y is 2 + 2*1 = 4 exactly; a wrong value stops with code 1"
+  enccs_c_check: &enccs_c_check
+    old: "  printf(\"The sum is: %8.6f \\n\", sum);\n"
+    new: "  printf(\"The sum is: %8.6f \\n\", sum);\n  double hv_ref = 0.0;\n  for (int i = 0; i < NX; i++) { if (vecC[i] != pow(r, i) * 1.0) return 1; hv_ref += pow(r, i) * 1.0; }\n  if (fabs(sum - hv_ref) > 1e-12) return 1;\n"
+    why: "check: a host recomputation of every vecC = vecA*vecB = r^i and of their sum"
+  enccs_c5_check: &enccs_c5_check
+    old: "  printf(\"The sum is: %8.6f \\n\", sum);\n"
+    new: "  printf(\"The sum is: %8.6f \\n\", sum);\n  double hv_ref = 0.0;\n  for (int i = 0; i < NX; i++) { if (vecC[i] != pow(r, i) * 1.0 + 0.5 * 2.0) return 1; hv_ref += pow(r, i) * 1.0 + 0.5 * 2.0; }\n  if (fabs(sum - hv_ref) > 1e-9) return 1;\n"
+    why: "check: a host recomputation of every vecC = r^i*1 + 0.5*2 and of their sum"
+  enccs_f_check: &enccs_f_check
+    old: "\nend program dotproduct\n"
+    new: "\n  if (any(vecC /= [(r**(i-1) * 1.0, i = 1, nx)])) stop 1\n  block\n    real :: hv_s\n    hv_s = 0.0\n    do i = 1, nx\n      hv_s = r**(i-1) * 1.0 + hv_s\n    end do\n    if (abs(sum - hv_s) > 1.0e-4) stop 2\n  end block\nend program dotproduct\n"
+    why: "check: a host recomputation of every vecC = vecA*vecB = r^(i-1), and of their sum within 1e-4 (single precision)"
+  vec_add_c_check: &vec_add_c_check
+    old: "    return 0;\n"
+    new: "    for (i = 0; i < NX; i++) if (vecC[i] != 3.0) return 1;\n    return 0;\n"
+    why: "check: every vecC = 1 + 2 = 3 (the program prints nothing)"
+  vec_add_f_check: &vec_add_f_check
+    old: "end program\n"
+    new: "  if (any(vecC /= 2.0d0)) stop 1\nend program\n"
+    why: "check: every vecC = 1 + 1 = 2 (the program prints nothing)"
+  csc_axpy_include: &csc_axpy_include
+    old: "#include \"helper_functions.F90\"\n"
+    new: ""
+    why: "the #include of helper_functions.F90 replaced by the module put first (the harness compiles a .f90 without preprocessing)"
+  csc_axpy_check: &csc_axpy_check
+    old: "  print '(A)', \"Output:\"\n  call print_array(\"y\", y)\n"
+    new: "  print '(A)', \"Output:\"\n  call print_array(\"y\", y)\n  do i = 1, n\n    frac = 1.0d0 / real(n - 1, kind=8)\n    if (abs(y(i) - (real(i - 1, kind=8) * frac * 100.0d0 + alpha * real(i - 1, kind=8) * frac)) > 1.0d-12 * 103.0d0) stop 1\n  end do\n"
+    why: "check: a host recomputation of y = y0 + alpha*x for every element, within 1e-12 relative"
+  csc_vecsum_check: &csc_vecsum_check
+    old: "    printf(\"Reduction sum: %18.16f\\n\", sum);\n"
+    new: "    printf(\"Reduction sum: %18.16f\\n\", sum);\n    for (i = 0; i < NX; i++) if (vecC[i] != vecA[i] * vecB[i]) return 1;\n"
+    why: "check: a host recomputation of every vecC = vecA*vecB (exact)"
+  triad_check_after_avg: &triad_check_after_avg
+    old: "   printf(\"Average runtime for stream triad loop is %lf secs\\n\", time_sum/ntimes);\n"
+    new: "   printf(\"Average runtime for stream triad loop is %lf secs\\n\", time_sum/ntimes);\n   for (int i=0; i<nsize; i++) if (c[i] != 7.0) { printf(\"FAIL c[%d] = %f\\n\", i, c[i]); return 1; }\n"
+    why: "check: every c = a + scalar*b = 1 + 3*2 = 7 exactly"
+  acc_triad_update_check: &acc_triad_update_check
+    old: "#pragma acc exit data delete(a[0:nsize],b[0:nsize],c[0:nsize])\n"
+    new: "#pragma acc update self(c[0:nsize])\n   for (int i=0; i<nsize; i++) if (c[i] != 7.0) { printf(\"FAIL c[%d] = %f\\n\", i, c[i]); return 1; }\n#pragma acc exit data delete(a[0:nsize],b[0:nsize],c[0:nsize])\n"
+    why: "an update self of c added before exit data so the result reaches the host, then the check: every c = 1 + 3*2 = 7"
+  lap_c_nn: &lap_c_nn
+    old: "#define NN 4096\n#define NM 4096\n"
+    new: "#define NN 256\n#define NM 256\n"
+    why: "the mesh from 4096^2 to 256^2 (the host recomputation below repeats every iteration)"
+  lap_c_check: &lap_c_check
+    old: "    double runtime = GetTimer();\n"
+    new: "    double runtime = GetTimer();\n    {\n        static double B[NN][NM], Bnew[NN][NM];\n        double err2 = 1.0;\n        int it2 = 0;\n        memset(B, 0, sizeof B);\n        memset(Bnew, 0, sizeof Bnew);\n        for (int j = 0; j < n; j++) { B[j][0] = 1.0; Bnew[j][0] = 1.0; }\n        while (err2 > tol && it2 < iter_max) {\n            err2 = 0.0;\n            for (int j = 1; j < n-1; j++)\n                for (int i = 1; i < m-1; i++) {\n                    Bnew[j][i] = 0.25 * (B[j][i+1] + B[j][i-1] + B[j-1][i] + B[j+1][i]);\n                    err2 = fmax(err2, fabs(Bnew[j][i] - B[j][i]));\n                }\n            for (int j = 1; j < n-1; j++)\n                for (int i = 1; i < m-1; i++) B[j][i] = Bnew[j][i];\n            it2++;\n        }\n        if (it2 != iter) return 1;\n        for (int j = 0; j < n; j++)\n            for (int i = 0; i < m; i++)\n                if (fabs(A[j][i] - B[j][i]) > 1e-12) return 1;\n    }\n"
+    why: "check: the same Jacobi iteration recomputed on the host (iteration count and every A within 1e-12)"
+  lap_f_n: &lap_f_n
+    old: "  integer, parameter :: n=4096, m=4096, iter_max=1000\n"
+    new: "  integer, parameter :: n=256, m=256, iter_max=1000\n"
+    why: "the mesh from 4096^2 to 256^2 (the host recomputation below repeats every iteration)"
+  lap_f_comma: &lap_f_comma
+    old: "    if(mod(iter,100).eq.0 ) write(*,'(i5,f10.6)'), iter, error\n"
+    new: "    if(mod(iter,100).eq.0 ) write(*,'(i5,f10.6)') iter, error\n"
+    why: "the comma after the write statement's control list removed (an extension)"
+  lap_f_check: &lap_f_check
+    old: "  deallocate (A,Anew)\n"
+    new: "  block\n    real(fp_kind), allocatable :: B(:,:), Bnew(:,:)\n    real(fp_kind) :: err2\n    integer :: it2\n    allocate(B(0:n-1,0:m-1), Bnew(0:n-1,0:m-1))\n    B = 0.0_fp_kind\n    Bnew = 0.0_fp_kind\n    B(0,:) = 1.0_fp_kind\n    Bnew(0,:) = 1.0_fp_kind\n    err2 = 1.0_fp_kind\n    it2 = 0\n    do while (err2 > tol .and. it2 < iter_max)\n      err2 = 0.0_fp_kind\n      do j=1,m-2\n        do i=1,n-2\n          Bnew(i,j) = 0.25_fp_kind * (B(i+1,j) + B(i-1,j) + B(i,j-1) + B(i,j+1))\n          err2 = max(err2, abs(Bnew(i,j)-B(i,j)))\n        end do\n      end do\n      it2 = it2 + 1\n      do j=1,m-2\n        do i=1,n-2\n          B(i,j) = Bnew(i,j)\n        end do\n      end do\n    end do\n    if (it2 /= iter .or. maxval(abs(A - B)) > 1.0e-12_fp_kind) stop 1\n  end block\n  deallocate (A,Anew)\n"
+    why: "check: the same Jacobi iteration recomputed on the host (iteration count and every A within 1e-12)"
+  lap_f_check_jacobi: &lap_f_check_jacobi
+    old: "  deallocate (A,Anew)\nend program jacobi\n"
+    new: "  block\n    real(fp_kind), allocatable :: B(:,:), Bnew(:,:)\n    real(fp_kind) :: err2\n    integer :: it2\n    allocate(B(0:n-1,0:m-1), Bnew(0:n-1,0:m-1))\n    B = 0.0_fp_kind\n    Bnew = 0.0_fp_kind\n    B(0,:) = 1.0_fp_kind\n    Bnew(0,:) = 1.0_fp_kind\n    err2 = 1.0_fp_kind\n    it2 = 0\n    do while (err2 > tol .and. it2 < iter_max)\n      err2 = 0.0_fp_kind\n      do j=1,m-2\n        do i=1,n-2\n          Bnew(i,j) = 0.25_fp_kind * (B(i+1,j) + B(i-1,j) + B(i,j-1) + B(i,j+1))\n          err2 = max(err2, abs(Bnew(i,j)-B(i,j)))\n        end do\n      end do\n      it2 = it2 + 1\n      do j=1,m-2\n        do i=1,n-2\n          B(i,j) = Bnew(i,j)\n        end do\n      end do\n    end do\n    if (it2 /= iter .or. maxval(abs(A - B)) > 1.0e-12_fp_kind) stop 1\n  end block\n  deallocate (A,Anew)\nend program jacobi\n"
+    why: "check: the same Jacobi iteration recomputed on the host (iteration count and every A within 1e-12)"
+  bp_saxpy_c_check: &bp_saxpy_c_check
+    old: "  printf(\"%f %f\\n\",y[0],y[N-1]);\n"
+    new: "  printf(\"%f %f\\n\",y[0],y[N-1]);\n  for (i=0; i<N; i++) if (y[i] != 2.0f * (float)(i+1)) return 1;\n"
+    why: "check: every y = 2x = 2(i+1) exactly"
+  bp_saxpy_f_check: &bp_saxpy_f_check
+    old: "  print *, y(1), y(N)\n"
+    new: "  print *, y(1), y(N)\n  do i=1,N\n    if (y(i) /= 2.0 * i) stop 1\n  end do\n"
+    why: "check: every y = 2x = 2i exactly"
+  urban_size: &urban_size
+    old: "#define WIDTH      1000\n#define HEIGHT     1000\n"
+    new: "#define WIDTH      200\n#define HEIGHT     200\n"
+    why: "the plate from 1000^2 to 200^2 (the host recomputation below repeats every iteration)"
+  urban_check: &urban_check
+    old: "    gettimeofday(&stop_time,NULL);\n"
+    new: "    {\n        static double T[HEIGHT+2][WIDTH+2], Tp[HEIGHT+2][WIDTH+2];\n        double w = 100;\n        int it = 1;\n        for (int a = 0; a <= HEIGHT+1; a++) for (int b = 0; b <= WIDTH+1; b++) Tp[a][b] = 0.0;\n        for (int a = 0; a <= HEIGHT+1; a++) { Tp[a][0] = 0.0; Tp[a][WIDTH+1] = (100.0/HEIGHT)*a; }\n        for (int b = 0; b <= WIDTH+1; b++) { Tp[0][b] = 0.0; Tp[HEIGHT+1][b] = (100.0/WIDTH)*b; }\n        while (w > TEMP_TOLERANCE) {\n            for (int a = 1; a <= HEIGHT; a++) for (int b = 1; b <= WIDTH; b++)\n                T[a][b] = 0.25 * (Tp[a+1][b] + Tp[a-1][b] + Tp[a][b+1] + Tp[a][b-1]);\n            w = 0.0;\n            for (int a = 1; a <= HEIGHT; a++) for (int b = 1; b <= WIDTH; b++) {\n                w = fmax(fabs(T[a][b] - Tp[a][b]), w);\n                Tp[a][b] = T[a][b];\n            }\n            it++;\n        }\n        if (it != iteration || w != worst_dt) return 1;\n        for (int a = 0; a <= HEIGHT+1; a++) for (int b = 0; b <= WIDTH+1; b++)\n            if (fabs(Tp[a][b] - Temperature_previous[a][b]) > 1e-12) return 1;\n    }\n    gettimeofday(&stop_time,NULL);\n"
+    why: "check: the same iteration recomputed on the host (iteration count, final maximum change and every temperature within 1e-12)"
+repos:
+  amd/HPCTrainingExamples:
+    root: corpus/apps/HPCTrainingExamples
+    license: "MIT (LICENSE.md: Copyright (c) 2022 Advanced Micro Devices, Inc.)"
+    kind: training
+    skipped:
+      Pragma_Examples/OpenMP/C/1_saxpy/0_saxpy_portyourself/saxpy.c: "an exercise with no directives (host only)"
+      Pragma_Examples/OpenMP/C/2_reduction/3_reduction_wrongmapping/reduction.c: "wrong on purpose: map(from: x) leaves the device x uninitialized and the sum reads it"
+      Pragma_Examples/OpenMP/C/3_vecadd/3_vecadd_targetdata/vecadd.c: "sum is set on the host inside target data with map(from: sum): the reduction combines the uninitialized device copy (indeterminate in copy mode)"
+      Pragma_Examples/OpenMP/C/ComplexComputeConstructs/saxpy_gpu_split.c: "a typo, '#pragma parallel for simd' (no omp): an unknown pragma that NVHPC rejects; the intended form is the split_level example"
+      Pragma_Examples/OpenMP/C/ComplexComputeConstructs/saxpy_gpu_target_teams.c: "every team's initial thread runs the whole loop: the teams' updates of y race"
+      Pragma_Examples/OpenMP/C/optimization/Allocations/3_memorypool/memorypool.c: "needs the Umpire library"
+      Pragma_Examples/OpenMP/default_gotchas/declare_target/C/solution_force_usm/declare_target_global.c: "the same source as the problem version; its fix is an LLVM flag (-fopenmp-force-usm)"
+      ManagedMemory/OpenMP_Code/openmp_code1.c: "the reduction variable sum is uninitialized (indeterminate result)"
+      atomics_openmp/arraysum5.c: "hint(AMD_fast_fp_atomics): a vendor hint, not an OpenMP sync hint"
+      atomics_openmp/arraysum6.c: "hint(AMD_fast_fp_atomics): a vendor hint"
+      atomics_openmp/arraysum7.c: "hint(AMD_safe_fp_atomics): a vendor hint"
+      atomics_openmp/arraysum8.c: "hint(AMD_fast_fp_atomics): a vendor hint"
+      atomics_openmp/arraysum9.c: "hint(AMD_fast_fp_atomics): a vendor hint"
+      atomics_openmp/arraysum10.c: "hint(AMD_safe_fp_atomics): a vendor hint"
+      Rocgdb/rocgdb_training/exercises/gpu/02_omp_offload/saxmy.c: "wrong on purpose: dereferences a null pointer on the device (a debugger exercise)"
+      Pragma_Examples/OpenMP/Fortran/6_device_routines/device_routine_with_interface/1_device_routine_wrong/device_routine.f90: "wrong on purpose: compute is not declare target in its own file"
+      Pragma_Examples/OpenMP/Fortran/ComplexComputeConstructs/saxpy_gpu_target_teams.F90: "every team's initial thread runs the whole loop: the teams' updates of y race"
+      Pragma_Examples/OpenMP/Intro/saxpy1f.F90: "a is never assigned (y depends on an undefined value)"
+      Pragma_Examples/OpenMP/Intro/saxpy2f.F90: "a is never assigned, and y(i) is read after the loop with i undefined"
+      Pragma_Examples/OpenMP/Intro/Fortran_examples/target_data_structured.F90: "a, b and c are never initialized (placeholder kernels)"
+      Pragma_Examples/OpenMP/Intro/Fortran_examples/target_data_unstructured.F90: "a, b and c are never initialized (placeholder kernels)"
+      Pragma_Examples/OpenMP/Fortran/complex_saxpy/complex_saxpy.f: "fixed-form source with a format the standard does not allow (no comma after a character edit descriptor); prints values with no documented result"
+      Pragma_Examples/OpenMP/Fortran/7_derived_types/.future_features/dtype_mapper.f: "a future-features draft"
+      Pragma_Examples/OpenMP/Fortran/8_jacobi: "a multi-file application (modules in eight files) with no documented result"
+      Pragma_Examples/OpenMP/Fortran/9_interop/driver.f90: "HIP interop (a HIP kernel file)"
+      Pragma_Examples/OpenMP/Fortran/GPU_Aware_MPI/test_gpu_aware_mpi.f90: "needs MPI"
+      Pragma_Examples/OpenMP/Fortran/optimization/Allocations/3_memorypool/memorypool.f90: "needs a memory-pool module (hipfort)"
+      Pragma_Examples/OpenMP/Fortran/SingleLineConstructs/saxpy_gpu_do_concurrent_device.F90: "do concurrent offload by a compiler flag, not OpenMP"
+      Pragma_Examples/OpenMP/default_gotchas/declare_target/Fortran/solution_force_usm/declare_target_module.f90: "its fix is an LLVM flag (-fopenmp-force-usm)"
+      HIP-OpenMP: "HIP interop"
+      HIPFort: "hipfort interop"
+      Omniperf-OpenMP/Fortran/1_collapse: "a 512^3 red-black stencil with no documented result (profiling exercise)"
+      rocprof-compute/OpenMP/Fortran/1_collapse: "the same profiling exercise"
+      Rocprofv3/OpenMP/Allocations_and_MemoryPool_MI300A: "profiling exercises with roctx markers and a memory pool"
+  ENCCS/openmp-gpu:
+    root: git/ENCCS__openmp-gpu
+    license: "CC-BY-4.0 (repository license; the exercise files say Copyright (c) 2019 CSC Training, (c) 2021 ENCCS)"
+    kind: training
+    skipped:
+      content/exercise/ex00: "prints where the region ran (team and thread counts are implementation-defined); no result to check"
+      content/exercise/ex03: "prints team and thread counts only (implementation-defined)"
+      content/exercise/ex06: "no output: a placeholder for check points"
+      content/exercise/ex02/ex02.c: "the exercise before its solution (same code as ex01's solution)"
+      content/exercise/data_mapping: "the heat-equation exercise: multi-file (modules heat, io, ...) with no documented result"
+      content/exercise/solution/offloading: "the heat-equation exercise: multi-file with no documented result"
+      content/examples/v4.5.0: "copies of OpenMP Examples 4.5 fragments (no main)"
+      content/syntax: "syntax fragments"
+  ENCCS/gpu-programming:
+    root: git/ENCCS__gpu-programming
+    license: "CC-BY-4.0 (repository license)"
+    kind: training
+    skipped:
+      content/examples/exercise_clacc/openACC_code.c: "two 2000x2000 float stack arrays (32 MB of stack) and a random-data Jacobi with no documented result"
+      content/examples/exercise_multipleGPU: "needs MPI"
+      content/examples/mpi_acc: "needs MPI"
+      content/examples/mpi_omp: "needs MPI"
+  csc-training/summerschool:
+    root: git/csc-training__summerschool
+    license: "MIT (COPYING: code samples MIT; the files carry SPDX MIT lines)"
+    kind: training
+    skipped:
+      gpu/exercises/07a-omp-hello: "prints where it ran only"
+      gpu/exercises/07b-omp-axpy/solution/axpy-full.F90: "frac is assigned in every iteration of a target teams distribute parallel do without a private clause (a data race)"
+      gpu/exercises/07b-omp-axpy/solution/axpy-full-unstructured.F90: "the same race on frac"
+      gpu/exercises/07e-omp-device-functions: "the same race on frac in its initialization kernel"
+      gpu/exercises/07d-omp-hip-interop: "HIP interop"
+      gpu/exercises/07f-omp-poisson: "writes binary files; no documented result"
+      gpu/exercises/07g-omp-heat-equation: "multi-file application with PNG output"
+  csc-training/openacc:
+    root: git/csc-training__openacc
+    license: "MIT (repository license)"
+    kind: training
+    skipped:
+      exercises/vector-sum/solution/ftn: "declares a variable sum and then calls the SUM intrinsic (does not compile); sum_parallel.F90 also closes parallel with end parallel loop"
+      exercises/doubleloop/solution/c/doubleloop.c: "double** arrays in compute constructs without data clauses (needs managed memory)"
+      exercises/doubleloop/solution/ftn/doubleloop.F90: "prints a sum with no documented value"
+      exercises/jacobi: "iterates to a tolerance with no documented result"
+      exercises/curand: "cuRAND interop"
+      exercises/heat: "multi-file application"
+      nvidia-labs/lab3: "modules without a main in the same file (main.F90 drives them); no documented result"
+      nvidia-labs/lab4.pipelining: "a 16384^2 Mandelbrot image written to a file; a host recheck would be floating-point sensitive (escape counts)"
+  essentialsofparallelcomputing/Chapter11:
+    root: git/essentialsofparallelcomputing__Chapter11
+    license: "Apache-2.0 (repository license; the code of Robey and Zamora, Parallel and High Performance Computing, ch. 11)"
+    kind: training
+    skipped:
+      OpenMP/StreamTriad/StreamTriad_par3.c: "c is mapped to only: the result never reaches the host"
+      OpenMP/StreamTriad/StreamTriad_par5.c: "CUDA allocation"
+      OpenMP/StreamTriad/StreamTriad_par6.c: "omp_target_alloc arrays only: the result never reaches the host"
+      OpenMP/StreamTriad/StreamTriad_par7.c: "exit data map(delete): the result never reaches the host"
+      OpenMP/StreamTriad/StreamTriad_par8.c: "does not compile (unbalanced parentheses in malloc calls)"
+      OpenMP/StreamTriad/ShallowWater_par1.c: "a copy of the OpenACC shallow-water code (multi-file)"
+      OpenMP/Stencil: "a 2002^2 stencil over 1000 iterations with no documented result (a host recheck needs the same 4e9 updates)"
+      OpenACC/Stencil: "the same stencil with no documented result"
+      OpenACC/StreamTriad/StreamTriad_par1.c: "malloc'd arrays in compute constructs without data clauses (relies on managed memory)"
+      OpenACC/StreamTriad/StreamTriad_kern1.c: "malloc'd arrays without data clauses (relies on managed memory)"
+      OpenACC/StreamTriad/StreamTriad_kern2.c: "malloc'd arrays without data clauses (relies on managed memory)"
+      OpenACC/StreamTriad/StreamTriad_par4.c: "acc_malloc and deviceptr only: the result never reaches the host"
+      OpenACC/ShallowWater: "multi-file, long-running; its mass-conservation check prints but does not stop"
+  PrincetonUniversity/hpc_beginning_workshop:
+    root: git/PrincetonUniversity__hpc_beginning_workshop
+    license: "MIT (LICENSE: Copyright (c) 2017 Trustees of Princeton University); laplace2d.f90 carries NVIDIA's Apache-2.0 notice"
+    kind: training
+    skipped:
+      c/gpu/openmp/laplace2d.c: "map(to: A[0:NN*NM]) on a two-dimensional array: the section exceeds the first dimension"
+      openacc/c/laplace2d.c: "error = fmax(...) in a parallel loop without a reduction clause (a race)"
+      c/gpu/openmp/hello_world_omp.c: "prints only"
+  jeffhammond/HPCInfo:
+    root: git/jeffhammond__HPCInfo
+    license: "MIT (repository license)"
+    kind: training
+    skipped:
+      openmp/offload/test_memory_model.c: "the host task and the device copy of x race (map tofrom of x while another task updates it)"
+      openmp/offload/test_vadd.c: "Cilk and the Intel GFX runtime"
+      openmp/offload/test_vadd_4.c: "Cilk"
+      openmp/offload/test_syscall.c: "sched_yield in a target region (a system call on the device)"
+      openmp/reduction.c: "does not compile (a missing semicolon)"
+      openmp/slm.c: "prints implementation-defined team and thread counts"
+      openmp/spmd.c: "prints implementation-defined team and thread numbers"
+      openmp/ttl.c: "prints implementation-defined values"
+      fortran/complex128.F90: "the result is the implementation-defined number of threads times (1,1)"
+      bugs/cray-openmp: "nstream benchmarks needing PRK headers (prk_mod)"
+      fortran/atomic.F: "fixed form"
+      fortran/isnan.F: "fixed form"
+      mpi/da.F90: "needs MPI"
+  OpenACC/openacc-examples:
+    root: git/OpenACC__openacc-examples
+    license: "BSD-3-Clause (LICENSE: Copyright (c) 2022, OpenACC CORPORATION)"
+    kind: examples
+    skipped:
+      Submissions/C/Atomic/atomic.c: "C++ (iostream)"
+      Submissions/C_C++/atomic/atomic.c: "the stores to readSum/writeSum/captureSum race (only the read of x is atomic): no defined result"
+      Submissions/C/Copy/copy.c: "does not compile (line numbers outside the header comment)"
+      Submissions/C/Copy/copyin_copyout.c: "does not compile (line numbers outside the header comment)"
+      Submissions/C/Enter_Exit/enterData_exitData.c: "does not compile (line numbers outside the header comment)"
+      Submissions/C/Parallel_Loop/parallel_loop_implicitDeclaration.c: "does not compile (line numbers outside the header comment)"
+      Submissions/C/Device_Type/device_type.c: "needs the OpenACCV-V acc_testsuite.h header"
+      Submissions/C/Independent_Clause/independentClause.c: "'#pragma loop' is not an OpenACC directive: every gang runs the loop and the updates of Data2 race"
+      Submissions/C_C++/independentClause.c: "the same program"
+      Submissions/C/Parallel_Loop/parallel_loop.c: "no main (a fragment)"
+      Submissions/C/Reduction/nested_reduction.c: "no main (a fragment)"
+      Submissions/C/Cholesky_Decomp/cholesky_decomposition.c: "prints a factorization of random data with no check"
+      Submissions/Fortran/matrix_transpose_cache_tile_7a35bbe4f2464f50a4da8ecca732534b/driver.F90: "parallel loop constructs closed by end parallel (mismatched end directives)"
+  OpenACC/openacc-best-practices-guide:
+    root: git/OpenACC__openacc-best-practices-guide
+    license: "Apache-2.0 (repository license; the laplace files carry NVIDIA's Apache-2.0 notice)"
+    kind: training
+    skipped:
+      examples/mandelbrot: "a Mandelbrot image written to a file; a host recheck would be floating-point sensitive"
+      examples/laplace/ch2: "serial versions (no directives)"
+  OpenACC/openacc-training-materials:
+    root: git/OpenACC__openacc-training-materials
+    license: "Apache-2.0 (repository license; the lab files carry NVIDIA's Apache-2.0 notice)"
+    kind: training
+    skipped:
+      labs/module6/English/Fortran/solutions/parallel: "error = max(...) in a parallel loop without a reduction clause: error is firstprivate, so the loop stops after one iteration (fixed in the reduction solution)"
+      labs/module6/English/Fortran/solutions/collapse/parallel: "the same missing reduction on error"
+      labs/module6/English/Fortran/solutions/tile/parallel: "the same missing reduction on error"
+      labs/module6/English/Fortran/solutions/gang_worker_vector/parallel: "the same missing reduction on error"
+      labs/module4: "the same missing reduction on error"
+      labs/module5: "the same missing reduction on error (and the update solution's directive is commented out)"
+      indevelopment/module8: "cuBLAS and host_data interop with CUDA"
+  oneapi-src/oneAPI-samples:
+    root: git/oneapi-src__oneAPI-samples
+    license: "MIT (repository license; the files carry SPDX MIT lines, Copyright Intel Corporation)"
+    kind: training
+    skipped:
+      DirectProgramming/Fortran/Jupyter/OpenMP-offload-training/USM/main.f90: "omp_target_shared_mem_alloc, an Intel allocator extension"
+      DirectProgramming/Fortran/EdgeDetection: "image files as input"
+      DirectProgramming/Fortran/guided_matrix_mul_OpenMP: "a performance sample with no check"
+      DirectProgramming/Fortran/Jupyter/OpenMP-offload-training/parallelism: "the solution's blocks of NUM_BLOCKS = 9 run past ARRAY_SIZE = 256 (out-of-bounds y(i) for i > 256)"
+  hoshino-UTokyo/lecture_fortran2gpu:
+    root: git/hoshino-UTokyo__lecture_fortran2gpu
+    license: "MIT"
+    kind: training
+    skipped:
+      OpenMP_GPU/SmallSamples: "daxpy's y is intent(out) and read (undefined on entry); the reduction samples leave sum firstprivate on a separate target construct, so the result never reaches the host; n = 1e9 doubles"
+      OpenACC/SmallSamples: "the same intent(out) misuse"
+      OpenMP_GPU/Diffusion: "a diffusion benchmark printing timings and an error norm with no documented value"
+      OpenACC/Diffusion: "the same benchmark"
+      Matmul: "BLAS or benchmark timings"
+  kazuya-yamazaki/lecture_fortran2gpu:
+    root: git/kazuya-yamazaki__lecture_fortran2gpu
+    license: "MIT"
+    kind: training
+    skipped:
+      .: "a variant of hoshino-UTokyo/lecture_fortran2gpu with the same samples"
+  OpenACCUserGroup/openacc_concept_strategies_book:
+    root: git/OpenACCUserGroup__openacc_concept_strategies_book
+    license: "CC-BY-SA-4.0 (LICENSE.md: share-alike; kept with the copyleft programs)"
+    kind: training
+    copyleft: true
+    skipped:
+      Code_Examples/Chapter_02: "the Mandelbrot area over 4000^2 points with 4000 iterations: no documented value, a host recheck is floating-point sensitive"
+      Code_Examples/Chapter_03: "Game of Life on random data with no documented result"
+      Code_Examples/Chapter_04/laplace_bad_acc.f90: "a Fortran copy of the C program with no documented result (the C versions are kept)"
+      Code_Examples/Chapter_04/laplace_final_acc.f90: "a Fortran copy of the C program with no documented result (the C versions are kept)"
+      Code_Examples/Chapter_09: "CUDA interop"
+      Code_Examples/Chapter_11-Section_2/ch-11.2-mm: "the scalar c is shared by the vector lanes without a private clause; the integer-division initialization makes A and B mostly zero"
+      Code_Examples/Chapter_11-Section_2/ch-11.2-laplacian: "benchmark kernels with no documented result"
+      Code_Examples/Chapter_12-Section_1: "FFT benchmark with no documented result"
+      Code_Examples/Chapter_12-Section_2: "Himeno and NPB-CG benchmarks (NPB-CG verifies itself but is 1300+ lines across classes; not converted in this pass)"
+  ANL-CESAR/XSBench:
+    root: git/ANL-CESAR__XSBench
+    license: "MIT (LICENSE: Copyright (c) 2012-2021 Argonne National Laboratory)"
+    kind: application
+    skipped:
+      openmp-threading: "host only"
+      cuda: "CUDA"
+      hip: "HIP"
+      sycl: "SYCL (C++)"
+      opencl: "OpenCL"
+  ANL-CESAR/RSBench:
+    root: git/ANL-CESAR__RSBench
+    license: "MIT (LICENSE: Copyright (c) 2013-2021 Argonne National Laboratory)"
+    kind: application
+    skipped:
+      openmp-threading: "host only"
+      cuda: "CUDA"
+      hip: "HIP"
+      sycl: "SYCL (C++)"
+      opencl: "OpenCL"
+  llnl/FGPU:
+    root: git/llnl__FGPU
+    license: "BSD-3-Clause (LICENSE: Copyright (c) 2019, Lawrence Livermore National Security, LLC)"
+    kind: reproducer
+    skipped:
+      openmp/target_map/pointer_alias/ptr_to_data.f03: "maps and unmaps through a pointer alias only: no data flow to check"
+      openmp/target_map/pointer_in_function/ptr_to_data.f03: "maps and unmaps only: no data flow to check"
+      openmp/target_map/arrays_of_structs/testmap.f03: "needs two module files and conditional compilation (!$ lines); prints only"
+      openmp/target_map/derived_types/main.f: "multi-file with type-bound procedures in other files; prints only"
+      openmp/use_device_ptr/main.f90: "calls a CUDA Fortran kernel"
+      openmp/write/write.f03: "device output only (nothing on the host to check)"
+      openmp/target_map/function_pointers/map_array_of_function_pointers.F90: "a target data construct inside a target region (Eval_Fun called in the kernel), not allowed"
+      openmp/partially_supported_constructs/workshare/workshare_example.f90: "workshare (host construct), no device code to check"
+      openmp/runtime_error_reporting: "erroneous on purpose (runtime error reporting demonstrations)"
+      mpi: "needs MPI"
+      cuda: "CUDA interop"
+      test_cases/ibm_power_platform_xl_compiler/declare_target/declare_target.1.f90: "incomplete (N undefined, fib empty)"
+      test_cases/ibm_power_platform_xl_compiler/declare_target/declare_target.2.f90: "CUDA Fortran managed memory"
+      test_cases/ibm_power_platform_xl_compiler/first_private_clause_not_working/mc.f90: "mu is never computed (the kernel body is commented out)"
+      test_cases/ibm_power_platform_xl_compiler/omp_parallel: "results stay on the device (printed there only)"
+      test_cases/ibm_power_platform_xl_compiler/segfault_on_free_of_pinned_memory/pinned.F90: "CUDA pinned memory"
+      test_cases/ibm_power_platform_xl_compiler/segfault_on_free_of_pinned_memory/pinned_ptr.F90: "CUDA pinned memory"
+      test_cases/ibm_power_platform_xl_compiler/segfault_on_free_of_pinned_memory/pinned_register_ptr.F90: "CUDA host registration"
+      test_cases/ibm_power_platform_xl_compiler/segfault_on_free_of_pinned_memory/not_pinned_ptr.F90: "CUDA Fortran"
+      test_cases/ibm_power_platform_xl_compiler/target_map/map_derived_type: "multi-file; target update to copies pointer components whose values were never set (prints only)"
+      test_cases/ibm_power_platform_xl_compiler/target_map/openmp_website_cases: "'!$omp data' is no OpenMP directive, unbalanced end target; the others use CUDA pinned memory"
+      test_cases/ibm_power_platform_xl_compiler/target_map/target_unstructured_data/Example_target_unstructured_data.1a.f90: "identical to array_property_issues/Example_array_issues.1b.f90"
+      test_cases/ibm_power_platform_xl_compiler/target_map/target_unstructured_data: "1b-1f and foo.f90: drafts (the device routine called from the host, out-of-bounds dt_arr(2), unbalanced target data in loops)"
+      test_cases/ibm_power_platform_xl_compiler/unified_memory_failure: "CUDA Fortran managed memory"
+programs:
+  - {id: h2-amd-c-saxpy-omptargetparallelfor, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/1_saxpy/2_saxpy_omptargetparallelfor/saxpy.c, modes: [unified],
+     edits: [*stdlib, *n_small, *saxpy_y1d_check], why: "y = a*x + y with x = 1, y = 2, a = 2 is 4 everywhere"}
+  - {id: h2-amd-c-saxpy-nousm, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/1_saxpy/4_saxpy_nousm/saxpy.c,
+     edits: [*stdlib, *n_small, *saxpy_y1d_check], why: "y = a*x + y with x = 1, y = 2, a = 2 is 4 everywhere (stack arrays, implicitly mapped tofrom)"}
+  - {id: h2-amd-c-saxpy-targetdata, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/1_saxpy/6_saxpy_targetdata/saxpy.c,
+     edits: [*stdlib, *saxpy_y1d_check], why: "y = a*x + y with x = 1, y = 2, a = 2 is 4 everywhere, after target update from"}
+  - {id: h2-amd-c-saxpy-numteams, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/1_saxpy/7_saxpy_numteams/saxpy.c,
+     edits: [*stdlib, *saxpy_y1d_check], why: "y = a*x + y with x = 1, y = 2, a = 2 is 4 everywhere, after target update from"}
+  - id: h2-amd-c-reduction-usm
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/2_reduction/1_reduction_solution_usm/reduction.c
+    modes: [unified]
+    edits:
+      - *stdlib
+      - {old: "   printf(\"Sum=%lf\\n\",sum);\n", new: "   printf(\"Sum=%lf\\n\",sum);\n   if (sum != 2.0*n) { printf(\"FAIL\\n\"); return 1; }\n", why: "check: the sum of n values 2.0 is 2n exactly"}
+    why: "sum of n = 100000 values 2.0 is 200000 exactly"
+  - {id: h2-amd-c-vecadd-map, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/3_vecadd/2_vecadd_map/vecadd.c,
+     edits: [*vecadd_check], why: "mean of sin^2(i)+cos^2(i) is 1"}
+  - {id: h2-amd-c-vecadd-async-usm, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/3_vecadd/4_vecadd_async_usm/vecadd.c, modes: [unified],
+     edits: [*vecadd_check], why: "mean of sin^2(i)+cos^2(i) is 1 (nowait kernels ordered by depend, then taskwait)"}
+  - id: h2-amd-c-reduction-scalars
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/4_reduction_scalars/1_reduction_scalars/reduction_scalar.c
+    edits:
+      - {old: "   printf(\"ce1 = %lf ce2 %lf\\n\", ce1, ce2);\n", new: "   printf(\"ce1 = %lf ce2 %lf\\n\", ce1, ce2);\n   if (ce1 != 1000.0 || ce2 != 1000.0) return 1;\n", why: "check: both sums of 1000 ones are 1000"}
+    why: "two scalar reductions over 1000 iterations of += 1.0"
+  - id: h2-amd-c-reduction-array
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/5_reduction_array/1_reduction_array/reduction_array.c
+    edits:
+      - {old: "   printf(\"ce[0] = %lf ce[1] = %lf\\n\", ce[0], ce[1]);\n", new: "   printf(\"ce[0] = %lf ce[1] = %lf\\n\", ce[0], ce[1]);\n   if (ce[0] != 1000.0 || ce[1] != 1000.0) return 1;\n", why: "check: both elements are 1000"}
+    why: "an array-section reduction over 1000 iterations of += 1.0 per element"
+  - id: h2-amd-c-device-routine-map
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/6_device_routines/1_device_routine/2_device_routine_map/device_routine.c
+    append: [Pragma_Examples/OpenMP/C/6_device_routines/1_device_routine/2_device_routine_map/compute.c]
+    edits:
+      - {old: "   printf(\"Result: sum of x is %lf\\n\",sum);\n", new: "   printf(\"Result: sum of x is %lf\\n\",sum);\n   if (sum != (double)N) return 1;\n", why: "check: compute sets each x to 1, so the sum is N"}
+    why: "a declare target routine sets each of N = 1000 elements to 1; the sum is 1000"
+  - id: h2-amd-c-device-routine-dynglobaldata
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/6_device_routines/3_device_routine_wdynglobaldata/1_device_routine_wdynglobaldata/device_routine.c
+    append: [Pragma_Examples/OpenMP/C/6_device_routines/3_device_routine_wdynglobaldata/1_device_routine_wdynglobaldata/compute.c,
+             Pragma_Examples/OpenMP/C/6_device_routines/3_device_routine_wdynglobaldata/1_device_routine_wdynglobaldata/global_data.c]
+    edits:
+      - {old: "   printf(\"Result: sum of x is %lf\\n\",sum);\n", new: "   printf(\"Result: sum of x is %lf\\n\",sum);\n   if (sum != 5500.0) return 1;\n", why: "check: x[k] = 1 + constants[k%10] = 1 + k%10, so the sum over 1000 k is 5500"}
+    why: "a declare target pointer attached to an entered array; the sum is 5500"
+  - id: h2-amd-c-atomic
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/Atomics/atomic.c
+    modes: [unified]
+    edits:
+      - {old: "  printf(\"   Atomic result: %lf Runtime is: %lf secs\\n\", sum, omp_get_wtime()-tstart);\n", new: "  printf(\"   Atomic result: %lf Runtime is: %lf secs\\n\", sum, omp_get_wtime()-tstart);\n  if (sum != (double)N) return 1;\n", why: "check: the atomic sum of N ones is N"}
+      - {old: "  printf(\"Reduction result: %lf Runtime is: %lf secs\\n\", sum, omp_get_wtime()-tstart);\n", new: "  printf(\"Reduction result: %lf Runtime is: %lf secs\\n\", sum, omp_get_wtime()-tstart);\n  if (sum != (double)N) return 1;\n", why: "check: the reduction sum of N ones is N"}
+    why: "atomic and reduction sums of N = 100000 ones are N"
+  - id: h2-amd-c-buildexample
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/BuildExamples/openmp_code.c
+    modes: [unified]
+    edits:
+      - {old: "   printf(\"Result is %lf\\n\",sum);\n", new: "   printf(\"Result is %lf\\n\",sum);\n   if (sum != 2.0*M) return 1;\n", why: "check: the sum of M values 2.0 is 2M"}
+    why: "out = 2*in with in = 1; the sum of M = 100000 values is 200000"
+  - {id: h2-amd-c-ccc-collapse, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/ComplexComputeConstructs/saxpy_gpu_collapse.c, modes: [unified],
+     edits: [*usm_c, *saxpy_y2d_check], why: "y = y + a*x with x = 1, y = 2, a = 2 is 4 in every element"}
+  - {id: h2-amd-c-ccc-split-level, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/ComplexComputeConstructs/saxpy_gpu_split_level.c, modes: [unified],
+     edits: [*usm_c, *saxpy_y2d_check], why: "y = y + a*x with x = 1, y = 2, a = 2 is 4 in every element"}
+  - {id: h2-amd-c-ccc-target, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/ComplexComputeConstructs/saxpy_gpu_target.c, modes: [unified],
+     edits: [*stdlib_usm_c, {old: "int N=10000000;", new: "int N=100000;", why: "N from 10^7 to 10^5 (the loop runs on one device thread)"}, *saxpy_y1d_check],
+     why: "y = y + a*x with x = 1, y = 2, a = 2 is 4 everywhere"}
+  - {id: h2-amd-c-ccc-target-parallel-for, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/ComplexComputeConstructs/saxpy_gpu_target_parallel_for.c, modes: [unified],
+     edits: [*stdlib_usm_c, *saxpy_y1d_check], why: "y = y + a*x with x = 1, y = 2, a = 2 is 4 everywhere"}
+  - {id: h2-amd-c-slc-parallelfor, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/SingleLineConstructs/saxpy_gpu_parallelfor.c, modes: [unified],
+     edits: [*stdlib_usm_c, *saxpy_y1d_check], why: "y = y + a*x with x = 1, y = 2, a = 2 is 4 everywhere"}
+  - {id: h2-amd-c-slc-singleunit-dynamic, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/C/SingleLineConstructs/saxpy_gpu_singleunit_dynamic.c, modes: [unified],
+     edits: [*stdlib_usm_c, *saxpy_y1d_check], why: "y = y + a*x with x = 1, y = 2, a = 2 is 4 everywhere"}
+  - id: h2-amd-c-nowait
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/C/Nowait/nowait.c
+    edits:
+      - {old: "   printf(\"(every c[i] should be 1.0: sin^2 + cos^2 = 1)\\n\");\n", new: "   printf(\"(every c[i] should be 1.0: sin^2 + cos^2 = 1)\\n\");\n   for (int i = 0; i < N; i++) if (fabs(c[i] - 1.0) > 1e-12) { printf(\"FAIL c[%d] = %.17f\\n\", i, c[i]); return 1; }\n", why: "check: every c[i] = sin^2 + cos^2 is 1 within 1e-12 (the example's own statement)"}
+    why: "three nowait target tasks ordered by depend; c = a + b = 1 everywhere"
+  - id: h2-amd-c-gotcha-map-always
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/default_gotchas/declare_target/C/solution_map_always/declare_target_global.c
+    checks: ["CHECK: array[0] = 2.000000", "CHECK: array[0] = 4.000000"]
+    why: "the example's documented output (map(always, ...) forces both transfers)"
+  - {id: h2-amd-c-arraysum1, repo: amd/HPCTrainingExamples, path: atomics_openmp/arraysum1.c, checks: ["CHECK: Test PASSED"], why: "the program's own element check (a = 0 + b = 1) prints Test PASSED"}
+  - {id: h2-amd-c-arraysum2, repo: amd/HPCTrainingExamples, path: atomics_openmp/arraysum2.c, modes: [unified], checks: ["CHECK: Test PASSED"], why: "the program's own element check prints Test PASSED (unified shared memory, no map)"}
+  - {id: h2-amd-c-arraysum3, repo: amd/HPCTrainingExamples, path: atomics_openmp/arraysum3.c, modes: [unified], checks: ["CHECK: Test PASSED"], why: "the program's own element check prints Test PASSED (unified shared memory with maps)"}
+  - {id: h2-amd-c-arraysum4, repo: amd/HPCTrainingExamples, path: atomics_openmp/arraysum4.c, modes: [unified], checks: ["CHECK: Test PASSED"], why: "the program's own check (every a = 2) prints Test PASSED"}
+  - {id: h2-amd-c-saxmy-fixed, repo: amd/HPCTrainingExamples, path: Rocgdb/rocgdb_training/exercises/gpu/02_omp_offload/saxmy_fixed.c,
+     checks: ["CHECK: y[0] = 4.000000 y[255] = 4.000000"], why: "the example's documented result: with a=2, x=1, y=2 the result is y=4.0"}
+  - {id: h2-amd-f-saxpy-omptarget, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/1_saxpy/1_saxpy_omptarget/saxpy.F90, modes: [unified],
+     edits: [*f_n_small, *f_saxpy_check], why: "y = a*x + y with x = 1, y = 2, a = 2 is 4 everywhere"}
+  - {id: h2-amd-f-saxpy-omptargetparalleldo, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/1_saxpy/2_saxpy_omptargetparalleldo/saxpy.F90, modes: [unified],
+     edits: [*f_saxpy_check], why: "y = a*x + y with x = 1, y = 2, a = 2 is 4 everywhere"}
+  - {id: h2-amd-f-saxpy-nousm, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/1_saxpy/4_saxpy_nousm/saxpy.F90,
+     edits: [*f_saxpy_check], why: "y = a*x + y with x = 1, y = 2, a = 2 is 4 everywhere (allocatable dummies, implicitly mapped)"}
+  - {id: h2-amd-f-saxpy-targetdata, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/1_saxpy/6_saxpy_targetdata/saxpy.F90,
+     edits: [*f_saxpy_check], why: "y = a*x + y is 4 everywhere after target update from(y)"}
+  - id: h2-amd-f-reduction-usm
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/2_reduction/1_reduction_solution_usm/freduce.F
+    modes: [unified]
+    edits:
+      - {old: "        deallocate(array, buffer)\n", new: "        if (any(buffer /= 1010.0d0)) stop 1\n        deallocate(array, buffer)\n", why: "check: each buffer(i) = 1000 + (sum of ten ones) = 1010"}
+    why: "a reduction over ten ones inside a host loop; buffer(i) = 1010 (the .F file is free-form text and is compiled as free form)"
+  - {id: h2-amd-f-vecadd-usm, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/3_vecadd/1_vecadd_usm/vecadd.f90, modes: [unified],
+     edits: [*f_vecadd_check], why: "mean of sin^2(i)+cos^2(i) is 1"}
+  - {id: h2-amd-f-vecadd-map, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/3_vecadd/2_vecadd_map/vecadd.f90,
+     edits: [*f_vecadd_check], why: "mean of sin^2(i)+cos^2(i) is 1"}
+  - {id: h2-amd-f-vecadd-targetdata, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/3_vecadd/3_vecadd_targetdata/vecadd.f90,
+     edits: [*f_vecadd_check], why: "mean of sin^2(i)+cos^2(i) is 1 (arrays entered once, kernels use the present copies)"}
+  - id: h2-amd-f-reduction-scalars
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/4_reduction_scalars/1_reduction_scalar_solution/reduction_scalar.F
+    edits:
+      - {old: "      write(*,'(a,\" \",f14.8,\" \",a,f14.8)') \"ce1 = \", ce1, \"ce2 = \", ce2\n", new: "      write(*,'(a,\" \",f14.8,\" \",a,f14.8)') \"ce1 = \", ce1, \"ce2 = \", ce2\n      if (ce1 /= 1000.0d0 .or. ce2 /= 1000.0d0) stop 1\n", why: "check: both sums of 1000 ones are 1000"}
+    why: "two scalar reductions over 1000 iterations of + 1"
+  - id: h2-amd-f-reduction-array
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/5_reduction_array/1_reduction_array_solution/reduction_array.F
+    edits:
+      - {old: "             &\"  ce(2) = \",f17.12)') ce(1), ce(2)\n\n#ifdef FUTURE\n", new: "             &\"  ce(2) = \",f17.12)') ce(1), ce(2)\n    if (ce(1) /= 1000.0_real8 .or. ce(2) /= 1000.0_real8) stop 1\n\n#ifdef FUTURE\n", why: "check: both elements of the whole-array reduction are 1000"}
+    why: "a whole-array reduction (the default build: the -DFUTURE forms are left out, as upstream builds it)"
+  - id: h2-amd-f-device-routine-map
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/6_device_routines/device_routine_with_interface/3_device_routine_map/device_routine.f90
+    append: [Pragma_Examples/OpenMP/Fortran/6_device_routines/device_routine_with_interface/3_device_routine_map/compute.f90]
+    modes: [unified]
+    edits: [*f_sum_n]
+    why: "an external declare target routine sets each value to 1; the sum is 1000 (the main program requires unified_shared_memory)"
+  - id: h2-amd-f-device-routine-device-type
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/6_device_routines/device_routine_with_interface/4_device_routine_device_type/device_routine.f90
+    append: [Pragma_Examples/OpenMP/Fortran/6_device_routines/device_routine_with_interface/4_device_routine_device_type/compute.f90]
+    modes: [unified]
+    edits: [*f_sum_n]
+    why: "a device_type(nohost) routine sets each value to 1; the sum is 1000"
+  - id: h2-amd-f-device-routine-module-usm
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/6_device_routines/device_routine_with_module/2_device_routine_with_module_usm/device_routine.f90
+    prepend: [Pragma_Examples/OpenMP/Fortran/6_device_routines/device_routine_with_module/2_device_routine_with_module_usm/computemod.f90]
+    modes: [unified]
+    edits: [*f_sum_n]
+    why: "a module declare target routine under unified shared memory; the sum is 1000"
+  - {id: h2-amd-f-dtype-map, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/7_derived_types/dtype_derived_type.f,
+     edits: [*f_dtype_check], why: "map(tofrom) of a derived type maps its allocatable component (OpenMP 5.2 §5.8.3); values(i) = i"}
+  - {id: h2-amd-f-dtype-automap, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/7_derived_types/dtype_derived_type_automap.f,
+     edits: [*f_dtype_check], why: "the derived type is implicitly mapped tofrom with its allocatable component; values(i) = i"}
+  - {id: h2-amd-f-dtype-usm, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/7_derived_types/dtype_derived_type_usm.f, modes: [unified],
+     edits: [*f_dtype_check], why: "values(i) = i under unified shared memory"}
+  - {id: h2-amd-f-dtype-pointer, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/7_derived_types/dtype_pointer.f,
+     edits: [*f_dtype_check], why: "a pointer to an entered allocatable component, written on the device and copied back by exit data; values(i) = i"}
+  - {id: h2-amd-f-dtype-scalar-members, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/7_derived_types/dtype_scalar_members.f,
+     edits: [*f_dtype_check], why: "loop bounds from the entered derived type's scalar members; values(i) = i"}
+  - {id: h2-amd-f-atomic, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/Atomic/atomic.F, modes: [unified],
+     checks: ["CHECK-NOT: FAIL", "CHECK: PASS"], why: "the program's own check: the atomic and the reduction sums agree"}
+  - {id: h2-amd-f-atomic-multiterm, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/Atomic/atomic_multiterm.F, modes: [unified],
+     checks: ["CHECK-NOT: FAIL", "CHECK: PASS"], why: "the program's own check: the atomic sum of a + b over N is 3N"}
+  - id: h2-amd-f-common-blocks-always
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/Common_blocks_on_device/solution/common_blocks.f90
+    checks: ["CHECK: First element: 2.", "CHECK: Last element: 2.", "CHECK: First element: 4.", "CHECK: Last element: 4."]
+    why: "a declare target common block entered and exited with always: doubled on the device (2), then on the host (4)"
+  - id: h2-amd-f-teams-endloop
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/teams_endloop/teams_endloop.f
+    edits:
+      - {old: "        print *,\"Success\"\n", new: "        if (any(mydata /= [(i, i=1,1024)])) stop 1\n        print *,\"Success\"\n", why: "check: every mydata(i) is i"}
+    why: "target teams loop with its end directive; mydata(i) = i"
+  - {id: h2-amd-f-ccc-collapse, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/ComplexComputeConstructs/saxpy_gpu_collapse.F90,
+     edits: [*f_saxpy_check], why: "y = y + a*x with x = 1, y = 2, a = 2 is 4 everywhere (assumed-shape dummies, implicitly mapped)"}
+  - {id: h2-amd-f-ccc-parallel-do, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/ComplexComputeConstructs/saxpy_gpu_parallel_do.F90,
+     edits: [*f_saxpy_check], why: "y = y + a*x is 4 everywhere"}
+  - {id: h2-amd-f-ccc-split-level, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/ComplexComputeConstructs/saxpy_gpu_split_level.F90,
+     edits: [*f_saxpy_check], why: "y = y + a*x is 4 everywhere (teams distribute over columns, parallel do inside)"}
+  - {id: h2-amd-f-ccc-target, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/ComplexComputeConstructs/saxpy_gpu_target.F90,
+     edits: [*f_n_small, *f_saxpy_check], why: "y = y + a*x is 4 everywhere (one device thread)"}
+  - {id: h2-amd-f-ccc-target-teams-distribute, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/ComplexComputeConstructs/saxpy_gpu_target_teams_distribute.F90,
+     edits: [*f_saxpy_check], why: "y = y + a*x is 4 everywhere"}
+  - {id: h2-amd-f-slc-collapse, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/SingleLineConstructs/saxpy_gpu_collapse.F90,
+     edits: [*f_saxpy_check], why: "y = y + a*x is 4 everywhere"}
+  - {id: h2-amd-f-slc-singleunit-autoalloc, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/SingleLineConstructs/saxpy_gpu_singleunit_autoalloc.F90,
+     edits: [*f_saxpy_check], why: "y = a*x + y is 4 everywhere (automatic arrays, implicitly mapped)"}
+  - id: h2-amd-f-nowait
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Fortran/Nowait/nowait.F90
+    edits:
+      - {old: "   print '(a)',          \"(every c(i) should be 1.0: sin^2 + cos^2 = 1)\"\n", new: "   print '(a)',          \"(every c(i) should be 1.0: sin^2 + cos^2 = 1)\"\n   if (any(abs(c - 1.0_real64) > 1.0e-12_real64)) stop 1\n", why: "check: every c(i) = sin^2 + cos^2 is 1 within 1e-12 (the example's own statement)"}
+    why: "nowait target tasks ordered by depend; c = a + b = 1 everywhere"
+  - {id: h2-amd-f-mem1, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/memory_pragmas/mem1.F90, edits: [*f_mem_check], why: "z = a*x + y = 7 with maps on the kernel"}
+  - {id: h2-amd-f-mem2, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/memory_pragmas/mem2.F90, edits: [*f_mem_check], why: "z = 7 with enter data alloc and always maps"}
+  - {id: h2-amd-f-mem3, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/memory_pragmas/mem3.F90, edits: [*f_mem_check], why: "z = 7 with enter data alloc and target update"}
+  - {id: h2-amd-f-mem4, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/memory_pragmas/mem4.F90, edits: [*f_mem_check], why: "z = 7 with enter data alloc, always maps and exit data release"}
+  - {id: h2-amd-f-mem5, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/memory_pragmas/mem5.F90, edits: [*f_mem_check], why: "z = 7: entered once, copied back by exit data map(from: z)"}
+  - {id: h2-amd-f-mem7, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/memory_pragmas/mem7.F90, modes: [unified], edits: [*f_mem_check], why: "z = 7 under unified shared memory"}
+  - {id: h2-amd-f-alloc-problem, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/optimization/Allocations/1_alloc_problem/alloc_problem.f90, modes: [unified],
+     edits: [*f_vecadd_check], why: "the mean of sin^2+cos^2 is 1 (allocations inside the iteration loop)"}
+  - {id: h2-amd-f-opt-allocation, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/Fortran/optimization/Allocations/2_opt_allocation/opt_allocation.f90, modes: [unified],
+     edits: [*f_vecadd_check], why: "the mean of sin^2+cos^2 is 1"}
+  - id: h2-amd-f-target-data-update
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/Intro/Fortran_examples/target_data_update.F90
+    edits:
+      - {old: "  write (*,'(a,f14.4)') \"Final result:\", res\n", new: "  write (*,'(a,f14.4)') \"Final result:\", res\n  if (res /= 4.0d0*N) stop 1\n", why: "check: tmp = 2*1 = 2 and input = 2 after the update, so res = N*(2 + 2) = 4N"}
+    why: "target data with an update to of host-modified input; res = 4N"
+  - id: h2-amd-f-gotcha-declare-target-problem
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenMP/default_gotchas/declare_target/Fortran/problem/declare_target_module.f90
+    modes: [copy]
+    checks: ["CHECK: First element: 1.", "CHECK: First element: 2."]
+    why: "the example's documented output: a declare target module array has an infinite reference count, so map without always transfers nothing (OpenMP 5.2 §5.8.3)"
+  - {id: h2-amd-f-gotcha-declare-target-link, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/default_gotchas/declare_target/Fortran/solution_declare_target_link/declare_target_module.f90,
+     checks: ["CHECK: First element: 2.", "CHECK: First element: 4."], why: "the example's documented output (declare target link)"}
+  - {id: h2-amd-f-gotcha-map-always, repo: amd/HPCTrainingExamples, path: Pragma_Examples/OpenMP/default_gotchas/declare_target/Fortran/solution_map_always/declare_target_module.f90,
+     checks: ["CHECK: First element: 2.", "CHECK: First element: 4."], why: "the example's documented output (map(always, ...))"}
+  - id: h2-amd-f-tests-reduction-array
+    repo: amd/HPCTrainingExamples
+    path: tests/reduction_array/reduction_array.F
+    edits:
+      - {old: "      write(*,*) \"ce1= \", ce(1), \"ce2= \", ce(2)\n", new: "      write(*,*) \"ce1= \", ce(1), \"ce2= \", ce(2)\n      if (ce(1) /= 1000.0d0 .or. ce(2) /= 1000.0d0) stop 1\n", why: "check: both elements are 1000"}
+    why: "a whole-array reduction; both elements are 1000"
+  - id: h2-amd-acc-c-vecadd
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenACC/C/vecadd/vecadd.c
+    edits:
+      - {old: "#include \"timer.h\"\n", new: "", why: "the example's timer header (timer.h, timer.c) left out"}
+      - {old: "  struct timespec tstart;\n", new: "", why: "the timer calls left out"}
+      - {old: "  cpu_timer_start(&tstart);\n", new: "", why: "the timer calls left out"}
+      - {old: "  time_sum += cpu_timer_stop(tstart);\n", new: "", why: "the timer calls left out"}
+      - {old: "  printf(\"Final result: %lf\\n\",sum);\n", new: "  printf(\"Final result: %lf\\n\",sum);\n  if (fabs(sum - 1.0) > 1e-9) return 1;\n", why: "check: the mean of sin^2+cos^2 is 1 (the example's own statement), within 1e-9"}
+    why: "c = a + b on the device; the mean of sin^2+cos^2 is 1"
+  - id: h2-amd-acc-f-vecadd
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenACC/Fortran/vecadd/vecadd.F
+    edits:
+      - {old: "    use timers_mod, only : timeval, fcpu_timer_start, fcpu_timer_stop\n", new: "", why: "the example's timer module (another file) left out"}
+      - {old: "    real(C_DOUBLE) :: run_timer\n    type(timeval) :: timer_start\n", new: "", why: "the timer variables left out"}
+      - {old: "    call fcpu_timer_start(timer_start%tv_sec, timer_start%tv_usec)\n", new: "", why: "the timer calls left out"}
+      - {old: "    run_timer = fcpu_timer_stop(timer_start%tv_sec, timer_start%tv_usec)\n    write(*,'(\"Runtime is: \",f8.6,\" secs\")') run_timer\n", new: "    if (abs(sum - 1.0d0) > 1.0d-9) stop 1\n", why: "the timer output replaced by the check: the mean of sin^2+cos^2 is 1, within 1e-9"}
+    why: "c = a + b on the device; the mean of sin^2+cos^2 is 1"
+  - id: h2-amd-acc-f-freduce
+    repo: amd/HPCTrainingExamples
+    path: Pragma_Examples/OpenACC/Fortran/freduce/freduce.F
+    edits:
+      - {old: "        deallocate(array, buffer)\n", new: "        if (any(buffer /= 1010.0)) stop 1\n        deallocate(array, buffer)\n", why: "check: each buffer(i) = 1000 + (sum of ten ones) = 1010"}
+    why: "a parallel loop reduction over ten ones inside a host loop; buffer(i) = 1010"
+  - id: h2-fgpu-map-array-slices
+    repo: llnl/FGPU
+    path: openmp/target_map/array_slices/map_array_slices.f90
+    edits:
+      - {old: "      print *, \"after x(1:10,\", j, \") \", x(1:10,j)\n", new: "      print *, \"after x(1:10,\", j, \") \", x(1:10,j)\n      if (any(x(:,j) /= 6.0*j)) stop 1\n", why: "check: each column becomes a*x + y = 5j + j = 6j"}
+    why: "host threads each map one column of a pointer array to a daxpy kernel; x(:,j) = 6j"
+  - id: h2-fgpu-update-array-slices-in-type
+    repo: llnl/FGPU
+    path: openmp/target_map/array_slices/update_array_slices_in_type.f90
+    edits:
+      - {old: "   use cudafor\n", new: "", why: "use cudafor removed (nothing of it is used)"}
+      - {old: "      print *, \"after x(1:10,\", j, \") \", the_data%x(1:10,j)\n", new: "      print *, \"after x(1:10,\", j, \") \", the_data%x(1:10,j)\n      if (any(the_data%x(:,j) /= 6.0*j)) stop 1\n", why: "check: each column becomes 6j"}
+    why: "derived type pointer components allocated by target data, columns updated per host thread; x(:,j) = 6j"
+  - id: h2-fgpu-reusing-common-ptr
+    repo: llnl/FGPU
+    path: openmp/target_map/reusing_common_ptr_to_map_data/ptr_to_data.f03
+    detab: true
+    edits:
+      - {old: "        write (*,*) \"After exit data map, on host: b(1,1): \", b(1,1)\n", new: "        write (*,*) \"After exit data map, on host: b(1,1): \", b(1,1)\n        if (a(1,1) /= 10.0 .or. b(1,1) /= 20.0 .or. a(2,2) /= 1.0 .or. b(2,2) /= 2.0) stop 1\n", why: "check: the device's writes a(1,1) = 10 and b(1,1) = 20 come back with exit data map(from), the rest keeps 1 and 2"}
+    why: "two arrays entered through the same pointer in turn; the device writes come back on exit"
+  - id: h2-fgpu-inner-loops-saxpy
+    repo: llnl/FGPU
+    path: openmp/variable_scoping/inner_loops/fortran/gpu/saxpy.f90
+    edits:
+      - {old: "        print *, y(i)\n    end do\n", new: "        print *, y(i)\n    end do\n    if (any(y /= 13.0)) stop 1\n", why: "check: y = a*x + (1+...+5) - (1+2+3) + y = 2 + 15 - 6 + 2 = 13 everywhere"}
+    why: "private inner sequential loop variables under default(none); y = 13"
+  - id: h2-fgpu-xl-declare-target-allocatable
+    repo: llnl/FGPU
+    path: test_cases/ibm_power_platform_xl_compiler/array_property_issues/Example_array_issues.1b.f90
+    edits:
+      - {old: "   print *, \"Host, after: \", A(:)\n", new: "   print *, \"Host, after: \", A(:)\n   if (any(A /= 2.0d0)) stop 1\n", why: "check: the device routine sets A = 2, copied back by target update from"}
+    why: "a declare target allocatable module array entered by enter data, written by a declare target routine; A = 2 (an IBM XL issue reproducer)"
+  - id: h2-fgpu-xl-teams-distribute-collapse
+    repo: llnl/FGPU
+    path: test_cases/ibm_power_platform_xl_compiler/segfault_on_free_of_pinned_memory/not_pinned.F90
+    edits:
+      - {old: "   use cudafor\n", new: "", why: "use cudafor removed (nothing of it is used in this unpinned variant)"}
+      - {old: "   numc = 16000\n", new: "   numc = 1600\n", why: "numc from 16000 to 1600 (psi was 0.5 GB)"}
+      - {old: "   print *, \"Sum: \", SUM(phi(:,:))\n", new: "   print *, \"Sum: \", SUM(phi(:,:))\n   if (any(phi /= 194.0)) stop 1\n", why: "check: phi = 2 + 64 * (1 * 3) = 194 everywhere"}
+    why: "target / teams / distribute parallel do collapse(2) with an inner reduction loop; phi = 194 (an IBM XL issue reproducer)"
+  - id: h2-fgpu-xl-reduction-in-parallel
+    repo: llnl/FGPU
+    path: test_cases/ibm_power_platform_xl_compiler/openmp_reduction/Test.f90
+    edits:
+      - {old: "        do count = 1, 100\n", new: "        do count = 1, 2\n", why: "the outer repeat count from 100 to 2 (each repeat is 100 kernels)"}
+      - {old: "                print *, \"k:\", k, \"; temp = \", temp\n", new: "                print *, \"k:\", k, \"; temp = \", temp\n                if (abs(temp - 10d0) > 1d-6) error stop 1\n", why: "check: the sum of 10^6 increments of 1e-5 is 10 within 1e-6"}
+    why: "target reductions launched from a host parallel do (an IBM XL issue reproducer); temp = 10"
+  - id: h2-fgpu-xl-privatizer-double-free
+    repo: llnl/FGPU
+    path: test_cases/ibm_power_platform_xl_compiler/omp_privatizer_bug/double_free.f90
+    self_checking: true
+    edits:
+      - {old: "   ALLOCATE(Y(32,32,32,8))\n", new: "   ALLOCATE(Y(32,32,32,8))\n   Y = 0.5D0\n", why: "Y initialized (the reproducer reads it undefined)"}
+    why: "a privatized automatic array in a collapsed target loop runs to completion (an IBM XL double-free reproducer: the expected result is a clean exit)"
+  - {id: h2-enccs-c-ex01-target, repo: ENCCS/openmp-gpu, path: content/exercise/ex01/solution/ex01.c, edits: [*enccs_c_check], why: "a serial loop in a target region; vecC = r^i"}
+  - {id: h2-enccs-c-ex02-tdpf, repo: ENCCS/openmp-gpu, path: content/exercise/ex02/solution/ex02.c, edits: [*enccs_c_check], why: "target teams distribute parallel for; vecC = r^i"}
+  - {id: h2-enccs-c-ex04-maps, repo: ENCCS/openmp-gpu, path: content/exercise/ex04/solution/ex04.c, edits: [*enccs_c_check], why: "explicit maps, then a serial sum in a target region with map(tofrom: sum)"}
+  - {id: h2-enccs-c-ex05-target-data, repo: ENCCS/openmp-gpu, path: content/exercise/ex05/solution/ex05.c, edits: [*enccs_c5_check], why: "two target regions inside target data map(from: vecC); vecC = r^i + 1"}
+  - {id: h2-enccs-f-ex01-target, repo: ENCCS/openmp-gpu, path: content/exercise/ex01/solution/ex01.F90, edits: [*enccs_f_check], why: "a serial loop in a target region; vecC = r^(i-1)"}
+  - {id: h2-enccs-f-ex02-tdpd, repo: ENCCS/openmp-gpu, path: content/exercise/ex02/solution/ex02.F90, edits: [*enccs_f_check], why: "target teams distribute parallel do; vecC = r^(i-1)"}
+  - {id: h2-enccs-f-ex04-maps, repo: ENCCS/openmp-gpu, path: content/exercise/ex04/solution/ex04.F90, edits: [*enccs_f_check], why: "target teams distribute with maps, then a serial sum in a target region"}
+  - id: h2-enccs-f-ex05-target-data
+    repo: ENCCS/openmp-gpu
+    path: content/exercise/ex05/solution/ex05.F90
+    edits:
+      - {old: "\nend program dotproduct\n", new: "\n  if (any(vecC /= [(r**(i-1) * 1.0 + 0.5 * 2.0, i = 1, nx)])) stop 1\nend program dotproduct\n", why: "check: a host recomputation of every vecC = r^(i-1)*1 + 0.5*2"}
+    why: "two target regions inside target data map(from: vecC); vecC = r^(i-1) + 1"
+  - {id: h2-enccs-acc-c-vec-add-kernels, repo: ENCCS/gpu-programming, path: content/examples/acc/vec_add_kernels.c, edits: [*vec_add_c_check], why: "acc kernels vector add; vecC = 3"}
+  - {id: h2-enccs-omp-c-vec-add-target, repo: ENCCS/gpu-programming, path: content/examples/omp/vec_add_target.c, edits: [*vec_add_c_check], why: "a serial loop in a target region; vecC = 3"}
+  - {id: h2-enccs-omp-f-vec-add-target, repo: ENCCS/gpu-programming, path: content/examples/omp/vec_add_target.f90, edits: [*vec_add_f_check], why: "a serial loop in a target region; vecC = 2"}
+  - {id: h2-csc-f-axpy-nomap, repo: csc-training/summerschool, path: gpu/exercises/07b-omp-axpy/solution/axpy-nomap.F90,
+     prepend: [gpu/exercises/07b-omp-axpy/helper_functions.F90], edits: [*csc_axpy_include, *csc_axpy_check],
+     why: "axpy with implicit maps of allocatable arrays; y = y0 + 3x"}
+  - id: h2-csc-f-reduction-sum
+    repo: csc-training/summerschool
+    path: gpu/exercises/07c-omp-reduction-sum/solution/sum.F90
+    edits:
+      - {old: "  print '(A, F0.6)', \"Sum: \", total\n", new: "  print '(A, F0.6)', \"Sum: \", total\n  t0 = 0.0d0\n  do i = 1, n\n    t0 = t0 + sin(real(i - 1, kind=8))\n  end do\n  if (abs(total - t0) > 1.0d-9) stop 1\n", why: "check: a host recomputation of the sum of sin(i-1), within 1e-9 (summation order differs)"}
+    why: "a target reduction of sin(i-1) over 100000 terms, compared with the host sum"
+  - {id: h2-csc-acc-c-vecsum-parallel-loop, repo: csc-training/openacc, path: exercises/vector-sum/solution/c/sum.c, edits: [*csc_vecsum_check], why: "acc parallel loop; vecC = vecA*vecB"}
+  - {id: h2-csc-acc-c-vecsum-kernels, repo: csc-training/openacc, path: exercises/vector-sum/solution/c/sum_kernels.c, edits: [*csc_vecsum_check], why: "acc kernels; vecC = vecA*vecB"}
+  - {id: h2-csc-acc-c-vecsum-parallel, repo: csc-training/openacc, path: exercises/vector-sum/solution/c/sum_parallel.c, edits: [*csc_vecsum_check], why: "acc parallel with an inner loop directive; vecC = vecA*vecB"}
+  - id: h2-pphpc-omp-c-triad-par2
+    repo: essentialsofparallelcomputing/Chapter11
+    path: OpenMP/StreamTriad/StreamTriad_par2.c
+    inline: true
+    append: [OpenMP/StreamTriad/timer.c]
+    edits: [*triad_check_after_avg]
+    why: "stream triad with explicit array-section maps on each kernel; c = 7"
+  - id: h2-pphpc-omp-c-triad-par4
+    repo: essentialsofparallelcomputing/Chapter11
+    path: OpenMP/StreamTriad/StreamTriad_par4.c
+    inline: true
+    append: [OpenMP/StreamTriad/timer.c]
+    edits:
+      - {old: "#pragma omp target exit data map(from:a[0:nsize], b[0:nsize], c[0:nsize])\n", new: "#pragma omp target exit data map(from:a[0:nsize], b[0:nsize], c[0:nsize])\n   for (int i=0; i<nsize; i++) if (c[i] != 7.0) { printf(\"FAIL c[%d] = %f\\n\", i, c[i]); return 1; }\n", why: "check after exit data map(from): every c = 1 + 3*2 = 7"}
+    why: "stream triad on entered data, copied back by exit data; c = 7"
+  - id: h2-pphpc-acc-c-triad-par3
+    repo: essentialsofparallelcomputing/Chapter11
+    path: OpenACC/StreamTriad/StreamTriad_par3.c
+    inline: true
+    append: [OpenACC/StreamTriad/timer.c]
+    edits: [*acc_triad_update_check]
+    why: "parallel loop with present clauses on entered data; c = 7 after update self"
+  - id: h2-pphpc-acc-c-triad-par2
+    repo: essentialsofparallelcomputing/Chapter11
+    path: OpenACC/StreamTriad/StreamTriad_par2.c
+    inline: true
+    append: [OpenACC/StreamTriad/timer.c]
+    edits:
+      - {old: "      printf(\"Average runtime for stream triad loop is %lf secs\\n\", time_sum/ntimes);\n", new: "      printf(\"Average runtime for stream triad loop is %lf secs\\n\", time_sum/ntimes);\n#pragma acc update self(c[0:nsize])\n      for (int i=0; i<nsize; i++) if (c[i] != 7.0) { printf(\"FAIL c[%d] = %f\\n\", i, c[i]); return 1; }\n", why: "an update self of c added inside the data region, then the check: every c = 7"}
+    why: "a structured data region with create and present clauses; c = 7 after update self"
+  - id: h2-pphpc-acc-c-maxradius
+    repo: essentialsofparallelcomputing/Chapter11
+    path: OpenACC/MaxRadius/MaxRadius.c
+    edits:
+      - {old: "   printf(\"Maximum Radius is %lf\\n\",MaxRadius);\n", new: "   printf(\"Maximum Radius is %lf\\n\",MaxRadius);\n   double hv_ref = -1.0e30;\n   for (int ic=0; ic<ncells; ic++) { double r = sqrt((double)(ic+1)*(ic+1) + (double)(ncells-ic)*(ncells-ic)); if (r > hv_ref) hv_ref = r; }\n   if (MaxRadius != hv_ref) return 1;\n", why: "check: a host recomputation of the maximum radius (sqrt is correctly rounded, so the maximum is exact)"}
+    why: "acc_malloc arrays with deviceptr and a loop max reduction inside parallel; the maximum radius"
+  - id: h2-princeton-acc-f-laplace2d-kernels
+    repo: PrincetonUniversity/hpc_beginning_workshop
+    path: openacc/fortran/laplace2d.f90
+    license: "Apache-2.0 (the file's notice: Copyright 2012 NVIDIA Corporation); repository MIT"
+    edits:
+      - {old: "    if(mod(iter,100).eq.0 ) write(*,'(i5,f10.6)'), iter, error\n", new: "    if(mod(iter,100).eq.0 ) write(*,'(i5,f10.6)') iter, error\n", why: "the comma after the write statement's control list removed (an extension)"}
+      - {old: "!$acc end data\n", new: "!$acc end data\n  block\n    real(fp_kind), allocatable :: B(:,:), Bnew(:,:)\n    real(fp_kind) :: err2\n    integer :: it2\n    allocate(B(0:n-1,0:m-1), Bnew(0:n-1,0:m-1))\n    B = 0.0_fp_kind\n    Bnew = 0.0_fp_kind\n    B(0,:) = 1.0_fp_kind\n    Bnew(0,:) = 1.0_fp_kind\n    err2 = 1.0_fp_kind\n    it2 = 0\n    do while (err2 > tol .and. it2 < iter_max)\n      err2 = 0.0_fp_kind\n      do j=1,m-2\n        do i=1,n-2\n          Bnew(i,j) = 0.25_fp_kind * (B(i+1,j) + B(i-1,j) + B(i,j-1) + B(i,j+1))\n          err2 = max(err2, abs(Bnew(i,j)-B(i,j)))\n        end do\n      end do\n      it2 = it2 + 1\n      do j=1,m-2\n        do i=1,n-2\n          B(i,j) = Bnew(i,j)\n        end do\n      end do\n    end do\n    if (it2 /= iter .or. maxval(abs(A - B)) > 1.0e-12_fp_kind) stop 1\n  end block\n", why: "check: the same Jacobi iteration recomputed on the host (iteration count and every A within 1e-12)"}
+    why: "Jacobi relaxation with kernels regions and a max reduction the kernels construct leaves to the compiler; the host recomputation"
+  - id: h2-hpcinfo-omp-c-vadd-2
+    repo: jeffhammond/HPCInfo
+    path: openmp/offload/test_vadd_2.c
+    edits:
+      - {old: "        printf(\"%20s time = %lf (error=%lf) \\n\", \"OpenMP offload for\",       t3-t2, vdiff(n,z0,z2));\n", new: "        printf(\"%20s time = %lf (error=%lf) \\n\", \"OpenMP offload for\",       t3-t2, vdiff(n,z0,z2));\n        for (int i=0; i<n; i++) if (z2[i] != z0[i] || z1[i] != z0[i]) return 1;\n", why: "check: the offloaded and the host-parallel sums equal the serial host sums element by element"}
+    why: "a target region with a nested parallel for simd; c = a + b against the serial host loop"
+  - {id: h2-hpcinfo-acc-f-nest, repo: jeffhammond/HPCInfo, path: openacc/nest.F90, checks: ["CHECK-NOT: bad", "CHECK: good"],
+     why: "the program's own check: a worker routine with a loop over do concurrent called from a gang loop copies x to y"}
+  - id: h2-accex-c-collapse
+    repo: OpenACC/openacc-examples
+    path: Submissions/C/Collapse/collapse.c
+    edits:
+      - {old: "    return 0;\n}", new: "    double hv_ref = 0.0;\n    for(int x = 0; x < n; ++x) for(int y = 0; y < n; ++y) hv_ref += data[x][y];\n    if (sum != hv_ref) return 1;\n    return 0;\n}", why: "check: a host recomputation of the sum (integer values below 100, so the sum is exact in any order)"}
+    why: "a collapse(2) reduction over a pointer-to-pointer array copied in as data[0:n][0:n]"
+  - {id: h2-accex-c-combined-reduction-minus, repo: OpenACC/openacc-examples, path: Submissions/C/Parallel_Loop/combined_constructs.c, self_checking: true,
+     why: "the program's own check: a parallel loop reduction(-:sum) of 100 ones gives -100 (returns 1 otherwise)"}
+  - {id: h2-accbp-c-saxpy-kernels, repo: OpenACC/openacc-best-practices-guide, path: examples/saxpy-kernels.c, edits: [*bp_saxpy_c_check], why: "two loops in one kernels region; y = 2(i+1)"}
+  - {id: h2-accbp-c-saxpy-parallel, repo: OpenACC/openacc-best-practices-guide, path: examples/saxpy-parallel.c, edits: [*bp_saxpy_c_check], why: "two parallel loops; y = 2(i+1)"}
+  - {id: h2-accbp-f-saxpy-kernels, repo: OpenACC/openacc-best-practices-guide, path: examples/saxpy-kernels.f90, edits: [*bp_saxpy_f_check], why: "two loops in one kernels region; y = 2i"}
+  - {id: h2-accbp-f-saxpy-parallel, repo: OpenACC/openacc-best-practices-guide, path: examples/saxpy-parallel.f90, edits: [*bp_saxpy_f_check], why: "two parallel loops; y = 2i"}
+  - {id: h2-accbp-c-laplace-ch3-parallel, repo: OpenACC/openacc-best-practices-guide, path: examples/laplace/ch3/laplace2d-parallel.c, inline: true, edits: [*lap_c_nn, *lap_c_check], why: "Jacobi with parallel loop reduction(max) and default data movement per kernel; the host recomputation"}
+  - {id: h2-accbp-c-laplace-ch3-kernels, repo: OpenACC/openacc-best-practices-guide, path: examples/laplace/ch3/laplace2d-kernels.c, inline: true, edits: [*lap_c_nn, *lap_c_check], why: "Jacobi with kernels regions; the host recomputation"}
+  - {id: h2-accbp-c-laplace-ch4-parallel, repo: OpenACC/openacc-best-practices-guide, path: examples/laplace/ch4/laplace2d-parallel.c, inline: true, edits: [*lap_c_nn, *lap_c_check], why: "Jacobi in a data region (copy A, create Anew) with parallel loops; the host recomputation"}
+  - {id: h2-accbp-f-laplace-ch3-parallel, repo: OpenACC/openacc-best-practices-guide, path: examples/laplace/ch3/laplace2d-parallel.f90, edits: [*lap_f_n, *lap_f_comma, *lap_f_check], why: "Jacobi with parallel loops; the host recomputation"}
+  - {id: h2-accbp-f-laplace-ch3-kernels, repo: OpenACC/openacc-best-practices-guide, path: examples/laplace/ch3/laplace2d-kernels.f90, edits: [*lap_f_n, *lap_f_comma, *lap_f_check], why: "Jacobi with kernels; the host recomputation"}
+  - {id: h2-accbp-f-laplace-ch4-parallel, repo: OpenACC/openacc-best-practices-guide, path: examples/laplace/ch4/laplace2d-parallel.f90, edits: [*lap_f_n, *lap_f_comma, *lap_f_check], why: "Jacobi in a data region with parallel loops; the host recomputation"}
+  - {id: h2-accbp-f-laplace-ch4-kernels, repo: OpenACC/openacc-best-practices-guide, path: examples/laplace/ch4/laplace2d-kernels.f90, edits: [*lap_f_n, *lap_f_comma, *lap_f_check], why: "Jacobi in a data region with kernels; the host recomputation"}
+  - {id: h2-acctrain-f-jacobi-kernels, repo: OpenACC/openacc-training-materials, path: labs/module6/English/Fortran/solutions/kernels/jacobi.f90,
+     prepend: [labs/module6/English/Fortran/solutions/kernels/laplace2d.f90], edits: [*lap_f_n, *lap_f_comma, *lap_f_check_jacobi],
+     why: "Jacobi in a data region, the stencil in kernels regions in a module (the max reduction left to the compiler); the host recomputation"}
+  - {id: h2-acctrain-f-jacobi-gwv-kernels, repo: OpenACC/openacc-training-materials, path: labs/module6/English/Fortran/solutions/gang_worker_vector/kernels/jacobi.f90,
+     prepend: [labs/module6/English/Fortran/solutions/gang_worker_vector/kernels/laplace2d.f90], edits: [*lap_f_n, *lap_f_comma, *lap_f_check_jacobi],
+     why: "Jacobi with loop gang worker(4) and vector(32) in kernels present(A, Anew); the host recomputation"}
+  - {id: h2-acctrain-f-jacobi-tile-kernels, repo: OpenACC/openacc-training-materials, path: labs/module6/English/Fortran/solutions/tile/kernels/jacobi.f90,
+     prepend: [labs/module6/English/Fortran/solutions/tile/kernels/laplace2d.f90], edits: [*lap_f_n, *lap_f_comma, *lap_f_check_jacobi],
+     why: "Jacobi with loop tile(32,4) in kernels; the host recomputation"}
+  - id: h2-oneapi-f-saxpy-target-map
+    repo: oneapi-src/oneAPI-samples
+    path: DirectProgramming/Fortran/Jupyter/OpenMP-offload-training/datatransfer/main.f90
+    checks: ["CHECK-NOT: Failed", "CHECK: Test: Passed"]
+    edits:
+      - {old: "        INCLUDE 'lab/saxpy_func.f90'\n", new: "!$omp target map(tofrom: y) map(to:x) map(from:is_cpu)\nis_cpu=omp_is_initial_device();\ndo i=1,ARRAY_SIZE\n        y(i) = a*x(i) + y(i)\nend do\n!$omp end target\n", why: "the exercise's INCLUDE of lab/saxpy_func.f90 replaced by the text of its solution, datatransfer/saxpy_func_solution.f90"}
+    why: "the program's own check of y = a*x + y within 0.01 prints Test: Passed"
+  - id: h2-oneapi-f-target-data-region
+    repo: oneapi-src/oneAPI-samples
+    path: DirectProgramming/Fortran/Jupyter/OpenMP-offload-training/datatransfer/main_data_region.f90
+    checks: ["CHECK-NOT: Failed", "CHECK: Test: Passed"]
+    edits:
+      - {old: "        INCLUDE 'lab/target_data_region.f90'\n", new: "! Solution Using target data\n!$omp target data map(tofrom: x)\n    !$omp target map(to:y)\n    do i=1, ARRAY_SIZE\n        x(i) = x(i) + y(i)\n    end do\n    !$omp end target\n\n    call init (y, ARRAY_SIZE, 2.0)\n\n    !$omp target map(to:y)\n    do i=1, ARRAY_SIZE\n        x(i) = x(i) + y(i)\n    end do\n    !$omp end target\n!$omp end target data\n\n\n\n\n", why: "the exercise's INCLUDE replaced by the first solution of datatransfer/target_data_region_solution.f90 (target data with two target regions)"}
+    why: "x = 1 + 1 + 2 = 4 after two target regions in a target data region; the program's own check prints Test: Passed"
+  - id: h2-oneapi-f-simple
+    repo: oneapi-src/oneAPI-samples
+    path: DirectProgramming/Fortran/Jupyter/OpenMP-offload-training/intro/simple_solution.f90
+    edits:
+      - {old: "    do i=1,N\n        print *, x(i)\n    end do\n", new: "    do i=1,N\n        print *, x(i)\n    end do\n    if (any(x /= [(2*i, i=1,N)])) stop 1\n", why: "check: every x(i) = 2i"}
+    why: "a parallel do in a target region doubles x"
+
+  - {id: h2-accbook-c-laplace-final, repo: OpenACCUserGroup/openacc_concept_strategies_book, path: Code_Examples/Chapter_04/laplace_final_acc.c, license: "CC-BY-SA-4.0",
+     edits: [*urban_size, *urban_check], why: "a plate heat solve in a data region with kernels and a periodic update host; the host recomputation"}
+  - id: h2-rsbench-omp-c-history
+    repo: ANL-CESAR/RSBench
+    path: openmp-offload/main.c
+    kind: application
+    prepend: [openmp-offload/rsbench.h]
+    append: [openmp-offload/io.c, openmp-offload/init.c, openmp-offload/material.c, openmp-offload/simulation.c, openmp-offload/utils.c]
+    checks: ["CHECK: Verification checksum: 351485 (Valid)"]
+    edits:
+      - {old: "#include \"rsbench.h\"\n", new: "", count: 6, why: "the header (no include guard) put first once, its #include lines removed"}
+    why: "the proxy application's own verification: the default (H-M large, history-based) checksum 351485, hard-coded in io.c; exit status 1 on a mismatch"

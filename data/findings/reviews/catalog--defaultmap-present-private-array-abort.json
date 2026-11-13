@@ -1,0 +1,236 @@
+{
+ "finding": "catalog/defaultmap-present-private-array-abort.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "private(t) on the combined construct applies only to the innermost leaf construct that permits it (the worksharing loop), not to target. So t is referenced in the target region with no data-sharing attribute there; defaultmap(present: aggregate) implicitly maps it with present. t was never mapped, so the present requirement fails and runtime error termination is the specified behavior. The abort is permitted, not a bug."
+  },
+  {
+   "run": "run-20261113/batch-58",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a and b are present from target enter data, so defaultmap(present: aggregate) implicit maps succeed. t is private on the combined construct, so it has an explicit data-sharing attribute and is not implicitly mapped; the 16-byte present failure is t being mapped by the compiler. host_flag is explicitly mapped and written by one iteration only; b(i) written per iteration; no race. Acceptance and the run are required."
+  },
+  {
+   "run": "run-v2-20261113/batch-100",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 4,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The private(t) clause on the combined construct applies only to the innermost leaf construct that permits it, so the target construct has no explicit data-sharing attribute for t. t is an array (aggregate) referenced in the target region, so defaultmap(present: aggregate) gives it an implicit map with the present modifier. t is not present on the device, so runtime error termination is required. The 16 bytes in the message are the 4-element t. The program is non-conforming and the observed abort is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-68",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-19",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a and b are present from target enter data, so defaultmap(present: aggregate) is satisfied for them. t is named in private, an explicit data-sharing attribute, so the defaultmap rule does not apply to it and no mapping is needed. host_flag has an explicit map. The 16-byte failing object is t (4 integers), which the compiler wrongly required to be present.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-57",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "t is named in private, an explicit data-sharing attribute on the target construct, so defaultmap does not apply to it"
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6f6756ca5bb491b7b602d1771af50b5f7d6f3f9a510619ffd9c79d9afe5aecd0",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the program not legal: Section 17.3 applies private only to the innermost leaf construct that permits it, which is the worksharing loop, so the target construct has no explicit data-sharing attribute for t. t is an array (aggregate), so defaultmap(present: aggregate) gives it an implicit map with alloc and the present modifier. t is not present on the device, so runtime error termination is required. The 16-byte message matches t (4 integers).",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Spec 5.1.1 says a private clause on an enclosed construct does not cause an implicit reference to the variable in the enclosing construct. Reading B is right that private(t) applies only to the innermost leaf (the loop), but wrong that t is therefore implicitly mapped on target: the target construct has no reference to t of its own, so defaultmap(present: aggregate) does not apply to it. a and b are present from enter data. Program is conforming and race free; the present-mapping abort is a compiler defect (it maps t). Reading A reaches this result."
+  },
+  {
+   "run": "adj-20261113/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails. It is right that private applies only to the innermost leaf construct that permits it (the worksharing loop). But t is then not referenced as a shared variable by the target construct: the specification states that a private clause on an enclosed construct causes no implicit reference to the variable in the enclosing construct. So t gets no implicit present map on target, and the present failure on a 16-byte object (t) is a compiler defect. a and b are present from enter data. Reading A is right."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A fails. Section 17.3 applies private only to the innermost leaf construct that permits it, which is the worksharing loop, so the target construct has no explicit data-sharing attribute for t. t is an array (aggregate), so defaultmap(present: aggregate) gives it an implicit map with alloc and the present modifier. t is not present on the device, so runtime error termination is required. The 16-byte message matches t (4 integers). Reading B is right: the program is non-conforming and the abort is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-17",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A fails. Under 17.2 private on a combined construct applies only to the innermost leaf construct that permits it, which is the loop construct here, not target. So t has no explicit data-sharing attribute on target. t is an array referenced in the target region, so defaultmap(present: aggregate) gives it an implicit map with alloc and present, and t is not present on the device. The present modifier then requires runtime error termination, so the program is non-conforming and the abort is permitted. Reading B is right.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-15",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

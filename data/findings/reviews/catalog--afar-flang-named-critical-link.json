@@ -1,0 +1,126 @@
+{
+ "finding": "catalog/afar-flang-named-critical-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-36",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "A named critical construct inside target parallel do is permitted. s is updated only inside the critical region, t is private, host_flag is written by a single iteration, and a is read only. No race or restriction is violated. The link error for __kmpc_critical_with_hint is a missing device runtime symbol; the program has no hint clause. A conforming implementation must accept and run it."
+  },
+  {
+   "run": "run-20261113/batch-67",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Named critical inside a combined target parallel do is conforming. s is mapped tofrom and shared; t is private; host_flag is written by the iteration i==1 only, so no race. A critical construct without a hint clause needs no hint entry point; __kmpc_critical_with_hint is not required by the program, so the link failure is a compiler/runtime defect."
+  },
+  {
+   "run": "run-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The named critical region matches its end critical name and protects s; t is private; host_flag is written by one iteration only. critical is allowed inside target parallel do. Nothing allows a compiler to omit the runtime support needed to compile it, so the link failure on __kmpc_critical_with_hint is a defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Named critical inside target parallel do serializes the update of s, so no race; host_flag written only by iteration 1. No hint clause is present, so a link reference to __kmpc_critical_with_hint is a runtime-library issue, not required by the program. A conforming implementation must compile and link it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-69",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-101",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A named critical construct without a hint clause is legal Fortran in target parallel do. Updates to s are inside the critical region, t is private, and only iteration 1 writes host_flag. The result is deterministic. The link error for __kmpc_critical_with_hint is a runtime library gap, and the program must compile and link.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-10",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "29eec8d1bb94a443d3737100769c6bae82af2dd755a61b0848b277081d853f46",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,130 @@
+{
+ "finding": "oop/cce-class-is-device-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-30",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Standard Fortran: SELECT TYPE with TYPE IS and CLASS IS guards in a declare target module procedure, called with non-polymorphic mapped actuals. The mapping restriction on polymorphic variables concerns only ALLOCATABLE polymorphic list items, which do not occur. Dynamic types give e1->1, e2->2, b0->1, so r1=121. The spec has no exemption for SELECT TYPE on the device, so an undefined runtime symbol at link time is a compiler/runtime deficiency."
+  },
+  {
+   "run": "run-20261113/batch-43",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "select type in a declare target procedure with a polymorphic dummy is base-language legal; the OpenMP polymorphic restrictions found apply to C++ map items or ALLOCATABLE items, and e1,e2,b0 are non-polymorphic and not allocatable. The most specific block is chosen (type is ext2 over class is base_t), so r1=121. The link error (undefined _EXTENDS_TYPE_OF) is a missing device runtime routine."
+  },
+  {
+   "run": "run-v2-20261113/batch-100",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is valid Fortran 2003 and OpenMP 5.2. A select type construct with class is and type is guards is legal. The procedure is declare target, and the derived types have no allocatable or pointer components, so mapping e1, e2 and b0 is ordinary. Selection gives 1, 2, 1, so r1 is 121. OpenMP 5.2 supports Fortran 2003, with no listed exclusion for select type. The undefined symbol _EXTENDS_TYPE_OF at link time is a defect of the compiler's device runtime support.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-18",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "select type with class is (base_t) and type is (ext2) is standard Fortran: a matching type is guard wins over class is, so e2 gives 2, e1 and b0 give 1, r1=121. The spec has no restriction on non-allocatable polymorphic dummies in declare target procedures, and the mapped variables are plain derived types. A link failure on a missing runtime symbol is a compiler or library defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b2e80345cd2fe5a3646519462528ddaa8c133cee45eacf84cd2579f1b4129765",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

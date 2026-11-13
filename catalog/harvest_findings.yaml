@@ -1,0 +1,880 @@
+# What the harvest's confirmed failures became (read by
+# tools/campaigns/harvest.py report). new: a finding promoted to data/findings/harvest/
+# (index entry and README row); linked: an existing finding the harvested
+# tests reproduce (with what the harvest adds); unsupported: the vendor
+# documents the construct or routine as unsupported (recorded, never a
+# finding); candidate: confirmed by the gate, not promoted (the reason says
+# what is missing). Holdout programs are counted, never named.
+new:
+- file: harvest/cce-c-strided-target-update.c
+  upstream:
+  - the 25 non-holdout tests of llvm/offloading/strided_update/
+  note: the CCE man page claims strided (non-contiguous) updates
+- file: harvest/afar-flang-strided-target-update.f90
+  upstream: []
+  note: found while reducing the C strided-update failures (no Fortran strided-update test upstream);
+    CCE and NVHPC reject the stride; gate confirmed on gfx942 X0 (four environments); legal by the
+    quoted spec text only (no independent compiler witness)
+- file: harvest/cce-ftn-target-parallel-thread-query-ice.f90
+  upstream:
+  - llvm/offloading/fortran/basic-target-parallel-region.f90
+  - aomp/smoke/flang-313307-simple-spmd
+  note: an ICE on a basic upstream test; CCE documents both routines as supported in offload regions
+linked:
+- finding: afar-c-teams-distribute-reduction-first-team.c
+  upstream:
+  - llvm/offloading/xteam_reduction_no_parallel.c
+  note: 'Found it the same day; the harvest adds the upstream fix: llvm-project 2c1650555b10 (#231843,
+    2026-10-14), after the AFAR drop'
+- finding: catalog/afar-flang-absent-optional-target-crash.f90
+  upstream:
+  - llvm/offloading/fortran/optional-mapped-arguments.f90
+  note: 'the harvest test crashes AFAR (SIGSEGV); a target region with map(tofrom: a) of the absent dummy
+    aborts (device allocation of a garbage size), the absent dummy in target data, enter data and exit
+    data does not'
+- finding: catalog/cce-c-ordered-link.c
+  upstream:
+  - llvm/offloading/schedule.c
+  note: 'maintainer ruling 2026-10-28: a construct CCE does not support in offload regions that compiles and then
+    fails at device link (__kmpc_dispatch_init_4) is a defect, not a documented gap'
+unsupported:
+- what: 'CCE C and Fortran: omp_get_level, omp_get_active_level, omp_get_ancestor_thread_num, omp_get_team_size,
+    omp_get_max_active_levels, omp_in_final, omp_get_supported_active_levels in a target region: device
+    link fails (undefined symbol)'
+  doc: 'CCE intro_openmp (19.0.0, 20.0.2, 21.0.3): in offload regions only omp_is_initial_device, omp_get_thread_num,
+    omp_get_num_threads, omp_get_team_num and omp_get_num_teams are supported'
+  upstream:
+  - llvm/offloading/thread_state_1.c
+candidates:
+- test: aomp/smoke/clang-282491-1
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-aomp-smoke-clang-282491-1.c", line 24: error: invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke/clang-370300
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-aomp-smoke-clang-370300.c", line 32: error: invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke/devices
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: lld: error: undefined symbol: omp_get_num_devices'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke-fails/clang-272521
+  families:
+  - afar
+  toolchains:
+  - afar
+  - afar_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: ld.lld: error: undefined symbol: __atomic_load'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke-fails/flang-275472-O0
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-1725 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-aomp-smoke-fails-flang-275472-o0.f90,
+    Line = 25, Column = 18 | Unexpected syntax while parsing the'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke-fails/flang-315455
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-1725 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-aomp-smoke-fails-flang-315455.f90,
+    Line = 25, Column = 18 | Unexpected syntax while parsing the WR'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke-fails/flang-324387
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: The Cpu Module:(.text+0x292b): undefined reference to `_sgemm_'''
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke-fails/flang-351976
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: lld: error: undefined symbol: omp_get_thread_limit_'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke-fails/flang-usm-235
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-719 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-aomp-smoke-fails-flang-usm-235.f90,
+    Line = 44, Column = 51 | Integer overflow resulted from an inte'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke-fails/FNew-flang-275194
+  families:
+  - afar
+  - cce
+  toolchains:
+  - afar
+  - afar_g90
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: The Cpu Module:(.text+0x223): undefined reference to `kill_'''
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke-fails/FNew-flang-275194-4
+  families:
+  - afar
+  - cce
+  toolchains:
+  - afar
+  - afar_g90
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: The Cpu Module:(.text+0x229): undefined reference to `kill_'''
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke-fails/FNew-flang-303839
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-356 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-aomp-smoke-fails-fnew-flang-303839.f90,
+    Line = 31, Column = 35 | Assignment of a INTEGER expression'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke-fails/FNew-flang-atomic
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: NVFORTRAN-S-1073-Procedures called in a OpenMP target region must have ''omp declare
+    target'' information - __atomic_load (<tmpdir>/hv-aomp-smoke-fail'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke-fails/loop_order_reproducible-310866
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-aomp-smoke-fails-loop-order-reproducible-310866.c", line 42: error:
+    invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke-fails/loop_order_unconstrained-310866
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-aomp-smoke-fails-loop-order-unconstrained-310866.c", line 42: error:
+    invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke-fails/scan
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R10-compile-ice
+  - R11-compile-rejection
+  message: 'ice: PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace,
+    preprocessed source, and associated run script.'
+  missing: a reduced reproducer, deduplicated against the index's ICE signatures; a check of the vendor's
+    documented support for the rejected construct (an unsupported feature is not a defect), then a reduced
+    reproducer
+- test: aomp/smoke/flang-274775-1
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-1725 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-aomp-smoke-flang-274775-1.f90,
+    Line = 38, Column = 19 | Unexpected syntax while parsing the WRITE '
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke/flang-288613
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-1725 ftn: ERROR TEST_AOMP, File = ../../hv-aomp-smoke-flang-288613.f90, Line
+    = 27, Column = 16 | Unexpected syntax while parsing the SUBROUTINE '
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke/flang-288613-3
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-1725 ftn: ERROR TEST_AOMP, File = ../../hv-aomp-smoke-flang-288613-3.f90,
+    Line = 27, Column = 16 | Unexpected syntax while parsing the SUBROUTIN'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke/flang-313307_simple_spmd
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10-compile-ice
+  message: 'ice: INTERNAL COMPILER ERROR: "Could not find call" (/workspace/crayftn/pdgcs/v_acc_dataplacement.c,
+    line 4378, version 03f45ce3d0ede393b9c256b04948894287765405'
+  missing: a reduced reproducer, deduplicated against the index's ICE signatures
+- test: aomp/smoke/flang-device-api
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-356 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-aomp-smoke-flang-device-api.f90,
+    Line = 32, Column = 17 | Assignment of a LOGICAL expression to a I'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: aomp/smoke/fprintf
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: lld: error: undefined symbol: fprintf'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke/liba_bundled_fullpath
+  families:
+  - afar
+  - cce
+  toolchains:
+  - afar
+  - afar_g90
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: ld.lld: error: undefined symbol: func_1v'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke/metadirective
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: lld: error: undefined symbol: __kmpc_global_thread_num'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: aomp/smoke/reduction_shared_array
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R10-compile-ice
+  message: 'ice: NVC++-F-0000-Internal compiler error. unhandled ilm to find symbol 0 (<tmpdir>/hv-aomp-smoke-reduction-shared-array.c:
+    31)'
+  missing: a reduced reproducer, deduplicated against the index's ICE signatures
+- test: aomp/smoke/targ_declare
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: ftn-1441 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-aomp-smoke-targ-declare.f90,
+    Line = 26, Column = 23 | "FOO" has the EXTERNAL attribute, therefore '
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/api/omp_device_alloc.c
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R10b-own-link-or-hang
+  - R11-compile-rejection
+  message: 'link_undefined_symbol: lld: error: undefined symbol: omp_alloc'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer; a check of the vendor's documented support for the
+    rejected construct (an unsupported feature is not a defect), then a reduced reproducer
+- test: llvm/api/omp_device_uid.c
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: <tmpdir>/hv-llvm-api-omp-device-uid.c:21:28: error: call to undeclared function
+    ''omp_get_uid_from_device''; ISO C99 and later do not support implicit'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/api/omp_target_memcpy_async1.c
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: <tmpdir>/hv-llvm-api-omp-target-memcpy-async1.c:64:57: error: use of undeclared
+    identifier ''omp_initial_device''; did you mean ''omp_is_initial_device'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/api/omp_target_memcpy_async2.c
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: <tmpdir>/hv-llvm-api-omp-target-memcpy-async2.c:89:57: error: use of undeclared
+    identifier ''omp_initial_device''; did you mean ''omp_is_initial_device'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/api/omp_target_memcpy_rect_async2.c
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: <tmpdir>/hv-llvm-api-omp-target-memcpy-rect-async2.c:105:57: error: use of undeclared
+    identifier ''omp_initial_device''; did you mean ''omp_is_initial_'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/api/omp_target_memset.c
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R10b-own-link-or-hang
+  - R11-compile-rejection
+  message: 'diagnostic: <tmpdir>/hv-llvm-api-omp-target-memset.c:61:57: error: use of undeclared identifier
+    ''omp_initial_device''; did you mean ''omp_is_initial_device''?'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer; a check of the vendor's documented support for the
+    rejected construct (an unsupported feature is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_always_from.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-always-from.c", line 34: error: invalid text
+    in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_always_to_enter_data.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-always-to-enter-data.c", line 38: error:
+    invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_mbr_ptee_then_present_mbr_ptee.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-mbr-ptee-then-present-mbr-ptee.c", line 30:
+    error: invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_ptee_only.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-ptee-only.c", line 30: error: invalid text
+    in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_ptee_only_2_ptr_indirections_array.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-ptee-only-2-ptr-indirections-array.c", line
+    41: error: invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_ptee_only_2ndlevel.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-ptee-only-2ndlevel.c", line 35: error: invalid
+    text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_ptee_only_always_array.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-ptee-only-always-array.c", line 30: error:
+    invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_ptr_ptee_nomapper_del_ptee.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-ptr-ptee-nomapper-del-ptee.c", line 29: error:
+    invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/mapper_map_ptr_ptee_nomapper_del_ptr.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-mapper-map-ptr-ptee-nomapper-del-ptr.c", line 29: error:
+    invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/target_has_device_addr.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-target-has-device-addr.c", line 36: error: invalid text
+    in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/mapping/use_device_addr/target_use_device_addr.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-mapping-use-device-addr-target-use-device-addr.c", line 26:
+    error: expected a ")"'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/map-zero-size-array.f90
+  families:
+  - cce
+  - nvhpc
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: "diagnostic: ftn-1519 ftn: ERROR HV_ORIG_MAIN, File = ../../hv-llvm-offloading-fortran-map-zero-size-array.f90,\
+    \ Line = 25, Column = 40 | Invalid clause \"\uFFFD\" for d"
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/target-defaultmap.f90
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: NVFORTRAN-S-1197-OpenMP GPU - presents cannot be used with defaultmap clause.
+    (<tmpdir>/hv-llvm-offloading-fortran-target-defaultmap.f90: 30)'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/target-descriptor-ops.f90
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: NVFORTRAN-S-1219-Unimplemented feature: BLOCK construct in the scope of a parallel
+    directive. (<tmpdir>/hv-llvm-offloading-fortran-target-descriptor'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/target-has-device-addr1.f90
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: NVFORTRAN-S-0034-Syntax error at or near identifier has_device_addr (<tmpdir>/hv-llvm-offloading-fortran-target-has-device-addr1.f90:
+    40)'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/target-has-device-addr3.f90
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: NVFORTRAN-S-0034-Syntax error at or near identifier has_device_addr (<tmpdir>/hv-llvm-offloading-fortran-target-has-device-addr3.f90:
+    22)'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/target-map-cptr-cfunptr.f90
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: lld: error: undefined symbol: _TRANSFER'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: llvm/offloading/fortran/target_map_present_success.f90
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: NVFORTRAN-S-0034-Syntax error at or near : (<tmpdir>/hv-llvm-offloading-fortran-target-map-present-success.f90:
+    28)'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/target-teams-if-runtime-init.f90
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: NVFORTRAN-S-0034-Syntax error at or near : (<tmpdir>/hv-llvm-offloading-fortran-target-teams-if-runtime-init.f90:
+    54)'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/fortran/target-with-threadprivate.f90
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R10-compile-ice
+  message: 'ice: NVFORTRAN-W-0155-Compiler failed to translate accelerator region (see -Minfo messages):
+    No device symbol for address reference (<tmpdir>/hv-llvm-offloading'
+  missing: a reduced reproducer, deduplicated against the index's ICE signatures
+- test: llvm/offloading/interop.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-offloading-interop.c", line 31: error: invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/single_threaded_for_barrier_hang_2.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-offloading-single-threaded-for-barrier-hang-2.c", line 27: error:
+    invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/target-tile.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-offloading-target-tile.c", line 34: error: invalid text in pragma'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/task_in_reduction_target.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-offloading-task-in-reduction-target.c", line 35: error: extra
+    text after expected end of preprocessing directive'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/thread_state_1.c
+  families:
+  - cce
+  toolchains:
+  - cce19
+  - cce19_g90
+  - cce20
+  - cce20_g90
+  - cce21
+  - cce21_g90
+  rules:
+  - R10b-own-link-or-hang
+  message: 'link_undefined_symbol: lld: error: undefined symbol: omp_get_level'
+  missing: a check of the vendor's documented support in offload regions (CCE lists the routines and constructs
+    it supports there), then a reduced reproducer
+- test: llvm/offloading/workshare_chunk.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-offloading-workshare-chunk-v1.c", line 64: error: invalid repeated
+    clause - schedule'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/workshare_chunk.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  - nvhpc269
+  rules:
+  - R11-compile-rejection
+  message: 'diagnostic: "<tmpdir>/hv-llvm-offloading-workshare-chunk-v2.c", line 64: error: invalid repeated
+    clause - schedule'
+  missing: a check of the vendor's documented support for the rejected construct (an unsupported feature
+    is not a defect), then a reduced reproducer
+- test: llvm/offloading/xteam_fp16_reduction.c
+  families:
+  - nvhpc
+  toolchains:
+  - nvhpc
+  rules:
+  - R10-compile-ice
+  message: 'ice: NVC++-F-0155-Compiler failed to translate OpenMP region (<tmpdir>/hv-llvm-offloading-xteam-fp16-reduction-v2.c:
+    27)'
+  missing: a reduced reproducer, deduplicated against the index's ICE signatures

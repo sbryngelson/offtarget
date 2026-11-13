@@ -1,0 +1,130 @@
+{
+ "finding": "nested/gcc-acc-c-parent-and-shared-pointee-one-directive.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-41",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each pointer (t.l->c in one mid, t.r->c in another) has its own attachment counter; t is present when the members are copied in, so attach of t.r->c to the already-present leaf is a normal increment/attach. Deletes only decrement reference counters; the leaf being deleted twice is a no-op once absent. Sum is 5+2*(1+2+3+4)=25. The runtime error 'enclosing struct not mapped for attach' contradicts the data model."
+  },
+  {
+   "run": "run-20261113/batch-74",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each pointer is attached after its parent is present: t, then t.l[0:1], t.l->c[0:1], t.l->c->a[0:4], then t.r[0:1] and t.r->c[0:1] (leaf already present, count incremented, attach). Device reads give 5+2*10=25. Deletes run children first, and the leaf's counter is decremented twice, so each delete finds it present or does nothing. The runtime error 'enclosing struct not mapped for attach' is a compiler defect. Slight uncertainty on shared-leaf attachment detail."
+  },
+  {
+   "run": "run-v2-20261113/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "copyin(t) maps the struct, then each member target is mapped after its enclosing struct, so each pointer attach has its enclosing object present. t.r->c aliases t.l->c: the second copyin only increments the dynamic reference counter and attaches t.r->c. Each delete without finalize only decrements the counter, so the shared leaf stays until both deletes run. Sum is 5+2*(1+2+3+4)=25. libgomp's 'enclosing struct not mapped for attach' is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-118",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "t is shallow-copied, then t.l, t.l->c, t.l->c->a, t.r and t.r->c are copied in with attach actions. The shared leaf is entered twice (dynamic counter 2) and deleted twice without finalize, so counters return to zero; delete of an absent or zero-counter item takes no action. Each parent pointer is attached under its present enclosing struct. The attachment-counter model permits two pointers to one target. The libgomp error about an enclosing struct is an implementation limitation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6320cb0965d530047d59fa307ca284a82943d4c9bfd74efe22ed089554aaf20a",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

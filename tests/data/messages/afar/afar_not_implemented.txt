@@ -1,0 +1,9 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: amdflang -fopenmp --offload-arch=gfx942 -L/usr/lib/gcc/x86_64-redhat-linux/8 -O2 (AFAR 24.0.0git, therock-afar-24.3.0) on offload.engine.gen omp52-clause-order (order(concurrent) on parallel do in target)
+# exit status: 1
+==== verbatim output below ====
+loc("/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-clause-order.f90":27:11): error: not yet implemented: Unhandled clause order in omp.wsloop operation
+loc("/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-clause-order.f90":27:11): error: LLVM Translation failed for operation: omp.wsloop
+loc("/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-clause-order.f90":27:11): error: LLVM Translation failed for operation: omp.parallel
+loc("/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-clause-order.f90":25:9): error: LLVM Translation failed for operation: omp.target
+error: failed to create the LLVM module

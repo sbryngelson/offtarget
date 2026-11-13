@@ -1,0 +1,5 @@
+# INVENTED (not captured): a system library (Cray LibSci) with an unresolved reference at link time, in the real GNU ld line format of cce_link_no_rocm.txt.
+# source: invented for tests/engine/test_findings_nogpu.py (review fix round 1, item 2)
+# exit status: 1
+==== verbatim output below ====
+/opt/cray/pe/cce/19.0.0/binutils/x86_64/x86_64-pc-linux-gnu/bin/ld: /opt/cray/pe/libsci/25.03.0/CRAY/17.0/x86_64/lib/libsci_cray.so: undefined reference to `_cray$mt_execute_parallel_with_proc_bind'

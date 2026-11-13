@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-flang-stop-in-target-crash.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-29",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "STOP is permitted in a structured block; the stop at line 16 is guarded by a(i)<0, which is false for a mapped a(i)=i. a is mapped to, b from, host_flag tofrom; the one write to host_flag is by a single iteration; each b(i) is written once. The observed STOP means a was not delivered to the device, which the map clause requires."
+  },
+  {
+   "run": "run-20261113/batch-49",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Combined target teams distribute parallel do with disjoint writes b(i); only iteration 1 writes host_flag; a(i)<0 is never true so the STOP is not executed. A STOP statement may appear in a structured block. The observed stop means the compiler misbehaved."
+  },
+  {
+   "run": "run-v2-20261113/batch-46",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "STOP is allowed within a structured block, and a(i) is always positive so it never executes. Each iteration writes its own b(i); host_flag is written only by i==1. The map clauses cover all used arrays. The expected check=pass is required; the runtime STOP is a compiler/runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-16",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-75",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "STOP is permitted in a structured block; the specification places no restriction on STOP in a target region. a is mapped to the device with values 1..64, so a(i) < 0 is never true and the STOP is never executed. Each iteration writes only b(i); host_flag is written by iteration 1 only. The program must print check=pass; executing the STOP is a compiler or runtime error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-30",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6c4203884045700c8d062fbe05803086ccd137c085d9411f345065cb6ec9d6eb",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "stress/cce-ftn-cif-record-split-abort.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Module variable gv is in a declare target; each function in the chain is declared with declare target and calls the next, so all device-referenced procedures are declared. gv is updated with target update to before the region; no data race (each iteration writes distinct out(i)). Nothing restricts the program, so a conforming compiler must compile it; a crash is a compiler bug."
+  },
+  {
+   "run": "run-20261113/batch-71",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Module variable gv is declare target and updated with target update; every function in the call chain carries declare target, so each called procedure is device-available. gv is only read in the region; out(i) is written once per iteration. Conforming, so compiling must not crash."
+  },
+  {
+   "run": "run-v2-20261113/batch-113",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each function carries declare target, gv is declared target and updated with target update, and the target region only calls these functions with distinct out(i) writes. No restriction is broken, so a conforming compiler must accept and compile it; a crash is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-27",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-20",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "gv is declared target in a module (to is assumed), and each function carries declare target, so all are available on the device. The nested calls are legal. The target update to(gv) is legal because gv is mapped by declare target. Each iteration writes only out(i), so there is no race. A conforming compiler must compile the program, so the crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-20",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "8c29029a1137fd2f00a9d06f53e31e9001cbde7140211feeede2a0708eaf6bee",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

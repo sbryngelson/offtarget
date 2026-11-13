@@ -1,0 +1,141 @@
+{
+ "finding": "fuzz/b2-209-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-17",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lp1 is a scalar not in a map clause on the target construct, so it is implicitly firstprivate in the target region. The lastprivate(conditional:) of the combined simd assigns to the target region's private copy, not the host variable. Host lp1 stays 0, so checksum=0 is conforming. The conditional lastprivate on a scalar in simd is permitted."
+  },
+  {
+   "run": "run-20261112/batch-30",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate applies to simd; since target is a constituent and lp1 is not a map base, it is mapped tofrom, so the host receives the lastprivate value. Conditional modifier is not forbidden on simd. Final lp1 is 16 (last even i), so checksum 16 is required; 0 is wrong. Empty module contains and empty types are valid Fortran 2008."
+  },
+  {
+   "run": "run-v2-20261113/batch-30",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate with the conditional modifier on a scalar is permitted on simd, and target simd is a combined construct. For a combined target construct a lastprivate list item with no map clause behaves as if mapped tofrom, so the host lp1 receives the value sequential execution would give: 16 (last even i). The expected checksum is 16, and observed 0 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-60",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate(conditional:) is allowed on simd and lp1 is a scalar. On a combined target construct a base variable of a lastprivate list item is treated as mapped tofrom, so the last conditional assignment (i=16) is copied to the host. Expected checksum is 16, not 0. The empty derived types are legal Fortran.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-06",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "13257285b4d645dedeebdbe1c2b8b3f337d780a3753a970cc57ed2439f8cb104",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261112/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails. lp1 appears in lastprivate on the combined target simd, so section 17.2 treats it as if in a map clause with map-type tofrom; the implicit firstprivate rule (5.8.1 last bullet) applies only when no earlier rule does, and the lastprivate rule precedes it. The conditional modifier is not restricted on simd (only distribute and taskloop). The host value therefore becomes 16, not 0. Reading A is right."
+  },
+  {
+   "run": "adj-20261112/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails: the lastprivate rule for combined target constructs maps lp1 tofrom, so the simd lastprivate update reaches the host copy; implicit firstprivate applies only when no earlier rule applies. conditional lastprivate on a scalar is allowed on simd. Sequential execution assigns lp1=16 last, so the host must see 16; checksum=0 is a compiler error. Reading A is right."
+  }
+ ]
+}

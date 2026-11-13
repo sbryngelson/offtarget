@@ -1,0 +1,8 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: amdclang -fopenmp --offload-arch=gfx942 -fopenmp-version=52 -O2 (AFAR 24.0.0git, therock-afar-24.3.0) on offload.engine.c_gen omp52-c-illegal-teams-nesting-001 (teams nested in parallel)
+# exit status: 1
+==== verbatim output below ====
+omp52-c-illegal-teams-nesting-001.c:31:5: error: region cannot be closely nested inside 'parallel' region; perhaps you forget to enclose 'omp teams' directive into a target region?
+   31 |     #pragma omp teams default(none) shared(a, b, nt, host_flag) num_teams(4)
+      |     ^
+1 error generated.

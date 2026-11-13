@@ -1,0 +1,113 @@
+{
+ "finding": "apps/afar-cce-teams-private-array-nested-parallel-wrong.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "t and j are private in the teams/distribute context; the inner parallel regions share t (a variable private in the enclosing context is shared in a nested parallel), each with a barrier at region end. Writes to t(j) and b(jt+j) are disjoint per iteration; dev is written by one team only. b(jt+j)=2*(jt+3-j)+1 is required (9 7 5 3). Observed b=1 means t lost its values: bug."
+  },
+  {
+   "run": "run-20261112/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "t and j are private to each team's distribute iterations; the inner parallel do regions share t (the private copy of the encountering thread), with a barrier at the end of each parallel region, so the second loop reads completed t. No race: each thread writes distinct t(j) and b(jt+j). dev is written by one iteration only. Expected b(1:4)=9 7 5 3 is required; bad=64 is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-14",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "t and j are private on the target teams distribute construct. The nested parallel do regions share t (the team's private copy). Each region has distinct writes and an implicit barrier, so there is no race. Only the jt==1 iteration writes dev. The result is deterministic and independent of thread counts, so b(1:4)=9 7 5 3 is required. Observed b=1 means the private array was not shared with the nested parallel region, a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-12",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-78",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "t is private to the distribute iterations; in the nested parallel do regions it is referenced without a default clause, so it is shared by the threads. Writes t(j) are separated from reads by the implicit barrier at the end of the first parallel do; b writes are disjoint. dev is written by one iteration. Expected values follow, so b=1 (t read as zero) shows the private copy was not shared.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-26",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "e5ff8e70580321069d063a8b4b2c69bb8cc29638a26bcd4456e74c965d005b22",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

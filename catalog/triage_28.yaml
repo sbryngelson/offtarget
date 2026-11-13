@@ -1,0 +1,1005 @@
+# Agent decisions of the confirmer's needs_human results for the
+# fuzz campaign s1 (s1 at HSA_XNACK=1, s1x0 at HSA_XNACK=0), and the spot
+# checks of a seeded 10% of each rule-decided verdict class
+# (offload/engine/confirm/decisions.py; `tools/confirm.py decide`).
+#
+# decisions: `match` selects needs_human results (rule glob, toolchains,
+# outcomes, regexes over the case's reason and the result's signature,
+# or case ids); the first matching decision gives `verdict`; `basis` is
+# the evidence read and the spec text. A decision never overrides a
+# verdict the rules gave. `own_sample_class: true`: the case-level spot
+# sample draws the decision's cells as a class of their own.
+# findings: the campaign's new findings (data/findings/fuzz/), as the
+# minimized.json rows of their run (the dashboard's findings table).
+# spot_checks: one entry per signature group of the sampled cases
+# (`group` = "<verdict>|<toolchain>|<outcome>|<rule>|<cause>"), with the
+# number of sampled cases in it, agree true/false and the note; a
+# disagreement names the rule fix it led to.
+version: 1
+decisions:
+  - id: D1-strided-target-update
+    match: {rule: "R12b-*", toolchains: [cce19, cce20, cce21],
+            reason: "ftn-1747"}
+    verdict: compiler_bug
+    basis: >-
+      CCE rejects target update to(x(1:n:2)) ("The stride specified for
+      array ... in the MAP clause must not be greater than 1"); every
+      diagnostic points at a target update statement (checked on all
+      cases). Legal: "A stride expression may not be specified unless
+      otherwise stated" (5.2 §3.2.5 p.66) and the data-motion clauses
+      state it: "The list items may include array sections with stride
+      expressions" (5.2 §5.9 p.165); added in 5.0 ("The target update
+      construct (see Section 13.9) was modified to allow array sections
+      that specify discontiguous storage", 5.2 §B.4 p.634); the map
+      clause keeps its contiguity restriction (§5.8.3 p.156). CCE claims
+      full OpenMP 5.0 (intro_openmp). The other families reject these
+      programs at other statements (R12b); the same diagnostic is R11
+      compiler_bug in the programs AFAR compiles with the strided update
+      (AFAR itself reports "stride cannot be specified on an array
+      section" in some programs, and gfortran 13 rejects it too: neither
+      is a legality verdict). Probe data/evidence/dataenv_probe/strided_update.f90.
+      AFAR's message is a non-fatal "error:"
+      for strided sections of structure components (gs%k(1:n:2)): 289
+      AFAR cells of s1/s1x0 carry it and none agrees (194 compile_reject
+      for other causes, 68 run_error, 17 wrong_code, 10 ICE), and 22 of
+      AFAR's 138 present-modifier aborts are among them (8 times the base
+      rate); a likely AFAR defect, not reduced (fuzz/s1-6888-cce21.f90).
+      It does not bear on these CCE cells.
+
+  - id: D2-default-none-loop-variable
+    match: {rule: "R12b-*", toolchains: [cce19, cce20, cce21],
+            reason: 'ftn-1510 .*Variable "[IJ]" must'}
+    verdict: compiler_bug
+    basis: >-
+      CCE's ftn-1510 names the iteration variable of the loop associated
+      with the enclosing teams distribute default(none) construct (checked
+      on all cases); it is predetermined private ("The loop iteration
+      variable in any associated loop of a loop-associated construct is
+      otherwise private", 5.2 §5.1.1 p.97), and default(none) concerns
+      only variables without a predetermined attribute (5.2 §5.4.1 p.109).
+
+  - id: D3-default-none-false-diagnostic
+    match: {rule: "R12b-*", toolchains: [cce19, cce20, cce21],
+            reason: 'ftn-1510 .*Variable "(?!I"|J"|LSIMD"|LPAR")\w+" must'}
+    verdict: compiler_bug
+    basis: >-
+      CCE's ftn-1510 says DEFAULT(NONE) was specified for a statement of a
+      procedure none of whose enclosing constructs has a default clause
+      (checked on every case: the statement's enclosing directives up to
+      its procedure; e.g. s1 seed 91 kp2, a target parallel / masked
+      region with no default clause). default(none) restricts only the
+      variables referenced in its own construct (5.2 §5.4.1 p.109): a
+      false diagnostic.
+
+  - id: D4-defaultmap-none-mapped-variable
+    match: {rule: "R12b-*", toolchains: [cce19, cce20, cce21],
+            reason: "ftn-1964"}
+    verdict: compiler_bug
+    basis: >-
+      CCE's ftn-1964 ("must have its data mapping attribute explicitly
+      declared because default map(none) was specified") names a variable
+      that the target construct with defaultmap(none: aggregate) lists in
+      a map clause, or a statement with no defaultmap(none) construct
+      around it (checked on every case); 5.2 §5.8.7 p.162 requires only
+      that such variables be listed in a data-environment attribute
+      clause. The class of defaultmap-none-loop-variable.f90 (CCE 19
+      reports b although b is in map(from: b)).
+
+  - id: D5-firstprivate-split-to-the-worksharing-leaf
+    match: {rule: "R12b-*", toolchains: [cce19, cce20, cce21],
+            reason: 'ftn-1310 .*Object "[IJ]"'}
+    verdict: compiler_bug
+    basis: >-
+      parallel do default(none) shared(...) firstprivate(i) nested in a
+      teams distribute loop over i: firstprivate on the combined construct
+      applies to the worksharing leaf and "the effect is as if the shared
+      clause with the same list item is applied to the parallel construct"
+      (5.2 §17.2 p.340), so i is shared in the parallel region and the
+      worksharing-construct restriction on items private in the binding
+      parallel region does not apply (5.2 §5.4.4); CCE's ftn-1310 ("It
+      must have a shared scope in the enclosing region") is wrong.
+
+  # Run-time decisions (case lists computed from the final batch by the
+  # criteria in each basis)
+  - id: D6-cce-unhandled-reduction
+    match: {cases: ["fuzz:s1:6577:cce19:gfx942:unified",
+              "fuzz:s1:6577:cce20:gfx942:unified",
+              "fuzz:s1:397:cce19:gfx942:unified",
+              "fuzz:s1:397:cce20:gfx942:unified",
+              "fuzz:s1:9409:cce21:gfx942:unified",
+              "fuzz:s1:397:cce19:gfx942:copy",
+              "fuzz:s1:397:cce20:gfx942:copy",
+              "fuzz:s1:1861:cce20:gfx942:unified",
+              "fuzz:s1:1861:cce21:gfx942:unified",
+              "fuzz:s1:6394:cce21:gfx942:unified",
+              "fuzz:s1:1861:cce20:gfx942:copy",
+              "fuzz:s1:1861:cce21:gfx942:copy",
+              "fuzz:s1:850:cce21:gfx942:unified",
+              "fuzz:s1:5772:cce19:gfx942:unified",
+              "fuzz:s1:5772:cce20:gfx942:unified",
+              "fuzz:s1:850:cce21:gfx942:copy",
+              "fuzz:s1:3593:cce20:gfx942:unified",
+              "fuzz:s1:4995:cce20:gfx942:unified",
+              "fuzz:s1:3256:cce19:gfx942:unified",
+              "fuzz:s1:3256:cce20:gfx942:unified",
+              "fuzz:s1:3256:cce21:gfx942:unified",
+              "fuzz:s1:3578:cce19:gfx942:unified",
+              "fuzz:s1:3578:cce20:gfx942:unified",
+              "fuzz:s1:3578:cce21:gfx942:unified",
+              "fuzz:s1:8259:cce20:gfx942:unified",
+              "fuzz:s1:9527:cce19:gfx942:unified",
+              "fuzz:s1:9527:cce20:gfx942:unified",
+              "fuzz:s1:4368:cce21:gfx942:unified",
+              "fuzz:s1:2580:cce19:gfx942:unified",
+              "fuzz:s1:2580:cce20:gfx942:unified",
+              "fuzz:s1:2599:cce20:gfx942:unified",
+              "fuzz:s1:165:cce21:gfx942:unified",
+              "fuzz:s1:4260:cce19:gfx942:unified",
+              "fuzz:s1:4260:cce20:gfx942:unified",
+              "fuzz:s1:165:cce21:gfx942:copy",
+              "fuzz:s1:6649:cce19:gfx942:unified",
+              "fuzz:s1:6649:cce20:gfx942:unified",
+              "fuzz:s1:6649:cce21:gfx942:unified",
+              "fuzz:s1:6925:cce20:gfx942:unified",
+              "fuzz:s1:6925:cce21:gfx942:unified",
+              "fuzz:s1:7568:cce19:gfx942:unified",
+              "fuzz:s1:7568:cce20:gfx942:unified",
+              "fuzz:s1:9399:cce19:gfx942:unified",
+              "fuzz:s1:9399:cce20:gfx942:unified",
+              "fuzz:s1:9399:cce21:gfx942:unified",
+              "fuzz:s1:178:cce21:gfx942:unified",
+              "fuzz:s1:3737:cce21:gfx942:unified",
+              "fuzz:s1:178:cce21:gfx942:copy",
+              "fuzz:s1:8711:cce20:gfx942:unified",
+              "fuzz:s1:7073:cce20:gfx942:unified",
+              "fuzz:s1:7073:cce21:gfx942:unified",
+              "fuzz:s1:3618:cce21:gfx942:unified",
+              "fuzz:s1:4572:cce21:gfx942:unified",
+              "fuzz:s1:9362:cce21:gfx942:unified",
+              "fuzz:s1:9504:cce19:gfx942:unified",
+              "fuzz:s1:9504:cce20:gfx942:unified",
+              "fuzz:s1:6979:cce20:gfx942:unified",
+              "fuzz:s1:7084:cce20:gfx942:unified",
+              "fuzz:s1:997:cce19:gfx942:unified",
+              "fuzz:s1:997:cce20:gfx942:unified",
+              "fuzz:s1:4902:cce19:gfx942:unified",
+              "fuzz:s1:4902:cce20:gfx942:unified",
+              "fuzz:s1:4314:cce20:gfx942:unified"]}
+    verdict: compiler_bug
+    basis: >-
+      CCE's own runtime prints "Unhandled Reduction!!!" during the run and the
+      result is wrong (or the run aborts): the compiler/runtime declares that
+      it did not perform a reduction of the legal program. No expected value
+      is needed for that statement; the expected value is from the model only
+      (the elision does not apply to these programs), hence R22/R13c.
+
+  - id: D7-cce-target-simd-lastprivate-conditional
+    match: {cases: ["fuzz:s1:3603:cce19:gfx942:unified",
+              "fuzz:s1:3603:cce20:gfx942:unified",
+              "fuzz:s1:3603:cce21:gfx942:unified",
+              "fuzz:s1:7038:cce21:gfx942:unified",
+              "fuzz:s1:2425:cce21:gfx942:unified",
+              "fuzz:s1:2425:cce21:gfx942:copy",
+              "fuzz:s1:3036:cce21:gfx942:unified",
+              "fuzz:s1:227:cce20:gfx942:unified",
+              "fuzz:s1:227:cce21:gfx942:unified",
+              "fuzz:s1:227:cce20:gfx942:copy",
+              "fuzz:s1:227:cce21:gfx942:copy"]}
+    verdict: compiler_bug
+    basis: >-
+      Wrong answer on CCE of a program with target simd
+      lastprivate(conditional: x) and x in no map clause: the known finding
+      fuzz/b2-209-cce19.f90 (CCE loses the implicit map(tofrom) of a
+      conditional lastprivate item on a combined target construct, 5.2
+      §17.2 p.340; the probes data/evidence/dataenv_probe/lpcond_simd_*.f90 show lp
+      unchanged on CCE 19/20/21 at gfx942 and gfx90a, and correct with an
+      explicit map or without the modifier). Most of these programs were
+      called noncompliant by the host check only because CCE's host
+      fallback loses the value too and AFAR does not implement the
+      modifier. Per-case check (fix;
+      data/evidence/dataenv_probe/d7_check.py, results/t28_probe/d7_check.jsonl): each
+      of the 11 programs, rewritten with an explicit map(tofrom: x) on its
+      target simd lastprivate(conditional: x) directive (what 5.2 §17.2
+      p.340 makes implicit), prints the model's value on the case's
+      toolchain and memory mode, while the original prints the stored
+      wrong value: 11 of 11 confirmed.
+
+  - id: D8-crash-another-family-runs-it
+    match: {cases: ["fuzz:s1:1423:afar:gfx942:unified",
+              "fuzz:s1:2263:cce20:gfx942:unified",
+              "fuzz:s1:2263:cce21:gfx942:unified",
+              "fuzz:s1:2268:cce21:gfx942:unified",
+              "fuzz:s1:2422:cce21:gfx942:unified",
+              "fuzz:s1:4707:afar:gfx942:unified",
+              "fuzz:s1:4829:cce21:gfx942:unified",
+              "fuzz:s1:5154:cce21:gfx942:unified",
+              "fuzz:s1:6287:cce21:gfx942:unified",
+              "fuzz:s1:8689:cce21:gfx942:unified",
+              "fuzz:s1:9376:afar:gfx942:unified",
+              "fuzz:s1:9405:cce21:gfx942:unified",
+              "fuzz:s1:9963:afar:gfx942:unified",
+              "fuzz:s1:2263:cce19:gfx942:copy",
+              "fuzz:s1:2263:cce20:gfx942:copy",
+              "fuzz:s1:2263:cce21:gfx942:copy",
+              "fuzz:s1:2422:cce21:gfx942:copy",
+              "fuzz:s1:129:cce21:gfx942:unified",
+              "fuzz:s1:4246:cce21:gfx942:unified",
+              "fuzz:s1:5069:cce21:gfx942:unified",
+              "fuzz:s1:5351:cce21:gfx942:unified",
+              "fuzz:s1:5817:afar:gfx942:unified",
+              "fuzz:s1:6636:afar:gfx942:unified",
+              "fuzz:s1:6918:cce21:gfx942:unified",
+              "fuzz:s1:7239:cce21:gfx942:unified",
+              "fuzz:s1:8847:afar:gfx942:unified",
+              "fuzz:s1:9753:cce21:gfx942:unified",
+              "fuzz:s1:129:cce21:gfx942:copy",
+              "fuzz:s1:546:cce21:gfx942:unified",
+              "fuzz:s1:888:cce21:gfx942:unified",
+              "fuzz:s1:1621:cce21:gfx942:unified",
+              "fuzz:s1:3224:cce21:gfx942:unified",
+              "fuzz:s1:3368:cce21:gfx942:unified",
+              "fuzz:s1:3647:afar:gfx942:unified",
+              "fuzz:s1:4283:afar:gfx942:unified",
+              "fuzz:s1:4367:cce21:gfx942:unified",
+              "fuzz:s1:4636:cce19:gfx942:unified",
+              "fuzz:s1:4636:cce20:gfx942:unified",
+              "fuzz:s1:5789:afar:gfx942:unified",
+              "fuzz:s1:5901:cce21:gfx942:unified",
+              "fuzz:s1:7192:cce21:gfx942:unified",
+              "fuzz:s1:7584:cce21:gfx942:unified",
+              "fuzz:s1:7739:cce21:gfx942:unified",
+              "fuzz:s1:7841:cce19:gfx942:unified",
+              "fuzz:s1:7841:cce20:gfx942:unified",
+              "fuzz:s1:8564:cce21:gfx942:unified",
+              "fuzz:s1:8930:afar:gfx942:unified",
+              "fuzz:s1:9613:cce21:gfx942:unified",
+              "fuzz:s1:9754:cce21:gfx942:unified",
+              "fuzz:s1:546:cce21:gfx942:copy",
+              "fuzz:s1:888:cce21:gfx942:copy",
+              "fuzz:s1:1621:cce21:gfx942:copy",
+              "fuzz:s1:355:cce21:gfx942:unified",
+              "fuzz:s1:426:cce21:gfx942:unified",
+              "fuzz:s1:722:cce21:gfx942:unified",
+              "fuzz:s1:757:afar:gfx942:unified",
+              "fuzz:s1:1058:cce21:gfx942:unified",
+              "fuzz:s1:1783:cce21:gfx942:unified",
+              "fuzz:s1:2232:cce21:gfx942:unified",
+              "fuzz:s1:3636:afar:gfx942:unified",
+              "fuzz:s1:4108:cce21:gfx942:unified",
+              "fuzz:s1:4639:afar:gfx942:unified",
+              "fuzz:s1:4844:cce21:gfx942:unified",
+              "fuzz:s1:5094:afar:gfx942:unified",
+              "fuzz:s1:6713:afar:gfx942:unified",
+              "fuzz:s1:7715:cce21:gfx942:unified",
+              "fuzz:s1:7845:cce21:gfx942:unified",
+              "fuzz:s1:8459:afar:gfx942:unified",
+              "fuzz:s1:8595:cce21:gfx942:unified",
+              "fuzz:s1:9158:cce21:gfx942:unified",
+              "fuzz:s1:9655:cce21:gfx942:unified",
+              "fuzz:s1:9786:cce21:gfx942:unified",
+              "fuzz:s1:355:cce21:gfx942:copy",
+              "fuzz:s1:426:cce21:gfx942:copy",
+              "fuzz:s1:722:cce19:gfx942:copy",
+              "fuzz:s1:722:cce20:gfx942:copy",
+              "fuzz:s1:722:cce21:gfx942:copy",
+              "fuzz:s1:1058:cce21:gfx942:copy",
+              "fuzz:s1:1783:cce21:gfx942:copy",
+              "fuzz:s1:2261:afar:gfx942:unified",
+              "fuzz:s1:3690:cce21:gfx942:unified",
+              "fuzz:s1:6698:cce19:gfx942:unified",
+              "fuzz:s1:6698:cce20:gfx942:unified",
+              "fuzz:s1:7896:cce21:gfx942:unified",
+              "fuzz:s1:8235:cce21:gfx942:unified",
+              "fuzz:s1:8950:cce21:gfx942:unified",
+              "fuzz:s1:2261:afar:gfx942:copy",
+              "fuzz:s1:335:afar:gfx942:unified",
+              "fuzz:s1:581:cce21:gfx942:unified",
+              "fuzz:s1:2026:afar:gfx942:unified",
+              "fuzz:s1:2805:cce21:gfx942:unified",
+              "fuzz:s1:3020:cce19:gfx942:unified",
+              "fuzz:s1:3020:cce20:gfx942:unified",
+              "fuzz:s1:3387:afar:gfx942:unified",
+              "fuzz:s1:3967:afar:gfx942:unified",
+              "fuzz:s1:4013:afar:gfx942:unified",
+              "fuzz:s1:4638:afar:gfx942:unified",
+              "fuzz:s1:4940:cce21:gfx942:unified",
+              "fuzz:s1:5200:cce21:gfx942:unified",
+              "fuzz:s1:6274:cce21:gfx942:unified",
+              "fuzz:s1:7997:cce21:gfx942:unified",
+              "fuzz:s1:9138:afar:gfx942:unified",
+              "fuzz:s1:335:afar:gfx942:copy",
+              "fuzz:s1:581:cce21:gfx942:copy",
+              "fuzz:s1:2026:afar:gfx942:copy",
+              "fuzz:s1:110:afar:gfx942:unified",
+              "fuzz:s1:798:cce21:gfx942:unified",
+              "fuzz:s1:1324:cce21:gfx942:unified",
+              "fuzz:s1:2241:cce21:gfx942:unified",
+              "fuzz:s1:3205:cce19:gfx942:unified",
+              "fuzz:s1:3205:cce20:gfx942:unified",
+              "fuzz:s1:3981:cce21:gfx942:unified",
+              "fuzz:s1:5452:cce21:gfx942:unified",
+              "fuzz:s1:5988:afar:gfx942:unified",
+              "fuzz:s1:6121:cce19:gfx942:unified",
+              "fuzz:s1:6121:cce20:gfx942:unified",
+              "fuzz:s1:6231:afar:gfx942:unified",
+              "fuzz:s1:6388:cce19:gfx942:unified",
+              "fuzz:s1:6388:cce20:gfx942:unified",
+              "fuzz:s1:6388:cce21:gfx942:unified",
+              "fuzz:s1:6748:cce20:gfx942:unified",
+              "fuzz:s1:9176:cce21:gfx942:unified",
+              "fuzz:s1:798:cce21:gfx942:copy",
+              "fuzz:s1:1324:cce21:gfx942:copy",
+              "fuzz:s1:2241:cce21:gfx942:copy",
+              "fuzz:s1:493:afar:gfx942:unified",
+              "fuzz:s1:2316:cce21:gfx942:unified",
+              "fuzz:s1:2404:afar:gfx942:unified",
+              "fuzz:s1:3545:afar:gfx942:unified",
+              "fuzz:s1:3894:cce21:gfx942:unified",
+              "fuzz:s1:5021:cce21:gfx942:unified",
+              "fuzz:s1:5674:afar:gfx942:unified",
+              "fuzz:s1:9344:cce20:gfx942:unified",
+              "fuzz:s1:493:afar:gfx942:copy",
+              "fuzz:s1:2316:cce19:gfx942:copy",
+              "fuzz:s1:2316:cce21:gfx942:copy",
+              "fuzz:s1:2404:afar:gfx942:copy",
+              "fuzz:s1:1752:cce19:gfx942:unified",
+              "fuzz:s1:1752:cce20:gfx942:unified",
+              "fuzz:s1:1848:cce19:gfx942:unified",
+              "fuzz:s1:1848:cce20:gfx942:unified",
+              "fuzz:s1:2357:cce20:gfx942:unified",
+              "fuzz:s1:2357:cce21:gfx942:unified",
+              "fuzz:s1:2068:cce19:gfx942:unified",
+              "fuzz:s1:2068:cce20:gfx942:unified",
+              "fuzz:s1:2068:cce21:gfx942:unified",
+              "fuzz:s1:1902:cce20:gfx942:unified",
+              "fuzz:s1:1902:cce21:gfx942:unified"]}
+    verdict: compiler_bug
+    basis: >-
+      A deterministic crash or runtime abort (signal, memory access fault,
+      heap corruption, an offload runtime error) of a legal program that
+      passed the definedness check (the sequential program with
+      -fcheck=all, twice, prints the model value), while a toolchain of the
+      other compiler family runs the same program to the model's value on
+      the device in the same memory mode. No expected value is needed to
+      call a crash a failure; the other family's run shows the program is
+      executable as written (the metamorphic rewrites did not give a second
+      source, so the rules stop at R22). A presence or overlap abort
+      (CRAY_ACC "Variable not found in present table", "Host region
+      overlaps present region", an offload "not present" error) is
+      witnessed only by a CCE toolchain or by AFAR at HSA_XNACK=0 (copy
+      mode): AFAR at HSA_XNACK=1 does not enforce the present check
+      (data/findings/afar-xnack1-present-not-enforced.f90), so its correct run
+      says nothing about the mapping (s1 seeds 7986
+      and 9270 leave the decision, seed 2232 CCE 21 joins it by AFAR's
+      copy-mode run).
+
+  - id: D9-cce20-declare-target-enter
+    # sampled as a class of its own (decisions.case_sample): it came with
+    # (2,597 cells) and would otherwise fill the agent-decided
+    # sample
+    own_sample_class: true
+    match: {rule: "R12b-*", toolchains: [cce20, cce20_g90],
+            reason: 'ftn-1725 .*"INDIRECT, LINK, TO or DEVICE_TYPE" was expected but found "E"'}
+    verdict: compiler_bug
+    basis: >-
+      CCE 20 rejects `!$omp declare target enter(...)` (ftn-1725 "INDIRECT,
+      LINK, TO or DEVICE_TYPE was expected but found E"); every diagnostic
+      points at the enter keyword of a declare target directive (checked
+      on all 2,597 s1 cells, 2,062 programs: line and column against the
+      regenerated bundle file). The enter clause is the 5.2 spelling of
+      to on declare target ("The clause-name to may be used as a synonym
+      for the clause-name enter", 5.2 §5.8.4 p.158; "The enter clause was
+      added as a synonym for the to clause on the declare target
+      directive", Appendix B.2 p.627), and
+      CCE 20.0.0's release notes claim "[5.2] ... misc. new syntax allowed
+      by specification (e.g. `declare target`, ...)", whose only new 5.2
+      declare target syntax is enter (catalog/omp/claims.yaml). Claimed and rejected: compiler_bug (R11 decides it where another
+      family compiles the program; here the other families reject the
+      program at other statements, so the rules stop at R12b, as for D1).
+      CCE 19 has no such claim (R11c unsupported); CCE 21 accepts enter.
+
+spot_checks:
+  - {"group": "compiler_bug|afar|crash|R20-runtime-bug|crash: SIGABRT; without mandatory: crash: SIGABRT", "cases": 19, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|afar|crash|R20-runtime-bug|crash: SIGSEGV; without mandatory: crash: SIGSEGV", "cases": 9, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|afar|crash|R20-runtime-bug|finding 158-afar.f90", "cases": 7, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|afar|crash|R20-runtime-bug|finding 916-afar.f90", "cases": 2, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|afar|crash|R20-runtime-bug|finding b1-231-afar.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|afar|crash|R20-runtime-bug|finding b3-45-cce21.f90", "cases": 5, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|afar|ice|R10-compile-ice|ice: error: verification of lowering to FIR failed", "cases": 8, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|afar|rejected|R10b-own-link-or-hang|finding afar-udr-derived-type-link.f90", "cases": 133, "agree": true, "note": "own link failure (an undefined runtime symbol of the compiler) or a compile that does not finish while the other releases compile in seconds"}
+  - {"group": "compiler_bug|afar|wrong_answer|R20-runtime-bug|finding 700-afar.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|afar|wrong_answer|R20-runtime-bug|ran_on_host=N", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce19|crash|R20-runtime-bug|crash: SIGABRT; without mandatory: crash: SIGABRT", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce19|ice|R10-compile-ice|finding cce19-target-parallel-single-ice.f90", "cases": 64, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce19|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"ACC - barrier<path> last private not supported\" (<path> line N, version ccNdNeNffNdNfNeNe", "cases": 17, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce19|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Unhandled expression type in get base or dv mem", "cases": 2, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce19|rejected|R11-compile-rejection|diagnostic: ftn-N ftn: ERROR Variable \"X\" must have its data scope explicitly declared because DEFAULT(NONE) was specifi", "cases": 1, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce19|rejected|R11-compile-rejection|finding defaultmap-none-loop-variable.f90", "cases": 1, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce19|rejected|R11-compile-rejection|finding s1-6888-cce21.f90", "cases": 10, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce19|run_error|R20-runtime-bug|exit_status: N; without mandatory: exit_status: N", "cases": 2, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce19|timeout|R10b-own-link-or-hang|compile_timeout", "cases": 10, "agree": true, "note": "own link failure (an undefined runtime symbol of the compiler) or a compile that does not finish while the other releases compile in seconds"}
+  - {"group": "compiler_bug|cce19|wrong_answer|R20-runtime-bug|finding b3-250-cce20.f90", "cases": 3, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce19|wrong_answer|R20-runtime-bug|finding multithread-allocatable-section-maps.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce19|wrong_answer|R20-runtime-bug|ran_on_host=N", "cases": 7, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce20|crash|R20-runtime-bug|crash: SIGABRT; without mandatory: crash: SIGABRT", "cases": 8, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce20|crash|R20-runtime-bug|finding 1505-cce20.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|finding 1391-cce20.f90", "cases": 30, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"ACC - barrier<path> last private not supported\" (<path> line N, version NdNfNcNbdNaNaNaNa", "cases": 4, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Error getting dope vector information\" (<path> line N, version NdNfNcNbdNaNaNaNacfacNde)", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Unhandled contexts must be fixed!!!", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Unhandled expression type in get base or dv mem", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"unexpected type in TYPE_DEREF\" (<path> line N, version NdNfNcNbdNaNaNaNacfacNde)", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"unhandled acc construct type\" (<path> line N, version NdNfNcNbdNaNaNaNacfacNde)", "cases": 62, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"unhandled construct type\" (<path> line N, version NdNfNcNbdNaNaNaNacfacNde)", "cases": 40, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|ice: ftn-N ftn: INTERNAL | \"<path> was terminated due to receipt of signal N: Aborted.", "cases": 3, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce20|rejected|R11-compile-rejection|finding s1-2370-cce21.f90", "cases": 1, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce20|rejected|R11-compile-rejection|finding s1-6888-cce21.f90", "cases": 12, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce20|run_error|R20-runtime-bug|exit_status: N; without mandatory: exit_status: N", "cases": 3, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce20|timeout|R10b-own-link-or-hang|compile_timeout", "cases": 1, "agree": true, "note": "own link failure (an undefined runtime symbol of the compiler) or a compile that does not finish while the other releases compile in seconds"}
+  - {"group": "compiler_bug|cce20|wrong_answer|R20-runtime-bug|finding b3-250-cce20.f90", "cases": 2, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce20|wrong_answer|R20-runtime-bug|finding fortran-loop-bind-thread-in-parallel.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce20|wrong_answer|R20-runtime-bug|finding multithread-allocatable-section-maps.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce20|wrong_answer|R20-runtime-bug|ran_on_host=N", "cases": 10, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|crash|R20-runtime-bug|crash: SIGSEGV; without mandatory: crash: SIGSEGV", "cases": 4, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|crash|R20-runtime-bug|finding b3-190-cce21.f90", "cases": 15, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|crash|R20-runtime-bug|finding b3-45-cce21.f90", "cases": 7, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"ACC - barrier<path> last private not supported\" (<path> line N, version NfNceNdNedeNbNcNb", "cases": 63, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Couldn't find an atomic update statement\" (<path> line N, version NfNceNdNedeNbNcNbN)", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Mismatched last induction expression for last private operators\" (<path> line N, version ", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Unexpected schedule\" (<path> line N, version NfNceNdNedeNbNcNbN)", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Unhandled contexts must be fixed!!!", "cases": 2, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"Unhandled expression type in get base or dv mem", "cases": 4, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"unhandled acc construct type\" (<path> line N, version NfNceNdNedeNbNcNbN)", "cases": 135, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"unhandled construct type\" (<path> line N, version NfNceNdNedeNbNcNbN)", "cases": 76, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: INTERNAL COMPILER ERROR: \"unhandled operator", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|ice|R10-compile-ice|ice: ftn-N ftn: INTERNAL | \"<path> was terminated due to receipt of signal N: Aborted.", "cases": 7, "agree": true, "note": "an internal compiler error of a program that passed the legality checks (stored message read); dedupe by message/site"}
+  - {"group": "compiler_bug|cce21|rejected|R10b-own-link-or-hang|finding cce21-in-reduction-taskwait-link.f90", "cases": 75, "agree": true, "note": "own link failure (an undefined runtime symbol of the compiler) or a compile that does not finish while the other releases compile in seconds"}
+  - {"group": "compiler_bug|cce21|rejected|R11-compile-rejection|diagnostic: ftn-N ftn: ERROR Variable \"X\" must have its data mapping attribute explicitly declared because default map(n", "cases": 1, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce21|rejected|R11-compile-rejection|finding defaultmap-none-loop-variable.f90", "cases": 1, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce21|rejected|R11-compile-rejection|finding s1-6888-cce21.f90", "cases": 26, "agree": true, "note": "a diagnostic rejection of a legal construct while AFAR compiles the whole program (the strided update and default(none) cases checked against the spec text, decisions D1-D5)"}
+  - {"group": "compiler_bug|cce21|run_error|R20-runtime-bug|exit_status: N; without mandatory: exit_status: N", "cases": 3, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|timeout|R10b-own-link-or-hang|compile_timeout", "cases": 2, "agree": true, "note": "own link failure (an undefined runtime symbol of the compiler) or a compile that does not finish while the other releases compile in seconds"}
+  - {"group": "compiler_bug|cce21|wrong_answer|R20-runtime-bug|finding b2-85-cce20.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|wrong_answer|R20-runtime-bug|finding b3-250-cce20.f90", "cases": 2, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|wrong_answer|R20-runtime-bug|finding fortran-loop-bind-thread-in-parallel.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|wrong_answer|R20-runtime-bug|finding multithread-allocatable-section-maps.f90", "cases": 1, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "compiler_bug|cce21|wrong_answer|R20-runtime-bug|ran_on_host=N", "cases": 24, "agree": true, "note": "expected value trusted (the fuzz model and another family's runs of the original and its rewrites), deterministic, another family's device run prints it; the instance links (key constructs) are coarse for these large programs (Concerns), the verdict stands"}
+  - {"group": "environment|cce20|harness_error|R01-environment|environment: Lmod has detected the following error: Unable to parse:", "cases": 1, "agree": true, "note": "Lmod failed to parse a module file: environment"}
+  - {"group": "flaky|afar|wrong_answer|R09-flaky|ran_on_host=N", "cases": 1, "agree": true, "note": "repeats differ (pass and fail)"}
+  - {"group": "our_bug|afar|rejected|R03-illegal|link_undefined_symbol: ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*, ...)", "cases": 1, "agree": true, "note": "a G1 program (generator defect): illegal, our_bug"}
+  - {"group": "our_bug|afar|rejected|R03-illegal|not_implemented: error: loc: <path> not yet implemented: lastprivate clause in constructs other than simd<path>", "cases": 1, "agree": true, "note": "a G1 program (generator defect): illegal, our_bug"}
+  - {"group": "our_bug|cce19|rejected|R03-illegal|diagnostic: ftn-N ftn: ERROR Variable \"X\" must have its data scope explicitly declared because DEFAULT(NONE) was specifi", "cases": 1, "agree": true, "note": "a G1 program (generator defect): illegal, our_bug"}
+  - {"group": "our_bug|cce20|rejected|R03-illegal|diagnostic: ftn-N ftn: ERROR Unexpected syntax while parsing the DIRECTIVE statement : \"INDIRECT, LINK, TO or DEVICE_TYP", "cases": 1, "agree": true, "note": "a G1 program (generator defect): illegal, our_bug"}
+  - {"group": "our_bug|cce21|rejected|R03-illegal|diagnostic: ftn-N ftn: ERROR The stride specified for array \"X\" in the MAP clause must not be greater than N.", "cases": 1, "agree": true, "note": "a G1 program (generator defect): illegal, our_bug"}
+  - {"group": "our_bug|cce21|rejected|R03-illegal|diagnostic: ftn-N ftn: ERROR Unexpected syntax while parsing the DIRECTIVE statement : \")\" was expected but found \":\".", "cases": 1, "agree": true, "note": "a G1 program (generator defect): illegal, our_bug"}
+  - {"group": "unsupported_everywhere|cce21|rejected|R12-every-family-rejects|diagnostic: ftn-N ftn: ERROR Object \"X\" is specified on the FIRSTPRIVATE clause. It must have a shared scope in the encl", "cases": 1, "agree": false, "note": "s1 seed 1150: AFAR rejects the order clause, CCE firstprivate(i), on the same parallel do; not every family rejecting one construct. Fixed: R12/R12a do not apply to fuzz programs (R12b, decision D5); rerun"}
+  - {"group": "unsupported|afar|rejected|R05-unsupported|not_implemented: error: loc: <path> not yet implemented: Firstprivate is currently unsupported defaultmap behaviour", "cases": 34, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|afar|rejected|R05-unsupported|not_implemented: error: loc: <path> not yet implemented: lastprivate clause in constructs other than simd<path>", "cases": 168, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|afar|rejected|R05-unsupported|not_implemented: error: loc: <path> not yet implemented: lastprivate(conditional:) on do simd composite construct", "cases": 3, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|afar|rejected|R05-unsupported|not_implemented: error: loc: <path> not yet implemented: lastprivate(conditional:) on simd construct", "cases": 19, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|afar|rejected|R05-unsupported|not_implemented: error: loc: <path> not yet implemented: lowering symbol to HLFIR", "cases": 2, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|afar|rejected|R05-unsupported|not_implemented: loc: error: not yet implemented: Unhandled clause order in omp.distribute operation", "cases": 47, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|afar|rejected|R05-unsupported|not_implemented: loc: error: not yet implemented: Unhandled clause order in omp.wsloop operation", "cases": 56, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- $udr_c_NFUZZ_DMOD", "cases": 4, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- $udr_i_NFUZZ_DMOD", "cases": 18, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- __GET_DYNAMIC_TYPE", "cases": 14, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Fortran character", "cases": 1, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Fortran character -- $$_xc", "cases": 1, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Fortran character -- oN", "cases": 4, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Fortran character -- xc", "cases": 16, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce19|rejected|R11c-later-form-unclaimed|form declare-target-enter", "cases": 720, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce19|rejected|R11c-later-form-unclaimed|form defaultmap-all", "cases": 58, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce19|rejected|R11c-later-form-unclaimed|form distribute-order", "cases": 14, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce19|rejected|R11c-later-form-unclaimed|form num-teams-lower-bound", "cases": 14, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce19|rejected|R11c-later-form-unclaimed|form target-thread-limit", "cases": 106, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce20|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- $udr_c_NFUZZ_DMOD", "cases": 7, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce20|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- $udr_i_NFUZZ_DMOD", "cases": 29, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce20|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- __GET_DYNAMIC_TYPE", "cases": 14, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce20|rejected|R11c-later-form-unclaimed|form declare-target-enter", "cases": 685, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce20|rejected|R11c-later-form-unclaimed|form distribute-order", "cases": 17, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce20|rejected|R11c-later-form-unclaimed|form num-teams-lower-bound", "cases": 20, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce21|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- $udr_c_NFUZZ_DMOD", "cases": 16, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce21|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- $udr_i_NFUZZ_DMOD", "cases": 64, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce21|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Calls -- __GET_DYNAMIC_TYPE", "cases": 31, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce21|rejected|R05-unsupported|not_implemented: Unsupported OpenMP construct Deep privatization -- dr", "cases": 2, "agree": true, "note": "the compiler's own not-implemented message"}
+  - {"group": "unsupported|cce21|rejected|R11c-later-form-unclaimed|form distribute-order", "cases": 47, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported|cce21|rejected|R11c-later-form-unclaimed|form num-teams-lower-bound", "cases": 51, "agree": true, "note": "the diagnostic's statement holds the later form and its message names it; no vendor claim of the form (catalog/later_forms.yaml)"}
+  - {"group": "unsupported_everywhere|cce21|rejected|R12-every-family-rejects|diagnostic: ftn-1747 strided target update", "cases": 0, "agree": false, "note": "(batch, 204 cells affected) the other families rejected the program at other statements (AFAR: lastprivate not implemented); fixed: R12 needed the same statement (first fix), then no R12 for fuzz programs; rerun (now D1)", "sample": "first offline batch"}
+  - {"group": "unsupported|cce20|rejected|R11c-later-form-unclaimed|form defaultmap-all", "cases": 0, "agree": false, "note": "(batch, 1 cells affected) s1 seed 8174: the message names order on target teams distribute; fixed: forms named by the message first, else the column; rerun", "sample": "first offline batch"}
+  - {"group": "compiler_bug|cce21|rejected|R11-compile-rejection|finding cce21-linear-modifier-default-none.f90", "cases": 0, "agree": false, "note": "(batch, 2 cells affected) verdict right, instance wrong: the programs have no linear clause; fixed: a diagnostic is an instance only with the finding's key constructs (related otherwise); rerun", "sample": "first offline batch"}
+  - {"group": "needs_human|cce21|wrong_answer|R22-expected-weak|(metamorphic conflict)", "cases": 0, "agree": false, "note": "(batch, 420 cells affected) the failing compiler's own stable wrong value on the rewrites made the metamorphic source a conflict; fixed: a family is no metamorphic witness against itself; rerun (R20 for most)", "sample": "first offline batch"}
+  - {"group": "needs_human|*|wrong_answer|R99-default|(metamorphic dispute)", "cases": 0, "agree": false, "note": "(batch, 222 cells affected) verdict right (needs_human), rule unnamed; added R22b; rerun", "sample": "first offline batch"}
+  - {"group": "compiler_bug|cce20|ice|R10-compile-ice|finding s1-3463-cce21.f90", "cases": 1, "agree": true, "note": "an internal compiler error of a program that passed the legality checks; now an instance of the new finding s1-3463 (the same case as the group 'Error getting dope vector information' read before the finding was indexed)"}
+  - {"group": "compiler_bug|afar|crash|R20-runtime-bug|finding s1-9443-afar.f90", "cases": 5, "agree": true, "note": "R20 verdict as read before (trusted expected value, other-family witness); now linked to the new finding s1-9443 by key constructs (target data, present map), a coarse link"}
+  - {"group": "compiler_bug|cce19|run_error|R20-runtime-bug|finding s1-7882-cce20.f90", "cases": 1, "agree": true, "note": "R20 verdict as read before; linked to the new finding s1-7882 by key constructs"}
+  - {"group": "compiler_bug|cce21|run_error|R20-runtime-bug|finding s1-7882-cce20.f90", "cases": 1, "agree": true, "note": "R20 verdict as read before; linked to the new finding s1-7882 by key constructs"}
+# The case-level spot check. A fresh seeded draw
+# (decisions.case_sample, seed 2801) of 10% of each final verdict class
+# (needs_human included), capped at 60 cases per class (compiler_bug,
+# unsupported, needs_human, the agent-decided cells D1-D8 and D9 are
+# larger than 600), from batch_s1.final.jsonl before the round's rule
+# fixes; `class` is the class at the draw. Each case was read on its own
+# evidence (the statement at the diagnostic in the regenerated program,
+# the other toolchains' cells in both modes, the expected-value sources
+# and witnesses, the runtime output, the instance link); `note` records
+# what that evidence shows. agree: false names the rule fix.
+case_spot_checks:
+  - {"case": "fuzz:s1:1114:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:134:32 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:1150:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1310 names I at fuzz_prog.f90:99:27 `!$omp& firstprivate(i)`; enclosing: !$omp target teams distribute map(tofrom: o1, hf1) num_teams(2) dist_schedule(static, 1) > !$omp parallel do order(unconstrained: concurrent) default(none) shared(dr, hf1, o1) firstprivate(i); afar rejects (not_implemented); cce19 rejects (ftn-1310); cce21 rejects (ftn-1310)"}
+  - {"case": "fuzz:s1:1150:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1310 names I at fuzz_prog.f90:99:27 `!$omp& firstprivate(i)`; enclosing: !$omp target teams distribute map(tofrom: o1, hf1) num_teams(2) dist_schedule(static, 1) > !$omp parallel do order(unconstrained: concurrent) default(none) shared(dr, hf1, o1) firstprivate(i); afar rejects (not_implemented); cce19 rejects (ftn-1310); cce20 rejects (ftn-1310)"}
+  - {"case": "fuzz:s1:1152:cce20:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:112:28 `!$omp target update to(ia(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:1152:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:112:28 `!$omp target update to(ia(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:1250:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1964 names DR at fuzz_prog.f90:166:35 `r4a = iand(r4a, iand(mod((dr%a(i) * 7), 1000), 1048575))`; enclosing: !$omp target map(tofrom: dr%a, o4, xc, hf4, r4a) defaultmap(none: aggregate) nowait depend(out: dr, hf4, o4, r4a, xc(1:n)) > ... > !$omp distribute dist_schedule(static); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1964); cce21 rejects (ftn-1964) dr is referenced only as dr%a(i), and dr%a is in the map clause: the defaultmap(none) restriction (5.2 §5.8.7 p.162) holds."}
+  - {"case": "fuzz:s1:1286:cce20:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:115:32 `!$omp target update to(ms%a(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:1324:cce21:gfx942:copy", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); other mode: cce21 run_error"}
+  - {"case": "fuzz:s1:1324:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); other mode: cce21 run_error"}
+  - {"case": "fuzz:s1:1362:cce20:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:109:32 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1370); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:1362:cce21:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:109:32 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1370); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:1423:afar:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGABRT 7/7, \"omptarget error: Call to getTargetPointer returned null pointer ('present' map type mod\"; a presence abort: witnessed by CCE; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 agrees; other mode: afar agree"}
+  - {"case": "fuzz:s1:1508:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1964 names DR at fuzz_prog.f90:102:29 `o3(i, j) = iand(dr%q((mod(((i * 4) + 7), n) + 1)), 255)`; enclosing: !$omp target map(to: dr%nd%w) map(tofrom: dr%q, ia, ib, o3, hf3, rp3a, rp3b) defaultmap(none: aggregate) thread_limit(64) > ... > !$omp do simd reduction(padd: rp3a) reduction(padd: rp3b); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725) dr is referenced only as dr%q(...), which the target's map(tofrom: dr%q, ...) lists."}
+  - {"case": "fuzz:s1:1528:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1310 names I at fuzz_prog.f90:99:53 `!$omp& shared(dr, hf2, ib, o2) firstprivate(i)`; enclosing: !$omp target map(close, tofrom: dr) map(to: ib) map(tofrom: o2(:, :), hf2, r2a) thread_limit(64) > ... > !$omp parallel do reduction(max: r2a) schedule(auto) default(none) shared(dr, hf2, ib, o2) firstprivate(i); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1370); cce21 rejects (ftn-1310)"}
+  - {"case": "fuzz:s1:1528:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1310 names I at fuzz_prog.f90:99:53 `!$omp& shared(dr, hf2, ib, o2) firstprivate(i)`; enclosing: !$omp target map(close, tofrom: dr) map(to: ib) map(tofrom: o2(:, :), hf2, r2a) thread_limit(64) > ... > !$omp parallel do reduction(max: r2a) schedule(auto) default(none) shared(dr, hf2, ib, o2) firstprivate(i); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1370); cce20 rejects (ftn-1310)"}
+  - {"case": "fuzz:s1:1800:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:128:30 `!$omp target update to(ib(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:2026:afar:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGABRT 7/7, \"PluginInterface error: Failure to allocate device memory: \"out of resources\" failed\"; cce19 agrees; cce20 agrees; cce21 crash: SIGSEGV; other mode: afar run_error"}
+  - {"case": "fuzz:s1:2273:cce20:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:87:32 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:2313:cce21:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:74:30 `!$omp target update to(ia(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:2445:cce21:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:99:30 `!$omp target update to(gs%k(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:2744:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:103:30 `!$omp target update to(ia(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:3130:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:115:30 `!$omp target update to(gs%k(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:3256:cce19:gfx942:unified", "class": "agent-decided", "agree": true, "note": "wrong_answer (checksum=1964138354 ran_on_host=0 expected=9644542), output \"Unhandled Reduction!!!\"; afar crash: SIGABRT; cce20 wrong value; cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:335:afar:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; cce19 agrees; cce20 agrees; cce21 rejects (link_undefined_symbol); other mode: afar run_error"}
+  - {"case": "fuzz:s1:3846:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1510 names HF2 at fuzz_prog.f90:126:23 `if (i == 1) hf2 = merge(1, 0, omp_is_initial_device())`; enclosing: !$omp target map(to: xk8) map(tofrom: hf2, lp2, r2a, r2b) thread_limit(1) > ... > !$omp distribute lastprivate(lp2); afar rejects (not_implemented); cce19 rejects (ftn-1370); cce20 rejects (ftn-1510)"}
+  - {"case": "fuzz:s1:4246:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:4253:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:92:28 `!$omp target update to(ia(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:4444:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:111:33 `!$omp target update to(dr%pc(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:4639:afar:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGABRT 7/7, \"omptarget error: Call to getTargetPointer returned null pointer ('present' map type mod\"; a presence abort: witnessed by CCE; cce19 agrees; cce20 agrees; cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:4707:afar:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGABRT 7/7, \"PluginInterface error: Failure to allocate device memory: \"out of resources\" failed\"; cce19 agrees; cce20 agrees; cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:4940:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:5200:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:5573:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:91:30 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:5873:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:111:32 `!$omp target update to(gs%k(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:5898:cce19:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1510 names HF2 at fuzz_prog.f90:130:9 `hf2 = merge(1, 0, omp_is_initial_device())`; enclosing: !$omp target parallel map(close, to: ic) map(to: dr%pc) map(to: ia) map(tofrom: dr%a) map(tofrom: hf2) map(tofrom: r2a) defaultmap; afar rejects (not_implemented); cce20 rejects (ftn-1510); cce21 rejects (ftn-1510)"}
+  - {"case": "fuzz:s1:6195:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:108:33 `!$omp target update to(dr%pc(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:6231:afar:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; cce19 agrees; cce20 agrees; cce21 agrees"}
+  - {"case": "fuzz:s1:6388:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 crash: SIGABRT; cce20 crash: SIGABRT"}
+  - {"case": "fuzz:s1:6416:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:98:30 `!$omp target update to(dr%q(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:6649:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash (crash: SIGSEGV), output \"Unhandled Reduction!!!\"; afar agrees; cce19 wrong value; cce20 wrong value"}
+  - {"case": "fuzz:s1:6669:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:111:33 `!$omp target update to(dr%nd%k(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:6698:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGABRT 7/7, \"Memory access fault by GPU node-4 (Agent handle: 0x4cfe60) \"; afar agrees; cce19 crash: SIGABRT; cce21 agrees"}
+  - {"case": "fuzz:s1:6919:cce19:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1964 names O2 at fuzz_prog.f90:112:9 `o2(i) = (xz4(i) * (2.0, 0.0))`; enclosing: !$omp target map(always, from: o2) map(to: xz4) map(tofrom: hf2) defaultmap(none: aggregate) > ... > !$omp distribute; afar rejects (not_implemented); cce20 agrees; cce21 agrees o2 is in map(always, from: o2) on the target itself; CCE 20 and 21 compile and run it."}
+  - {"case": "fuzz:s1:722:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 agrees; cce20 agrees; other mode: cce21 run_error"}
+  - {"case": "fuzz:s1:7322:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:114:33 `!$omp target update to(dr%pc(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:7397:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:103:32 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:7461:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:120:30 `!$omp target update to(ia(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:7561:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:89:30 `!$omp target update to(dr%q(1:n:2))`: a strided section in a motion clause; afar ICE; cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:7561:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:89:30 `!$omp target update to(dr%q(1:n:2))`: a strided section in a motion clause; afar ICE; cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:7781:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:90:30 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:7841:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGABRT 7/7, \"Memory access fault by GPU node-4 (Agent handle: 0x4e3e40) \"; afar agrees; cce19 crash: SIGABRT; cce21 agrees"}
+  - {"case": "fuzz:s1:7927:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:122:32 `!$omp target update to(dr%q(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:8895:cce19:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:83:28 `!$omp target update to(ia(1:n:2))`: a strided section in a motion clause; afar ICE; cce20 rejects (ftn-1747); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:8935:cce20:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1310 names I at fuzz_prog.f90:138:60 `!$omp& shared(dr, hf2, ib, o2, r2a, xc) firstprivate(i)`; enclosing: !$omp target teams distribute map(tofrom: dr%a(1:n)) map(tofrom: ib(1:n)) map(tofrom: xc(1:n)) map(tofrom: hf2) map(tofrom: r2a) d > !$omp parallel do lastprivate(lp2) num_threads(1) schedule(auto) default(none) shared(dr, hf2, ib, o2, r2a, xc) firstprivate(i); afar rejects (not_implemented); cce19 rejects (ftn-1310); cce21 rejects (ftn-1310)"}
+  - {"case": "fuzz:s1:8950:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:9055:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:94:30 `!$omp target update to(dr%a(1:n:2))`: a strided section in a motion clause; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:911:cce21:gfx942:copy", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:114:31 `!$omp target update to(dr%pc(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:9198:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:133:28 `!$omp target update to(ib(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:9520:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:91:30 `!$omp target update to(gs%k(1:n:2))`: a strided section in a motion clause; afar rejects (not_implemented); cce19 rejects (ftn-1747); cce20 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:9786:cce21:gfx942:unified", "class": "agent-decided", "agree": true, "note": "crash: SIGSEGV 7/7, no runtime message; afar agrees; cce19 agrees; cce20 agrees"}
+  - {"case": "fuzz:s1:112:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:25:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:1218:cce20:gfx942:copy", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:29:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:1223:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:1237:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:35:24 `!$omp declare target enter(gtab, go3, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:1289:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:30:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:1337:cce20:gfx942:copy", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:1549:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:24:24 `!$omp declare target enter(gtab)` (column at enter); afar ICE; cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:1552:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:1696:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:30:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:1779:cce20:gfx942:copy", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:37:24 `!$omp declare target enter(gtab, go2, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:1797:cce20:gfx942:copy", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:30:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:1802:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:31:24 `!$omp declare target enter(gtab, go1)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:2012:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab, go2)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:2051:cce20:gfx942:copy", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:30:24 `!$omp declare target enter(gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:2518:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:2745:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:26:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:2807:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:2826:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:2869:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:30:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:3084:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:343:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:3494:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:27:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:3521:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:35:24 `!$omp declare target enter(gtab, go2)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:3655:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:36:24 `!$omp declare target enter(gtab, go1)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:4040:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:35:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:4385:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:39:24 `!$omp declare target enter(gtab, go1, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:4564:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:31:24 `!$omp declare target enter(gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:4566:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:35:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:4979:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:31:24 `!$omp declare target enter(go1)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:5218:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:31:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:567:cce20:gfx942:copy", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, go3)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:5714:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:30:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:5814:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, go1, go3, go4)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:6099:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:6277:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:27:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:6382:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:665:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:29:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:6665:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:6882:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:7167:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(go1, go2, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:7659:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 wrong value"}
+  - {"case": "fuzz:s1:8011:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:41:24 `!$omp declare target enter(gtab, go2, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:8163:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:8250:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:37:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:8648:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:36:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:8676:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:27:24 `!$omp declare target enter(gtab, go2)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 compile timeout"}
+  - {"case": "fuzz:s1:8737:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:35:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:8996:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:902:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:23:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:9040:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, go4, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:9110:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:36:24 `!$omp declare target enter(gtab, go1, go2, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:9139:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, go3, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:9155:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:9170:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:38:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:9200:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:27:24 `!$omp declare target enter(gtab)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:9303:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:36:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:9696:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:29:24 `!$omp declare target enter(gtab)` (column at enter); afar ICE; cce19 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:9757:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:31:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:9856:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:29:24 `!$omp declare target enter(gtab, gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:9916:cce20:gfx942:unified", "class": "agent-decided D9-cce20-declare-target-enter", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:29:24 `!$omp declare target enter(gs)` (column at enter); afar rejects (not_implemented); cce19 rejects (ftn-1725); cce21 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:1131:cce21:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled acc construct type\" at v_openmp.c:8265; afar crash: SIGABRT; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8265 not recorde), no instance"}
+  - {"case": "fuzz:s1:1202:cce21:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled construct type\" at v_openmp.c:8197; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8197 not recorde), no instance"}
+  - {"case": "fuzz:s1:1205:afar:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "link_undefined_symbol: ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (not_implemented); instance of afar-udr-derived-type-link.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:1385:cce20:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:138:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"ACC - barrier/reset/protected last private not supported\" at v_mt_translate.c:5798; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to 1391-cce20.f90 (same ICE message; site v_mt_translate.c:5798 not r), no instance"}
+  - {"case": "fuzz:s1:1411:cce20:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled acc construct type\" at v_openmp.c:7881; afar agrees; cce19 ICE; cce21 ICE; related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:7881 not recorde), no instance"}
+  - {"case": "fuzz:s1:1439:cce20:gfx942:unified", "class": "compiler_bug", "agree": false, "note": "checksum=263056103 7/7 against 1011069689 (model and AFAR's metamorphic rewrites agree; AFAR prints it on the device): the verdict compiler_bug is right, but the instance link to fortran-loop-bind-thread-in-parallel.f90 (by its key constructs bind + loop) is not: the run prints \"Unhandled Reduction!!!\", the CCE runtime error of decision D6, which that finding does not show (it fails on AFAR too, and AFAR is right here). Rule fix (findings.RUNTIME_MESSAGE): a fuzz failure printing a runtime error the finding does not name is related, not an instance; rerun: related."}
+  - {"case": "fuzz:s1:1544:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "crash: SIGSEGV 7/7; expected checksum=2063193191 (metamorphic+model); witnesses afar/gfx942/unified, cce19/gfx942/unified, cce20/gfx942/unified; related to b3-190-cce21.f90 (only common key constructs dir:declare target), no instance"}
+  - {"case": "fuzz:s1:1621:cce20:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:27:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 crash: SIGSEGV; no finding"}
+  - {"case": "fuzz:s1:1652:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:1690:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 rejects (link_undefined_symbol); no finding"}
+  - {"case": "fuzz:s1:1828:cce21:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled acc construct type\" at v_openmp.c:8265; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8265 not recorde), no instance"}
+  - {"case": "fuzz:s1:189:cce21:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"ACC - barrier/reset/protected last private not supported\" at v_mt_translate.c:5798; afar rejects (not_implemented); cce19 ICE; cce20 ICE; no finding"}
+  - {"case": "fuzz:s1:2024:cce21:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled acc construct type\" at v_openmp.c:8265; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8265 not recorde), no instance"}
+  - {"case": "fuzz:s1:2112:cce21:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled acc construct type\" at v_openmp.c:8265; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8265 not recorde), no instance"}
+  - {"case": "fuzz:s1:22:afar:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "link_undefined_symbol: ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*; cce19 rejects (ftn-1747); cce20 rejects (ftn-1747); cce21 rejects (ftn-1747); instance of afar-udr-derived-type-link.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:2322:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1310 at fuzz_prog.f90:125:27 `!$omp& firstprivate(i)`; afar crash: SIGABRT; cce19 rejects (ftn-1725); cce21 rejects (ftn-1310); instance of s1-2370-cce21.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:3040:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:36:24 `!$omp declare target enter(gtab, go1, go3, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 rejects (ftn-1747); no finding"}
+  - {"case": "fuzz:s1:3352:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "checksum=191788678 ran_on_host=0 expected=1637076431 7/7; expected checksum=1637076431 (metamorphic+model); witnesses afar/gfx942/unified; related to cce19-target-parallel-guarded-loop.f90 (only common key constructs dir:target parallel), no instance"}
+  - {"case": "fuzz:s1:3984:afar:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "link_undefined_symbol: ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*; cce19 rejects (not_implemented); cce20 rejects (not_implemented); cce21 rejects (not_implemented); instance of afar-udr-derived-type-link.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:4131:cce19:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled construct type\" at v_openmp.c:7617; afar agrees; cce20 ICE; cce21 ICE; instance of cce19-target-parallel-single-ice.f90 (same ICE site v_openmp.c:7617)"}
+  - {"case": "fuzz:s1:4240:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:4713:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:26:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 ICE; no finding"}
+  - {"case": "fuzz:s1:4839:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, go1, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 rejects (ftn-1747); no finding"}
+  - {"case": "fuzz:s1:4849:cce19:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled construct type\" at v_openmp.c:7617; afar wrong value; cce20 ICE; cce21 ICE; instance of cce19-target-parallel-single-ice.f90 (same ICE site v_openmp.c:7617)"}
+  - {"case": "fuzz:s1:5035:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:27:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:5052:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:5153:cce20:gfx942:unified", "class": "compiler_bug", "agree": false, "note": "exit status 1 7/7 with CRAY_ACC_ERROR \"Host region (40bbb0 to 40c240) overlaps present region (40bbb0 to 40c1f0) but is not contained for 'dr' from fuzz_prog.f90:74\" (an overlap abort; CCE 19 the same, CCE 21 a wrong value); R20 decided it with AFAR at HSA_XNACK=1 as the only witness, but AFAR at XNACK=1 does not check presence (afar-xnack1-present-not-enforced.f90), so no device run shows the program's maps consistent. Rule fix (facts.PRESENCE_ABORT): a presence or overlap abort is witnessed only by a CCE toolchain or AFAR at HSA_XNACK=0; rerun: R22 needs_human."}
+  - {"case": "fuzz:s1:5197:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:5255:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "crash: SIGSEGV 7/7; expected checksum=525733512 (metamorphic+model); witnesses afar/gfx942/unified; related to b3-190-cce21.f90 (only common key constructs dir:declare target), no instance"}
+  - {"case": "fuzz:s1:5384:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:101:35 `!$omp target update to(dr%nd%k(1:n:2))`; afar crash: SIGABRT; cce19 rejects (ftn-1747); cce21 rejects (ftn-1747); instance of s1-6888-cce21.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:5772:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "link_undefined_symbol: lld: error: undefined symbol: _cray$mt_taskwait; afar agrees; cce19 wrong value; cce20 wrong value; instance of cce21-in-reduction-taskwait-link.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:629:cce19:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled construct type\" at v_openmp.c:7617; afar agrees; cce20 ICE; cce21 ICE; instance of cce19-target-parallel-single-ice.f90 (same ICE site v_openmp.c:7617)"}
+  - {"case": "fuzz:s1:6341:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:25:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:6352:afar:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "crash: SIGSEGV 7/7; expected checksum=2135044625 (metamorphic+model); witnesses cce19/gfx942/unified, cce20/gfx942/unified, cce21/gfx942/unified; related to b3-45-cce21.f90 (only common key constructs dir:do, dir:parallel), no instance"}
+  - {"case": "fuzz:s1:6432:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"ACC - barrier/reset/protected last private not supported\" at v_mt_translate.c:5607; afar rejects (not_implemented); cce19 ICE; cce21 ICE; instance of 1391-cce20.f90 (same ICE site v_mt_translate.c:5607)"}
+  - {"case": "fuzz:s1:6518:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 ICE; no finding"}
+  - {"case": "fuzz:s1:6790:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "crash: SIGSEGV 7/7; expected checksum=1300015276 (metamorphic+model); witnesses afar/gfx942/unified; related to b3-45-cce21.f90 (only common key constructs dir:do, dir:parallel), no instance"}
+  - {"case": "fuzz:s1:6991:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:31:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:7082:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:7435:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, go1, gs)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:7462:cce19:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "compile_timeout; afar rejects (not_implemented); cce20 compile timeout; cce21 compile timeout; no finding A compile that does not finish is compiler_bug by RUL-COMPILE-TIME; CCE 20 and 21 time out on it too."}
+  - {"case": "fuzz:s1:7595:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, go2, gs)`; afar wrong value; cce19 rejects (ftn-1725); cce21 ICE; no finding"}
+  - {"case": "fuzz:s1:7653:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1747 at fuzz_prog.f90:111:33 `!$omp target update to(dr%pc(1:n:2))`; afar agrees; cce19 rejects (ftn-1747); cce20 rejects (ftn-1747); instance of s1-6888-cce21.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:771:afar:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "link_undefined_symbol: ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (not_implemented); instance of afar-udr-derived-type-link.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:8019:afar:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "link_undefined_symbol: ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 ICE; instance of afar-udr-derived-type-link.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:8150:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1510 at fuzz_prog.f90:169:9 `hf3 = merge(1, 0, omp_is_initial_device())`; afar crash: SIGABRT; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to s1-91-cce21.f90 (same diagnostic, without the finding's constructs ), no instance"}
+  - {"case": "fuzz:s1:8261:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:29:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:8266:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:33:24 `!$omp declare target enter(go1, gs)`; afar crash: SIGABRT; cce19 rejects (ftn-1725); cce21 crash: SIGSEGV; no finding"}
+  - {"case": "fuzz:s1:8924:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled construct type\" at v_openmp.c:8197; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8197 not recorde), no instance"}
+  - {"case": "fuzz:s1:89:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:23:24 `!$omp declare target enter(go1)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:9039:afar:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE error: verification of lowering to FIR failed; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 ICE; instance of b3-9-afar.f90 (same ICE site afar FIR verification: 'omp.simd' op operand #)"}
+  - {"case": "fuzz:s1:906:cce21:gfx942:copy", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled acc construct type\" at v_openmp.c:8265; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1370); cce20 ICE; related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8265 not recorde), no instance"}
+  - {"case": "fuzz:s1:9132:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"ACC - barrier/reset/protected last private not supported\" at v_mt_translate.c:5798; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to 1391-cce20.f90 (same ICE message; site v_mt_translate.c:5798 not r), no instance"}
+  - {"case": "fuzz:s1:9169:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:21:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 agrees; no finding"}
+  - {"case": "fuzz:s1:9400:afar:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "link_undefined_symbol: ld.lld: error: undefined symbol: flang_rt_verbose_abort(char const*; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (not_implemented); instance of afar-udr-derived-type-link.f90 (same diagnostic)"}
+  - {"case": "fuzz:s1:9453:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled construct type\" at v_openmp.c:7814; afar wrong value; cce19 ICE; cce21 ICE; related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:7814 not recorde), no instance"}
+  - {"case": "fuzz:s1:9509:cce21:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ICE \"unhandled construct type\" at v_openmp.c:8197; afar agrees; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); related to cce19-target-parallel-single-ice.f90 (same ICE message; site v_openmp.c:8197 not recorde), no instance"}
+  - {"case": "fuzz:s1:9922:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab, go2, gs)`; afar crash: SIGABRT; cce19 rejects (ftn-1725); cce21 crash: SIGSEGV; no finding"}
+  - {"case": "fuzz:s1:9977:cce20:gfx942:unified", "class": "compiler_bug", "agree": true, "note": "ftn-1725 at fuzz_dmod.f90:26:24 `!$omp declare target enter(gtab)`; afar agrees; cce19 rejects (ftn-1725); cce21 rejects (link_undefined_symbol); no finding"}
+  - {"case": "fuzz:s1:21:cce20:gfx942:copy", "class": "environment", "agree": true, "note": "environment: Lmod has detected the following error: Unable to parse: The compile output says an accelerator module must be loaded (ftn-1275): the module environment of that one job, not the compiler."}
+  - {"case": "fuzz:s1:5858:afar:gfx942:unified", "class": "flaky", "agree": true, "note": "crash: SIGABRT; runs 4/7 fail, the others print the model value The 3 passing repeats print checksum=1654629581, the model value; the failing runs abort."}
+  - {"case": "fuzz:s1:1070:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar crash: SIGABRT; cce19 rejects (not_implemented); cce20 agrees"}
+  - {"case": "fuzz:s1:1182:cce21:gfx942:copy", "class": "needs_human", "agree": true, "note": "checksum=96721862 ran_on_host=0 expected=1342154590 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare targe); afar agrees; cce19 rejects (not_implemented); cce20 agrees AFAR and CCE 20 print the model value in both modes: a likely CCE 21 defect, but the rules need a second expected-value source (concern 1 of the report)."}
+  - {"case": "fuzz:s1:1498:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1130229537 ran_on_host=0 expected=1232985310 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:1612:cce21:gfx942:copy", "class": "needs_human", "agree": true, "note": "checksum=888586515 ran_on_host=0 expected=1682737703 7/7; only the model gives an expected value: rewrites split_combined gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:1676:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT; expected disputed: sources disagree (model: checksum=1451172852; metamorphic: checksum=575191726)"}
+  - {"case": "fuzz:s1:188:cce20:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1256823887 ran_on_host=0 expected=805342982 7/7; only the model gives an expected value: rewrites split_combined,enter_exit_data,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (not_implemented); cce21 wrong value"}
+  - {"case": "fuzz:s1:2039:cce19:gfx942:copy", "class": "needs_human", "agree": true, "note": "checksum=1866223052 ran_on_host=0 expected=995275081 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32 gave no value from another family; afar crash: SIGABRT; cce20 wrong value; cce21 wrong value"}
+  - {"case": "fuzz:s1:205:cce21:gfx942:copy", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:2077:afar:gfx942:copy", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites split_combined gave no value from another family; cce19 wrong value; cce20 wrong value; cce21 wrong value"}
+  - {"case": "fuzz:s1:2131:cce19:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1753688699 ran_on_host=0 expected=1881617105 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare targe); afar agrees; cce20 wrong value; cce21 wrong value CCE 19, 20 and 21 print the same wrong value 1753688699 in both modes; AFAR prints the model value."}
+  - {"case": "fuzz:s1:2164:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar ICE; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:2415:afar:gfx942:copy", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 ICE; cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:2529:cce19:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar crash: SIGSEGV; cce20 crash: SIGABRT; cce21 agrees The output has \"Variable not found in present table\" for v(:) (fuzz_dmod.f90:26) then a memory fault: a presence abort, so CCE 21's correct run would be the right kind of witness, but it is the same family."}
+  - {"case": "fuzz:s1:2611:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites schedule_static_1,schedule_dynamic_3 gave no value from another family; afar crash: SIGABRT; cce19 agrees; cce20 agrees"}
+  - {"case": "fuzz:s1:278:cce21:gfx942:copy", "class": "needs_human", "agree": true, "note": "exit_status: 1 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (not_implemented); cce20 crash: SIGABRT"}
+  - {"case": "fuzz:s1:2902:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=602032754 ran_on_host=0 expected=744064232 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: module variab); afar agrees; cce19 rejects (ftn-1725); cce20 agrees"}
+  - {"case": "fuzz:s1:310:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:327:afar:gfx942:copy", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 ICE; cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:3701:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 compile timeout"}
+  - {"case": "fuzz:s1:3995:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (not_implemented); cce20 crash: SIGABRT"}
+  - {"case": "fuzz:s1:4002:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:4255:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=651332502 ran_on_host=0 expected=252240208 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar crash: SIGABRT; cce19 rejects (ftn-1725); cce20 agrees"}
+  - {"case": "fuzz:s1:4543:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare targe); afar crash: SIGABRT; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:4639:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare targe); afar crash: SIGABRT; cce19 agrees; cce20 agrees"}
+  - {"case": "fuzz:s1:4809:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites schedule_static_1,schedule_dynamic_3 gave no value from another family; afar crash: SIGABRT; cce19 rejects (ftn-1370); cce20 agrees"}
+  - {"case": "fuzz:s1:480:cce21:gfx942:copy", "class": "needs_human", "agree": true, "note": "checksum=2060672162 ran_on_host=0 expected=523960500 7/7; only the model gives an expected value: rewrites enter_exit_data,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:4835:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1330575885 ran_on_host=0 expected=210520045 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare mappe); cce19 compile timeout; cce20 agrees; cce21 agrees"}
+  - {"case": "fuzz:s1:5062:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=87420466 ran_on_host=0 expected=1755784005 7/7; only the model gives an expected value: rewrites enter_exit_data,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:506:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1124743418 ran_on_host=0 expected=2140511992 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:5168:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1302572053 ran_on_host=0 expected=1734184023; expected disputed: sources disagree (model: checksum=1734184023; metamorphic: checksum=290221791)"}
+  - {"case": "fuzz:s1:5268:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32 gave no value from another family; afar crash: SIGABRT; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:5312:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 agrees"}
+  - {"case": "fuzz:s1:5540:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:5556:cce19:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1534785999 ran_on_host=0 expected=700519365 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce20 wrong value; cce21 wrong value"}
+  - {"case": "fuzz:s1:5631:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare targe); afar crash: SIGABRT; cce19 wrong value; cce20 wrong value"}
+  - {"case": "fuzz:s1:580:cce21:gfx942:copy", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:5967:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites split_combined gave no value from another family; cce19 rejects (ftn-1725); cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:6028:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:6143:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (ftn-1747)"}
+  - {"case": "fuzz:s1:6304:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites split_combined,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 ICE; cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:639:cce21:gfx942:copy", "class": "needs_human", "agree": true, "note": "checksum=879310639 ran_on_host=0 expected=1964070968; host builds of 1 families ran; outcome wrong_answer; host check noncompliant; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:6527:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:654:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare targe); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:6576:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: no rewrite applies (result depends on the device data environment: declare mappe); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:6741:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=103816140 ran_on_host=0 expected=619410708 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:737:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:7514:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32 gave no value from another family; afar crash: SIGABRT; cce19 agrees; cce20 agrees"}
+  - {"case": "fuzz:s1:7602:cce20:gfx942:unified", "class": "needs_human", "agree": true, "note": "exit_status: 1 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar crash: SIGABRT; cce19 rejects (ftn-1370); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:7641:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1602127252 ran_on_host=0 expected=1464073435 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:782:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1394480579 ran_on_host=0 expected=656086406 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 wrong value; cce20 wrong value"}
+  - {"case": "fuzz:s1:8154:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:821:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=606361513 ran_on_host=0 expected=832957351 7/7; only the model gives an expected value: rewrites split_combined,enter_exit_data,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:8324:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=1594853650 ran_on_host=0 expected=639383200 7/7; only the model gives an expected value: rewrites schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 ICE; cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:8599:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:9213:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites split_combined,num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 wrong value"}
+  - {"case": "fuzz:s1:9255:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "checksum=18356216 ran_on_host=0 expected=1114768723 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 wrong value"}
+  - {"case": "fuzz:s1:9494:cce21:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGSEGV 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar rejects (not_implemented); cce19 agrees; cce20 agrees"}
+  - {"case": "fuzz:s1:9645:afar:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites schedule_static_1,schedule_dynamic_3 gave no value from another family; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:9912:cce19:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT; host builds of 1 families ran; outcome crash; host check noncompliant; afar rejects (not_implemented); cce20 crash: SIGABRT; cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:9921:cce19:gfx942:unified", "class": "needs_human", "agree": true, "note": "crash: SIGABRT 7/7; only the model gives an expected value: rewrites num_teams_1,num_teams_3,thread_limit_32,schedule_static_1,schedule_dynamic_3 gave no value from another family; afar crash: SIGABRT; cce20 crash: SIGABRT; cce21 agrees"}
+  - {"case": "fuzz:s1:10:afar:gfx942:unified", "class": "our_bug", "agree": true, "note": "generator defect: G1: lsimd in if(simd: lsimd) under default(none) of 'parallel do simd' is not in a data-shar; this cell: not_implemented: error: loc(\"fuzz_prog.f90\":113:5): /__w/The"}
+  - {"case": "fuzz:s1:372:cce20:gfx942:unified", "class": "our_bug", "agree": true, "note": "generator defect: G1: lpar in if(parallel: lpar) under default(none) of 'teams distribute parallel do' is not ; this cell: diagnostic: ftn-1725 ftn: ERROR FUZZ_DMOD, File = fuzz_dmod."}
+  - {"case": "fuzz:s1:4784:cce21:gfx942:unified", "class": "our_bug", "agree": true, "note": "generator defect: G1: lsimd in if(simd: lsimd) under default(none) of 'parallel do simd' is not in a data-shar; this cell: diagnostic: ftn-1510 ftn: ERROR KP1, File = fuzz_prog.f90, L"}
+  - {"case": "fuzz:s1:8419:afar:gfx942:unified", "class": "our_bug", "agree": true, "note": "generator defect: G1: lsimd in if(simd: lsimd) under default(none) of 'parallel do simd' is not in a data-shar; this cell: crash: SIGABRT; without mandatory: crash: SIGABRT"}
+  - {"case": "fuzz:s1:953:cce19:gfx942:copy", "class": "our_bug", "agree": true, "note": "generator defect: G1: lsimd in if(simd: lsimd) under default(none) of 'parallel do simd' is not in a data-shar; this cell: diagnostic: ftn-1747 ftn: ERROR FUZZ_PROG, File = fuzz_prog."}
+  - {"case": "fuzz:s1:953:cce20:gfx942:unified", "class": "our_bug", "agree": true, "note": "generator defect: G1: lsimd in if(simd: lsimd) under default(none) of 'parallel do simd' is not in a data-shar; this cell: diagnostic: ftn-1747 ftn: ERROR FUZZ_PROG, File = fuzz_prog."}
+  - {"case": "fuzz:s1:1016:cce19:gfx942:copy", "class": "unsupported", "agree": true, "note": "target-thread-limit at fuzz_prog.f90:142:44 `!$omp& map(to: dr%a) map(tofrom: ic) thread_limit(256) in_reduction(+: r1a)`; no claim for cce19; afar agrees; cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:1038:cce19:gfx942:copy", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:26:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:1116:cce20:gfx942:unified", "class": "unsupported", "agree": true, "note": "distribute-order at fuzz_prog.f90:111:24 `!$omp distribute order(unconstrained: concurrent) private(t1)`; no claim for cce20; afar rejects (not_implemented); cce19 rejects (ftn-1370); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:1217:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:1297:afar:gfx942:copy", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:1540:cce19:gfx942:copy", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, go1, gs)`; no claim for cce19; afar ICE; cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:1613:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:35:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:1719:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "distribute-order at fuzz_prog.f90:74:24 `!$omp distribute order(unconstrained: concurrent) dist_schedule(static)`; no claim for cce21; afar rejects (not_implemented); cce19 rejects (ftn-1370); cce20 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:1818:cce19:gfx942:copy", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:30:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:183:cce19:gfx942:copy", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar rejects (link_undefined_symbol); cce20 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:1967:cce21:gfx942:copy", "class": "unsupported", "agree": true, "note": "cce21 says not implemented: Calls -- $udr_i_1FUZZ_DMOD; afar rejects (link_undefined_symbol); cce19 rejects (not_implemented); cce20 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:2423:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: Unhandled clause order in omp.wsloop operation; cce19 rejects (ftn-1370); cce20 agrees; cce21 agrees"}
+  - {"case": "fuzz:s1:2435:cce19:gfx942:copy", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:25:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar rejects (link_undefined_symbol); cce20 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:2486:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:20:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:2572:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:27:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 rejects (link_undefined_symbol)"}
+  - {"case": "fuzz:s1:2691:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "cce21 says not implemented: Calls -- __GET_DYNAMIC_TYPE; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:2826:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: Unhandled clause order in omp.distribute operation; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:301:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:29:24 `!$omp declare target enter(gs)`; no claim for cce19; afar rejects (not_implemented); cce20 rejects (ftn-1725); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:3077:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:25:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:3088:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab, go1)`; no claim for cce19; afar wrong value; cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:3155:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "cce19 says not implemented: Calls -- $udr_i_1FUZZ_DMOD; afar rejects (not_implemented); cce20 rejects (not_implemented); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:3430:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "defaultmap-all at fuzz_prog.f90:81:82 `!$omp target map(to: ic) map(tofrom: ds, ia, hf1, rp1a) defaultmap(default: all) thread_limit(32)`; no claim for cce19; afar rejects (link_undefined_symbol); cce20 rejects (not_implemented); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:3666:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "num-teams-lower-bound at fuzz_prog.f90:92:69 `!$omp teams reduction(iand: r1a) reduction(min: r1b) num_teams(1: 4)`; no claim for cce21; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:374:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:3858:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar rejects (not_implemented); cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:3876:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:28:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar rejects (not_implemented); cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:4183:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:32:24 `!$omp declare target enter(go4)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:4496:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (not_implemented); cce20 rejects (not_implemented); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:4546:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:27:24 `!$omp declare target enter(go1)`; no claim for cce19; afar crash: SIGABRT; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:4771:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1725); cce20 wrong value; cce21 wrong value"}
+  - {"case": "fuzz:s1:4847:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1370); cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:5292:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "defaultmap-all at fuzz_prog.f90:102:35 `!$omp& defaultmap(default: all)`; no claim for cce19; afar agrees; cce20 wrong value; cce21 wrong value"}
+  - {"case": "fuzz:s1:530:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "cce21 says not implemented: Calls -- $udr_i_1FUZZ_DMOD; afar rejects (not_implemented); cce19 rejects (not_implemented); cce20 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:540:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (not_implemented); cce20 rejects (not_implemented); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:5428:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:31:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:5551:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "cce21 says not implemented: Calls -- $udr_i_1FUZZ_DMOD; afar rejects (link_undefined_symbol); cce19 rejects (not_implemented); cce20 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:5669:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "defaultmap-all at fuzz_prog.f90:73:48 `!$omp& map(tofrom: ia) defaultmap(tofrom: all)`; no claim for cce19; afar rejects (not_implemented); cce20 rejects (ftn-1370); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:579:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: Firstprivate is currently unsupported defaultmap behaviour; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:5938:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:30:24 `!$omp declare target enter(gs)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:5953:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:25:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:6128:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:33:24 `!$omp declare target enter(gtab, go2, go3, gs)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:660:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:30:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 agrees"}
+  - {"case": "fuzz:s1:6613:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: Unhandled clause order in omp.wsloop operation; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:6769:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "cce21 says not implemented: Calls -- $udr_i_1FUZZ_DMOD; afar rejects (link_undefined_symbol); cce19 rejects (not_implemented); cce20 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:6790:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:24:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:7344:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:7783:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar rejects (link_undefined_symbol); cce20 rejects (ftn-1725); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:8101:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1725); cce20 rejects (ftn-1725); cce21 crash: SIGSEGV"}
+  - {"case": "fuzz:s1:8137:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:32:24 `!$omp declare target enter(gtab)`; no claim for cce19; afar rejects (not_implemented); cce20 rejects (ftn-1725); cce21 ICE"}
+  - {"case": "fuzz:s1:8551:cce20:gfx942:unified", "class": "unsupported", "agree": true, "note": "distribute-order at fuzz_prog.f90:119:26 `!$omp distribute order(concurrent) lastprivate(lp2)`; no claim for cce20; afar rejects (not_implemented); cce19 rejects (ftn-1370); cce21 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:8656:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "defaultmap-all at fuzz_prog.f90:74:80 `!$omp& map(to: dr%pc, dr%s) map(tofrom: xk8, r1a, r1b) defaultmap(tofrom: all) thread_limit(8)`; no claim for cce19; afar agrees; cce20 agrees; cce21 agrees"}
+  - {"case": "fuzz:s1:865:cce20:gfx942:unified", "class": "unsupported", "agree": true, "note": "cce20 says not implemented: Calls -- __GET_DYNAMIC_TYPE; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1370); cce21 rejects (not_implemented)"}
+  - {"case": "fuzz:s1:8698:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "distribute-order at fuzz_prog.f90:93:30 `!$omp teams distribute order(concurrent) private(acc1, jj) num_teams(7)`; no claim for cce21; afar rejects (not_implemented); cce19 rejects (ftn-1370); cce20 rejects (ftn-1370)"}
+  - {"case": "fuzz:s1:897:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "defaultmap-all at fuzz_prog.f90:88:92 `!$omp target map(always, tofrom: dr) map(to: ic) map(tofrom: r1a) defaultmap(default: all)`; no claim for cce19; afar agrees; cce20 agrees; cce21 agrees"}
+  - {"case": "fuzz:s1:9000:afar:gfx942:unified", "class": "unsupported", "agree": true, "note": "afar says not implemented: lastprivate clause in constructs other than simd/worksharing-loop/task; cce19 rejects (ftn-1370); cce20 ICE; cce21 ICE"}
+  - {"case": "fuzz:s1:9012:cce20:gfx942:unified", "class": "unsupported", "agree": true, "note": "num-teams-lower-bound at fuzz_prog.f90:123:43 `!$omp& reduction(ior: r1b) num_teams(2: 13) map(to: zopt)`; no claim for cce20; afar rejects (link_undefined_symbol); cce19 rejects (ftn-1725); cce21 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:910:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "cce19 says not implemented: Fortran character -- o2; afar crash: SIGSEGV; cce20 agrees; cce21 agrees"}
+  - {"case": "fuzz:s1:9845:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:26:24 `!$omp declare target enter(gtab, go1)`; no claim for cce19; afar agrees; cce20 rejects (ftn-1725); cce21 wrong value"}
+  - {"case": "fuzz:s1:9862:cce21:gfx942:unified", "class": "unsupported", "agree": true, "note": "num-teams-lower-bound at fuzz_prog.f90:174:23 `!$omp& num_teams(1: 5) shared(dr, o2, xk8, xz4) map(to: zopt)`; no claim for cce21; afar rejects (not_implemented); cce19 rejects (ftn-1725); cce20 rejects (ftn-1725)"}
+  - {"case": "fuzz:s1:9991:cce19:gfx942:unified", "class": "unsupported", "agree": true, "note": "declare-target-enter at fuzz_dmod.f90:34:24 `!$omp declare target enter(gtab, gs)`; no claim for cce19; afar rejects (not_implemented); cce20 rejects (ftn-1725); cce21 agrees"}
+
+findings:
+  - run: s1
+    seed: 6888
+    toolchain: cce21
+    kind: compile_reject
+    status: minimized
+    signature: "ftn-1747: strided array section in target update to()"
+    sha: s1-6888-cce21
+    file: data/findings/fuzz/s1-6888-cce21.f90
+    lines_before: 158
+    lines_after: 29
+    also_fails_on: [cce19, cce20]
+    expected: "compiles; RESULT check=pass (AFAR)"
+    observed: "ftn-1747 The stride specified for array A ... must not be greater than 1"
+    why: "legal since 5.0 (5.2 §5.9 p.165, §B.4 p.634); CCE claims full 5.0"
+  - run: s1
+    seed: 2370
+    toolchain: cce21
+    kind: compile_reject
+    status: minimized
+    signature: "ftn-1510/ftn-1310: firstprivate(i) on a parallel do in a teams distribute loop over i"
+    sha: s1-2370-cce21
+    file: data/findings/fuzz/s1-2370-cce21.f90
+    lines_before: 222
+    lines_after: 28
+    also_fails_on: [cce19, cce20]
+    expected: "compiles; RESULT check=pass (AFAR)"
+    observed: "ftn-1510 Variable I must have its data scope explicitly declared because DEFAULT(NONE) was specified"
+    why: "5.2 §17.2 p.340 (shared on the parallel leaf), §5.1.1 p.97"
+  - run: s1
+    seed: 8634
+    toolchain: cce21
+    kind: ice
+    status: minimized
+    signature: "ICE on a character scalar in target enter/exit data map (optcg signal 11; get base or dv mem; TYPE_DEREF)"
+    sha: s1-8634-cce21
+    file: data/findings/fuzz/s1-8634-cce21.f90
+    lines_before: 151
+    lines_after: 7
+    also_fails_on: [cce19, cce20]
+    expected: "compiles; RESULT check=pass (AFAR)"
+    observed: "internal compiler error (optcg signal 11, or 'Unhandled expression type in get base or dv mem')"
+    why: "a character scalar is a map list item (5.2 §5.8.3)"
+  - run: s1
+    seed: 2592
+    toolchain: cce21
+    kind: ice
+    status: minimized
+    signature: "ICE 'Should never reach this code (doehmke)': in_reduction target reading a character dummy substring"
+    sha: s1-2592-cce21
+    file: data/findings/fuzz/s1-2592-cce21.f90
+    lines_before: 189
+    lines_after: 26
+    also_fails_on: [cce19, cce20]
+    expected: "compiles; RESULT check=pass (AFAR)"
+    observed: "internal compiler error 'Should never reach this code (doehmke)'"
+    why: "in_reduction on target is 5.0 (5.2 §5.5.11)"
+  - run: s1
+    seed: 3463
+    toolchain: cce21
+    kind: ice
+    status: minimized
+    signature: "ICE 'Error getting dope vector information': structure dummy component maps with host-associated items"
+    sha: s1-3463-cce21
+    file: data/findings/fuzz/s1-3463-cce21.f90
+    lines_before: 252
+    lines_after: 49
+    also_fails_on: [cce19, cce20]
+    expected: "compiles (AFAR)"
+    observed: "internal compiler error 'Error getting dope vector information'"
+    why: "structure components are map list items (5.2 §5.8.3)"
+  - run: s1
+    seed: 6085
+    toolchain: cce21
+    kind: ice
+    status: minimized
+    signature: "ICE ftn-2116 optcg signal 06: pointer-component map with a user-defined reduction on target teams loop"
+    sha: s1-6085-cce21
+    file: data/findings/fuzz/s1-6085-cce21.f90
+    lines_before: 216
+    lines_after: 56
+    also_fails_on: [cce20]
+    expected: "compiles"
+    observed: "internal compiler error: optcg terminated by signal 06"
+    why: "declare reduction on teams loop (5.2 §5.5.11)"
+  - run: s1
+    seed: 9914
+    toolchain: cce19
+    kind: timeout
+    status: minimized
+    signature: "CCE 19 compile does not finish (target maps of structure components, depend on a declare target array, mapper)"
+    sha: s1-9914-cce19
+    file: data/findings/fuzz/s1-9914-cce19.f90
+    lines_before: 191
+    lines_after: 33
+    also_fails_on: []
+    expected: "compiles (CCE 20, CCE 21, AFAR in seconds)"
+    observed: "compile still running after 300 s"
+    why: "a compile that does not finish is the compiler's defect"
+  - run: s1x0
+    seed: 91
+    toolchain: cce21
+    kind: compile_reject
+    status: minimized
+    signature: "ftn-1510 false default(none) diagnostic in an internal subroutine without a default clause"
+    sha: s1-91-cce21
+    file: data/findings/fuzz/s1-91-cce21.f90
+    lines_before: 223
+    lines_after: 41
+    also_fails_on: [cce19, cce20]
+    expected: "compiles (AFAR)"
+    observed: "ftn-1510 Variable HF2 must have its data scope explicitly declared because DEFAULT(NONE) was specified"
+    why: "default(none) restricts its own construct only (5.2 §5.4.1 p.109)"
+  - run: s1
+    seed: 7882
+    toolchain: cce20
+    kind: run_error
+    status: minimized
+    signature: "CCE present-table failure for a character array mapped by an enclosing target data"
+    sha: s1-7882-cce20
+    file: data/findings/fuzz/s1-7882-cce20.f90
+    lines_before: 197
+    lines_after: 23
+    also_fails_on: [cce19, cce21]
+    expected: "RESULT check=pass (AFAR)"
+    observed: "exit status 1 (Variable not found in present table)"
+    why: "the enclosing target data makes xc present (5.2 §5.8.3)"
+  - run: s1
+    seed: 9443
+    toolchain: afar
+    kind: run_error
+    status: covered_by
+    covered_by: data/findings/fuzz/158-afar.f90
+    signature: "AFAR present abort at HSA_XNACK=1 for map(close, present, to:) inside target data"
+    sha: s1-9443-afar
+    file: data/findings/fuzz/s1-9443-afar.f90
+    lines_before: 146
+    lines_after: 15
+    also_fails_on: []
+    expected: "RESULT check=pass (CCE 19/20/21; AFAR at HSA_XNACK=0)"
+    observed: "SIGABRT: getTargetPointer returned null pointer ('present' map type modifier)"
+    why: "the enclosing target data makes the item present (5.2 §5.8.3)"
+  - run: s1
+    seed: 6760
+    toolchain: cce20
+    kind: compile_reject
+    status: minimized
+    signature: "ftn-1725: declare target enter(...) rejected (claimed by the CCE 20.0.0 release notes)"
+    sha: s1-6760-cce20
+    file: data/findings/fuzz/s1-6760-cce20.f90
+    lines_before: 116
+    lines_after: 27
+    also_fails_on: []
+    expected: "compiles; RESULT check=pass (AFAR, CCE 21)"
+    observed: "ftn-1725 INDIRECT, LINK, TO or DEVICE_TYPE was expected but found E"
+    why: "enter is the 5.2 name of declare target's to clause (5.2 §5.8.4 p.158, §B.2 p.627); CCE 20.0.0 release notes claim the new 5.2 declare target syntax"
+  - run: s1
+    seed: 4339
+    toolchain: afar
+    kind: run_error
+    status: minimized
+    signature: "AFAR at HSA_XNACK=1: map(close, tofrom:) of an allocatable dummy the region does not use, with another assumed-shape dummy read in the region: SIGABRT (memory access fault)"
+    sha: s1-4339-afar
+    file: data/findings/fuzz/s1-4339-afar.f90
+    lines_before: 141
+    lines_after: 46
+    also_fails_on: []
+    expected: "RESULT check=pass (CCE 19/20/21; AFAR at HSA_XNACK=0)"
+    observed: "SIGABRT at HSA_XNACK=1 (OFFLOAD ERROR: memory access fault in the campaign)"
+    why: "close is a hint (5.2 §5.8.3); the assumed-shape dummy is mapped tofrom implicitly (5.2 §5.8.1)"

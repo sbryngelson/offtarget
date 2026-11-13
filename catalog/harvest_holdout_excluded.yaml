@@ -1,0 +1,48 @@
+# What a scorer of data/bench/harvest-holdout reads beside the
+# seal. The sealed files are not changed (no re-cut, no reseal); this file is outside the seal.
+#
+# excluded: never scored. Each case is exposed outside the seal (its code, or its outcome, can be
+#   read from dev material). Sealed ids only.
+# score_once: cases whose program code is identical; score the first id and skip the others.
+# scored_modes: the harvest holdout is scored on copy-mode cells
+#   (AMD HSA_XNACK=0, labelled `copy`) and NVHPC separate-memory cells (also labelled `copy`) only.
+#   Unified (HSA_XNACK=1) and managed rows stay in outcomes.csv and are not scored: many upstream tests
+#   assume separate host and device storage, and with shared storage their checks may legitimately fail.
+# outcomes: the vocabulary of outcomes.csv's `outcome` column. It is offload.engine.gate.outcome_class of the
+#   cell (correct_on_device, wrong_answer, crash, run_error, timeout, rejected, ice, accepted_ignored,
+#   fell_back_to_host, harness_error), plus `refused` (the pre-run check refused the program: never
+#   compiled), `not_applicable` (a mode the program's expected result does not hold in) and `not_run`.
+#   The `gate` column holds offload.engine.gate's verdict for a failing row (confirmed, nondeterministic,
+#   environment, not_reproduced), empty otherwise. A scorer should treat harness_error as no label,
+#   refused and not_applicable as not scored, and a failing row as a failure only when gate is confirmed.
+# scored_cases: 139 sealed cases, less 23 excluded, less 18 more pre-run refusals and 1 duplicate:
+#   97 cases are scored.
+excluded:
+  - harvest-holdout-015
+  - harvest-holdout-016
+  - harvest-holdout-031
+  - harvest-holdout-034
+  - harvest-holdout-036
+  - harvest-holdout-047
+  - harvest-holdout-051
+  - harvest-holdout-069
+  - harvest-holdout-083
+  - harvest-holdout-097
+  - harvest-holdout-123
+  - harvest-holdout-124
+  - harvest-holdout-127
+  - harvest-holdout-128
+  - harvest-holdout-129
+  - harvest-holdout-130
+  - harvest-holdout-131
+  - harvest-holdout-132
+  - harvest-holdout-133
+  - harvest-holdout-134
+  - harvest-holdout-135
+  - harvest-holdout-137
+  - harvest-holdout-138
+score_once:
+  - [harvest-holdout-029, harvest-holdout-068]
+  - [harvest-holdout-075, harvest-holdout-076]
+scored_modes: [copy]
+scored_cases: 97

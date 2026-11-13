@@ -1,0 +1,113 @@
+{
+ "finding": "gcc/gcc-acc-bind-device-type-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "device_type(*) on a parallel construct may be followed by vector_length (and async, wait, num_gangs, num_workers). The combined parallel loop takes the parallel construct clauses; the clauses before device_type are default clauses. host_flag is written by one iteration only. The refusal of the clause is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-70",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "device_type(*) may follow data clauses; only async, wait, num_gangs, num_workers and vector_length may follow it on a compute construct, and vector_length does. The loop body has no race (host_flag is written by one iteration). A conforming compiler must accept the directive."
+  },
+  {
+   "run": "run-v2-20261113/batch-52",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "device_type(*) may appear on a compute construct, and vector_length may follow it. Each clause set remains conforming for every device type. Only iteration 1 writes host_flag, so there is no race. A conforming compiler must accept the combined parallel loop directive.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-12",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-72",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The restriction says only async, wait, num_gangs, num_workers and vector_length may follow device_type. Here only vector_length follows device_type(*), and the data clauses precede it. device_type(*) is syntactically valid. The program is conforming and the compiler must accept it; the gfortran match failure is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-16",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "79d2af907877d8ccf80f466899205d4f882959e8ed276694e1096be078da5644",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

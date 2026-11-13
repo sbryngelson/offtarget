@@ -1,0 +1,113 @@
+{
+ "finding": "nvhpc-depend-inoutset-ignored.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The second target (depend in: w) is a dependent task of the first (depend inoutset: w), so it starts after the first completes, including its tofrom map of w to the host. The second maps w to the device and copies b back; taskwait waits for both deferred target tasks. sp is a firstprivate scalar assigned before use. sum(b)=2080 is required; 0 means the dependence was not honored."
+  },
+  {
+   "run": "run-20261112/batch-34",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both target tasks are sibling deferred tasks with depend clauses on w. The second (depend(in: w)) must be a dependent task of the earlier inoutset task, so it starts only after the first target region completes and w has been copied back; its map(to: w) then transfers w(j)=j and sum(b)=2080. The taskwait waits for both. No race: spin is only written by the first task. Observed 0 means the dependence was ignored."
+  },
+  {
+   "run": "run-v2-20261113/batch-47",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The first target task has depend(inoutset: w) and the second depend(in: w) on the same storage, so the second is a dependent task of the first and starts after it completes, including copy-back of w. The taskwait then waits for both. No race exists, so sum(b)=2080 is required; observed 0 means the dependence or map ordering was not honored.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-91",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both target tasks are nowait and list w in depend clauses. The first uses inoutset and the second uses in on the same storage, so the second is a dependent task of the first and cannot start until the first has completed, including its tofrom copy-back of w. The second then maps w to the device and copies it into b. The taskwait waits for both. sp and j are scalars made firstprivate, so there is no race. sum(b) must be 2080.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "af91e6c20efbf9638c84a14b4ce81721e0c894e17fcebcfa47c1571febb3055a",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

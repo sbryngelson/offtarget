@@ -1,0 +1,373 @@
+NVIDIA HPC Compilers User's Guide — NVIDIA HPC Compilers User's Guide 26.9 documentation
+NVIDIA HPC Compilers User's Guide, version 26.9 (https://docs.nvidia.com/hpc-sdk/archive/26.9/compilers/hpc-compilers-user-guide/index.html), fetched 2026-10-24; HTML stripped to one paragraph per line, list items as "- " bullets.
+6. Using OpenACC
+This chapter gives an overview of directive-based OpenACC programming in which compiler directives are used to specify regions of code in Fortran, C and C++ programs to be offloaded from a host CPU to an NVIDIA GPU. For complete details on using OpenACC with NVIDIA GPUs, see the OpenACC Getting Started Guide.
+6.1. OpenACC Programming Model
+With the emergence of GPU architectures in high performance computing, programmers want the ability to program using a familiar, high level programming model that provides both high performance and portability to a wide range of computing architectures. OpenACC emerged in 2011 as a programming model that uses high-level compiler directives to expose parallelism in the code and parallelizing compilers to build the code for a variety of parallel accelerators.
+This chapter will not attempt to describe OpenACC itself. For that, please refer to the OpenACC specification on the OpenACC www.openacc.org website. Here, we will discuss differences between the OpenACC specification and its implementation by the NVIDIA HPC Compilers.
+Other resources to help you with your parallel programming including video tutorials, course materials, code samples, a best practices guide and more are available on the OpenACC website.
+6.1.1. Levels of Parallelism
+OpenACC supports three levels of parallelism:
+an outer doall (fully parallel) loop level
+a workgroup or threadblock (worker parallel) loop level
+an inner synchronous (SIMD or vector) loop level
+Each level can be multidimensional with 2 or 3 dimensions, but the domain must be strictly rectangular. The synchronous level may not be fully implemented with SIMD or vector operations, so explicit synchronization is supported and required across this level. No synchronization is supported between parallel threads across the doall level.
+The OpenACC execution model on the device side exposes these levels of parallelism and the programmer is required to understand the difference between, for example, a fully parallel loop and a loop that is vectorizable but requires synchronization across iterations. All fully parallel loops can be scheduled for any of doall, workgroup or synchronous parallel execution, but by definition SIMD vector loops that require synchronization can only be scheduled for synchronous parallel execution.
+6.1.2. Enable OpenACC Directives
+NVIDIA HPC compilers enable OpenACC directives with the -acc and -gpu command line options. For more information on these options refer to Compiling an OpenACC Program.
+_OPENACC macro
+The _OPENACC macro name is defined to have a value yyyymm where yyyy is the year and mm is the month designation of the version of the OpenACC directives supported by the implementation. For example, the version for November, 2017 is 201711. All OpenACC compilers define this macro when OpenACC directives are enabled.
+6.1.3. OpenACC Support
+The NVIDIA HPC Compilers implement most features of OpenACC 2.7 as defined in The OpenACC Application Programming Interface, Version 2.7, November 2018, http://www.openacc.org, with the exception that the following OpenACC 2.7 features are not supported:
+nested parallelism
+declare link
+enforcement of the cache clause restriction that all references to listed variables must lie within the region being cached
+Subarrays and composite variables in reduction clauses
+The self clause
+The default clause on data constructs
+6.1.4. OpenACC Extensions
+The NVIDIA Fortran compiler supports an extension to the collapse clause on the loop construct. The OpenACC specification defines collapse:
+collapse(n)
+NVIDIA Fortran supports the use of the identifier force within collapse:
+collapse(force:n)
+Using collapse(force:n) instructs the compiler to enforce collapsing parallel loops that are not perfectly nested.
+6.2. Compiling an OpenACC Program
+Several compiler options are applicable specifically when working with OpenACC. These options include -acc, -gpu, and -Minfo.
+6.2.1. -[no]acc
+Enable [disable] OpenACC directives. The following suboptions may be used following an equals sign (“=”), with multiple sub-options separated by commas:
+gpu
+OpenACC directives are compiled for GPU execution only.
+host
+Compile for serial execution on the host CPU.
+multicore
+Compile for parallel execution on the host CPU.
+legacy
+Suppress warnings about deprecated NVIDIA accelerator directives.
+[no]autopar
+Enable [disable] loop autoparallelization within acc parallel. The default is to autoparallelize, that is, to enable loop autoparallelization.
+[no]routinepar
+Infer parallelism level clause (gang, worker, vector) in implicit routine directives. This sub-option is supported by the C/C++ compilers. The inference is performed for C/C++ regular functions and C++ lambdas by analysing contained parallel loops and acceleration routines as detailed in OpenACC Technical Report 24-1.
+[no]routineseq
+Compile every routine for the devicee. The default behavior is to not treat every routine as a seq directive.
+strict
+Instructs the compiler to issue warnings for non-OpenACC accelerator directives.
+sync
+Ignore async clauses
+verystrict
+Instructs the compiler to fail with an error for any non-OpenACC accelerator directive.
+[no]wait
+Wait for each device kernel to finish. Kernel launching is blocked by default unless the async clause is used.
+Default
+By default OpenACC directives are compiled for GPU and sequential CPU host execution (i.e. equivalent to explicitly setting -acc=gpu,host).
+Usage
+The following command-line requests that OpenACC directives be enabled and that an error be issued for any non-OpenACC accelerator directive.
+$ nvfortran -acc=verystrict prog.f
+Predefined Macros
+The following macros corresponding to the target compiled for are added implicitly:
+__NVCOMPILER_OPENACC_GPU when the OpenACC directives are compiled for GPU.
+__NVCOMPILER_OPENACC_MULTICORE when the OpenACC directives are compiled for multicore CPU.
+__NVCOMPILER_OPENACC_HOST when the OpenACC directives are compiled for serial execution on CPU.
+6.2.2. -gpu
+Used in combination with the -acc, -cuda, -mp, and -stdpar flags to specify options for GPU code generation. The following sub-options may be used following an equals sign (“=”), with multiple sub-options separated by commas:
+autocompare
+Automatically compare CPU vs GPU results at execution time: implies redundant
+ccXY
+Generate code for a device with compute capability X.Y. Multiple compute capabilities can be specified, and one version will be generated for each. By default, the compiler will detect the compute capability for each installed GPU. Use -help -gpu to see the valid compute capabilities for your installation.
+ccall
+Generate code for all compute capabilities supported by this platform and by the selected or default CUDA Toolkit.
+ccall-major
+Compile for all major supported compute capabilities.
+ccnative
+Detects the visible GPUs on the system and generates codes for them. If no device is available, the compute capability matching NVCC’s default will be used.
+cudaX.Y
+Use CUDA X.Y Toolkit compatibility, where installed
+[no]debug
+Enable [disable] debug information generation in device code
+deepcopy
+Enable full deep copy of aggregate data structures in OpenACC; Fortran only
+fastmath
+Use routines from the fast math library
+[no]flushz
+Enable [disable] flush-to-zero mode for floating point computations on the GPU
+[no]fma
+Generate [do not generate] fused multiply-add instructions on the GPU; default at -O1. This can be used in conjunction with the global -M[no]fma option to explicitly enable/disable FMAs on the CPU or GPU.
+[no]implicitsections
+Change [do not change] array element references in a data clause into an array section. In C++, the implicitsections option will change update device(a[n]) to update device(a[0:n]). In Fortran, it will change enter data copyin(a(n)) to enter data copyin(a(:n)). The default behavior, noimplicitsections, can also be changed using rcfiles; for example, one could add set IMPLICITSECTIONS=0; to siterc or another rcfile.
+[no]interceptdeallocations
+Intercept [do not intercept] calls to standard library memory deallocations (e.g. free) and call the corresponding CUDA memory deallocation version if address is in pinned or managed memory, regular version otherwise.
+keep
+Keep the kernel files (.cubin, .ptx, source)
+[no]lineinfo
+Enable [disable] GPU line information generation
+loadcache:{L1|L2}
+Choose what hardware level cache to use for global memory loads; options include the default, L1, or L2
+[no]managed
+Allocate [do not allocate] any dynamically allocated data in CUDA Managed memory. Use -gpu=nomanaged with -stdpar to prevent that flag’s implicit use of -gpu=managed when CUDA Managed memory capability is detected. This option is deprecated.
+maxregcount:n
+Specify the maximum number of registers to use on the GPU; leaving this blank indicates no limit
+mem:{separate|managed|unified}
+Select GPU memory mode for the generated binary. This controls CUDA memory capability to be utilised such as separate GPU memory only (separate), GPU Managed Memory for the dynamically allocated data (managed), or system memory aka full CUDA Unified Memory (unified). Use of Managed or Unified Memory facilitates simpler programming by eliminating the need to detect all data to be copied into and outside of the code region executing on the GPU.
+pinned
+Use CUDA Pinned Memory. This option is deprecated.
+ptxinfo
+Print PTX info
+[no]rdc
+Generate [do not generate] relocatable device code.
+redundant
+Redundant CPU/GPU execution
+safecache
+Allow variable-sized array sections in cache directives; compiler assumes they fit into CUDA shared memory
+sm_XY
+Generate code for a device with compute capability X.Y. Multiple compute capabilities can be specified, and one version will be generated for each. By default, the compiler will detect the compute capability for each installed GPU. Use -help -gpu to see the valid compute capabilities for your installation.
+stacklimit:<l>nostacklimit
+Sets the limit (l) of stack variables in a procedure or kernel, in KB. This option is deprecated.
+tripcount:{host|device|[no]check|[no]warn}
+Determine whether the trip count values for loops in compute constructs are calculated on the host (default) or the device. Also can be used to enable [disable] runtime checks and compile-time warnings related to using host vs. device trip count values.
+[no]unified
+Compile [do not compile] for CUDA Unified memory capability, where system memory is accessible from the GPU. This mode utilizes system and managed memory for dynamically allocated data unless explicit behavior is set through -gpu=[no]managed. Use -gpu=nounified with -stdpar to prevent that flag’s implicit use of -gpu=unified when CUDA Unified memory capability is detected. This option must appear in both the compile and link lines. This option is deprecated.
+[no]unroll
+Enable [disable] automatic inner loop unrolling; default at -O3
+zeroinit
+Initialize allocated device memory with zero
+Usage
+In the following example, the compiler generates code for NVIDIA GPUs with compute capabilities 8.0 and 9.0.
+$ nvfortran -acc -gpu=cc80,cc90 myprog.f
+The compiler automatically invokes the necessary software tools to create the kernel code and embeds the kernels in the object file.
+To link in the appropriate GPU libraries, you must link an OpenACC program with the -acc flag, and similarly for -cuda, -mp, or -stdpar.
+DWARF Debugging Formats
+Use the -g option to enable generation of full DWARF information on both the host and device; in the absence of other optimization flags, -g sets the optimization level to zero. If a -O option raises the optimization level to one or higher, only GPU line information is generated in device code even when -g is specified. To enforce full DWARF generation for device code at optimization levels above zero, use the debug sub-option to -gpu. Conversely, to prevent the generation of dwarf information for device code, use the nodebug sub-option to -gpu. Both debug and nodebug can be used independently of -g.
+6.3. OpenACC for Multicore CPUs
+The NVIDIA OpenACC compilers support the option -acc=multicore, to set the target accelerator for OpenACC programs to the host multicore CPU. This will compile OpenACC compute regions for parallel execution across the cores of the host processor or processors. The host multicore CPU will be treated as a shared-memory accelerator, so the data clauses (copy, copyin, copyout, create) will be ignored and no data copies will be executed.
+By default, -acc=multicore will generate code that will use all the available cores of the processor. If the compute region specifies a value in the num_gangs clause, the minimum of the num_gangs value and the number of available cores will be used. At runtime, the number of cores can be limited by setting the environment variable ACC_NUM_CORES to a constant integer value. The number of cores can also be set with the void acc_set_num_cores(int numcores) runtime call. If an OpenACC compute construct appears lexically within an OpenMP parallel construct, the OpenACC compute region will generate sequential code. If an OpenACC compute region appears dynamically within an OpenMP region or another OpenACC compute region, the program may generate many more threads than there are cores, and may produce poor performance.
+The -acc=multicore option differs from the -acc=host option in that -acc=host generates sequential host CPU code for the OpenACC compute regions.
+6.4. OpenACC with CUDA Unified Memory
+When developing OpenACC source for a target supporting CUDA Unified Memory, you can take advantage of a simplified approach to programming because there is no need for data clauses and directives, either in full or in part, depending on the exact memory capability the target supports and the compiler options used.
+The discussion in this section assumes you have become familiar with the Separate, Managed, and Unified Memory Modes covered in the Memory Model and Managed and Unified Memory Modes sections.
+In Managed Memory Mode, only dynamically-allocated data are implicitly managed by the CUDA runtime; OpenACC data clauses and directives are therefore not needed for movement of this “managed” data. Data clauses and directives are still required to handle static data (C static and extern variables, Fortran module, common block and save variables) and function local data.
+In Unified Memory Mode, all data is managed by the CUDA runtime. Explicit data clauses and directives are no longer required to indicate which data should reside in GPU memory. All variables are accessible from the OpenACC compute regions executing on the GPU. The NVHPC compiler implementation closely adheres to the shared memory mode detailed in the OpenACC specification, meaning that copy, copyin, copyout, and create clauses will not result in any device allocation or data transfer. The device_resident clause is still honored as in discrete memory mode and results in an allocation of data only accessible from device code. Device memory can also be allocated or deallocated in OpenACC programs in Unified Memory Mode by using the acc_malloc or acc_free API calls.
+Understanding Data Movement
+In the absence of visible data clauses or directives, when the compiler encounters a compute construct it attempts to determine what data is required for correct execution of the region on the GPU. When the compiler is unable to determine the size and shape of data needing to be accessible on the device, it behaves as follows:
+In Separate Memory Mode, the compiler emits an error requesting an explicit data clause be added to specify size/shape of the data to be copied.
+In Managed Memory Mode (-gpu=mem:managed), the compiler assumes the data is allocated in managed memory and thus is accessible from the device; if this assumption is wrong, if the data was defined globally or is located on the CPU stack, the program may fail at runtime.
+In Unified Memory Mode (-gpu=mem:unified), all data is accessible from the device making information about size and shape unnecessary.
+Take the following example in C:
+void set(int* ptr, int i, int j, int dim){ int idx = i * dim + j; return ptr[idx] = someval(i, j); } void fill2d(int* ptr, int dim){ #pragma acc parallel loop for (int i = 0; i < dim; i++) for (int j = 0; j < dim; j++) set(ptr, i, j, dim); }
+In Separate Memory Mode, the only way to guarantee correctness for this example is to change the line with the acc directive as follows:
+#pragma acc parallel loop create(ptr[0:dim*dim]) copyout(ptr[0:dim*dim])
+This change explicitly instructs the OpenACC implementation about the precise data segment used within the parallel loop.
+In Unified Memory Mode, that is, by compiling with -acc -gpu=mem:unified and executing on a platform with unified memory capability, the create and copyout clauses are not required.
+The next example, in Fortran, illustrates how a global variable can be accessed in an OpenACC routine without requiring any explicit annotation.
+module m integer :: globmin = 1234 contains subroutine findmin(a) !$acc routine seq integer, intent(in) :: a(:) integer :: i do i = 1, size(a) if (a(i) .lt. globmin) then globmin = a(i) endif end do end subroutine end module m
+Compile the example above for Unified Memory Mode:
+nvfortran -acc -gpu=mem:unified example.f90
+The source does not need any OpenACC directives to access module variable globmin, to either read or update its value, in the routine invoked from CPU and GPU. Moreover, any access to globmin will be made to the same exact instance of the variable from CPU and GPU; its value is synchronized automatically. In Separate or Managed Memory Modes, such behavior can only be achieved with a combination of OpenACC declare and update directives in the source code.
+In most cases, migrating existing OpenACC applications written for Separate Memory Mode should be a seamless process requiring no source changes. Some data access patterns, however, may lead to different results produced during application execution in Unified Memory Mode.
+Applications which rely on having separate data copies in GPU memory to conduct temporary computations on the GPU – without maintaining data synchronization with the CPU – pose a challenge for migration to Unified Memory.
+For the following Fortran example, the value of variable c after the last loop will differ depending on whether the example is compiled with or without -gpu=mem:unified.
+b(:) = ... c = 0 !$acc kernels copyin(b) copyout(a) !$acc loop do i = 1, N b(i) = b(i) * i end do !$acc loop do i = 1, N a(i) = b(i) + i end do !$acc end kernels do i = 1, N c = c + a(i) + b(i) end do
+Without Unified Memory, array b is copied into the GPU memory at the beginning of the OpenACC kernels region. It is then updated in the GPU memory and used to compute elements of array a. As instructed by the data clause copyin(b), b is not copied back to the CPU memory at the end of the kernels region and therefore its initial value is used in the computation of c. With -acc -gpu=mem:unified, the updated value of b in the first loop is automatically visible in the last loop leading to a different value of c at its end.
+Implications of Asynchronous Execution
+Additional complexities can arise when dealing with asynchronous execution, particularly when CPU-GPU shared data is accessed within async compute regions instead of using an independent data copy on GPU. The programmer should be especially careful about accessing local variables in asynchronous GPU code. Unless the GPU code execution is explicitly synchronized before the end of the scope in which local variables are defined, the GPU can access stale data thus resulting in undefined behavior. Consider the following OpenACC C example, where a local array is used to hold temporary data on the GPU:
+void bar() { int x[N]; #pragma acc enter data create(x[0:N]) async #pragma acc parallel loop async for (int i = 0; i < N; i++) x[i] = i; ... #pragma acc exit data delete(x[0:N]) async }
+When compiled for Separate Memory Mode, the bar() function creates a copy of the array x in GPU memory and initializes it as written in the loop construct. That copy is eventually deleted. In Unified Memory Mode, however, the compiler ignores the acc enter data and acc exit data directives, so the loop construct executed on the GPU accesses the array x in local CPU memory. Moreover, since all constructs in this example are made asynchronous, the access to x on the GPU leads to undefined behavior of the program because the variable x goes out of scope once the bar() function finishes.
+Here is a similar example, where the local array x is dynamically allocated:
+void bar() { int *x = (int *)malloc(N * sizeof(int)); #pragma acc enter data create(x[0:N]) async #pragma acc parallel loop async for (int i = 0; i < N; i++) x[i] = i; ... #pragma acc exit data delete(x[0:N]) async free(x); }
+To help detect programming mistakes like this, the NVIDIA OpenACC Runtime provides the NVCOMPILER_ACC_CHECK_UNIFIED environment variable. When set to a non-zero integer value, it enables the runtime to emit information to the standard error output about variables still used on the device after they have been deallocated on the host.
+For the example with the x array dynamically allocated with malloc, you can compile the application normally and run it as follows:
+$ nvc -acc -gpu=mem:unified app.c $ NVCOMPILER_ACC_CHECK_UNIFIED=1 ./a.out Deallocated pointer 0x4a1d00000a80 still referenced on device! File ./app.c, function bar, line 6, variable 'x[:1000]'.
+When the x array is automatically allocated in stack memory, the OpenACC runtime will be unable to recognize the problem on its own. You can compile the application with the -Mstack_frame_trace switch added, which will result in generating additional facilities that will assist the runtime when automatic memory is deallocated:
+$ nvc -acc -gpu=mem:unified -Mstack_frame_trace app.c $ NVCOMPILER_ACC_CHECK_UNIFIED=1 ./a.out Stack pointer 0xffffd71a13c0 still referenced on device! File ./app.c, function bar, line 6, variable 'x[:]'.
+Note that the NVCOMPILER_ACC_CHECK_UNIFIED environment variable as well as the compiler switch -Mstack_frame_trace, are designed for diagnostic purposes. Either of them can add run-time overhead, impacting application performance. We recommend avoiding their use when the application is deployed in a production environment.
+Performance Considerations
+In Unified Memory Mode, the OpenACC runtime may leverage data action information such as create/delete or copyin/copyout to communicate preferable data placement to the CUDA runtime by means of memory hint APIs as elaborated in the following blog post on the NVIDIA website: Simplifying GPU Application Development with Heterogeneous Memory Management. Such actions originate either from explicit data clauses in the source code or via implicit data movement generated by the compiler. This approach can minimize the amount of automatic data migration and may let a developer fine-tune application performance. For the C example above, while adding the data clauses create(ptr[0:dim*dim]) and copyout(ptr[0:dim*dim]) becomes optional with -gpu=mem:unified, their uses in the OpenACC parallel loop directive may improve performance.
+6.5. OpenACC Error Handling
+The OpenACC specification provides a mechanism to allow you to intercept errors triggered during execution on a GPU and execute a specific routine in response before the program exits. For example, if an MPI process fails while allocating memory on the GPU, the application may want to call MPI_Abort to shut down all the other processes before the program exits. This section explains how to take advantage of this feature.
+To intercept errors the application must give a callback routine to the OpenACC runtime. To provide the callback, the application calls acc_set_error_routine with a pointer to the callback routine.
+The interface is the following, where err_msg contains a description of the error:
+typedef void (*exitroutinetype)(char *err_msg); extern void acc_set_error_routine(exitroutinetype callback_routine);
+When the OpenACC runtime detects a runtime error, it will invoke the callback_routine.
+Note
+This feature is not the same as error recovery. If the callback routine returns to the application, the behavior is decidedly undefined.
+Let’s look at this feature in more depth using an example.
+Take the MPI program below and run it with two processes. Process 0 tries to allocate a large array on the GPU, then sends a message to the second process to acknowledge the success of the operation. Process 1 waits for the acknowledgment and terminates upon receiving it.
+#include <stdio.h> #include <stdlib.h> #include "mpi.h" #define N 2147483648 int main(int argc, char **argv) { int rank, size; MPI_Init(&argc, &argv); MPI_Comm_rank(MPI_COMM_WORLD, &rank); MPI_Comm_size(MPI_COMM_WORLD, &size); int ack; if(rank == 0) { float *a = (float*) malloc(sizeof(float) * N); #pragma acc enter data create(a[0:N]) #pragma acc parallel loop independent for(int i = 0; i < N; i++) { a[i] = i *0.5; } #pragma acc exit data copyout(a[0:N]) printf("I am process %d, I have initialized a vector of size %ld bytes on the GPU. Sending acknowledgment to process 1.", rank, N); ack = 1; MPI_Send(&ack, 1, MPI_INT, 1, 0, MPI_COMM_WORLD); } else if(rank == 1) { MPI_Recv(&ack, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); printf("I am process %d, I have received the acknowledgment from process 0 that data in the GPU has been initialized.\n", rank, N); fflush(stdout); } // do some more work MPI_Finalize(); return 0; }
+We compile the program with:
+$ mpicc -acc -o error_handling_mpi error_handling_mpi.c
+If we run this program with two MPI processes, the output will look like the following:
+$ mpirun -n 2 ./error_handling_mpi Out of memory allocating -8589934592 bytes of device memory total/free CUDA memory: 11995578368/11919294464 Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 3.7, threadid=1 ...empty... call to cuMemAlloc returned error 2: Out of memory ------------------------------------------------------- Primary job terminated normally, but 1 process returned a non-zero exit code.. Per user-direction, the job has been aborted. ------------------------------------------------------- -------------------------------------------------------------------------- mpirun detected that one or more processes exited with non-zero status, thus causing the job to be terminated.
+Process 0 failed while allocating memory on the GPU and terminated unexpectedly with an error. In this case mpirun was able to identify that one of the processes failed, so it shut down the remaining process and terminated the application. A simple two-process program like this is straightforward to debug. In a real world application though, with hundreds or thousands of processes, having a process exit prematurely may cause the application to hang indefinitely. Therefore it would be ideal to catch the failure of a process, control the termination of the other processes, and provide a useful error message.
+We can use the OpenACC error handling feature to improve the previous program and correctly terminate the application in case of failure of an MPI process.
+In the following sample code, we have added an error handling callback routine that will shut down the other processes if a process encounters an error while executing on the GPU. Process 0 tries to allocate a large array into the GPU and, if the operation is successful, process 0 will send an acknowledgment to process 1. Process 0 calls the OpenACC function acc_set_error_routine to set the function handle_gpu_errors as an error handling callback routine. This routine prints a message and calls MPI_Abort to shut down all the MPI processes. If process 0 successfully allocates the array on the GPU, process 1 will receive the acknowledgment. Otherwise, if process 0 fails, it will terminate itself and trigger the call to handle_gpu_errors. Process 1 is then terminated by the code executed in the callback routine.
+#include <stdio.h> #include <stdlib.h> #include "mpi.h" #define N 2147483648 typedef void (*exitroutinetype)(char *err_msg); extern void acc_set_error_routine(exitroutinetype callback_routine); void handle_gpu_errors(char *err_msg) { printf("GPU Error: %s", err_msg); printf("Exiting...\n\n"); MPI_Abort(MPI_COMM_WORLD, 1); exit(-1); } int main(int argc, char **argv) { int rank, size; MPI_Init(&argc, &argv); MPI_Comm_rank(MPI_COMM_WORLD, &rank); MPI_Comm_size(MPI_COMM_WORLD, &size); int ack; if(rank == 0) { float *a = (float*) malloc(sizeof(float) * N); acc_set_error_routine(&handle_gpu_errors); #pragma acc enter data create(a[0:N]) #pragma acc parallel loop independent for(int i = 0; i < N; i++) { a[i] = i *0.5; } #pragma acc exit data copyout(a[0:N]) printf("I am process %d, I have initialized a vector of size %ld bytes on the GPU. Sending acknowledgment to process 1.", rank, N); fflush(stdout); ack = 1; MPI_Send(&ack, 1, MPI_INT, 1, 0, MPI_COMM_WORLD); } else if(rank == 1) { MPI_Recv(&ack, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); printf("I am process %d, I have received the acknowledgment from process 0 that data in the GPU has been initialized.\n", rank, N); fflush(stdout); } // more work MPI_Finalize(); return 0; }
+Again, we compile the program with:
+$ mpicc -acc -o error_handling_mpi error_handling_mpi.c
+We run the program with two MPI processes and obtain the output below:
+$ mpirun -n 2 ./error_handling_mpi Out of memory allocating -8589934592 bytes of device memory total/free CUDA memory: 11995578368/11919294464 Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 3.7, threadid=1 ...empty... GPU Error: call to cuMemAlloc returned error 2: Out of memory Exiting... -------------------------------------------------------------------------- MPI_ABORT was invoked on rank 0 in communicator MPI_COMM_WORLD with errorcode 1.
+This time the error on the GPU was intercepted by the application which managed it with the error handling callback routine. In this case the routine printed some information about the problem and called MPI_Abort to terminate the remaining processes and avoid any unexpected behavior from the application.
+6.6. OpenACC and CUDA Graphs
+NVIDIA provides an optimized model for work submission onto GPUs called CUDA Graphs. A graph is a series of operations, such as kernel launches and other stream-oriented tasks, connected by their dependencies. A graph can be defined once, “captured”, then launched repeatedly. This has potential benefits in reducing launch latencies and other overheads associated with kernel setup.
+A complete write-up explaining CUDA Graphs and the CUDA API for graph definition, instantiation, and execution can be found in Chapter 3 of the CUDA C Programming Guide. In OpenACC, we currently expose just the minimal set of operations to allow capture and replay of a graph containing OpenACC compute regions and data directives. The code executed between a “begin capture” call, accx_begin_capture_async(), and the “end capture” call, accx_end_capture_async(), is called the capture region.
+The CUDA graph API captures (or records) all the device work between accx_begin_capture_async and accx_end_capture_async. The host code in the capture region will be executed once normally, with the exception that no device work is actually executed on the device. Instead, a graph object is created that can be used to replay the captured work multiple times.
+Note
+Graph capture is similar to a closure concept in many programming languages, like lambda-functions in C++. In lambda-function terms, CUDA graphs capture all the variables by value. That means that all the FIRSTPRIVATE scalars, array shapes, and those derived types, arrays and scalar addresses for data resident on the GPU, are baked into the graph object and cannot be altered. The device data behind the pointers, of course, can be updated by the graph execution normally, and updated by the host between replays.
+It is important to understand both what can and cannot be captured within a CUDA Graph capture region:
+Asynchronous data directives, including data create, can be captured. The OpenACC runtime will use the stream-ordered cudaMallocAsync() call in the capture region for variables which need allocation in data clauses, an API call allowed in CUDA Graphs.
+Asynchronous compute regions, preferably ACC parallel regions, can be captured. For ACC kernels regions, verify that no work is performed on the host. Host compute sections cannot be captured.
+Asynchronous ACC update host (self) and update device directives can be captured. The host and device addresses which are captured must be valid during the graph replay/execution.
+Since only the device work is captured and replayed, any data dependencies between the host and device inside the capture region are erroneous. For example, downloading data from the device, processing it on host and uploading it back to the device within the capture region is invalid.
+Host code, even host code containing conditionals, can occur within a capture region. Note though that the path taken through the host code will be the path captured by the graph, i.e. the conditionals must likely be consistent during the replay for correct results. Host code which updates host variables, such as i=i+1 will not be captured in the graph, which might affect proper indexing into device-side arrays or other kernel arguments.
+Similarly, device work initiated in host code loops can be captured in the CUDA Graph. The graph will not contain a notion of looping, just the sequence of device operations submitted to the device during the loop.
+Subroutine and function calls within a capture region, which contain further compute regions or other work which runs on the device, are captured. Care must be taken that the device data addresses passed to the kernels are valid throughout graph execution, and don’t come and go based on stack addresses or something similar.
+Codes which double-buffer, or ping-pong between source and destination arrays that are input on odd iterations and output on even iterations (for example, the snippet shown below), can be accommodated by capturing two graphs: one per even iteration, one per odd iteration.
+int* src; int* dest; while (err > tolerance) { for (int i = 0; i < N; i++) { dest[i] = foo(src[i]); } err = bar(dest); int* tmp = dest; dest = src; src = tmp; }
+Many CUDA library calls, like cublas, etc. can occur in a captured region. Setup for the library calls, such as creating handles, and computing and allocating workspace requirements, should be done before the capture region.
+Graph capturing is thread-safe with respect to each async queue. Host threads can independently capture graphs using different async queues.
+When -gpu=tripcount:device is used, loop trip counts can vary between runs of the same captured graph, as long as the trip count is updated on the device.
+The OpenACC API follows the basic portion of the CUDA Graph API fairly closely. The major difference is OpenACC includes the cudaGraphInstantiate() call as part of the end capture function.
+From Fortran, the graph type is defined in the OpenACC module:
+type, bind(c) :: acc_graph_t type(c_ptr) :: graph type(c_ptr) :: graph_exec end type acc_graph_t
+These subroutines are available in the OpenACC runtime. Here, pGraph is type(acc_graph_t) and async is just the asynchronous queue value:
+subroutine accx_async_begin_capture( async ) subroutine accx_async_end_capture( async, pGraph ) subroutine accx_graph_launch( pGraph, async ) subroutine accx_graph_delete( pGraph ) type(c_ptr) function accx_get_graph( pGraph ) type(c_ptr) function accx_get_graph_exec( pGraph )
+From C, the graph type is defined in OpenACC.h:
+typedef struct { void *graph; void *graph_exec; } acc_graph_t;
+These void functions are available in the OpenACC runtime:
+extern void accx_async_begin_capture(long async); extern void accx_async_end_capture(long async, acc_graph_t *pgraph); extern void accx_graph_launch(acc_graph_t *pgraph, long async); extern void accx_graph_delete(acc_graph_t *pgraph); extern void *accx_get_graph(acc_graph_t *pgraph); extern void *accx_get_graph_exec(acc_graph_t *pgraph);
+We will use a simple Fortran example code which demonstrates some of the modifications needed to use CUDA Graphs from OpenACC. The original serial code for a conjugate gradient iterative solver:
+subroutine RunCG(N, A, b, x, tol, max_iter) implicit none integer, intent(in) :: N, max_iter real(WP), intent(in) :: A(N, N), b(N), tol real(WP), intent(inout) :: x(N) real(WP) :: alpha, rr0, rr real(WP), allocatable :: Ax(:), r(:), p(:) integer :: it, i allocate(Ax(N), r(N), p(N)) call symmatvec(N, N, A, x, Ax) do i = 1, N r(i) = b(i) - Ax(i) p(i) = r(i) enddo rr0 = dot(N, r, r) do it = 1, max_iter call symmatvec(N, N, A, p, Ax) alpha = rr0 / dot(N, p, Ax) do i = 1, N x(i) = x(i) + alpha * p(i) r(i) = r(i) - alpha * Ax(i) enddo rr = dot(N, r, r) print*, "Iteration ", it, " residual: ", sqrt(rr) if (sqrt(rr) <= tol) then deallocate(Ax, r, p) return endif do i = 1, N p(i) = r(i) + (rr / rr0) * p(i) enddo rr0 = rr enddo deallocate(Ax, r, p) end subroutine RunCG
+For this exercise we wish to put the do it = 1,max_iter work for each iteration into a CUDA graph. Step one is to port the code to OpenACC, keeping in mind that we want to use asynchronous queues. We annotate the dot function with OpenACC directives like this:
+function dot(N, x, y) result(r) integer, intent(in) :: N real(WP), intent(in) :: x(N), y(N) integer :: i real(WP) :: r r = 0.d0 !$acc parallel loop present(x, y) reduction(+:r) async(1) do i = 1, N r = r + x(i) * y(i) enddo !$acc wait(1) end function dot
+We write the symmetric matrix multiply like this:
+subroutine symmatvec(M, N, AT, x, Ax) implicit none integer, intent(in) :: M, N real(WP), intent(in) :: AT(N, M), x(N) real(WP), intent(out) :: Ax(M) integer :: i, j real(WP) :: s ! Note: Since A is symmetric, we can use the "transpose" ! for better memory access here !$acc parallel loop gang present(AT, x, Ax) async(1) do i = 1, M s = 0.d0 !$acc loop vector reduction(+:s) do j = 1, N s = s + AT(j,i) * x(j) end do Ax(i) = s end do end subroutine
+And now our main loop of the conjugate gradient solver looks like this:
+do it = 1, max_iter call symmatvec(N, N, A, p, Ax) alpha = rr0 / dot(N, p, Ax) !$acc parallel loop gang vector async(1) do i = 1, N x(i) = x(i) + alpha * p(i) r(i) = r(i) - alpha * Ax(i) enddo rr = dot(N, r, r) print*, "Iteration ", it, " residual: ", sqrt(rr) if (sqrt(rr) <= tol) exit !$acc parallel loop gang vector async(1) do i = 1, N p(i) = r(i) + (rr / rr0) * p(i) enddo rr0 = rr enddo
+Step 2 is to prepare the code for running under CUDA Graphs. There is a lot of host code executing in the main loop. While the dot() function runs on the GPU, the rest of the statement alpha = rr0 / dot(...) runs on the host. Similarly, the 2nd dot() call returns its value to the host. The print statement occurs on the host, as does the residual check. Finally, this iteration’s value for rr is moved to rr0 in the last statement of the loop, on the host.
+The dot product is tricky. We wish to compute the dot product on the GPU, and leave the result on the GPU, so the reduction variable must be present on the GPU. Here, we change the function call to a subroutine, and remove the initialization which is outside of the parallel region:
+subroutine dot(N, x, y, r) implicit none integer, intent(in) :: N real(WP), intent(in) :: x(N), y(N) integer :: i real(WP) :: r !$acc parallel loop present(x, y, r) reduction(+:r) async(1) do i = 1, N r = r + x(i) * y(i) enddo end subroutine dot
+We add one serial kernel to do some of the swapping between rr0 and rr, as well as zeroing out the scalar that will hold the dot product reduction, and move the print and check outside of the GPU capture region, replaced by a update host operation. The finished loop, complete with graph control, looks like this:
+do it = 1, max_iter if (it .eq. 1) then ! First time capture call accx_async_begin_capture(1) call symmatvec(N, N, A, p, Ax) call dot(N, p, Ax, rden) !$acc serial async(1) rr0 = rr alpha = rr0 / rden rden = 0.0d0 rr = 0.0d0 !$acc end serial !$acc parallel loop gang vector async(1) do i = 1, N x(i) = x(i) + alpha * p(i) r(i) = r(i) - alpha * Ax(i) enddo call dot(N, r, r, rr) !$acc update host(rr) async(1) !$acc parallel loop gang vector async(1) do i = 1, N p(i) = r(i) + (rr / rr0) * p(i) enddo call accx_async_end_capture(1, graph) endif ! Always launch, then wait call accx_graph_launch(graph, 1) !$acc wait(1) rra(it) = rr if (sqrt(rr) <= tol) exit enddo
+Step 3 is to compile, run, and profile the result. No special compiler options are needed besides -acc=gpu. When running, you may be advised to set the NVCOMPILER_ACC_USE_GRAPH environment variable. This is currently necessary to properly set the OpenACC runtime for graph capture. Failure to abide by the guidelines above may result in wrong answers, which can be hard to debug. See the following sections on how to use environment variables to help. A common issue is that the pointers passed to the device kernels during graph playback will be the same every time. Make sure that is the case between iterations in the code without graph capture.
+The Nsight Systems tool has very good support for profiling CUDA graphs. The timeline view will provide information on whether you have reduced the launch overhead gaps between the GPU kernels. Figure 1 shows a timeline of the iterations of the original OpenACC loop:
+Figure 1 Nsight Systems Report1 Timeline
+Figure 2 shows a timeline of the iterations when using CUDA Graphs. When the size N is less than a few thousand, launch latency becomes a major contributor to the overall time and here we can see about a 2x speedup:
+Figure 2 Nsight Systems Report2 Timeline
+You can see a more-detailed trace of the CUDA Graph components by adding the --cuda-graph-trace=node option to the nsys profile command.
+The above loop demonstrates several of the guidelines outlined at the top of this section, namely, capturing compute regions, whether at the top level or in subprogram units, capturing data movement, and restructuring code regions to minimize or eliminate the host code within a capture region. And the minimal API to begin capture, end capture, then launch the captured graph.
+6.7. Host and Device Trip Count Options
+The -gpu=tripcount option controls whether the trip counts for loops in a compute construct, such as acc parallel loop, are calculated on the host or on the device. The default behavior of the NVHPC compilers is to use the values calculated on the host, though the OpenACC specification states that trip count values should be calculated on the device. We have chosen to maintain, as-is, the default behavior so as not to interfere with existing applications that currently depend on it for correctness. To ensure compliance with the specification, please use the -gpu=tripcount:device option. To maintain the default behavior, please use -gpu=tripcount:host or do not specify a -gpu=tripcount option.
+To emit a warning at compile-time that an OpenACC program may be using host values for trip counts, use -gpu=tripcount:warn, or use -gpu=tripcount:nowarn to disable these warnings.
+To check at runtime whether the host and device values for trip counts are the same, use -gpu=tripcount:check. Set the environment variable NVCOMPILER_ACC_CHECK_TRIPCOUNT to enable reporting of any differences discovered. To disable these checks, use -gpu=tripcount:nocheck.
+6.7.1. When to Use -gpu=tripcount:device or -gpu=tripcount:host
+Consider the following example code snippet:
+real :: array(1000, 10) integer :: i, j, n, m !$acc data create(n, m) copy(array) !$acc kernels n = 1000 m = 10 !$acc end kernels !$acc parallel loop defualt(none) collapse(2) do j=1,m do i=1,n array(i, j) = i+j end do end do
+The trip count variables n and m are created on the device, and then their values are set on the device in the acc kernels construct. Their values are not set on the host. Therefore, when the parallel loop is run on the device, if the host values for n and m are used, the loop will not run for the correct number of iterations. In this and similar cases, to ensure the correctness of the program, -gpu=tripcount:device should be used.
+In cases where the values of n and m are set on the host, it is sufficient to rely on the default behavior or to specify -gpu=tripcount:host. There are two ways to verify whether or not the program’s correctness may be affected by the use of -gpu=tripcount:device versus -gpu=tripcount:host. The -gpu=tripcount:check option can be used to detect discrepancies between host and device values for trip counts at runtime, and the -gpu=tripcount:warn option can be used to issue compile-time warnings that host values for trip counts may be used.
+Note: For CUDA Graphs, -gpu=tripcount:device allows trip counts to vary between runs for captured graphs on the device, as long as the trip count is updated on the device. This behavior can affect the correctness of CUDA Graphs, and some applications may require this option to use CUDA Graphs correctly.
+6.8. Environment Variables
+This section summarizes the environment variables that NVIDIA OpenACC supports. These environment variables are user-setable environment variables that control behavior of accelerator-enabled programs at execution. These environment variables must comply with these rules:
+The names of the environment variables must be upper case.
+The values of environment variables are case insensitive and may have leading and trailing white space.
+The behavior is implementation-defined if the values of the environment variables change after the program has started, even if the program itself modifies the values.
+The following table contains the environment variables that are currently supported and provides a brief description of each.
+Table 20 Supported Environment Variables
+Use this environment variable…
+To do this…
+NVCOMPILER_ACC_CHECK_TRIPCOUNT
+Enable output for checking differences between host and device trip counts when -gpu=tripcount:check is used.
+NVCOMPILER_ACC_CUDA_PROFSTOP
+Set to 1 (or any positive value) to tell the runtime environment to insert an ‘atexit(cuProfilerStop)’ call upon exit. This behavior may be desired in the case where a profile is incomplete or where a message is issued to call cudaProfilerStop().
+NVCOMPILER_ACC_DEVICE_NUM
+Sets the default device number to use. NVCOMPILER_ACC_DEVICE_NUM. Specifies the default device number to use when executing accelerator regions. The value of this environment variable must be a nonnegative integer between zero and the number of devices attached to the host.
+ACC_DEVICE_NUM
+Legacy name. Superseded by NVCOMPILER_ACC_DEVICE_NUM.
+NVCOMPILER_ACC_DEVICE_TYPE
+Sets the default device type to use for OpenACC regions. NVCOMPILER_ACC_DEVICE_TYPE. Specifies which accelerator device to use when executing accelerator regions when the program has been compiled to use more than one different type of device. The value of this environment variable is implementation-defined, and in the NVIDIA OpenACC implementation may be the strings NVIDIA, MULTICORE or HOST
+ACC_DEVICE_TYPE
+Legacy name. Superseded by NVCOMPILER_ACC_DEVICE_TYPE.
+NVCOMPILER_ACC_GANGLIMIT
+For NVIDIA CUDA devices, this defines the maximum number of gangs (CUDA thread blocks) that will be launched by a kernel.
+NVCOMPILER_ACC_NOTIFY
+With no argument, a debug message will be written to stderr for each kernel launch and/or data transfer. When set to an integer value, the value is used as a bit mask to print information about: 1: kernel launches
+2: data transfers
+4: region entry/exit
+8: wait operations or synchronizations with the device
+16: device memory allocates and deallocates
+NVCOMPILER_ACC_PROFLIB
+Enables 3rd party tools interface using the new profiler dynamic library interface.
+NVCOMPILER_ACC_SYNCHRONOUS
+Disables asynchronous launches and data movement.
+NVCOMPILER_ACC_TIME
+Enables a lightweight profiler to measure data movement and accelerator kernel execution time and print a summary at the end of program execution.
+6.9. Profiling Accelerator Kernels
+Support for Profiler/Trace Tool Interface
+The NVIDIA HPC Compilers support the OpenACC Profiler/Trace Tools Interface. This is the interface used by the NVIDIA profilers to collect performance measurements of OpenACC programs.
+Using NVCOMPILER_ACC_TIME
+Setting the environment variable NVCOMPILER_ACC_TIME to a nonzero value enables collection and printing of simple timing information about the accelerator regions and generated kernels.
+Note
+Turn off all CUDA Profilers (NVIDIA’s Visual Profiler, NVPROF, CUDA_PROFILE, etc) when enabling NVCOMPILER_ACC_TIME, they use the same library to gather performance data and cannot be used concurently.
+Accelerator Kernel Timing Data
+bb04.f90 s1 15: region entered 1 times time(us): total=1490738 init=1489138 region=1600 kernels=155 data=1445 w/o init: total=1600 max=1600 min=1600 avg=1600 18: kernel launched 1 times time(us): total=155 max=155 min=155 avg=155
+In this example, a number of things are occurring:
+For each accelerator region, the file name bb04.f90 and subroutine or function name s1 is printed, with the line number of the accelerator region, which in the example is 15.
+The library counts how many times the region is entered (1 in the example) and the microseconds spent in the region (in this example 1490738), which is split into initialization time (in this example 1489138) and execution time (in this example 1600).
+The execution time is then divided into kernel execution time and data transfer time between the host and GPU.
+For each kernel, the line number is given, (18 in the example), along with a count of kernel launches, and the total, maximum, minimum, and average time spent in the kernel, all of which are 155 in this example.
+6.10. OpenACC Runtime Libraries
+This section provides an overview of the user-callable functions and library routines that are available for use by programmers to query the accelerator features and to control behavior of accelerator-enabled programs at runtime.
+Note
+In Fortran, none of the OpenACC runtime library routines may be called from a PURE or ELEMENTAL procedure.
+6.10.1. Runtime Library Definitions
+There are separate runtime library files for Fortran, and for C++ and C.
+C++ and C Runtime Library Files
+In C++ and C, prototypes for the runtime library routines are available in a header file named accel.h. All the library routines are extern functions with ‘C’ linkage. This file defines:
+The prototypes of all routines in this section.
+Any data types used in those prototypes, including an enumeration type to describe types of accelerators.
+Fortran Runtime Library Files
+In Fortran, interface declarations are provided in a Fortran include file named accel_lib.h and in a Fortran module named accel_lib. These files define:
+Interfaces for all routines in this section.
+Integer parameters to define integer kinds for arguments to those routines.
+Integer parameters to describe types of accelerators.
+6.10.2. Runtime Library Routines
+Table 21 lists and briefly describes the runtime library routines supported by the NVIDIA HPC Compilers in addition to the standard OpenACC runtine API routines.
+Table 21 Accelerator Runtime Library Routines
+This Runtime Library Routine…
+Does this…
+acc_allocs
+Returns the number of arrays allocated in data or compute regions.
+acc_bytesalloc
+Returns the total bytes allocated by data or compute regions.
+acc_bytesin
+Returns the total bytes copied in to the accelerator by data or compute regions.
+acc_bytesout
+Returns the total bytes copied out from the accelerator by data or compute regions.
+acc_copyins
+Returns the number of arrays copied in to the accelerator by data or compute regions.
+acc_copyouts
+Returns the number of arrays copied out from the accelerator by data or compute regions.
+acc_disable_time
+Tells the runtime to stop profiling accelerator regions and kernels.
+acc_enable_time
+Tells the runtime to start profiling accelerator regions and kernels, if it is not already doing so.
+acc_exec_time
+Returns the number of microseconds spent on the accelerator executing kernels.
+acc_frees
+Returns the number of arrays freed or deallocated in data or compute regions.
+acc_get_device
+Returns the type of accelerator device used to run the next accelerator region, if one is selected.
+acc_get_device_num
+Returns the number of the device being used to execute an accelerator region.
+acc_get_free_memory
+Returns the total available free memory on the attached accelerator device.
+acc_get_memory
+Returns the total memory on the attached accelerator device.
+acc_get_num_devices
+Returns the number of accelerator devices of the given type attached to the host.
+acc_kernels
+Returns the number of accelerator kernels launched since the start of the program.
+acc_present_dump
+Summarizes all data present on the current device.
+acc_present_dump_all
+Summarizes all data present on all devices.
+acc_regions
+Returns the number of accelerator regions entered since the start of the program.
+acc_total_time
+Returns the number of microseconds spent in accelerator compute regions and in moving data for accelerator data regions.

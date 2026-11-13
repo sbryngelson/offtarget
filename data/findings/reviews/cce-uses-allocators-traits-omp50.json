@@ -1,0 +1,191 @@
+{
+ "finding": "cce-uses-allocators-traits-omp50.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-41",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "uses_allocators(my_alloc(my_traits)) is valid OpenMP 5.0 Fortran syntax; my_alloc is an omp_allocator_handle_kind variable, non-predefined with traits, and the traits array is a constant array in the same scope. The restriction on other data-sharing clauses applies to the same construct (target); shared(my_alloc) is on the nested parallel do, a different construct. The compiler parses my_alloc(...) as a function reference, so it rejects a conforming program."
+  },
+  {
+   "run": "run-20261113/batch-68",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The target construct lists uses_allocators(allocator[(allocator-traits-array)]). my_alloc has omp_allocator_handle_kind, my_traits is a constant array in the same scope as the construct, and my_alloc is non-predefined with traits, as required. The restriction on other data-sharing clauses covers the same construct; shared(my_alloc) is on the nested parallel do, a different construct. allocate(my_alloc: t) uses an allocator that appears in uses_allocators. The compiler treating my_alloc(my_traits) as a function reference is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-113",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The allocator my_alloc appears in uses_allocators on target and in shared on the nested parallel construct, which is a different construct, so the restriction on other data-sharing clauses in the same construct may not apply. The traits array is a constant array in scope. But whether my_alloc may be named in shared and default(none) interplay is not settled by the text, and the uses_allocators form in 5.0 is unclear for Fortran. Not decidable with confidence.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-23",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-38",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "uses_allocators(allocator[(allocator-traits-array)]) is valid OpenMP 5.0 on target; my_traits is a constant array of omp_alloctrait defined in the same scope, with a non-predefined allocator given traits. my_alloc is not in a data-sharing clause of the target construct itself (only on the nested parallel do). No races (a is read, b(i) and t distinct). The compiler parsing my_alloc(...) as a function reference is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 3,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "70aa81c964e6620f8eeddf0ce0f2902ee7e6c47f2c5a4610ace9929e03c27880",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The restriction on allocators in uses_allocators concerns other data-sharing or mapping clauses in the same construct; my_alloc appears in shared only on the nested parallel do, a different construct. The traits array is a constant parameter array in the same scope as the target, the allocator is non-predefined with traits, and allocate on the parallel do names an allocator listed in uses_allocators.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A's doubt fails. The restriction on allocators in uses_allocators concerns other data-sharing or mapping clauses in the same construct; my_alloc appears in shared only on the nested parallel do, a different construct. The traits array is a constant parameter array in the same scope as the target, the allocator is non-predefined with traits, and allocate on the parallel do names an allocator listed in uses_allocators. Reading B is right: the program is conforming, and treating my_alloc(...) as a function reference is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-18",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "uses_allocators on target with a non-predefined allocator and a traits array is the required form. my_traits is a constant array of omp_alloctrait in the same scope as the construct. The restriction on other data-sharing clauses applies only to the same construct, and shared(my_alloc) is on the nested parallel do, so Reading A's doubt fails. Parallel do has no races, since t is private and each b(i) is distinct. The compiler treated my_alloc as a function reference, so refusal is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

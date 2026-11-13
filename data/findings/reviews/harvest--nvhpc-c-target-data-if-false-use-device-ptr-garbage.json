@@ -1,0 +1,113 @@
+{
+ "finding": "harvest/nvhpc-c-target-data-if-false-use-device-ptr-garbage.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "With if(0) on target data the target device is the host. p points to buf, which is not mapped in the host device data environment (the enter data used the default device), so p must hold a valid address for the target device; on the host it does, so the converted reference equals the host pointer and seen == buf. Observed seen 0xc is not a valid result. Small uncertainty: the spec text on use_device_ptr with a false if clause is terse."
+  },
+  {
+   "run": "run-20261112/batch-31",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "With if(0) on target data the target device is the host, so p is not converted to a device address from the mapped buf; either p points to a mapped object (host device env) or holds a valid address for the host device. Either way seen stays equal to buf. The value 0xc is not allowed."
+  },
+  {
+   "run": "run-v2-20261113/batch-52",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "With if(0) on target data, the target device is the host. p is then converted to a valid address for that device, which is the host address of buf. seen therefore equals buf, and a conforming implementation reports pass. The observed value 0xc is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-62",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-85",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "With if(0) on target data the target device is the host. p points to buf, which is accessible on the host, so use_device_ptr leaves a valid address; the program must see seen == buf. The restriction on use_device_ptr (pointer value is the address of an object accessible on the target device) holds for the host. Observing 0xc is a wrong answer.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-22",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b0b5cf7c4edc80f62d717a0ce72de9a55fe18adfbbcd383982ac23386c44f047",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

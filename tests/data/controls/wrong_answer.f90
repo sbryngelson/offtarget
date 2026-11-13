@@ -1,0 +1,29 @@
+! Control program (hand-written): legal, runs on the device, and its check
+! fails on purpose: the host reference is deliberately wrong (2*i + 2
+! where the device computes 2*i + 1). Expected output on a working
+! toolchain: RESULT ran_on_host=0 check=fail
+program wrong_answer
+  use omp_lib, only: omp_is_initial_device
+  implicit none
+  integer, parameter :: n = 64
+  integer, allocatable, target :: a(:), b(:)
+  integer :: ref(n)
+  integer :: i, host_flag
+  logical :: ok
+  allocate(a(n), b(n))
+  do i = 1, n
+    a(i) = i
+    b(i) = 0
+    ref(i) = 2*i + 2
+  end do
+  host_flag = 1
+  !$omp target map(to: a) map(from: b) map(tofrom: host_flag)
+  host_flag = merge(1, 0, omp_is_initial_device())
+  do i = 1, n
+    b(i) = 2*a(i) + 1
+  end do
+  !$omp end target
+  ok = all(b == ref)
+  print '(a,i0,a,a)', 'RESULT ran_on_host=', host_flag, ' check=', merge('pass', 'fail', ok)
+  deallocate(a, b)
+end program wrong_answer

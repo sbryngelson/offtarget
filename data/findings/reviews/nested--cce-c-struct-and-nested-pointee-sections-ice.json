@@ -1,0 +1,113 @@
+{
+ "finding": "nested/cce-c-struct-and-nested-pointee-sections-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r, r.nx.nx[0:1] and r.nx.nx->a[0:8] do not share original storage: each section is the pointee of the preceding pointer member, so only the base pointer lies in r and is attached. The map-clause restrictions are met. The array sections are contiguous. A conforming compiler must accept it; the clang assertion is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-82",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r, r.nx.nx[0:1] and r.nx.nx->a[0:8] do not share original storage: the pointees lie outside r and outside each other, and the pointers are attached. The restriction on sharing storage is not violated. tot=16 is determined. The compiler crash (assertion) is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-15",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The map items r, r.nx.nx[0:1] and r.nx.nx->a[0:8] do not share original storage except where one contains the other: r.nx.nx[0:1] and a[0:8] live in heap storage, with their base pointers inside r. The restriction therefore holds, and each pointer is attached. The program is conforming, so a conforming compiler must accept it. An assertion crash in the front end is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-51",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-60",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The map clauses list r and the sub-objects r.nx.nx[0:1] and r.nx.nx->a[0:8]. Sharing original storage is allowed when one item is the containing structure of the other; the pointee storage of a is separate from r. All items are valid, so the program is conforming and must compile. The compiler assertion crash is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7327f4bb4fa570c05dcfc0c23d6eb8b4562dd2c99f5e1f4a29059f828c169068",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

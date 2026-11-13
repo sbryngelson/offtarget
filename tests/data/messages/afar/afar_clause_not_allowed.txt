@@ -1,0 +1,8 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: amdflang -fopenmp --offload-arch=gfx942 -L/usr/lib/gcc/x86_64-redhat-linux/8 -O2 (AFAR 24.0.0git, therock-afar-24.3.0) on offload.engine.gen omp60-clause-severity (6.0 clause at the default OpenMP version)
+# exit status: 1
+==== verbatim output below ====
+error: Semantic errors in /tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp60-clause-severity.f90
+/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp60-clause-severity.f90:27:50: error: SEVERITY clause is not allowed on PARALLEL DO directive in OpenMP v5.2, try -fopenmp-version=60
+      !$omp parallel do default(none) shared(a, b) severity(warning)
+                                                   ^^^^^^^^^^^^^^^^^

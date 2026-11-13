@@ -1,0 +1,12 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: run of offload.engine.c_gen omp52-c-clause-map-present (map(present, to: a) of an unmapped array) built by amdclang -fopenmp --offload-arch=gfx942 -fopenmp-version=52 -O2 (AFAR 24.0.0git), HSA_XNACK=0 OMP_TARGET_OFFLOAD=mandatory
+# exit status: 134
+==== verbatim output below ====
+omptarget message: device mapping required by 'present' map type modifier does not exist for host address 0x00007fffffff81a0 (256 bytes)
+omptarget error: Call to getTargetPointer returned null pointer ('present' map type modifier).
+omptarget error: Call to targetDataBegin failed, abort target.
+omptarget error: Failed to process data before launching the kernel.
+omptarget error: Consult https://openmp.llvm.org/design/Runtimes.html for debugging options.
+omptarget error: Source location information not present. Compile with -g or -gline-tables-only.
+omptarget fatal error 1: failure of target construct while offloading is mandatory
+bash: line 1: 4180483 Aborted                 HSA_XNACK=0 OMP_TARGET_OFFLOAD=mandatory ./omp52-c-clause-map-present.afar

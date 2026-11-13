@@ -1,0 +1,762 @@
+intro_openmp()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                intro_openmp()
+
+          *   *   *   *   *
+
+NAME
+       intro_OpenMP - Introduction to the OpenMP parallel programming model
+
+DESCRIPTION
+       OpenMP is a parallel programming model that is portable across shared memory architectures from Cray and other vendors.  The OpenMP Application Program Interface Specification is available at <http://www.openmp.org/specifications>.  This man page describes the implementation and use of OpenMP in the context of the Cray Compiling Environment (CCE) and features unique to the Cray implementation.
+
+       By default, OpenMP is disabled in CCE and must be explicitly enabled using the -fopenmp compiler command line option.
+
+       CCE supports full OpenMP 5.0 and partial OpenMP 5.1, 5.2, and 6.0.  The following OpenMP 5.1 features are supported:
+
+       · inoutset dependence type
+
+       · primary policy for the proc_bind clause
+
+       · present behavior for defaultmap (C/C++ only)
+
+       · masked construct without filter clause
+
+       · metadirective dynamic user condition and target_device selectors (Fortran only)
+
+       · error directive
+
+       · compare clause on atomic construct
+
+       · fail clause on atomic construct
+
+       · assume and assumes directives (Fortran only)
+
+       · nothing directive (Fortran only)
+
+       · omp_display_env routine
+
+       · omp_get_mapped_ptr routine
+
+       · OMPT external monitoring interface
+
+       · nowait clause on taskwait construct (C/C++ only)
+
+       · thread_limit clause on target construct
+
+       · has_device_addr clause on target construct
+
+       · New initial device number value
+
+       · interop construct and C/C++ interoperability routines
+
+       · omp_set_num_teams routine
+
+       · omp_get_max_teams routine
+
+       · omp_get_teams_thread_limit routine
+
+       · omp_set_teams_thread_limit routine
+
+       · iterator modifier in depend, map, and motion clauses (Fortran only)
+
+       · indirect clause
+
+       · dispatch construct (Fortran only)
+
+       · reproducible/unconstrainted modifiers for order clause
+
+       · tile construct
+
+       · unroll construct
+
+       · begin declare variant directive (C/C++)
+
+       · scope construct
+
+       · C++ attribute syntax for OpenMP directives (C++ only)
+
+       · omp_all_memory reserved locator in depend clause
+
+       · strict modifier on taskloop construct
+
+       · device-specific environment variables
+
+       · omp_target_is_accessible routine
+
+       · Fortran BLOCK construct may be associated with OpenMP constructs
+
+       The following OpenMP 5.2 features are supported:
+
+       · otherwise clause for metadirective (Fortran only)
+
+       · masked construct with filter clause
+
+       · allocators construct (Fortran)
+
+       The following OpenMP 6.0 features are supported:
+
+       · support for free-agent threads via threadset clause on the task and *taskloop constructs
+
+       · reductions for already privatized variables
+
+       · support for self mapping via self modifier
+
+       · extended default and defaultmap support
+
+   Limitations
+       CCE's OpenMP implementation has the following limitations:
+
+       · A limited set of constructs and APIs are supported in offload regions when targeting a non-host device.  The following OpenMP constructs are supported: teams, distribute, parallel, for, do, simd, loop, atomic, barrier (C/C++), master (C/C++), critical (C/C++), error, assume, assumes, and nothing.  And, the following API calls are supported: omp_is_initial_device, omp_get_thread_num, omp_get_num_threads, omp_get_team_num, and omp_get_num_teams.  All other APIs and constructs are not supported in omp target regions when targeting a non-host device.
+
+       · The device clause is not supported.  The other mechanisms for selecting a default device are supported: OMP_DEFAULT_DEVICE and omp_set_default_device.
+
+       · User-defined reductions in Fortran are not supported in target regions or task reductions.
+
+       · An untied task that starts execution on a thread and suspends will always resume execution on that same thread.
+
+       · declare simd functions will not vectorize if inlining is disabled or the function definition is not visible at the callsite.
+
+       · simd loops containing function calls will not vectorize if inlining is disabled or the function definitions are not visible.
+
+       · The requires directive is parsed, but any clauses that are not yet supported produce compile errors, as allowed by the OpenMP specification.  The requires directive clauses dynamic_allocators and reverse_offload currently result in compile time errors.
+
+       · The loop directive is honored where semantics are observable, but no additional optimization is performed.  That is, the loop directive is treated as distribute for bind(teams); do/for for bind(parallel); and simd for bind(thread).  For C/C++, the stand-alone loop directive is supported, but it is not supported when expressed as part of a combined or composite construct.
+
+       · The order(concurrent) clause is accepted, but is not used for additional optimization.
+
+       · omp_pause_resource and omp_pause_resource_all only cause the CCE offloading runtime library to relinquish GPU memory; no other resources are relinquished.
+
+       · Several hints are parsed and accepted, but no action is taken: simd nontemporal, atomic hints, nonmonotonic loop scheduling, and the close modifier.
+
+       · The mutexinoutset and inoutset dependence types are accepted but treated as inout dependence types
+
+       · The uses_allocators clause is accepted, but its usefulness is limited because CCE does not currently support the OpenMP memory allocation APIs in target regions for non-host devices
+
+       · The assume and assumes directives are accepted, but they are not currently used for additional optimization
+
+       · Non-rectangular loop collapse is functionally supported, but the collapse depth may be limited to exclude non-rectangular loops from the collapse group.  This may result in partial collapse or no collapse at all (i.e., collapse depth one).
+
+       · Non-contiguous target update directives are not supported for array slices specified with an array of arbitrary indices, even though this is valid array syntax in Fortran.  Non-contiguous updates are supported for normal array slice expressions that specify a lower bound, upper bound, and optional stride.
+
+       · On non-CPU target (i.e., an NVIDIA or AMD GPU), orphaned workshare constructs and some orphaned API calls (omp_get_thread_num and omp_get_num_thread) are not supported.  The code will fail to link.
+
+       · Concurrent asynchronous map clauses to the same variable are not fully supported and can result in unspecified behavior.  Asynchronous map clauses, ones specified on a directive with a nowait clause, are currently implemented with synchronous present table semantics.  That is, any implied data transfers are enqueued for asynchronous completion, but reference count updates are applied immediately.  Issues only arise when the same variable appears in asynchronous map clauses concurrently and one of the map clauses trigger an allocation or deallocation (i.e., the reference count increases to one or decreases to zero).  This implementation also affects the return value for API calls that query the present table, such as omp_is_present.  There are no issues with concurrent map clauses on independent variables or concurrent map clauses that are synchronous (i.e., the construct does not have a nowait clause).  This issue can be avoided by wrapping asynchronous map clauses with enclosing synchronous data regions, which ensures that all underlying allocations and deallocations will occur synchronously.
+
+       · omp scan is functionally supported, but loops will be limited to a single thread
+
+       · The conditional modifier for lastprivate is functionally supported on GPU, but runs with a single thread.
+
+       · Default and named mappers in Fortran are supported for top-level objects (scalars and arrays) on map clauses; only default mappers are supported for update directives; mappers are not currently supported for derived type members that do not have the pointer or allocatable attribute.
+
+       · indirect invoked-by-fptr argument is not supported.
+
+       · Translation of indirect function pointers is supported for C/C++, In the case of mapping function pointers explicitly or in C structs you must either use the -fopenmp-offload-translate-at-map or -fopenmp-offload-translate-at-call flag.  Where the at map flag translates the function pointer at map time, while the at call flag translates the function pointer at call time.  The at-map flag only works in non USM environments, in USM environments the at-call flag is the only option.
+
+       · For C/C++, when running with unified shared memory, indirect function pointers can only be mapped implicitly and cannot be mapped as as structure elements.  Unless you specify the -fopenmp-offload-translate-at-call flag
+
+       · For Fortran, when running with unified shared memory, indirect function pointers are not callable.
+
+       · Dynamic dispatch for C++ virtual function calls in target constructs is supported for objects constructed on the same device.  If an object is constructed on the host device and mapped to a non-host device, then dynamic dispatch is only supported under the following conditions: the program source is compiled with the -fopenmp-offload-translate-at-call xor -fopenmp-offload-translate-at-map flag; and the host and GPU objects have distinct storage.  The at-call flag translates at call, while the at-map flag translates the virtual function call at map time.  In a unified memory environment, only -fopenmp-offload-translate-at-call is supported.
+
+       · The dispatch construct is not added to the OpenMP context's construct set.
+
+       · For Fortran, the unroll and tile constructs require optimizations to be enabled and will not work at -O0.  Additionally, an unroll directive may not be applied to another unroll construct, and a tile directive may not be applied to either an unroll construct or another tile construct.
+
+       · Self maps require the list items to be accessible from the device prior to mapping.  This can be achieved by utilizing a pinned memory allocator or by targeting a system that supported unified shared memory.
+
+       · Free-agent threads are only utilized for explicit tasks generated outside an active parallel region and must be explicitly reserved via the OMP_THREADS_RESERVE environment variable.  For example, OMP_THREADS_RESERVE="free_agent(4)" will enable 4 free-agent threads to be used by the runtime.
+
+       · The supported device-specific environment variables (with DEV and ALL suffixes) are limited to the following variables: OMP_THREAD_LIMIT, OMP_MAX_ACTIVE_LEVELS, OMP_NUM_THREADS, OMP_NUM_TEAMS, and OMP_TEAMS_THREAD_LIMIT.
+
+       · Accessing multiple variables from a Fortran equivalence class, when any one of those variables is written to, is unsupported in a non-host offload region.  If all accesses are reads, any number of accesses to any number of variables are allowed.
+
+   CCE OpenMP Offloading Support
+       OpenMP target directives are supported for targeting AMD GPUs, NVIDIA GPUs, or the current CPU target.  An appropriate accelerator target module must be loaded to use target directives.  Alternatively, the -fopenmp-targets= flag can be used to set the offload target for C and C++ source files (but the desired GPU architecture type must also be specified explicitly).
+
+       When the accelerator target is a non-CPU target (i.e., an NVIDIA or AMD GPU), CCE generally maps omp teams to the GPU's coarse-grained level of parallelism (threadblocks for NVIDIA or work groups for AMD).  omp parallel generally maps to the GPU's fine-grained level of parallelism (threads within a threadblock for NVIDIA and work items for AMD).  In the case of nested omp parallel, the fine-grained level of parallelism is applied to the outermost omp parallel.  Any inner omp parallel constructs are serialized and therefore limited to a single observable GPU thread.
+
+       For Fortran, omp simd constructs are generally ignored.  However, if no omp parallel is present, then CCE performs aggressive autothreading with a preference for loops with an omp simd construct.  This autothreading is mapped to the GPU fine-grained parallelism.
+
+       For C/C++, omp simd constructs are ignored.
+
+       Note: Prior to CCE 16.0 the policy for OpenMP offloading support was different.  That policy mapped omp simd to the GPU fine-gained level of parallelism and omp parallel was generally ignored.
+
+       When compiling for GPU targets, it is important to note that general per-thread forward progress is not guaranteed by the underlying GPU hardware or software model.  Specifically, individual GPU threads (work items) within a warp (wavefront) are not guaranteed to provide independent forward progress.  A warp will make overall forward progress, but when threads within a warp diverge there is no guarantee on the priority of those individual threads relative to one another.  In particular, attempting to execute an algorithm with a per-thread lock (or any per-thread synchronization algorithm where one threads waits indefinitely upon another thread) can deadlock when those threads are mapped to GPU threads in the same warp.  This issue does not apply to OpenMP constructs, including omp critical, as the OpenMP implementation properly handles the hardware constraints.  This issue also does not occur between GPU thread blocks (work groups), so the issue can be avoided by limiting warp size to a single thread with a thread_limit(1) clause on the teams construct.
+
+       When the accelerator target is the host, and a teams construct is encountered, the number of teams that execute the region will be determined by the num_teams clause if it is present.  If the clause is not present, the number of teams will be determined by the nthreads-var ICV if it is set to a value greater than 1.  Otherwise, it will execute with one team.
+
+   Multiple Device Support
+       CCE currently supports use of only one GPU device per process.  The default device may be changed with the OMP_DEFAULT_DEVICE environment variable or the omp_set_default_device API (the device clause is not yet supported), allowing an application to select any visible GPU.  The default device may be changed while an application is running, but only one GPU may be used at a time -- use of the prior GPU must be complete prior to switching the default device.  Any device allocations and outstanding transfers or kernels launches will be lost if appropriate synchronization is not used prior to changing the default device.
+
+       The current CCE implementation only tracks one copy of the default-device-var internal control variable per process rather than one copy per data environment.  As a result, if one thread or task changes the default device then that change will be visible globally by all other threads or tasks.
+
+       Mechanisms provided by the underlying GPU vendor runtime can be used to control the devices visible to CCE's OpenMP runtime.  Specifically, CUDA_VISIBLE_DEVICES can be used for NVIDIA GPUs and ROCR_VISIBLE_DEVICES can be used for AMD GPUs; please refer to the appropriate GPU vendor documentation for more details.  These mechanisms allow limiting and reordering the devices visible to a process and can be used as an alternative mechanism for selecting the default device for an OpenMP application.
+
+   Printing from GPU kernels
+       Standard C printf function calls are supported from OpenMP offload GPU regions compiled for NVIDIA and AMD GPU targets.
+
+       Fortran PRINT statements are supported, with limitations, when called from OpenMP offload regions compiled for AMD GPU targets.  The current implementation supports PRINT statements with a single scalar value of type character, integer, real, or complex.  Other uses of Fortran PRINT will compile successfully but will result in a warning message at runtime.
+
+   Allocator Support
+       CCE's current allocator implementation supports the pinned allocator trait when targeting an NVIDIA or AMD GPU.  Allocating pinned memory will result in an underlying call to cudaMallocHost or hipMallocHost.
+
+       CCE also provides an extension for allocating GPU managed memory: the cray_omp_get_managed_memory_allocator_handle API will return an OpenMP allocator handle that results in an underlying call to cudaMallocManaged or hipMallocManaged.
+
+   GPU Atomic Operations
+       When supported by the target GPU, atomic directives are lowered into native atomic instructions.  Otherwise, atomicity is guaranteed with a native atomic compare-and-swap loop.  GPU atomic operations are not supported for data sizes larger than 64-bits (e.g., double-precision complex).  OpenMP atomic operations are "device scope", only providing coherence with threads on the same device.
+
+       GPUs often support multiple native floating-point atomic instructions.  When available, CCE generates native floating-point atomic instructions for atomic add operations; otherwise, an atomic compare-and-swap loop is generated.
+
+       For AMD MI250X GPUs, native floating-point atomic instructions are only safe for coarse-grained memory; floating-point atomic instructions operating on fine-grained memory will be silently ignored.  In general, memory granularity cannot be determined statically, so at default CCE will always generate atomic compare-and-swap loops for floating-point atomic operations.  (Integer atomic instructions, including atomic compare-and-swap, are safe for any memory granularity.) The -munsafe-fp-atomics compiler flag may be used to enable generation of native floating-point atomic instructions, but with this flag users are responsible for ensuring that atomic operations do not target fine-grained memory.
+
+   GPU Unified Memory
+       CCE's OpenMP map policy is determined by a number of factors, including user preference and the capabilities of the underlying GPU software and hardware stack.  User preference takes priority, if specified and possible; if not, then a default policy applies.
+
+       The OpenMP specification defines variable mapping in a way that allows implementation flexibility.  CCE selects between two main policies:
+
+       1. Variables are mapped with a separate copy in GPU memory and data transfers between the original and GPU copy.  CPU accesses will reference the original variable and GPU accesses will reference the GPU copy.  This policy supports all types of discrete GPUs, where CPU memory may not be accessible from the GPU and vice versa.  In this mode, update directives are implemented with explicit data transfers.
+
+       2. Variables are mapped without a separate copy, instead passing the CPU pointer directly to the GPU kernel.  No explicit data transfers are necessary because CPU and GPU accesses both reference the original variable.  This policy is only applicable to GPUs that support unified memory, where arbitrary CPU memory is accessible from the GPU.  In this mode, update directives are implemented as a no-op.
+
+       Applications compiled with omp requires unified_shared_memory will default to mapping variables without copies.  CCE will issue a compile-time error if this directive is used for targets that do not support unified memory for arbitrary CPU addresses.  Currently, CCE only supports omp requires unified_shared_memory for AMD MI250X, AMD MI300A, and NVIDIA GH200 GPUs.  Recoverable page faults must be enabled at runtime for AMD GPUs to support unified memory (e.g., by setting the HSA_XNACK=1 environment variable), otherwise full unified memory support will not be available and the CCE OpenMP library will issue a fatal runtime error.
+
+       The -fopenmp-force-usm compiler flag causes the compiler to treat each source file as though it contains an explicit omp requires unified_shared_memory directive.  Specifying this compiler flag may be easier than modifying every source file to contain an explicit requires directive.
+
+       For AMD GPUs, unified memory support also requires compiling device code with XNACK support enabled.  CCE always compiles OpenMP device code for AMD GPUs with the default XNACK "any" mode, so the resulting device code will work properly when running with or without unified memory.  CCE does not currently provide a way to override the XNACK compilation mode for OpenMP device code or to build fat binaries with different XNACK modes.
+
+       Applications not compiled with omp requires unified_shared_memory can still use unified memory if a GPU supports it.  Users can opt-in to unified memory by setting the environment variable CRAY_ACC_USE_UNIFIED_MEM=1.  (This environment variable is implied for applications compiled with omp requires unified_shared_memory and does not need to be explicitly set.) Note that some "omp declare target" global variables may still be mapped with separate copies due to the way the GPU copy is emitted statically for global variable; but, all other variables will be mapped without a separate copy.  This environment variable can even be used on systems with limited unified memory support, where arbitrary system memory is not necessarily accessible from the GPU, but CUDA or HIP "managed" memory is accessible from both the CPU and GPU.  In this situation, the CCE OpenMP runtime will query the memory range of a variable being mapped to determine if it is accessible from the GPU; if so, it will be mapped without a copy, otherwise it will be mapped with a copy.
+
+       For GPUs with minimal overhead for unified memory support, the CCE OpenMP runtime will default to mapping without copies, even if the application does not require unified memory.  This policy minimizes memory usage and data transfers, because separate GPU copies are not created for mapped variables and the original variable is always accessed directly.  This policy currently only applies to GPUs with physically unified memory that have no overhead due to page migration or NUMA locality.
+
+       If a user prefers maps to be implemented with copies, even if unified memory is available and possibly required by the application, the environment variable CRAY_ACC_USE_UNIFIED_MEM=0 may be set to force mapping with copies.  This policy takes precedence over default settings.  Note that some "omp declare target" variables and all other global variables will still be mapped without copies.
+
+       Finally, if a no-copy mapping policy is not selected as described above, then the runtime will default to mapping with copies.  This policy is selected even for some GPUs that support unified memory, if there is a non-trivial overhead for unified memory.  For example, page migration or NUMA locality impacts can degrade performance of unified memory.
+
+       It is possible to provide unified memory with a variety of different hardware and software implementations (e.g., physically unified memory or physically separate CPU and GPU memory with in-place accesses and/or automatic page migration).  Unified memory support in CCE relies entirely upon the underlying GPU vendor's hardware and software implementation.  For AMD MI300A APUs, system memory is physically shared between the CPU and GPU cores, so both CPU and GPU memory references can access memory in-place, without page migration or locality impacts.  For AMD MI250X and NVIDIA GH200 GPUs, there is physically separate CPU and GPU memory, and unified memory is provided through a combination of in-place accesses and automatic page migration.  The page migration policy may differ depending on how memory was allocated -- please refer to GPU vendor documentation for full detail on page migration policies.
+
+       It is important to note that CCE uses a non-standard heap configuration, differing from the standard Linux GNU libc malloc/free heap configuration, which may affect the page migration policy for heap allocations.  In particular, heap allocations satisfied by sbrk and mmap may have different migration policies.  CCE uses the GNU libc heap implementation; but, it issues custom mallopt settings upon application startup that tune the underlying heap allocator to always prefer sbrk rather than mmap, even for large allocations.  These custom mallopt settings can be disabled by setting the environment variable CRAY_MALLOPT_OFF=1.
+
+   AMD GPU Memory Granularity
+       AMD GPUs support two types of memory granularity for global GPU memory: coarse and fine.  Coarse-grained memory only ensures cross-device coherence at kernel boundaries while fine-grained memory allows coherence within a running kernel.
+
+       For AMD MI250X GPUs, memory granularity has both functional and performance implications:
+
+       · Native floating-point atomic instructions are only safe for coarse-grained memory; floating-point atomic instructions operating on fine-grained memory will be silently ignored.  (Integer atomic instructions, including atomic compare-and-swap, are safe for any memory granularity.)
+
+       · Fine-grained memory is cached differently than coarse-grained memory, potentially affecting performance.
+
+       CCE does not automatically alter memory granularity of any memory ranges, and instead just adopts the default granularity provided by the underlying AMD implementation.  This results in different granularity depending on how the memory is allocated:
+
+       · OpenMP map clauses and the omp_target_alloc API allocate GPU memory with hipMalloc, which provides coarse-grained memory at default.
+
+       · OpenMP allocators with the pinned allocator trait allocate memory with hipMallocHost, which provides fined-grained memory at default.
+
+       · The allocator returned by the cray_omp_get_managed_memory_allocator_handle API allocates memory with hipMallocManaged, which provides fine-grained memory at default.
+
+       · All other standard host allocations provide fine-grained memory at default.
+
+       In general, fine-grained memory is only relevant for OpenMP applications that use unified or managed memory.  OpenMP applications that do not rely on unified or managed memory, and instead explicitly map all variables accessed on the GPU, will operate entirely on coarse-grained memory.
+
+       Please refer to AMD documentation for full detail on memory granularity.
+
+   Asynchronous GPU Operations
+       CCE supports asynchronous nowait GPU operations by enqueuing them to a fixed number of independent CUDA or HIP streams.  Some false dependences may be introduced as independent operations may be enqueued to the same stream.
+
+       At default, all nowait operations will be round-robin scheduled across the same set of GPU streams.  Optionally, the CRAY_OMP_TARGET_DEPEND_RESERVED and CRAY_OMP_CONCURRENT_TARGET_DEPEND environment variables may be used to reserve a subset of streams for nowait constructs with depend clauses.
+
+       Stream-to-stream synchronization is inserted as needed to preserve depend clause semantics.  Cross-device dependences may limit concurrency: a thread attempting to enqueue a nowait GPU operation depending on an outstanding CPU task will block until the CPU tasks complete, and subsequent tasks in the thread will not be initialized in the interim, even if they are otherwise independent.
+
+   OpenMP Implementation-defined Behavior
+       The OpenMP Application Program Interface Specification presents a list of implementation-defined behaviors.  The Cray-specific implementation is described in the following sections.
+
+       When multiple threads access the same shared memory location and at least one thread is a write, threads should be ordered by explicit synchronization to avoid data race conditions and the potential for non-deterministic results.  Always use explicit synchronization for any access smaller than one byte.
+
+       OpenMP uses the following Internal Control Variables (ICVs).
+
+       nthreads-var
+              Initial value: 1
+
+       dyn-var
+              Initial value: TRUE
+
+              Behaves according to Algorithm 2-1 of the specification.
+
+       run-sched-var
+              Initial value: static
+
+       stacksize-var
+              Initial value: 128 MB
+
+       wait-policy-var
+              Initial value: AUTO
+
+       thread-limit-var
+              Initial value: 64
+
+              Threads may be dynamically created up to an upper limit of 4 times the number of cores/node.  It is up to the programmer to try to limit oversubscription.
+
+       max-active-levels-var
+              Initial value: 4095
+
+       def-sched-var
+              Initial value: static
+
+              The chunksize is rounded up to improve alignment for vectorized loops.
+
+   Dynamic Adjustment of Threads
+       The internal control variable dyn-var is enabled by default.  Threads may be dynamically created up to an upper limit which is 4 times the number of cores/node.  It is up to the programmer to try to limit oversubscription.
+
+       If a parallel region is encountered while dynamic adjustment of the number of threads is disabled, and the number of threads specified for the parallel region exceeds the number that the runtime system can supply, the program terminates.  The number of physical processors hosting the threads at any given time is fixed at program startup and is constrained by the initial CPU affinity mask of the process.  The OMP_NESTED environment variable and the omp_set_nested() call control nested parallelism.  To enable nesting, set OMP_NESTED to true or use the omp_set_nested() call.  Nesting is disabled by default.
+
+   Directives and Clauses
+       atomic When supported by the target architecture, atomic directives are lowered into native atomic instructions.  Otherwise, atomicity is guaranteed with a native atomic compare-and-swap loop; or if the data size is larger than the native atomic compare-and-swap size, then a lock is used.  OpenMP atomic directives are compatible with C11 and C++11 atomic operations, as well as GNU atomic builtins.
+
+       do (Fortran), for (C/C++)
+              For the schedule(guided,chunk) clause, the size of the initial chunk for the master thread and other team members is approximately equal to the trip count divided by the number of threads.
+
+              For the schedule(runtime) clause, the schedule type and, optionally, chunk size can be chosen at run time by setting the OMP_SCHEDULE environment variable.  If this environment variable is not set, the default behavior of the schedule(runtime) clause is as if the schedule(static) clause appeared instead.
+
+              The integer type or kind used to compute the iteration count of a collapsed loop are signed 64-bit integers, regardless of how the original induction variables and loop bounds are defined.  If the schedule specified by the runtime schedule clause is specified and run-sched-var is auto, then the Cray implementation generates a static schedule.
+
+              In the absence of the schedule clause, the default schedule is static and the default chunk size is approximately the number of iterations divided by the number of threads.
+
+       parallel
+              If a parallel region is encountered while dynamic adjustment of the number of threads is disabled, and the number of threads specified for the parallel region exceeds the number that the run time system can supply, the program terminates.
+
+              The number of physical processors actually hosting the threads at any given time is fixed at program startup and is constrained by the initial CPU affinity mask of the process.
+
+              The OMP_NESTED environment variable and the omp_set_nested() call control nested parallelism.  To enable nesting, set OMP_NESTED to true or use the omp_set_nested() call.  Nesting is disabled by default.
+
+       private
+              If a variable is declared as private, the variable is referenced in the definition of a statement function, and the statement function is used within the lexical extent of the directive construct, then the statement function references the private version of the variable.
+
+       sections
+              Multiple structured blocks within a single sections construct are scheduled in lexical order and an individual block is assigned to the first thread that reaches it.  It is possible for a different thread to execute each section block, or for a single thread to execute multiple section blocks.  There is not a guaranteed order of execution of structured blocks within a section.
+
+       single A single block is assigned to the first thread in the team to reach the block; this thread may or may not be the master thread.
+
+       threadprivate
+              The threadprivate directive specifies that variables are replicated, with each thread having its own copy.  If the dynamic threads mechanism is enabled, the definition and association status of a thread's copy of the variable is undefined, and the allocation status of an allocatable array is undefined.
+
+       interop
+              The foreign runtime ID values that are supported in the prefer_type clause are "cuda" and "cuda_driver" (when targeting NVIDIA GPUs) and "hip" (when targeting AMD GPUs).
+
+   Library Routines
+       It is implementation-defined whether the include file omp_lib.h or the module omp_lib (or both) is provided.  It is implementation-defined whether any of the OpenMP runtime library routines that take an argument are extended with a generic interface so arguments of different KIND type can be Fortran accommodated.  Cray provides both omp_lib.h and the module omp_lib, and uses generic interfaces for routines.  If an OMP runtime library routine is defined to be generic, use of arguments of kind other than those specified by OMP_*_KIND constants is undefined.
+
+       omp_get_max_active_levels()
+              The omp_get_max_active_levels() routine returns the maximum number of nested parallel levels currently allowed.  There is a single max-active-levels-var internal control variable for the entire runtime system.  Thus, a call to omp_get_max_active_levels() will bind to all threads, regardless of which thread calls it.
+
+       omp_set_dynamic()
+              The omp_set_dynamic() routine enables or disables dynamic adjustment of the number of threads available for the execution of subsequent parallel regions by setting the value of the dyn-var internal control variable.  The default is on.
+
+       omp_set_max_active_levels()
+              Sets the max-active-levels-var internal control variable.  Defaults to 4095.  If then argument is less than 1, then set to 1.
+
+       omp_set_nested()
+              The omp_set_nested() routine enables or disables nested parallelism, by setting the nest-var internal control variable.  The default is false.
+
+       omp_set_num_threads()
+              Sets the nthreads-var internal control variable to a positive integer.  If the argument is less than 1, then sets nthreads-var to 1.
+
+       omp_set_schedule()
+              Sets the schedule type as defined by the current specification.  There are no implementation-defined schedule types.
+
+   Cray-specific OpenMP API
+       The following features and behaviors are not included in the OpenMP specification.  They are specific to Cray.
+
+   cray_omp_set_wait_policy
+              subroutine cray_omp_set_wait_policy ( policy )
+                         character(*), intent(in) :: policy
+
+       This routine allows dynamic modification of the wait-policy-var internal control variable, which corresponds to the OMP_WAIT_POLICY environment variable.  The policy argument provides a hint to the OpenMP runtime library environment about the desired behavior of waiting threads: the acceptable values are ACTIVE or PASSIVE and case-insensitive.  It is an error to call this routine within an active parallel region.
+
+       The OpenMP runtime library supports an environment variable to control the wait policy:
+
+              OMP_WAIT_POLICY=(AUTO|ACTIVE|PASSIVE)
+
+       This environment variable sets the policy at program launch for the duration of the execution.  However, in some circumstances it is useful to override the policy at specific points during the program's execution: in these circumstances, use cray_omp_set_wait_policy to change the wait policy dynamically.
+
+       One example of this might be an application that requires OpenMP for the first part of the program's execution, but then has a clear point after which OpenMP is no longer needed.  Given that idle OpenMP threads still consume resources, as they are waiting for more work, this condition results in reduced performance for the remainder of the program's execution.  Therefore, to improve program performance, use cray_omp_set_wait_policy to change the wait policy from ACTIVE to PASSIVE after the end of the OpenMP section of the code.
+
+       To avoid deadlock from waiting and signaling threads using different policies, this routine notifies all threads of the policy change at the same time, regardless of whether they are active or idle.
+
+   omp_lib
+       If the omp_lib module is not used and the kind of the actual argument does not match the kind of the dummy argument, the behavior of the procedure is undefined.
+
+   omp_get_wtime
+       This procedure returns real(kind=8) values instead of double-precision values.
+
+   omp_get_wtick
+       This procedure returns real(kind=8) values instead of double-precision values.
+
+   CRAY_ACC_DEBUG Output Routines
+       When the runtime environment variable CRAY_ACC_DEBUG is set to 1, 2, or 3, CCE writes runtime commentary of accelerator activity to STDERR for debugging purposes; every accelerator action on every PE generates output prefixed with "ACC:".  This may produce a large volume of output and it may be difficult to associate messages with certain routines and/or certain PEs.
+
+       With this set of API calls, the programmer can enable or disable output at certain points in the code, and modify the string that is used as the debug message prefix.
+
+   Set prefix or get prefix
+       The cray_acc_set_debug_*_prefix( void ) routines define a string that is used as the prefix, with the default being "ACC:".  The cray_acc_get_debug_*_prefix( void ) routines are provided so that the previous setting can be restored.
+
+       Output from the library is printed with a format string starting with "ACC: %s %s", where the global prefix is printed for the first %s (if not NULL), and the thread prefix is printed for the second %s.  The global prefix is shared by all host threads in the application, and the thread prefix is set per-thread.  By default, strings used in the %s fields are empty.
+
+       The C interface is provided by omp.h:
+
+       · char *cray_acc_get_debug_global_prefix( void )
+
+       · void cray_acc_set_debug_global_prefix( char * )
+
+       · char *cray_acc_get_debug_thread_prefix( void )
+
+       · void cray_acc_set_debug_thread_prefix( char * )
+
+       The Fortran interface is provided by the openacc_lib module:
+
+       · subroutine cray_acc_get_debug_global_prefix(prefix)
+
+       · character (:), allocatable, intent(out) ::prefix
+
+       · subroutine cray_acc_set_debug_global_prefix(prefix)
+
+       · character (*), intent(out) ::prefix
+
+       · subroutine cray_acc_get_debug_thread_prefix(prefix)
+
+       · character (:), allocatable, intent(out) ::prefix
+
+       · subroutine cray_acc_set_debug_thread_prefix( intlevel)
+
+       · character (*), intent(out) ::prefix
+
+   Set and get debug level
+       To enable debug output, set level from 1 to 3, with 3 being the most verbose.  Setting a level less than or equal to 0 disables the debug output.  The get version is provided so the previous setting can be restored.  The thread level is an optional override of the global level.
+
+       C:
+
+       · int cray_acc_get_debug_global_level( void )
+
+       · void cray_acc_set_debug_global_level( intlevel)
+
+       · int cray_acc_get_debug_thread_level( void )
+
+       · void cray_acc_set_debug_thread_level( intlevel)
+
+       Fortran:
+
+       · function cray_acc_get_debug_global_level()
+
+       · subroutine cray_acc_set_debug_global_level(level)
+
+       · integer ( kind = 4 ), intent(in), value ::level
+
+       · function cray_acc_get_debug_thread_level()
+
+       · subroutine cray_acc_set_debug_thread_level(level)
+
+       · integer ( kind = 4 ), intent(in), value ::level
+
+   Module Support
+       If using target directives, a craype-accel module should be loaded to add the necessary compiler options to target an accelerator.  For example, to target an NVIDIA GPU, load the craype-accel-nvidiaversion module.  The module environment forces dynamic linking.
+
+       The craype-accel-host module supports compiling and running an OpenMP application on the host processor.  This provides source code portability between systems with and without an accelerator.
+
+   Compiler Command-line Options
+       By default, OpenMP is disabled in CCE and must be explicitly enabled using the -fopenmp compiler command line option.  The following CCE command-line options affect OpenMP applications.
+
+       -f [no-]openmp
+              Enables or disables compiler recognition of OpenMP directives (C/C++/Fortran).
+
+       -h [no]omp
+              Enables or disables compiler recognition of OpenMP directives (Fortran).
+
+       -h acc_model=option[:option]...
+              Explicitly controls the execution and memory model utilized by the accelerator support system.  The option arguments identify the type of behavior desired.  There are three option sets.  Only one member of a set may be used at a time; however, all three sets may be used together.
+
+              Valid -h acc_model=option values are:
+
+              Option Set 1:
+
+              auto_async_none
+                     Execute kernels and updates synchronously, unless there is an async clause present on the kernels or update directive.
+
+              auto_async_kernel
+                     (Default) Execute all kernels asynchronously ensuring program order is maintained.
+
+              auto_async_all
+                     Execute all kernels and data transfers asynchronously, ensuring program order is maintained.
+
+              Option Set 2:
+
+              no_fast_addr
+                     Use default types for addressing.
+
+              fast_addr
+                     (Default) Attempt to use 32 bit integers in all addressing to improve performance.  This optimization may result in incorrect behavior for some codes.
+
+              Option Set 3:
+
+              no_deep_copy
+                     (Default) Do not look inside of an object type to transfer sub-objects.  Allocatable members of derived type objects will not be allocated on the device.
+
+              deep_copy
+                     (Fortran only) Look inside of derived type objects and recreate the derived type on the accelerator recursively.  A derived type object that contains an allocatable member will have memory allocated on the device for the member.
+
+              Default: acc_model=auto_async_kernel:fast_addr:no_deep_copy
+
+       -Wx,arg
+              Pass command line arguments to the PTX assembler for OpenMP applications.
+
+       -Wc,arg
+              Pass command line arguments to the device linker for OpenMP applications.
+
+       -h [no]omp_trace
+              Enables or disables the insertion of CrayPat OpenMP tracing calls.  By default tracing is off.
+
+       -O [no]omp
+              This option is identical to -h [no]omp.
+
+       -h [no]safe_addr
+              Provides assurance that most conditionally executed memory references are thread safe, which in turn supports a more aggressive use of speculative writes, thereby improving application performance.  If -h nosafe_addr is specified, the optimizer performs speculative stores only when it can prove absolute thread safety using the information available within the application code.
+
+              Default: -h safe_addr
+
+       -h threadn
+              This option controls both OpenMP and autothreading.  If n is 0, both OpenMP and autothreading are disabled.  For n 1 through 3, other behaviors are specified.  This option is identical to -O threadn and is provided for command-line compatibility between the Cray Fortran and Cray C/C++ compilers.  If -h thread1 is specified, it is equivalent to specifying -h nosafe_addr.
+
+       -O threadn
+              This option is identical to -h threadn.
+
+       -xdirlist
+              This option can be used to disable specified directives or classes of directives, including OpenMP directives, and OpenACC directives.
+
+   Program Execution
+       For OpenMP applications, use both the OMP_NUM_THREADS environment variable to specify the number of threads and a workload manager option to specify the number of CPUs hosting the threads.  The number of threads specified by OMP_NUM_THREADS should not exceed the number of cores in the CPU.  If neither the OMP_NUM_THREADS environment variable nor the omp_set_num_threads call is used to set the number of OpenMP threads, the system defaults to the maximum number of available CPUs in the initial CPU affinity mask.
+
+   Debugging
+       The -g option provides debugging support for OpenMP directives identical to specifying the -G0 option.  This level of debugging implies -fopenmp, which means that most optimizations disabled but OpenMP directives are recognized, and -h fp0.  To debug without OpenMP, use -g-xomp or -g -fno-openmp, which will disable OpenMP and turn on debugging.
+
+ENVIRONMENT VARIABLES
+       CRAY_ACC_MALLOC_HEAPSIZE
+              Specifies the accelerator heap size in bytes.  The accelerator heap size defaults to 8MB.  When compiling with the debug option (-g), CCE may require additional memory from the accelerator heap, exceeding the 8MB default.  In this case, there will be malloc failures during compilation.  It may be necessary to increase the accelerator heap size to 32MB (33554432), 64MB (67108864), or greater.
+
+       CRAY_ACC_DEBUG
+              When set to 1, 2, or 3 (most verbose), writes runtime commentary of accelerator activity to STDERR for debugging purposes.  There is also an API which allows the programmer to enable/disable debug output and set the output message prefix from within the application.  See CRAY_ACC_DEBUG Output Routines.
+
+       CRAY_ACC_DEBUG_FILE
+              Specifies an output filename for the debug messages enabled by the CRAY_ACC_DEBUG environment variable.  If set, debug messages are appended to the specified file instead of standard error.  Recognized keywords include:
+
+              · stderr: Causes debug messages to be written to standard error (default).
+
+              · stdout: Causes debug messages to be written to standard output.
+
+              · process: Causes debug messages to be appended to a filename of the form, CRAY_ACC_DEBUG-<PID>, where <PID> is the process identifier of the current process.  This capability allows producing separate output files for each rank in a multi-rank MPI application.
+
+       CRAY_ACC_REUSE_MEM_LIMIT
+              Specify the maximum number of bytes that the Cray accelerator runtime will hold for later reuse.
+
+              By default, the Cray accelerator runtime for NVIDIA GPUs does not release memory back to the CUDA runtime, but instead optimizes performance by holding memory allocations for later reuse.  Use this environment variable to specify the maximum number of bytes the runtime will hold.  To disable this feature, set CRAY_ACC_REUSE_MEM_LIMIT to 0.
+
+       CRAY_ACC_USE_UNIFIED_MEM
+              When set to a value of zero, the accelerator runtime library will always map variables to the GPU with separate allocations and explicit transfers, even if a GPU supports unified memory or an application requires it.
+
+              When set to a non-zero value, the accelerator runtime library will opportunistically use unified memory.  That is, if a particular host address can be accessed directly on the device, then the runtime library will not explicitly allocate device memory and transfer the data between the host and device memories.  Instead, an accelerator compute kernel will dereference the original host pointer directly.
+
+              This environment variable applies to both OpenACC and OpenMP, including all constructs, clauses, and API functions that make variables and array sections available on the device.
+
+              This mode is automatically implied by the omp requires unified_shared_memory directive, with the additional property that running on a GPU without support for unified memory will result in a fatal runtime error.
+
+              NVIDIA GH200 GPUs support unified memory for all host addresses.  AMD MI250X GPUs and MI300A APUs support unified memory for all host addresses only when recoverable page faults are enabled on the GPU (e.g., by setting the AMD HSA_XNACK=1 environment variable at runtime).  For other AMD and NVIDIA GPUs, a host memory location can only be accessed on the device if that memory was allocated through a HIP or CUDA allocation routine (i.e., it is HIP or CUDA "managed" memory).
+
+       CRAY_ACC_FORCE_EARLY_INIT
+              When set to a non-empty value, the accelerator runtime library will fully initialize all available devices at program startup time.  This overrides the default behavior, which is to defer device initialization until first use.  Device initialization includes initializing the GPU vendor's low-level device runtime library (e.g., libcuda for NVIDIA GPUs) and establishing all necessary software contexts for interacting with the device, so that data transfer and kernel launch operations may be issued to the device.  The main benefit of early initialization is that it forces all initialization overhead to be incurred consistently, at program startup time.
+
+       CRAY_ACC_DISABLE_EXTRA_ATTACH
+              When set to a non-empty value, causes the accelerator runtime library to strictly follow the OpenMP specification with respect to pointer attach behavior.  The OpenMP specification defines that pointer attach will occur for a base pointer and the target of that base pointer if both are mapped on the same construct and at least one of them is newly created in the device data environment on entry to the construct.  Pointer attach is not defined to occur if both the base pointer and pointer target were already present prior to entry of the construct.  This behavior may surprise some users, so CCE still performs pointer attach in this case.  Setting the environment variable CRAY_ACC_DISABLE_EXTRA_ATTACH to a non-empty value will disable this extra, non-standard pointer attach behavior.
+
+       CRAY_OMP_AFFINITY_RELATIVE
+              The default value for this environment variable is FALSE.  When set to TRUE, the place set lists specified in OMP_PLACES are mapped onto CPUs in the initial CPU affinity mask using relative mapping.  If an application is launched with an unconstrained initial CPU affinity mask, then numeric CPU identifiers will exactly match Linux CPU numbers, and will be equivalent to direct mapping.  If instead an application is launched with a restricted initial CPU affinity mask, then numeric CPU identifier 0 will map to the first CPU in the initial affinity mask for the main thread; identifier 1 will map to the second CPU in the initial mask, and so on.  This allows the same OMP_PLACES environment variable for all PEs to be used, even when launching multiple PEs per node.  Specifying the appropriate workload manager affinity binding options ensures that each rank begins executing with a non-overlapping initial affinity mask, allowing each instance of the OpenMP runtime to assign thread affinity within those non-overlapping affinity masks.
+
+              Note: CRAY_OMP_AFFINITY_RELATIVE set to TRUE was the default behavior prior to CCE 18.0.
+
+       CRAY_OMP_CHECK_AFFINITY
+              This environment variable is superseded by OMP_DISPLAY_AFFINITY.  Cray recommends that users use OMP_DISPLAY_AFFINITY instead of this environment variable.
+
+              CRAY_OMP_CHECK_AFFINITY is a run time environment variable.  Set it to TRUE to display affinity binding for each OpenMP thread.  The messages contain the hostname, process identifier, OS thread identifier, OpenMP thread identifier, and affinity binding.
+
+       OMP_DISPLAY_AFFINITY
+              This is a runtime environment variable.  Set it to TRUE to display formatted affinity binding for each OpenMP thread.  The default format includes the hostname, process identifier, OS thread identifier, OpenMP thread identifier, and affinity binding.  The format can be changed using the OMP_AFFINITY_FORMAT environment variable, which is documented in the OpenMP 5.0 API Syntax Reference Guide.
+
+       OMP_DYNAMIC
+              The default value is true.
+
+       OMP_MAX_ACTIVE_LEVELS
+              The default value is 4095.
+
+       OMP_NESTED
+              The default value is false.
+
+       OMP_NUM_THREADS
+              If this environment variable is not set and you do not use the omp_set_num_threads() routine to set the number of OpenMP threads, the default is to the maximum number of available CPUs on the system.
+
+              The maximum number of threads per compute node is 4 times the number of allocated processors.  If the requested value of OMP_NUM_THREADS is more than the number of threads an implementation can support, the behavior of the program depends on the value of the OMP_DYNAMIC environment variable.  If OMP_DYNAMIC is false, the program terminates.  If OMP_DYNAMIC is true, it uses up to 4 times the number of allocated processors.  For example, on an 8-core Cray XE-series system, this means the program can use up to 32 threads per compute node.
+
+       OMP_PROC_BIND
+              When set to false, the OpenMP runtime does not attempt to set or change affinity binding for OpenMP threads.  When not false, this environment variable controls the policy for binding threads to places.  Care must be taken when using OpenMP affinity binding with other binding mechanisms or when launching multiple ranks per compute node.  Ideally, applications should be launched with appropriate workload manager affinity settings to ensure that each rank receives a unique initial CPU affinity mask with enough CPUs to satisfy the desired number of OpenMP threads per rank.  The main thread will initially bind to all CPUs in the initial affinity mask, but after program startup the OpenMP runtime library can then bind the main thread and all worker threads to different CPUs within the initial affinity mask according to the active OpenMP affinity policy.
+
+              Valid values for this environment variable are true, false, or auto; or, a comma-separated list of spread, close, and master.  A value of true is mapped to spread.
+
+              The default value for OMP_PROC_BIND is auto, a Cray-specific extension.  The auto binding policy directs the OpenMP runtime library to select an affinity binding setting that it determines to be most appropriate for a given situation.  If there is only a single place in the place-partition-var ICV, and that place corresponds to the initial affinity mask of the main thread, then the auto binding policy maps to false (i.e., binding is disabled).  Otherwise, the auto binding policy causes threads to bind in a manner that partitions the available places across OpenMP threads.
+
+       OMP_PLACES
+              This environment variable has no effect if OMP_PROC_BIND=false; when OMP_PROC_BIND is not false, then OMP_PLACES defines a set of places, or CPU affinity masks, to which threads are bound.  When specifying a set of places, the specific numeric CPU identifiers in OMP_PLACES will directly map onto CPUs in the initial CPU affinity mask of the main thread.  When using the threads, cores, sockets, ll_caches, and numa_domains keywords, places are constructed according to the CPU topology presented by Linux.
+
+              The default value of OMP_PLACES depends on the value of OMP_PROC_BIND.  If OMP_PROC_BIND is auto, then the default value for OMP_PLACES is cores.  Otherwise, the default value of OMP_PLACES is threads.
+
+              Note: Prior to CCE 18.0 OMP_PLACES specified place set lists that were mapped to the initial affinity mask of the main thread using relative mapping.  Setting CRAY_OMP_AFFINITY_RELATIVE to TRUE restores this behavior.
+
+       OMP_SCHEDULE
+              The default value for this environment variable is static.  For the schedule(runtime) clause, the schedule type and, optionally, chunk size can be chosen at run time by setting the OMP_SCHEDULE environment variable.
+
+       OMP_STACKSIZE
+              The default value is 128 MB.
+
+       OMP_THREAD_LIMIT
+              Sets the number of OpenMP threads to use for the entire OpenMP program by setting the thread-limit-var ICV.  The Cray implementation defaults to 4 times the number of available processors.
+
+       OMP_WAIT_POLICY
+              Provides a hint to an OpenMP implementation about the desired behavior of waiting threads by setting the wait-policy-var ICV.  Possible values are ACTIVE and PASSIVE, as defined by the OpenMP specification, and AUTO, a Cray-specific extension.  The default value for this environment variable is AUTO, which direct the OpenMP runtime library to select the most appropriate wait policy for the situation.  In general, the AUTO policy behaves like ACTIVE, unless the number of OpenMP threads or affinity binding results in over subscription of the available hardware processors.  If over subscription is detected, the AUTO policy behaves like PASSIVE.
+
+       OMP_THREADS_RESERVE
+              Controls the number of threads to reserve for structured parallelism and/or free-agent parallelism.  The value specified for structured parallelism effectively caps the number of possible free-agent threads.  Similarly, the value specified for free-agent parallelism effectively caps the number of structured threads (i.e., threads that form a thread team).  The Cray implementation requires free-agent threads to be reserved via this environment variable in order to enable use of free-agent threads.
+
+       CRAY_OMP_TARGET_DEPEND_RESERVED
+              If set to TRUE, reserve a certain number of device streams for target tasks with explicit dependences.  The number of reserved streams is specified by CRAY_OMP_CONCURRENT_TARGET_DEPEND.  Target tasks that are nowait and have no dependences will be placed in the remaining streams.  If FALSE, all streams will be available for both kinds of tasks.  Defaults to FALSE.
+
+       CRAY_OMP_CONCURRENT_TARGET_DEPEND
+              Specifies the number of device streams to reserve for target tasks with explicit dependences.  Target tasks that are nowait and have no dependences will be placed in the remaining streams.  Must be set to at least 1 and less than the total number of available streams.  Defaults to half the available streams if not set or set to an invalid value.  Ignored if CRAY_OMP_TARGET_DEPEND_RESERVED is FALSE.
+
+EXAMPLES
+       A certain amount of overhead is associated with multiprocessing a loop.  If the work occurring in the loop is small, the loop can actually run slower by multiprocessing than by single processing.  To avoid this, make the amount of work inside the multiprocessed region as large as possible, as is shown in the following examples.
+
+       Consider the following code:
+
+              DO K = 1, N
+                   DO I = 1, N
+                      DO J = 1, N
+                         A(I,J) = A(I,J) + B(I,K) * C(K,J)
+                      END DO
+                   END DO
+              END DO
+
+       In this example, the J or I loops can be parallelized.  The K loop cannot be parallelized because different iterations of the K loop read and write the same values of A(I,J).  Always try to parallelize the outermost DO loop that it is possible to parallelize, because it encloses the most work; in this example, the outermost loop that can be parallelized is the I loop.
+
+       This code is a good place to try loop interchange.  Although the parallelizable loops are not the outermost ones, the loops can be reordered to make a parallelizable loop the outermost one.  Thus, loop interchange would produce the following code:
+
+              !$OMP PARALLEL DO PRIVATE(I, J, K)
+                      DO I = 1, N
+                         DO K = 1, N
+                            DO J = 1, N
+                               A(I,J) = A(I,J) + B(I,K) * C(K,J)
+                            END DO
+                         END DO
+                      END DO
+
+       Now the parallelizable loop encloses more work and shows better performance.
+
+       In practice, relatively few loops can be reordered in this way.  However, it does occasionally happen that several loops in a nest of loops are candidates for parallelization.  In such a case, it is usually best to parallelize the outermost one.
+
+       Occasionally, the only loop available to be parallelized has a fairly small amount of work.  It may be worthwhile to force certain loops to run without parallelism or to select between a parallel version and a serial version, on the basis of the length of the loop.
+
+       The loop is worth parallelizing if N is sufficiently large.  To overcome the parallel loop overhead, N needs to be around 1000, depending on the specific hardware and the context of the program.  The optimized version would use an IF clause on the PARALLEL DO directive:
+
+              !$OMP PARALLEL DO IF (N .GE. 1000), PRIVATE(I)
+                      DO I = 1, N
+                         A(I) = A(I) + X*B(I)
+                      END DO
+
+OPENMP TOOL(S)
+   CCE OpenMP Offload Linker
+       The CCE OpenMP offload linker (COOL) tool performs device linking for bundled object files (OpenMP and HIP) generated by CCE, upstream Clang, and the AMD ROCm compiler.  The tool is a host linker wrapper that extracts bundled device code from all specified object files and libraries, performs final device linking steps, and then embeds the resulting device images into a host object file that gets included on the final host link.  This produces a single host executable that contains offload images compiled by various compilers.
+
+       Users typically do not need to invoke the COOL tool directly, since it is automatically invoked as a wrapper to the final host link command when linking with CCE.  However, the COOL tool can be invoked directly to allow linking CCE-compiled offload objects with a non-CCE compiler or host linker.  For example, if an application contains one or more Fortran OpenMP offload object files compiled by CCE, but the majority of the application code is C++ or HIP that is compiled by another C++ compiler, then it may be desirable or necessary to link with that C++ compiler.  The non-CCE C++ compiler will not know how to unbundle and link the CCE-generated offload bundle objects, but the COOL tool can be invoked directly to handle these offload bundles.  The COOL tool can either be invoked as a linker wrapper for another compiler or host linker; or, it can be invoked as a separate pre-link command followed by a final host linker command.  The COOL tool pre-link step will produce two output host object files that must be passed to the final host linker command.  Examples for both cases are shown below.  When invoking the final host linker command, the COOL tool begin/end files should surround all user object files and archive files, but appear inside the crtbegin/crtend files.
+
+       COOL Tool Usage:
+
+              cce_omp_offload_linker --arch  <accel_target> --hiparch <accel_target> --verbose --save-temps --device-link-only --output-begin <output> --output-end <output> -- <host linker> [arg1] [arg2] ... [argn]
+
+       Using the COOL tool with alternate linkers:
+
+              COOL tool as a linker wrapper:
+
+              · Usage:
+
+                       <COOL tool flags> -- <host linker> <host linker flags> <object files> ...
+
+              · NVIDIA GPU GCC example:
+
+                       cc -c gpu_test.c -fopenmp
+                       $CRAYLIBS_X86_64/../bin/cce_omp_offload_linker --arch sm_80 -- \
+                           gcc gpu_test.o -L ${CRAYLIBS_X86_64} -lcrayacc -lcraymp -Wl,-rpath,${CRAYLIBS_X86_64}
+
+              · AMD GPU GCC example:
+
+                       cc -c gpu_test.c -fopenmp
+                       $CRAYLIBS_X86_64/../bin/cce_omp_offload_linker --arch gfx90a -- \
+                           gcc gpu_test.o -L${ROCM_PATH}/lib -lamdhip64 -L ${CRAYLIBS_X86_64} \
+                           -lcrayacc_amdgpu -lcraymp -lf -lmodules -Wl,-rpath,${CRAYLIBS_X86_64}
+
+              COOL tool as a pre-link command:
+
+              · Usage:
+
+                       cce_omp_offload_linker <COOL tool flags> --device-link-only --output-begin=begin.o --output-end=end.o -- <object files>
+                       <host linker> begin.o <object files> end.o <host linker flags>
+
+              · NVIDIA GPU GCC example:
+
+                       $CRAYLIBS_X86_64/../bin/cce_omp_offload_linker --arch sm_80 --device-link-only \
+                           --output-begin=begin.o --output-end=end.o -- gpu_test.o
+                       gcc begin.o gpu_test.o end.o -L ${CRAYLIBS_X86_64} \
+                           -lcrayacc -lcraymp -Wl,-rpath,${CRAYLIBS_X86_64}
+
+              · AMD GPU GCC example:
+
+                       $CRAYLIBS_X86_64/../bin/cce_omp_offload_linker --arch gfx90a --device-link-only \
+                           --output-begin=begin.o --output-end=end.o -- gpu_test.o
+                       gcc begin.o gpu_test.o end.o -L${ROCM_PATH}/lib -lamdhip64 -L ${CRAYLIBS_X86_64} \
+                           -lcrayacc_amdgpu -lcraymp -lf -lmodules -Wl,-rpath,${CRAYLIBS_X86_64}
+
+   Mixed Model Support
+       Basic OpenMP compute directives used within OpenACC data regions are supported, generally to aid in the porting of code from one standard to another.  The reverse is also true, some OpenACC compute directives inside OpenMP data or host regions are supported.
+
+       Mixed standard directives may appear inside of data or host data regions only.  Compute directives are not allowed inside of any other mixed compute directives.
+
+       For example, the following is permitted:
+
+       C/C++: :
+
+              #pragma acc data
+               {
+              #pragma omp parallel
+                {a = 10}
+              }
+
+       Fortran: :
+
+              !$omp target data map(a)
+              !$acc kernels
+                a = 10
+
+       Supported OpenMP directives inside OpenACC data regions include: atomic, target, target parallel, target teams, target update
+
+       Supported OpenACC directives inside OpenMP data regions include: atomic, kernels, parallel, serial, update
+
+SEE ALSO
+       crayftn(1), craycc(1), crayCC(1)
+
+       Cray Fortran Reference Manual
+
+       Cray C and C++ Reference Manual
+
+       The OpenMP Application Program Interface Specification: <http://www.openmp.org/specifications>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         07-27-2025                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           intro_openmp()

@@ -1,0 +1,160 @@
+# The class of every difference between the memory modes
+# (HSA_XNACK=1: unified memory, the headline mode; HSA_XNACK=0: copy mode,
+# separate host and device memory as on a discrete GPU) of a legal program
+# on a toolchain, read by offload/engine/report.py (MODE_CLASSES). A program
+# whose own mapping was wrong is fixed in the generator (it then no longer
+# differs), so no entry here blames the program. Entries match program ids
+# and toolchains with fnmatch patterns; the first match wins. Every
+# difference was confirmed with both modes run again on one node
+# (tools/jobs/run_map_iterator_audit.sh).
+entries:
+  - programs: ["omp5?-directive-target-hostdev", "omp60-directive-target-hostdev"]
+    toolchains: ["afar", "cce19", "cce20", "cce21"]
+    class: copy_mode_failure
+    finding: target-update-sections-in-parallel.f90
+    why: >-
+      Multi-threaded offload (host+device pattern, Fortran): the arrays are
+      mapped whole once and four host threads each move their quarter with
+      target update; every list item is present and the sections are
+      disjoint (5.2 §5.9.2), so the program is conforming in copy mode.
+      The updates inside the host parallel region lose data at HSA_XNACK=0
+      (finding). The C programs of the same pattern are correct in
+      both modes.
+  - programs: ["omp5?-clause-map-mapper"]
+    toolchains: ["cce19", "cce20"]
+    class: copy_mode_failure
+    finding: cce-mapper-next-map-copy-back.f90
+    why: >-
+      The map list item after a map clause with a mapper modifier (here the
+      reporting variable host_flag) is not copied back at HSA_XNACK=0, so
+      the cell reads "fell back to host" although the region ran on the
+      device. The mapper's final map type is to (5.2 §5.8.8 Table 5.3),
+      host_flag is tofrom. CCE 21 and AFAR are correct.
+  - programs: ["omp5?-clause-map-present", "omp60-clause-map-present", "omp5?-c-clause-map-present", "omp60-c-clause-map-present"]
+    toolchains: ["afar"]
+    class: unified_memory_failure
+    finding: afar-xnack1-present-not-enforced.f90
+    why: >-
+      Negative probe: map(present, to: a) of an item that is not present
+      must end in runtime error termination (5.2 §5.8.3 p.152). AFAR
+      terminates at HSA_XNACK=0 and runs on at HSA_XNACK=1; the program has
+      no requires directive. CCE (Fortran) terminates in both modes.
+  - programs: ["omp5?-c-clause-map-iterator", "omp60-c-clause-map-iterator"]
+    toolchains: ["afar"]
+    class: x1_oracle_blind
+    finding: afar-xnack1-target-is-present.f90
+    why: >-
+      Fix: the program checks presence only in copy mode, where
+      AFAR leaves the iterator's section not present
+      (afar-c-update-iterator-copy-mode.c). Its presence checks run at
+      HSA_XNACK=1 (tools/campaigns/presence_x1.py) fail too: under unified memory
+      AFAR reports no mapped item present (afar-xnack1-target-is-present.f90),
+      so the HSA_XNACK=1 "correct" is no evidence; wrong in both modes.
+  - programs: ["omp5?-c-clause-to-iterator", "omp60-c-clause-to-iterator", "omp5?-c-clause-from-iterator", "omp60-c-clause-from-iterator"]
+    toolchains: ["afar"]
+    class: copy_mode_failure
+    finding: afar-c-update-iterator-copy-mode.c
+    why: >-
+      A list item with an iterator modifier of one value moves or maps
+      nothing at HSA_XNACK=0 on AFAR amdclang: target update
+      to(iterator(k = 1:2): a[k - 1:n - k + 1]), which is to(a[0:n]), copies
+      no data (the same update without the iterator works), and target
+      enter data map(iterator(k = 1:2), to: w[k:n / 2 - k]) leaves w(2:n/2)
+      not present (the map.iterator program, fixed to one
+      iterator value).
+  - programs: ["omp5?-c-clause-map-delete", "omp60-c-clause-map-delete"]
+    toolchains: ["cce19", "cce20", "cce21"]
+    class: x1_oracle_blind
+    finding: cce-c-map-delete-refcount.c
+    why: >-
+      map(delete: a) on target exit data leaves a present when its
+      reference count is two (5.2 §5.8.3 p.153: delete sets the reference
+      count to zero). The failure is in both modes (the reproducer, and the
+      program's presence checks run at HSA_XNACK=1 by tools/campaigns/presence_x1.py);
+      the catalog program checks presence only in copy mode (copy_mode_only
+      evidence), so its HSA_XNACK=1 "correct" is no evidence (fix;
+      Had it as a copy-mode failure).
+  - programs: ["omp5?-c-clause-dist_schedule", "omp5?-c-clause-dist_schedule-static", "omp60-c-clause-dist_schedule", "omp60-c-clause-dist_schedule-static"]
+    toolchains: ["cce19", "cce20", "cce21"]
+    class: unified_memory_failure
+    finding: cce-c-dist-schedule-segv.c
+    why: >-
+      CCE craycc crashes (SIGSEGV) at HSA_XNACK=1 (finding); at
+      HSA_XNACK=0 it runs every iteration ("64 of 64"), and the program
+      checks only what dist_schedule(static) guarantees, so the
+      copy-mode cell is not a failure (it was classed both_wrong). The
+      chunk-size programs fail in both modes for another reason (finding
+      cce-c-dist-schedule-chunk.c) and are no mode difference.
+  - programs: ["omp5?-c-clause-unified_address*", "omp60-c-clause-unified_address*"]
+    toolchains: ["afar"]
+    class: requirement_refused
+    why: >-
+      requires unified_address: the AFAR runtime aborts at HSA_XNACK=0
+      before the region (it supports the requirement only with unified
+      memory); whether an implementation supports a requirement is
+      implementation defined (5.2 §8.2 p.211), so the refusal is
+      conforming. CCE runs the program in both modes.
+  - programs: ["omp5?-clause-unified_shared_memory*", "omp60-clause-unified_shared_memory*", "omp5?-c-clause-unified_shared_memory*", "omp60-c-clause-unified_shared_memory*", "omp60-clause-self_maps*", "omp60-c-clause-self_maps*", "omp60-clause-map-self", "omp60-c-clause-map-self", "omp60-clause-defaultmap-self"]
+    toolchains: ["afar", "cce19", "cce20", "cce21"]
+    class: needs_unified_memory
+    why: >-
+      requires unified_shared_memory or self_maps, or the self map-type
+      modifier: the program needs memory the device can access (needs
+      zero_copy) and the runtimes refuse it or fail at HSA_XNACK=0. Whether
+      an implementation supports a requirement is implementation defined
+      (5.2 §8.2 p.211); not a portability result.
+# The class of every difference between a compiler's MI300A
+# copy-mode cell (gfx942, HSA_XNACK=0) and its gfx90a cell (Tioga MI250X,
+# a discrete GPU, HSA_XNACK=0), read by offload/engine/report.py
+# (ARCH_CLASSES). Toolchains are the gfx942 names (the gfx90a twin of
+# afar is afar_g90). The programs whose result depends on the number of
+# devices ran on gfx90a with every device visible (as on Tuolumne) before
+# any class was given.
+arch_entries:
+  - programs: ["omp5?-directive-target-hostdev", "omp60-directive-target-hostdev"]
+    toolchains: ["afar"]
+    class: intermittent
+    finding: target-update-sections-in-parallel.f90
+    why: >-
+      Multi-threaded offload (four host threads each move their quarter
+      with target update): AFAR loses data intermittently in copy mode
+      (the finding: bad= 16 in 3 of 5 runs on MI300A). On gfx90a
+      the reproducer fails in 8 of 10 runs (bad= 48) and the 5.0 and 6.0
+      catalog programs were flaky wrong; the 5.2 program passed its three
+      matrix runs (and ten more in a check) by chance. Not an arch
+      difference: the failure is the same on both GPUs.
+# The class of every difference between NVHPC's separate-memory
+# cell (-gpu=mem:separate, the headline) and its managed-memory cell
+# (-gpu=mem:managed) on wingtip (NVIDIA A100), read by offload/engine/report.py
+# (NV_MODE_CLASSES). No C program differs (their arrays are local, not
+# managed).
+nvhpc_entries:
+  - programs: ["omp5?-clause-map", "omp60-clause-map", "omp5?-clause-map-alloc", "omp60-clause-map-alloc",
+               "omp5?-clause-map-delete", "omp60-clause-map-delete", "omp5?-clause-map-from", "omp60-clause-map-from",
+               "omp5?-clause-map-release", "omp60-clause-map-release", "omp5?-clause-map-to", "omp60-clause-map-to",
+               "omp5?-clause-defaultmap-allocatable", "omp60-clause-defaultmap-allocatable",
+               "omp50-clause-use_device_addr",
+               "omp5?-directive-target_data", "omp60-directive-target_data",
+               "omp5?-directive-target_enter_data", "omp60-directive-target_enter_data",
+               "omp5?-directive-target_exit_data", "omp60-directive-target_exit_data",
+               "acc34-clause-if", "acc34-directive-data", "acc34-directive-enter_data", "acc34-directive-exit_data"]
+    toolchains: ["nvhpc", "nvhpc269"]
+    class: managed_shares_storage
+    why: >-
+      copy_mode_only programs: the shared-memory probe zc is a local array
+      (separate in managed memory: "All other data (host, stack, or global
+      data) remain in separate memory", HPC Compilers User's Guide 25.11
+      §5.4) while the checked arrays are allocatable, which managed memory
+      places in CUDA managed memory the device shares; the spec lets the
+      original and corresponding list items share storage (5.2 §5.8.3
+      p.153, "may share storage"), so the copy-semantics check fails by
+      design there. Rerun in managed memory with only the probe moved to
+      the heap, every one passes (tests/data/nvhpc_managed_probe.json).
+  - programs: ["acc34-directive-shutdown"]
+    toolchains: ["nvhpc", "nvhpc269"]
+    class: managed_failure
+    finding: nvhpc-managed-acc-shutdown-host-access.f90
+    why: >-
+      In managed memory a host access to an allocatable array after the
+      shutdown directive ends the program with SIGSEGV (the heap-probe
+      rerun crashes too); the same program is correct in separate memory.

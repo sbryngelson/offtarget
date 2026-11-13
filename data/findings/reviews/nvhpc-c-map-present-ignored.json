@@ -1,0 +1,113 @@
+{
+ "finding": "nvhpc-c-map-present-ignored.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a is not present in the device data environment on entry (no enclosing data region, no declare target, no requires). map(present, to: a) then requires runtime error termination. Printing a line and continuing is not conforming. The program is valid; it deliberately triggers the defined termination."
+  },
+  {
+   "run": "run-20261112/batch-25",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "map(present, to: a) where a was never mapped: the spec says runtime error termination is performed when the item is not present on entry. The program is conforming (the error is a defined runtime behavior), and the spec requires termination, so continuing and printing b[63]=63 is non-conforming execution."
+  },
+  {
+   "run": "run-v2-20261113/batch-52",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a is never mapped before the target construct, and map(present, to: a) is present as a map-type-modifier. On entry a is absent from the device data environment, so runtime error termination is required. Continuing to the printf is non-conforming.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-97",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(present, to: a) uses the present map-type-modifier. a is never mapped before the target construct, so on entry the list item is absent from the device data environment and the specification requires runtime error termination. Continuing and printing b[63] is non-conforming behavior of the compiler or runtime.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2bbf38ec6a2d47e970602b755e1687b845c898aec70374294dc1387c9bc9721d",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

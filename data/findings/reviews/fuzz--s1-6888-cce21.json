@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/s1-6888-cce21.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Data-motion clauses (to/from on target update) may include array sections with stride expressions; the Fortran subscript triplet a(1:n:2) is such a section, and a is present from enter data. The compiler's claim of a contiguity requirement applies to map, not to motion clauses. Odd elements get updated; the result is deterministic."
+  },
+  {
+   "run": "run-20261113/batch-66",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "target update to accepts array sections with stride expressions; a(1:n:2) is a Fortran subscript triplet. The spec says list items of data-motion clauses may include strided sections, so the refusal that sections must be contiguous is wrong. Odd elements are updated, doubled on device and copied back; check passes."
+  },
+  {
+   "run": "run-v2-20261113/batch-20",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The data-motion clauses may use array sections with stride expressions. The map restriction on contiguous storage applies only to map clauses, not to target update to. The stride expression is allowed there, so the compiler must accept it. Only the odd elements are updated, and only they are checked. Their values are 2*i after the exit data copy back.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-16",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-95",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target update to accepts array sections with stride expressions, and Fortran subscript triplets are allowed. The map-clause contiguity restriction applies only to map clauses, and the program uses a motion clause. The compiler's error cites the MAP clause for a target update, so refusing the program is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-35",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "752cd8d9a7c0fa473a7efd93b39fc93dce0cb9b828a537158b5d36dcc5a3b505",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

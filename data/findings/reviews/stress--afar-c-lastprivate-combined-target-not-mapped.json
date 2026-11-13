@@ -1,0 +1,113 @@
+{
+ "finding": "stress/afar-c-lastprivate-combined-target-not-mapped.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "l is lastprivate on a combined construct containing target and is not the base variable of any map list item, so it is as if mapped tofrom. The last iteration (i=64) stores 2560 into l and it must be copied back. Loop variable is private, l written only by lastprivate semantics, no race. Observed l=0 violates the rule."
+  },
+  {
+   "run": "run-20261112/batch-32",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "l is lastprivate on a combined target construct with no map clause, so it is not a base variable of a mapped item and the effect is as if map(tofrom: l). Last iteration i=64 gives l=2560 on the host. Loop variable is private, only l written (lastprivate, shared in parallel), dev written by a single initial thread. Observed l=0 is a compiler bug. Same rule in 5.0."
+  },
+  {
+   "run": "run-v2-20261113/batch-112",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "On a combined construct containing target with lastprivate(l), where l is not the base variable of a map list item, the lastprivate effect is as if l appeared in a map clause with map-type tofrom. So l is copied back with the value from the sequentially last iteration, i=64, giving 2560. Each iteration writes only the private copy; dev is written only by the second target region. The observed l=0 contradicts the spec.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-58",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-31",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate(l) appears on a combined construct that includes target, and l is not in any map clause. The specification then treats it as if map(tofrom: l) appeared, so the last iteration value (64*40=2560) is copied back to the host. l is long long and is written only in the loop; dev is written by the initial thread of a separate target region. No race. The observed l=0 contradicts the rule.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2f6207389a958d548330de8346e6fe885ca921273126cafbacbbd84468086499",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

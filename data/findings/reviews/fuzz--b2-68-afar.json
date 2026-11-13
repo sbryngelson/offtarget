@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/b2-68-afar.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The target region runs on one initial thread; parallel if(parallel: lpar) with lpar false is an inactive parallel region (one thread). The loop construct binds to it and the reduction on r3a (shared in the parallel) is permitted. The loop nest does 200*8 increments of 11, so r3a = 31 + 17600 = 17631 on one thread. The observed 70431 = 31 + 4*17600 means the iterations were executed four times, which no reading of the loop/reduction semantics permits. The empty derived type is legal Fortran and unused."
+  },
+  {
+   "run": "run-20261112/batch-29",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "An empty derived type is valid Fortran. The loop construct is nested in a parallel region so it binds to it; the if(parallel: .false.) makes a team of one. The reduction combines each of the 1600 iterations (j loop is inside the single associated loop) once into r3a: 31+1600*11=17631. Observed 70431 = 31+4*17600 counts the work four times. No race since r3a is a reduction item."
+  },
+  {
+   "run": "run-v2-20261113/batch-27",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "if(parallel: lpar) is false, so the parallel region has one thread. The loop construct with reduction(+: r3a) then runs the 200*8 additions once, r3a = 31 + 17600 = 17631. The observed 70431 equals 31 + 4*17600, so the loop ran redundantly on several threads. The empty derived type is legal Fortran; j is private as a sequential loop variable.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-18",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-80",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target region runs in one initial thread; the parallel region has if(false), so one thread executes the loop construct once. r3a must become 31+200*8*11=17631. j is private as a loop iteration variable inside the parallel construct. Observed 70431 is a wrong result.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-68",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9737e8b18c483b2145f88b4568a204050b52a3d86719994e37e11e43393d4775",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

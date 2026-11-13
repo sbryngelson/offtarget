@@ -1,0 +1,1470 @@
+# Agent decisions for the claim mismatches and omp_vv flags the
+# confirmer left needs_human (tools/confirm.py triage;
+# offload/engine/confirm/triage.py applies the first matching decision to each
+# needs_human item: by `key` (an fnmatch pattern) or by `programs`
+# (any case of the item is of one of them), optionally restricted to
+# `toolchains` (the item's compiler; gfx90a twins included) and `kind`).
+# Fix: the defaultmap(none), C nohost and C device(ancestor)
+# decisions are withdrawn: every family rejects those programs, so the
+# the amendment of ruling C decides them (rule R12a with an independent
+# witness, a quoted legality reading and a vendor claim, else
+# unsupported_everywhere). The
+# gfortran/gcc -fopenmp witnesses are withdrawn, so those cells are
+# unsupported_everywhere; their legality rests on the quoted spec text.
+# Every decision cites the spec text, the program line, the stored rows or
+# probe it rests on.
+#
+# `spot_checks`: the seeded 10% sample of decided cases per verdict class
+# (triage.spot_sample), each re-read by an agent: agree true/false and why.
+version: 1
+decisions:
+
+  # --- claim mismatches -----------------------------------------------------------
+
+  - programs: [acc34-directive-init, acc34-directive-set, acc34-directive-shutdown]
+    disposition: compiler_bug
+    finding: data/findings/cce-acc-init-set-runtime-assert.f90
+    reason: >-
+      Legal OpenACC 3.4 (§2.14.1 init, §2.14.2 shutdown, §2.14.3 set: the
+      clauses are optional). CCE 19/20/21 abort in libcrayacc on every run,
+      both modes and both GPUs: "_cray_acc_init_device ... Incorrect device
+      type set" (init, set) and "_cray_acc_shutdown_device ... Shutting down
+      incorrect device type" (shutdown) (results/acc_matrix.jsonl stderr).
+      The existing finding reproduces the init/set abort; its header now
+      records the plain shutdown too. Expected value: the program's own
+      check (only source), but a runtime assertion is no value question.
+
+  - programs: [omp52-c-clause-collapse, omp52-c-clause-lastprivate, omp52-c-clause-lastprivate-conditional, omp60-c-clause-lastprivate-conditional, omp52-c-clause-schedule-auto, omp52-c-clause-schedule-dynamic, omp52-c-clause-schedule-guided, omp52-c-clause-schedule-monotonic, omp52-c-clause-schedule-runtime, omp52-c-clause-schedule-simd]
+    disposition: compiler_bug
+    finding: data/findings/cce-c-parallel-for-in-target.c
+    reason: >-
+      CCE craycc 19/20/21 lose iterations or the lastprivate value of a
+      parallel for nested in a target region with schedule(static) (no
+      chunk), schedule(dynamic) or the catalog's other schedule kinds, or
+      lastprivate (schedule(static, 4) runs correctly, the finding); every iteration must run
+      (5.2 §11.5 pp.247-250) and lastprivate takes the sequentially last value
+      (5.2 §5.4.5 p.115). Probe (results/t27b/probes.jsonl, both modes):
+      parallel for schedule(dynamic) bad on CCE 19/20/21 with or without
+      default(none) shared(a, b); without a schedule clause correct; AFAR
+      correct everywhere; the Fortran forms run correctly on CCE. The
+      finding's header now records schedule(dynamic).
+
+  # Fix: the C 5.2 device_type ports use enter(f) now;
+  # device_type and device_type.any compile and run on every compiler and
+  # GPU (their mismatches are gone), the clang `to` rejection is the finding
+  # clang-c-declare-target-to-omp52.c only.
+  - programs: [omp52-c-clause-from-iterator, omp52-c-clause-map-iterator, omp52-c-clause-to-iterator]
+    disposition: compiler_bug
+    finding: data/findings/afar-c-update-iterator-copy-mode.c
+    reason: >-
+      AFAR amdclang moves no data for a map or motion clause with an
+      iterator modifier in copy mode (HSA_XNACK=0); the finding reproduces
+      it (bad= 64, 3 runs; correct at HSA_XNACK=1 and without the
+      iterator). Expected value: derivation and model agree (5.2 §3.2.6
+      p.67).
+
+  - programs: [omp52-c-clause-if-directive_name]
+    disposition: our_error
+    reason: >-
+      Our program was nonconforming. if(parallel: use_dev) on target teams
+      distribute parallel for is split to the parallel leaf and its
+      expression "evaluated immediately before the construct to which the
+      clause has been split ... (therefore inside of the outer leaf
+      constructs)" (5.2 §17.2 p.340); default(none) applies to every leaf
+      that permits it, teams included (same section), so use_dev,
+      referenced in the teams region, must be listed (5.2 §5.4.1 p.109).
+      clang was right to reject it. Fixed in the generator
+      (offload/engine/gen_templates.py if_dnm_prog: shared(..., use_dev, ...));
+      the Fortran 5.0/5.2/6.0 and C 5.2/6.0 programs reran on every
+      compiler, both modes and gfx90a (report).
+
+  - programs: [omp52-c-directive-target_parallel_for_simd, omp52-c-directive-target_teams_distribute_parallel_for_simd, omp52-c-directive-target_parallel_loop, omp60-c-directive-target_parallel_loop]
+    kind: mismatch
+    disposition: compiler_bug
+    finding: data/findings/clang-c-shared-declare-target-combined.c
+    reason: >-
+      A declare target variable listed in shared on a combined target
+      construct is read with its host value by both clang C front ends
+      (AFAR amdclang, CCE craycc 19/20/21), every mode and GPU (the
+      finding reproduces it; 5.2 §17.2 p.340: shared applies only to the
+      leaves that permit it; §5.8.1 p.148: the declare target variable is
+      treated as map(tofrom) and is present). The Fortran forms pass on
+      every compiler.
+
+  - programs: [omp52-clause-indirect]
+    toolchains: [cce19, cce20]
+    disposition: version_scope
+    reason: >-
+      The claim is the OpenMP 5.1 feature list's "indirect clause"; the 5.2
+      program spells the declare target clause enter(f) (5.2 §7.8.1 p.206),
+      which CCE 19/20 do not accept ("INDIRECT, LINK, TO or DEVICE_TYPE was
+      expected but found E"); CCE 21, whose page lists "enter clause
+      (Fortran only)" among its 5.2 features, compiles and runs it. The
+      indirect clause itself is not measured on 19/20.
+
+  - programs: [omp52-clause-linear-val, omp60-clause-linear-val]
+    toolchains: [cce19, cce20]
+    disposition: version_scope
+    reason: >-
+      The claim is release-level ("full OpenMP 5.0"; the atom exists in 4.5
+      as linear(val(x))); the 5.2 program uses the 5.2 modifier syntax
+      linear(x: val, step(1)) (5.2 §5.4.6 p.117), which CCE 19/20 read as
+      a variable named VAL (ftn-113). Only CCE 21 lists "new linear clause
+      syntax (Fortran only)".
+
+  - programs: [omp52-clause-linear-val, omp60-clause-linear-val]
+    toolchains: [cce21]
+    disposition: compiler_bug
+    finding: data/findings/cce21-linear-modifier-default-none.f90
+    reason: >-
+      CCE 21 claims the 5.2 linear syntax but rejects linear(x: val,
+      step(1)) under default(none): "Variable X must have its data scope
+      explicitly declared because DEFAULT(NONE) was specified" although x
+      is in the linear clause, a data-sharing attribute clause (5.2 §5.4.6
+      p.117; §5.4.1 p.109). Probe linear_mod.f90 / linear_mod_nodn.f90.
+
+  - programs: [omp60-c-clause-defaultmap-self]
+    toolchains: [cce20]
+    disposition: partial_support
+    reason: >-
+      CCE 20.0.0 release notes: "[6.0] ... self mapping for accelerators".
+      craycc 20 compiles and runs map(self: a) (omp60-c-clause-map-self,
+      both modes) but rejects defaultmap(self: aggregate) ("expected
+      'alloc', 'from', 'to', 'tofrom', ..."): self mapping for the map
+      clause only.
+
+  # Fix (review m3): a correction of a computed disposition
+  # (`override`), not of the cell verdict (R05 unsupported stays)
+  - key: "mismatch:omp:f90:cce19:omp.clause.defaultmap.firstprivate:52:hpe-cce-intro-openmp:supported"
+    override: true
+    disposition: compiler_bug
+    reason: >-
+      CCE 19 says "Unsupported OpenMP construct Private of allocatables --
+      b", but b is explicitly mapped (map(from: b)) and defaultmap applies
+      only to variables with an implicit data-mapping attribute (5.2
+      §5.8.1 p.148, §5.8.7 p.161): CCE 19 applies defaultmap(firstprivate)
+      to an explicitly mapped allocatable, a compiler defect rather than a
+      documentation overclaim. CCE 20 runs the program correctly.
+
+  # --- omp_vv flags ------------------------------------------------------------------
+
+  - key: "flag:f90:*:omp.clause.defaultmap:cce19:*"
+    disposition: compiler_bug
+    reason: >-
+      Three suite tests, three causes, none contradicting our cells:
+      test_target_defaultmap_default.F90 faults on CCE 19 only ("Memory
+      access fault by GPU"; CCE 20/21 and AFAR pass, both GPUs) - a CCE 19
+      bug fixed in 20; the test is legal (its pointer is disassociated on
+      entry and exit, 5.2 §13.8 p.287). test_target_teams_distribute_
+      parallel_for_defaultmap.F90 and test_target_defaultmap_firstprivate
+      .F90 are rejected for other features: a private Fortran character
+      array (ftn-7032; a documented CCE 19 limitation, intro_openmp(7)
+      19.0.0 Limitations: "OpenMP target regions may not refer to ...
+      arrays of type Fortran character") and firstprivate of allocatables
+      ("Unsupported OpenMP construct Private of allocatables").
+
+  - key: "flag:f90:*:omp.clause.defaultmap.*:cce19*"
+    disposition: unsupported_form
+    reason: >-
+      The only narrow suite test, test_target_teams_distribute_parallel_
+      for_defaultmap.F90, is rejected by CCE 19 for another feature: a
+      private Fortran character array (ftn-7032 "Unsupported OpenMP
+      construct Fortran character"), a limitation intro_openmp(7) of CCE
+      19.0.0 documents ("OpenMP target regions may not refer to Fortran
+      character variables of symbolic length, arrays of type Fortran
+      character, or any Fortran character operation other than assignment,
+      comparison, and substring"; the sentence is gone from the CCE 20 and
+      21 pages). Not a contradiction of our scalar/tofrom cells.
+
+  - key: "flag:f90:*:omp.clause.defaultmap.firstprivate:*"
+    disposition: unsupported_form
+    reason: >-
+      test_target_defaultmap_firstprivate.F90 makes an allocatable array
+      firstprivate through defaultmap(firstprivate) (legal, 5.2 §5.8.7);
+      CCE 19/20/21 say "Unsupported OpenMP construct Private of
+      allocatables" (AFAR: not yet implemented). Our program's scalar form
+      runs; not a contradiction.
+
+  - key: "flag:f90:*:omp.clause.defaultmap*"
+    disposition: compiler_bug
+    finding: data/findings/afar-cce19-character-defaultmap.f90
+    reason: >-
+      test_target_teams_distribute_parallel_for_defaultmap.F90 fails (run
+      exit 1) on AFAR and CCE 20 at its check scalar_char .ne. 'b': a
+      Fortran character scalar is an aggregate (5.2 §1.2.6), implicitly
+      tofrom, and both compilers treat it as firstprivate (the finding;
+      CCE 21 correct). On CCE 19 the test is rejected for a private
+      character array (a documented CCE 19 limitation). The suite is right;
+      our defaultmap programs use no character data.
+
+  - key: "flag:c:*:omp.clause.map.iterator:afar:*"
+    disposition: test_bug
+    upstream: >-
+      tests/5.2/declare_mapper/test_declare_mapper_iterator.c line 26:
+      `map(iterator(it = 0:v.len), tofrom: v.data[it])` instantiates the
+      list items v.data[0], ..., v.data[v.len-1], which all have the base
+      pointer v.data. OpenMP 5.1 §2.21.7.1 p.353 (also 5.2 §5.8.3 p.156,
+      6.0 §7.9.6 p.286): "If an expression that is used to form a list item
+      in a map clause contains an iterator identifier, the list item
+      instances that would result from different values of the iterator
+      must not have the same containing array and must not have base
+      pointers that share original storage." Filed as OpenMP_VV#921.
+      Suggested fix: an iterator whose instances are sections of distinct
+      storage (an array of pointers, map(iterator(it = 0:M), tofrom:
+      p[it][0:N])), or a single-value iterator. The same defect in
+      tests/5.1/target/test_target_map_iterators.{c,F90} (all instances in
+      the containing array test_lst) was fixed upstream (issue #868, PR
+      #869: test_lst[it][:1] over an array of pointers); the fixed Fortran
+      test passes on CCE 19/20/21 on both GPUs (rerun), the fixed C
+      test is still rejected by AFAR amdclang and CCE craycc at the default
+      OpenMP 5.1 ("incorrect map type modifier", the front-end defect
+      clang-c-map-iterator-omp51.c). Observed: every compiler
+      fails the declare_mapper_iterator test at link time ("undefined
+      symbol: it").
+    reason: >-
+      Suite test bug (fix; re-read:
+      test_declare_mapper_iterator.c is byte-identical in OpenMP_VV
+      f7d95b34, so the decision carries): the remaining failing narrow test
+      maps iterator instances with one base pointer, which 5.1 §2.21.7.1
+      p.353 / 5.2 §5.8.3 p.156 forbid (the static rule map-clause-005).
+      test_target_map_iterators.c changed upstream (fixed) and is no longer
+      a failing narrow test of this flag. Our map.iterator program uses a
+      single-value iterator (legal) and passes on AFAR.
+
+  - key: "flag:c:*:omp.clause.map.always:cce*"
+    disposition: compiler_bug
+    finding: data/findings/cce-c-map-present-assert.c
+    reason: >-
+      Re-decided (both failing narrow tests are new or changed
+      upstream). tests/5.2/declare_mapper/test_declare_mapper_present.c was
+      fixed upstream: the enter data now also maps the pointer member
+      (`map(alloc: s.data)`), so every member of `s` has corresponding
+      storage and the present mapper's list item `v` is present (5.2 §5.8.3
+      p.152, p.156); AFAR passes it in both modes on both GPUs (it
+      terminated at HSA_XNACK=0 on the old version), and CCE craycc
+      19/20/21 still abort in the runtime ("Assertion `clang_flags == 0'",
+      the finding). tests/6.0/decl_attribute/test_c_decl_attribute2.c (new)
+      fails on every compiler: both C front ends ignore the OpenMP 6.0
+      attribute syntax ("unknown attribute 'omp::decl' ignored"), so the
+      declare target variable is undefined in the device image (link
+      error); an unimplemented 6.0 form, not a contradiction of our
+      map.always cells, which stand.
+
+  - programs: [omp52-c-directive-target_parallel_loop, omp60-c-directive-target_parallel_loop]
+    kind: flag
+    disposition: compiler_bug
+    finding: data/findings/clang-c-shared-declare-target-combined.c
+    reason: >-
+      Our C target parallel loop program fails on every compiler because
+      of the clang shared(declare target) bug (the finding); the suite's
+      narrow test does not list a declare target variable in shared, so
+      it passes. The Fortran program passes on every compiler.
+
+
+  - key: "flag:*:*:omp.clause.firstprivate:cce19*:*:ours_ok_suite_fails"
+    disposition: unsupported_form
+    reason: >-
+      The only failing narrow test, tests/5.1/target/
+      test_target_is_accessible.{c,F90} (changed upstream in OpenMP_VV
+      #891), calls the OpenMP 5.1 routine omp_target_is_accessible, which
+      CCE 19 does not provide: craycc links with "undefined symbol:
+      omp_target_is_accessible", crayftn's omp_lib has no interface for it
+      (ftn-233, no explicit type under IMPLICIT NONE). CCE 20 and 21 have
+      it. Not a contradiction of our firstprivate cells.
+
+  - key: "flag:*:*:omp.clause.firstprivate:*:gfx90a:ours_ok_suite_fails"
+    disposition: test_bug
+    upstream: >-
+      tests/5.1/target/test_target_is_accessible.c and .F90 (as changed by
+      OpenMP_VV #891) treat a false result of omp_target_is_accessible as a
+      failure. The routine "returns true if the storage of size bytes
+      starting at the address given by ptr is accessible from device
+      device_num. Otherwise, it returns false" (OpenMP 5.1 §3.8.4 p.417;
+      5.2 §18.8.4 p.390; 6.0 §25.2.2 pp.605-606: non-zero / zero), so false
+      is the conforming answer for malloc'ed (C) or allocated (Fortran)
+      host memory on a device without unified shared memory. C: when the
+      routine returns false, check_device() returns
+      OMPVV_SKIPPED_EXIT_CODE, but main() does
+      `OMPVV_TEST_AND_SET_VERBOSE(errors, check_device() != 0)`, so the
+      skip becomes errors = 1 and the test reports "Test failed" and exits
+      1 instead of skipping. Fortran: the ELSE branch does
+      `OMPVV_TEST_AND_SET(errors, check_test.EQ.0)` ("This test will be
+      skipped with error = 1"), a failure by construction. Suggested fix:
+      propagate the skip (C: `int r = check_device(); if (r ==
+      OMPVV_SKIPPED_EXIT_CODE) OMPVV_REPORT_AND_RETURN(r);`; Fortran: no
+      error when the routine returns false, or a skip status), or require
+      unified_shared_memory as test_target_is_accessible_with_usm.c does.
+      Observed: on a discrete MI250X (gfx90a) and on the MI300A at
+      HSA_XNACK=0, AFAR and CCE 20/21 return false and the test fails with
+      "omp_target_is_accessible returned false"; at HSA_XNACK=1 (MI300A)
+      they return true and the test passes.
+    reason: >-
+      Suite test bug (new; spec cited above): on gfx90a every
+      compiler that provides the routine returns false (host memory is not
+      device accessible there) and the test turns that conforming answer
+      into a failure. Our firstprivate cells stand (CCE 19 on gfx90a lacks
+      the routine altogether: the decision above).
+
+  - key: "flag:f90:*:omp.directive.loop:afar*:*:ours_ok_suite_fails"
+    disposition: compiler_bug
+    reason: >-
+      New test tests/5.0/loop/test_loop_iterator.F90: inside a
+      target region, a standalone `!$omp loop` over `DO i = 1, N` followed
+      by `temp = i`, checked against N+1. "The loop iteration variable(s)
+      in the associated do-loop(s) of a loop construct is (are)
+      lastprivate" (OpenMP 5.0 §2.19.1.1 p.271; the same in 5.2 §5.1.1),
+      and a lastprivate DO variable has the value it has after the loop
+      completes (OpenMP Examples lastprivate.1.f: "I has the value of N
+      here" after DO I=1,N-1), so N+1 is right. AFAR (MI300A both modes,
+      MI250X) warns "Detected standalone OpenMP `loop` directive with
+      thread binding, the associated loop will be rewritten to `simd`" and
+      the check fails (exit 1); CCE 19/20/21 pass on both GPUs. An AFAR
+      defect in a form our loop programs do not use (they do not read the
+      iteration variable after the construct); no finding written yet.
+
+spot_checks:
+- case_id: catalog:omp50-clause-reduction-inscan:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp50-clause-reduction-inscan:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-c-clause-device_type-nohost:cce19:gfx942:unified
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  sample: final
+  note: 'every family rejects; the legality reading rests on the quoted spec text only (no independent
+    compiler witness: the maintainer withdrew gfortran/gcc -fopenmp on 2026-10-23, so R12a cannot fire);
+    was compiler_bug by R12a'
+- case_id: catalog:omp52-c-clause-dist_schedule-chunk_size:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-c-clause-dist_schedule-chunk_size:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-c-clause-linear-step_simple_modifier:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-c-clause-linear-val:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-c-clause-linear-val:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-c-clause-linear:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-c-clause-map-delete:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R16-copy-check-blind-in-unified
+  agree: true
+  sample: final
+  note: copy-mode failure of a copy_mode_only program with a trusted value; finding cce-c-map-delete-refcount.c
+- case_id: catalog:omp52-c-clause-ordered-n:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-c-clause-schedule-static:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-c-clause-schedule:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-clause-allocate-allocator_simple_modifier:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-clause-allocate-allocator_simple_modifier:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-clause-allocate-allocator_simple_modifier:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-clause-defaultmap-aggregate:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  sample: final
+  note: host report under mandatory, deterministic, another family runs it on the device (CCE 21 defaultmap
+    family)
+- case_id: catalog:omp52-clause-defaultmap-alloc:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  sample: final
+  note: host report under mandatory, deterministic, another family runs it on the device (CCE 21 defaultmap
+    family)
+- case_id: catalog:omp52-clause-defaultmap-from:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  sample: final
+  note: host report under mandatory, deterministic, another family runs it on the device (CCE 21 defaultmap
+    family)
+- case_id: catalog:omp52-clause-defaultmap-none:cce21_g90:gfx90a:copy
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  sample: final
+  note: 'every family rejects; the legality reading rests on the quoted spec text only (no independent
+    compiler witness: the maintainer withdrew gfortran/gcc -fopenmp on 2026-10-23, so R12a cannot fire);
+    was compiler_bug by R12a'
+- case_id: catalog:omp52-clause-from-iterator:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-in_reduction-iand:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-in_reduction-max:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-in_reduction-min:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-in_reduction-minus:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-in_reduction-minus:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-in_reduction-times:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-is_device_ptr:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-linear-step_simple_modifier:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-clause-linear:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-clause-map-iterator:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-reduction-inscan:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-clause-reduction-minus:afar:gfx942:unified
+  verdict: compiler_bug
+  rule: R11-compile-rejection
+  agree: true
+  sample: final
+  note: a diagnostic rejection of a legal program another family compiles
+- case_id: catalog:omp52-clause-reduction-task:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-schedule-chunk_size:afar_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-clause-schedule-chunk_size:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-clause-schedule-static:afar:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-clause-schedule:afar:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-clause-use_device_ptr:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp52-clause-uses_allocators:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-directive-target_parallel:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp52-directive-target_parallel:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp60-c-clause-defaultmap-storage:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R11-compile-rejection
+  agree: true
+  sample: final
+  note: a diagnostic rejection of a legal program another family compiles
+- case_id: catalog:omp60-c-clause-message:afar_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp60-c-clause-reduction-inscan:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp60-c-clause-severity:afar:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: final
+  note: the compiler cannot link a legal program (its own runtime symbols or a procedure it should provide)
+- case_id: catalog:omp60-clause-defaultmap-private:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: final
+  note: wrong value on every run, trusted expected value with an executed witness
+- case_id: catalog:omp60-clause-defaultmap-tofrom:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  sample: final
+  note: host report under mandatory, deterministic, another family runs it on the device (CCE 21 defaultmap
+    family)
+- case_id: catalog:omp60-clause-linear:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp60-clause-linear:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp60-clause-reduction-inscan:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: final
+  note: internal compiler error of a legal catalog program
+- case_id: catalog:omp52-c-directive-parallel_loop:cce21_g90:gfx90a:copy
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  sample: final
+  note: correct_on_device with a credited check (CCE C combined loop the vendor calls unsupported)
+- case_id: catalog:omp52-c-directive-teams_loop:cce20:gfx942:unified
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  sample: final
+  note: correct_on_device with a credited check (CCE C combined loop the vendor calls unsupported)
+- case_id: catalog:omp60-c-directive-parallel_loop:cce19:gfx942:unified
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  sample: final
+  note: correct_on_device with a credited check (CCE C combined loop the vendor calls unsupported)
+- case_id: catalog:omp60-c-directive-teams_loop:cce19:gfx942:copy
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  sample: final
+  note: correct_on_device with a credited check (CCE C combined loop the vendor calls unsupported)
+- case_id: catalog:omp60-c-clause-map-present:afar:gfx942:unified
+  verdict: unified_memory_failure
+  rule: R18-unified-memory-failure
+  agree: true
+  sample: final
+  note: no error termination at HSA_XNACK=1 only (AFAR present not enforced under unified memory)
+- case_id: catalog:omp50-clause-defaultmap-firstprivate:afar:gfx942:copy
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  sample: final
+  note: the compiler says not implemented
+- case_id: catalog:omp50-clause-device-ancestor:afar:gfx942:unified
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  sample: final
+  note: the compiler says not implemented
+- case_id: catalog:omp50-clause-reduction-inscan:afar:gfx942:unified
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  sample: final
+  note: the compiler says not implemented
+- case_id: catalog:omp50-clause-uses_allocators:afar:gfx942:copy
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  sample: final
+  note: the compiler says not implemented
+- case_id: catalog:omp52-clause-order-concurrent:afar:gfx942:unified
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  sample: final
+  note: the compiler says not implemented
+- case_id: catalog:omp60-clause-map-mapper:cce19_g90:gfx90a:copy
+  verdict: unsupported
+  rule: R11a-newer-form-unclaimed
+  agree: true
+  sample: final
+  note: CCE 19 rejects the 6.0 declare_mapper spelling, which it does not claim
+- case_id: catalog:omp60-c-clause-defaultmap-self:cce20_g90:gfx90a:copy
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  sample: final
+  note: every family rejects; gcc (not under test) rejects too, so the amended ruling C keeps unsupported_everywhere
+- case_id: catalog:omp50-clause-map-mapper:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  note: host report under mandatory, deterministic, another family runs it on the device
+  sample: final
+- case_id: catalog:omp52-c-clause-default-shared:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: 'verdict agreed (a legal program does not link); the mismatch disposition was wrong (compiler_bug)
+    because CCE documents task in target regions as unsupported: triage rule fixed (documented limitations
+    -> partial_support), test, rerun'
+  sample: final
+- case_id: catalog:omp52-c-clause-dist_schedule-chunk_size:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-c-clause-dist_schedule-chunk_size:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-c-clause-from-iterator:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R11-compile-rejection
+  agree: true
+  note: a diagnostic rejection of a legal program another family compiles
+  sample: final
+- case_id: catalog:omp52-c-clause-map-delete:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R16-copy-check-blind-in-unified
+  agree: true
+  note: copy-mode failure of a copy_mode_only program with a trusted value; the finding reproduces it
+  sample: final
+- case_id: catalog:omp52-c-clause-ordered:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: verdict agreed; the ordered construct in a target region is a documented CCE limitation, so the
+    mismatch is partial_support (rule fixed with the default-shared case)
+  sample: final
+- case_id: catalog:omp52-c-clause-reduction-inscan:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp52-c-clause-reduction-task:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-c-clause-schedule-static:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-c-clause-schedule-static:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-c-clause-schedule:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-clause-allocate-allocator_simple_modifier:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp52-clause-allocate-allocator_simple_modifier:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp52-clause-defaultmap-firstprivate:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-clause-defaultmap-scalar:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  note: host report under mandatory, deterministic, another family runs it on the device
+  sample: final
+- case_id: catalog:omp52-clause-device_type-nohost:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-from-iterator:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-in_reduction-and:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-in_reduction-iand:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-in_reduction-ior:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-in_reduction-times:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-is_device_ptr:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-linear:afar_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp52-clause-map-iterator:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-reduction-inscan:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp52-clause-reduction-inscan:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp52-clause-reduction-task:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-schedule-chunk_size:afar:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-clause-schedule-chunk_size:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-clause-schedule-chunk_size:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-clause-schedule:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp52-clause-to-iterator:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-clause-use_device_ptr:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp52-directive-target_parallel:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  note: wrong value on every run, expected value trusted with an executed witness
+  sample: final
+- case_id: catalog:omp60-c-clause-map-delete:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R16-copy-check-blind-in-unified
+  agree: true
+  note: copy-mode failure of a copy_mode_only program with a trusted value; the finding reproduces it
+  sample: final
+- case_id: catalog:omp60-c-clause-message:afar:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp60-c-clause-reduction-inscan:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp60-c-clause-reduction-inscan:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp60-c-clause-reduction-inscan:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp60-c-clause-severity-warning:afar:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp60-clause-map-iterator:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  note: the compiler cannot link a legal program (undefined symbols of its own runtime or of a procedure
+    it should provide)
+  sample: final
+- case_id: catalog:omp60-clause-map-self:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R11-compile-rejection
+  agree: true
+  note: a diagnostic rejection of a legal program another family compiles
+  sample: final
+- case_id: catalog:omp60-clause-uses_allocators:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  note: 'internal compiler error of a legal catalog program: a compiler bug whatever the claim'
+  sample: final
+- case_id: catalog:omp52-c-directive-parallel_loop:cce20:gfx942:copy
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  note: the cell is correct_on_device with a credited check (the vendor says unsupported)
+  sample: final
+- case_id: catalog:omp52-c-directive-parallel_loop:cce21:gfx942:copy
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  note: the cell is correct_on_device with a credited check (the vendor says unsupported)
+  sample: final
+- case_id: catalog:omp60-c-directive-parallel_loop:cce20:gfx942:unified
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  note: the cell is correct_on_device with a credited check (the vendor says unsupported)
+  sample: final
+- case_id: catalog:omp60-c-directive-teams_loop:cce20:gfx942:copy
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  note: the cell is correct_on_device with a credited check (the vendor says unsupported)
+  sample: final
+- case_id: catalog:omp52-c-clause-dist_schedule:cce20:gfx942:unified
+  verdict: unified_memory_failure
+  rule: R18-unified-memory-failure
+  agree: true
+  note: 'crash at HSA_XNACK=1 only, copy mode and gfx90a correct; finding cce-c-dist-schedule-segv.c (modes:
+    unified)'
+  sample: final
+- case_id: catalog:omp50-clause-allocate:afar_g90:gfx90a:copy
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  note: the compiler says not implemented, or accepts the clause and says it ignores it
+  sample: final
+- case_id: catalog:omp60-c-clause-num_threads-strict:afar:gfx942:copy
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  note: the compiler says not implemented, or accepts the clause and says it ignores it
+  sample: final
+- case_id: catalog:omp60-clause-map-mapper:cce19:gfx942:unified
+  verdict: unsupported
+  rule: R11a-newer-form-unclaimed
+  agree: true
+  note: the 6.0 spelling (declare_mapper) is rejected by CCE 19/20, which claim no 6.0 mapper form; CCE
+    21 accepts it
+  sample: final
+- case_id: catalog:omp60-clause-map-mapper:cce20:gfx942:copy
+  verdict: unsupported
+  rule: R11a-newer-form-unclaimed
+  agree: true
+  note: the 6.0 spelling (declare_mapper) is rejected by CCE 19/20, which claim no 6.0 mapper form; CCE
+    21 accepts it
+  sample: final
+- case_id: catalog:omp60-clause-map-mapper:cce20:gfx942:unified
+  verdict: unsupported
+  rule: R11a-newer-form-unclaimed
+  agree: true
+  note: the 6.0 spelling (declare_mapper) is rejected by CCE 19/20, which claim no 6.0 mapper form; CCE
+    21 accepts it
+  sample: final
+- case_id: catalog:omp52-c-clause-device-ancestor:afar_g90:gfx90a:copy
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  note: 'every family rejects a program the gate calls legal: unsupported_everywhere by ruling C
+    as written (the agent disposition of its mismatch, from the spec text, is compiler_bug with a finding)'
+  sample: final
+- case_id: catalog:omp52-c-clause-device_type-any:cce19:gfx942:copy
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  note: 'every family rejects a program the gate calls legal: unsupported_everywhere by ruling C
+    as written (the agent disposition of its mismatch, from the spec text, is compiler_bug with a finding)'
+  sample: final
+- case_id: catalog:omp52-c-clause-device_type-any:cce19:gfx942:unified
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  note: 'every family rejects a program the gate calls legal: unsupported_everywhere by ruling C
+    as written (the agent disposition of its mismatch, from the spec text, is compiler_bug with a finding)'
+  sample: final
+- case_id: catalog:omp52-c-clause-device_type-any:cce21:gfx942:unified
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  note: 'every family rejects a program the gate calls legal: unsupported_everywhere by ruling C
+    as written (the agent disposition of its mismatch, from the spec text, is compiler_bug with a finding)'
+  sample: final
+- case_id: catalog:omp52-c-clause-device_type-nohost:cce21_g90:gfx90a:copy
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  note: 'every family rejects a program the gate calls legal: unsupported_everywhere by ruling C
+    as written (the agent disposition of its mismatch, from the spec text, is compiler_bug with a finding)'
+  sample: final
+- case_id: catalog:omp52-clause-defaultmap-none:cce19:gfx942:copy
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  note: 'every family rejects a program the gate calls legal: unsupported_everywhere by ruling C
+    as written (the agent disposition of its mismatch, from the spec text, is compiler_bug with a finding)'
+  sample: final
+- case_id: ompvv:tests_5.2_declare_mapper_test_declare_mapper_iterator.c:afar:gfx942:unified
+  verdict: environment
+  rule: R01-environment
+  agree: false
+  sample: first (before the fixes)
+  note: 'the stored row says compile_failed: rc=1, but its output is a linker error (undefined symbol:
+    it): a compiler failure, not the environment. Rule fixed (offload.engine.confirm.model.outcome_of_baseline
+    reads the output; test test_an_unrecognised_compile_failure_is_read_from_its_output); 17 AFAR omp_vv
+    rows move from environment to needs_human (ruling A); batch rerun'
+- case_id: catalog:omp52-c-clause-default-shared:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: first (before the fixes)
+  note: verdict agreed, mismatch disposition corrected (documented device limitation, see the final sample)
+- case_id: catalog:omp52-clause-defaultmap-default:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'ran on the host (ran_on_host=1) with check=pass under mandatory offload: CCE 21 ignores the target;
+    instance of cce21-defaultmap-aggregate-flag.f90 (defaultmap(default: aggregate))'
+- case_id: catalog:omp52-clause-from-iterator:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 19''s link fails on its own iterator temporary OmpIt$k (undefined reference from the CPU
+    module): the compiler''s own symbol, R10b'
+- case_id: catalog:omp52-clause-in_reduction-eqv:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: undefined _cray$mt_taskwait at link (CCE 21 runtime symbol) for in_reduction(.eqv.); instance
+    of cce21-in-reduction-taskwait-link.f90
+- case_id: catalog:omp52-clause-in_reduction-ior:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: undefined _cray$mt_taskwait for in_reduction(ior) in copy mode; the same CCE 21 link defect (cce21-in-reduction-taskwait-link.f90)
+- case_id: catalog:omp52-clause-in_reduction-max:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: the gfx90a twin of the in_reduction link failure (_cray$mt_taskwait undefined); the finding records
+    gfx942 only, so no instance link; verdict stands
+- case_id: catalog:omp52-clause-in_reduction-min:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: undefined _cray$mt_taskwait for in_reduction(min), copy mode; cce21-in-reduction-taskwait-link.f90
+- case_id: catalog:omp52-clause-in_reduction-min:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: the same program in unified mode, same undefined _cray$mt_taskwait
+- case_id: catalog:omp52-clause-in_reduction-plus:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: undefined _cray$mt_taskwait for in_reduction(+); instance of the CCE 21 link finding
+- case_id: catalog:omp52-clause-is_device_ptr:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: CCE 20 link fails on _C_F_POINTER (its own c_f_pointer lowering in the device code); R10b
+- case_id: catalog:omp52-clause-linear-step_simple_modifier:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 19 ICE ''ACC - barrier/reset/protected last private not supported'' at v_mt_translate.c:4874
+    on the linear(x: step(s)) program'
+- case_id: catalog:omp52-clause-linear:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 19 on gfx90a: the same ICE (v_mt_translate.c:4874) on the plain linear program'
+- case_id: catalog:omp52-clause-linear:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 21 on gfx90a: the ICE at v_mt_translate.c:5798 (CCE 21''s line for the same message)'
+- case_id: catalog:omp52-clause-reduction-inscan:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 19 ICE ''analyze_object: unknown object type'' (v_alias_new.c:1357) on reduction(inscan)'
+- case_id: catalog:omp52-clause-reduction-inscan:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 20 ICE ''analyze_object: unknown object type'' (v_alias_new.c:1358) on reduction(inscan)'
+- case_id: catalog:omp52-clause-reduction-task:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'undefined _cray$mt_taskred_modifier_init (CCE runtime) for reduction(task, ...): R10b'
+- case_id: catalog:omp52-clause-reduction-task:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 21 on gfx90a: the same undefined _cray$mt_taskred_modifier_init'
+- case_id: catalog:omp52-clause-schedule-chunk_size:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: check=fail on the device; expected check=pass from derivation + model; AFAR and CCE 19 withdrawn
+    by the finding fortran-schedule-static-in-target.f90, witness AFAR's run of the C port; instance of
+    that finding
+- case_id: catalog:omp52-clause-schedule-static:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: check=fail; same evidence as the chunk_size program (derivation + model, withdrawn AFAR/CCE 19
+    runs, C-port witness); fortran-schedule-static-in-target.f90
+- case_id: catalog:omp52-clause-to-iterator:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 21''s link fails on OmpIt$k for a to(iterator(...)) motion clause: the compiler''s own symbol'
+- case_id: catalog:omp52-clause-use_device_ptr:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 21 on gfx90a: undefined _C_F_POINTER at link for use_device_ptr with c_f_pointer'
+- case_id: catalog:omp52-directive-target_parallel:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: check=fail in copy mode; expected check=pass from elision + metamorphic + model; AFAR (both modes)
+    and the C port run it correctly
+- case_id: catalog:omp52-directive-target_parallel:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'the gfx90a twin: check=fail; AFAR and CCE 19 on gfx90a pass; same trusted value'
+- case_id: catalog:omp60-c-clause-defaultmap-private:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R11-compile-rejection
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 20 (C) rejects defaultmap(private) at 34:80 (''expected alloc, from, ...''); CCE 20 claims
+    extended defaultmap in its 6.0 feature list (intro_openmp), and another family compiles the program:
+    R11'
+- case_id: catalog:omp60-c-clause-map-delete:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R16-copy-check-blind-in-unified
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: check=fail on gfx90a copy mode for map(delete) in C; derivation + model give check=pass, AFAR
+    and CCE 19/20 on gfx90a pass; R16 (the check is blind in unified memory, so only copy mode shows it)
+- case_id: catalog:omp60-clause-defaultmap-from:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R19b-host-fallback
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'ran on the host (ran_on_host=1) under mandatory offload on gfx90a: R19b host fallback, compiler_bug'
+- case_id: catalog:omp60-clause-defaultmap-storage:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'ran_on_host=1 with check=pass on gfx90a; elision + model trusted; CCE 20 on gfx90a and the C
+    port run it on the device: R20'
+- case_id: catalog:omp60-clause-linear-step_simple_modifier:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: CCE 21 ICE at v_mt_translate.c:5798 on the 6.0 linear step modifier program (ICEs stay compiler_bug
+    for 6.0 forms)
+- case_id: catalog:omp60-clause-linear-step_simple_modifier:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: the same ICE on gfx90a
+- case_id: catalog:omp60-clause-reduction-inscan:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'CCE 19 ICE ''analyze_object: unknown object type'' (v_alias_new.c:1357) on the 6.0 inscan program'
+- case_id: catalog:omp52-c-directive-parallel_loop:cce19:gfx942:copy
+  verdict: not_a_failure
+  rule: R02-not-a-failure
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'ran on the device with check=pass (ran_on_host=0): not a failure; the claim mismatch is the vendor
+    saying unsupported (doc_understates)'
+- case_id: catalog:omp52-clause-device-ancestor:afar:gfx942:unified
+  verdict: unsupported
+  rule: R05-unsupported
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: 'AFAR says not yet implemented (ClauseProcessor.cpp:451, device ancestor): R05 unsupported; disposition
+    partial_support'
+- case_id: catalog:omp60-c-clause-defaultmap-self:cce20:gfx942:unified
+  verdict: unsupported_everywhere
+  rule: R12-every-family-rejects
+  agree: true
+  sample: resample after the CCE 20 enter claim
+  note: every family rejects defaultmap(self) (CCE 20 C at 33:80 'expected alloc, ...'); no independent
+    checker accepts it, so it stays unsupported_everywhere under the amended ruling C
+- case_id: catalog:omp52-clause-from-iterator:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: link failure on a symbol of the compiler's own runtime (reference to `OmpIt$k') of a legal catalog
+    program another family builds (finding catalog/cce-iterator-link.f90)
+- case_id: catalog:omp52-clause-from-iterator:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: link failure on a symbol of the compiler's own runtime (reference to `OmpIt$k') of a legal catalog
+    program another family builds (finding catalog/cce-iterator-link.f90)
+- case_id: catalog:omp52-clause-in_reduction-eqv:cce21:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'link failure on a symbol of the compiler''s own runtime (symbol: _cray$mt_taskwait) of a legal
+    catalog program another family builds (finding cce21-in-reduction-taskwait-link.f90)'
+- case_id: catalog:omp52-clause-in_reduction-ieor:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'link failure on a symbol of the compiler''s own runtime (symbol: _cray$mt_taskwait) of a legal
+    catalog program another family builds (finding cce21-in-reduction-taskwait-link.f90)'
+- case_id: catalog:omp52-clause-in_reduction-plus:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'link failure on a symbol of the compiler''s own runtime (symbol: _cray$mt_taskwait) of a legal
+    catalog program another family builds (finding cce21-in-reduction-taskwait-link.f90)'
+- case_id: catalog:omp52-clause-in_reduction:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'link failure on a symbol of the compiler''s own runtime (symbol: _cray$mt_taskwait) of a legal
+    catalog program another family builds (finding cce21-in-reduction-taskwait-link.f90)'
+- case_id: catalog:omp52-clause-linear-val:afar_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: internal compiler error of a legal catalog program (finding catalog/afar-flang-linear-parallel-ice.f90)
+- case_id: catalog:omp52-clause-map-iterator:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: link failure on a symbol of the compiler's own runtime (reference to `OmpIt$k') of a legal catalog
+    program another family builds (finding catalog/cce-iterator-link.f90)
+- case_id: catalog:omp52-clause-ordered:cce21:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'internal compiler error of a legal catalog program (no finding: the CCE 21 site of the ''unhandled
+    construct type'' ICE is not recorded, related to cce19-target-parallel-single-ice.f90)'
+- case_id: catalog:omp52-clause-ordered:cce21_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'internal compiler error of a legal catalog program (no finding: the CCE 21 site of the ''unhandled
+    construct type'' ICE is not recorded, related to cce19-target-parallel-single-ice.f90)'
+- case_id: catalog:omp52-clause-reduction-task:cce20:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'link failure on a symbol of the compiler''s own runtime (symbol: _cray$mt_taskred_modifier_init)
+    of a legal catalog program another family builds (finding catalog/cce-reduction-task-link.f90)'
+- case_id: catalog:omp52-clause-schedule-chunk_size:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: wrong value on every run, trusted expected value with an executed witness (finding fortran-schedule-static-in-target.f90)
+- case_id: catalog:omp52-clause-schedule:cce19:gfx942:copy
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: wrong value on every run, trusted expected value with an executed witness (finding fortran-schedule-static-in-target.f90)
+- case_id: catalog:omp52-clause-to-iterator:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: link failure on a symbol of the compiler's own runtime (reference to `OmpIt$k') of a legal catalog
+    program another family builds (finding catalog/cce-iterator-link.f90)
+- case_id: catalog:omp52-clause-use_device_ptr:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'link failure on a symbol of the compiler''s own runtime (symbol: _C_F_POINTER) of a legal catalog
+    program another family builds (finding catalog/cce-c-f-pointer-device-link.f90)'
+- case_id: catalog:omp52-directive-target_parallel:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R20-runtime-bug
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: wrong value on every run, trusted expected value with an executed witness (finding cce19-target-parallel-guarded-loop.f90)
+- case_id: catalog:omp60-c-clause-map-delete:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R16-copy-check-blind-in-unified
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: copy-mode failure of a copy_mode_only program, trusted expected value (the HSA_XNACK=1 cell checks
+    nothing the mode hides) (finding cce-c-map-delete-refcount.c)
+- case_id: catalog:omp60-c-clause-message:afar:gfx942:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: 'link failure on a symbol of the compiler''s own runtime (symbol: __kmpc_error) of a legal catalog
+    program another family builds (finding afar-c-error-directive-in-target-link.c)'
+- case_id: catalog:omp60-c-clause-reduction-inscan:cce19_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: internal compiler error of a legal catalog program (finding catalog/cce-c-reduction-inscan-ice.c)
+- case_id: catalog:omp60-c-clause-reduction-inscan:cce20:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: internal compiler error of a legal catalog program (finding catalog/cce-c-reduction-inscan-ice.c)
+- case_id: catalog:omp60-clause-map-iterator:cce20_g90:gfx90a:copy
+  verdict: compiler_bug
+  rule: R10b-own-link-or-hang
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: link failure on a symbol of the compiler's own runtime (reference to `OmpIt$k') of a legal catalog
+    program another family builds (finding catalog/cce-iterator-link.f90)
+- case_id: catalog:omp60-clause-uses_allocators:cce19:gfx942:unified
+  verdict: compiler_bug
+  rule: R10-compile-ice
+  agree: true
+  sample: resample after the gfortran/gcc witness withdrawal (final review 3)
+  note: internal compiler error of a legal catalog program (finding catalog/cce-allocators-stack-ice.f90)

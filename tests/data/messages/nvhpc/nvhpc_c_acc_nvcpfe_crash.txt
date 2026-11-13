@@ -1,0 +1,10 @@
+# Verbatim compiler output stored by the OpenACC C matrix (results/acc_matrix_c.jsonl, row acc34-c-illegal-gang-clause-003 nvhpc xnack=0), wingtip.
+# source: nvc -acc=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.acc_c_gen acc34-c-illegal-gang-clause-003 (an illegal variant: gang(dim: 4)). The <tmpdir> path is the harness's scrub of the build directory.
+# exit status: 2
+# The diagnostic is followed by the C front end's crash (nvcpfe TERMINATED by signal 11): an ICE
+==== verbatim output below ====
+"<tmpdir>/acc34-c-illegal-gang-clause-003.c", line 34: error: the gang dimension must be 1, 2 or 3
+      #pragma acc loop gang(dim: 4)
+                                  ^
+
+nvc-Fatal-/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/tools/nvcpfe TERMINATED by signal 11

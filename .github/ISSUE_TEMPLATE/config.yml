@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Search the known problems first
+    url: https://sbryngelson.github.io/offtarget/
+    about: The site lists every catalogued problem with its reproducer; `offload issues WORDS` searches the same catalog.

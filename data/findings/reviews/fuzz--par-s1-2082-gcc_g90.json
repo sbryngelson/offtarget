@@ -1,0 +1,126 @@
+{
+ "finding": "fuzz/par-s1-2082-gcc_g90.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "o1 is a non-scalar Fortran pointer referenced in the target, so it is implicitly mapped tofrom. It is an associated pointer, so its target o1t is implicitly mapped too, and the stores reach the host array. The integer to complex assignment is valid. The result is deterministic, there is no race, and the compiler ICE is not permitted."
+  },
+  {
+   "run": "run-20261113/batch-48",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Pointer array o1 is non-scalar so implicitly mapped tofrom; mapping a Fortran pointer array maps its associated target (association status associated and unchanged in region). No races; a conforming compiler must accept it. The ICE is a compiler bug."
+  },
+  {
+   "run": "run-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Fortran pointer o1 is not a scalar of intrinsic type, so it is implicitly mapped tofrom; being associated and not the base pointer of another list item, its target o1t is implicitly mapped too. ic is mapped tofrom. Integer to complex assignment is valid. No races (distinct elements). A conforming compiler must compile it; the internal compiler error is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-112",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 is a non-scalar (array pointer) referenced in the target region, so it is implicitly mapped tofrom, and its associated target o1t is implicitly mapped with it. The region is sequential, with no race. Assignment of an integer to a complex element is valid Fortran. A conforming compiler must compile it; the internal compiler error is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-31",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 is a non-scalar pointer array associated with o1t and is not scalar, so it is implicitly mapped tofrom; the pointer target o1t is thereby mapped, and the loop writes o1(i) from integer to complex by ordinary conversion. Each element is written once, no race. host_flag is explicitly mapped. A conforming compiler must compile it; the internal compiler error in a back-end pass is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-57",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6fe378238697769c74b8986fdbeba3b329d6081b7c275264d96d0061f06c87af",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,130 @@
+{
+ "finding": "afar-flang-firstprivate-map-two-targets.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "firstprivate(p1) and map(from: a) name different variables; p1 is not in any map clause on the first target. The second target maps p1 with map(to:) only. No variable appears in both clauses on one construct, so the diagnostic is wrong. a(i)=3 then +3 gives a(3)=6."
+  },
+  {
+   "run": "run-20261113/batch-73",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "firstprivate(p1) and map(from: a) on the first target name different variables. p1 appears in map(to:) only on the second target, which has no firstprivate. No variable appears in both data-sharing and map on one construct, so the diagnostic is wrong. Result a(3)=3+3=6 is determined."
+  },
+  {
+   "run": "run-v2-20261113/batch-54",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "p1 appears only in firstprivate on the first target; map(from: a) maps a, not p1. The second target maps p1 with map(to:) and has no firstprivate. The diagnosed clash does not occur in either construct. Both clause lists are permitted on target. a(i)=3 then +3 gives a(3)=6, so the refusal is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-65",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The first target privatizes p1 by firstprivate and does not map it; the second maps p1 only. No variable appears in both clauses on one construct, so the program is legal and a(3)=3+3=6 is determined. The diagnostic misreads the program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "e3a00bcb484ff6d3a86b990be653c41b11badd3511d1f0cdbcb474b5687a10b8",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

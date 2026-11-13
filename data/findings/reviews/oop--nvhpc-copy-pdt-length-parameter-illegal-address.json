@@ -1,0 +1,236 @@
+{
+ "finding": "oop/nvhpc-copy-pdt-length-parameter-illegal-address.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-15",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "A parameterized derived type with a length parameter is a Fortran type with no extra restriction for mapping in 5.2 (only type-bound procedures are restricted); the map clause creates a new list item with the same type parameters. x is mapped tofrom, x%m is 16, the squares sum to 1496. No race. The CUDA illegal address is a compiler or runtime defect. Uncertainty: whether PDT with a len parameter is a mappable type is not addressed explicitly."
+  },
+  {
+   "run": "run-20261113/batch-61",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The spec places no restriction on mapping a Fortran type beyond type-bound procedures; the parameterized derived type with a len parameter is base-language legal. The spec does not describe how a length-parameterized object is mapped, so support is arguably implementation-dependent; a required result is not clearly mandated."
+  },
+  {
+   "run": "run-v2-20261113/batch-18",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A parameterized derived type with a len parameter is Fortran 2003, which OpenMP 5.2 fully supports. x has no allocatable or pointer component and is mapped tofrom; x%m and x%a are accessed in the target region. The spec states no restriction on type parameters in map. Expected r1=16, r2=1496 is correct, so the illegal address error is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-58",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-89",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program maps a parameterized derived type with a len type parameter. The specification defines a mappable type only abstractly and says nothing about parameterized types with length parameters, so whether it is mappable and what a conforming implementation must do is not determined by the text.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Fortran 2003 is a cited base language, so a parameterized derived type is not excluded.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Mappable type restrictions are not violated by the length-parameterized derived type; nothing in 5.2 excludes it. Reading A is right on legality. But the specification never says how a type with length parameters is mapped, so requiring the result is not clearly supported; Reading A overstates. The device fault may be a defect, yet the text does not clearly mandate it."
+  },
+  {
+   "run": "adj-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The type is a Fortran derived type; the spec restricts only type-bound procedures, and a new list item has the same type and type parameters as the original, so the length parameter is carried over. No race. Reading B's implementation-dependence claim finds no support; the illegal-address fault is a compiler or runtime defect. Reading A is right."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A fails: the specification gives a restriction on Fortran types for mapping only for derived types, which concerns type-bound procedures; there is none on length type parameters, and x has no pointer or allocatable component. x is mapped tofrom, so r1=16 and r2=1496 (sum of squares 1..16) are required; the illegal address error is a compiler defect. Reading B's conclusion stands, though the text is thin on PDTs.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-07",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Fortran 2003 is a cited base language, so a parameterized derived type is not excluded. Reading B asserts that no restriction exists, but the specification never says how a type with a length type parameter is mapped or accessed on a device. Reading A is closer, since the text is silent and the required result is not determined.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-39",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The specification is silent on whether a derived type with a length type parameter can be mapped"
+     ],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 2,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

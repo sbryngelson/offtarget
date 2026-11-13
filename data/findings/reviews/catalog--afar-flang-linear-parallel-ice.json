@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-flang-linear-parallel-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-36",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The body changes x by exactly the linear-step (x = x + 1), which satisfies the linear restriction. i is the predetermined loop variable, a and b are shared, x is mapped tofrom and listed in linear, so default(none) is satisfied. No race. Nothing in the program is non-conforming, so a conforming compiler must compile it; the front-end crash is a compiler defect. The exact final value of x (n+2 vs n+3) is loosely worded, but that concerns the run result, not acceptance."
+  },
+  {
+   "run": "run-20261113/batch-77",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "linear is allowed on the worksharing-loop and thus on parallel do. x = x + 1 changes x by the linear step 1 per iteration, which meets the restriction. default(none) is satisfied: a, b are shared, x is in linear, i is predetermined. The final x (n+2 or n+3) is ambiguous in the text, but compilation must succeed, so the crash is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-42",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Legal: linear(x: 1) on parallel do is allowed; x is a Fortran integer; the body x = x + 1 changes x by exactly the step per iteration, satisfying the restriction; i is private as loop variable. default(none) is satisfied since a, b are shared and x is linear. A conforming compiler must accept the program, so a compiler crash is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-66",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-76",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "linear(x: 1) is allowed on a worksharing loop and in parallel do. x is incremented by exactly the linear step in each iteration, meeting the restriction. x is integer, non-allocatable, non-pointer. Iteration i starts with x=i+2, so b(i)=2a(i)+1, and the final value assigned back is n+3. default(none) is satisfied by linear, shared and the predetermined loop variable. A compiler crash is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "40278af56ff16e81af9943c81b460c40ce24814541c4a209d833689311ca9372",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

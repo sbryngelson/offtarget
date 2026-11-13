@@ -1,0 +1,268 @@
+{
+ "finding": "catalog/nvhpc-c-function-pointer-kernel-missing.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-37",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "tw and th are in declare target, so device versions exist. The function pointer is created inside the target region from the function names (assignment) and called there; the spec only forbids relying on function-address values other than assignment, comparison to zero and indirect calls. The call is not an indirect device invocation of a host-version pointer, so the indirect clause is not needed. Failure to find the device kernel is a compiler defect. Small doubt about the indirect-clause reading."
+  },
+  {
+   "run": "run-20261113/batch-70",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "tw and th are in a declare target region without an indirect clause, so they may not be called with an indirect device invocation; f(a[i]) through a function pointer in the target region is one. The spec also restricts reliance on function addresses in target regions. The program is non-conforming, so failure is permitted."
+  },
+  {
+   "run": "run-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "tw and th are in a declare target block. The function pointer is formed and called inside the target region, which the specification permits (assignment and indirect call). It is not an indirect device invocation of a host pointer, so no indirect clause is needed. Each iteration writes its own b[i]; host_flag is written only by i==0. The program is conforming and the observed missing-device-function error is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-55",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The function pointer is formed inside the target region from declare target functions, so it holds device addresses. Indirect device invocation is defined for pointers referring to the host version and needs an indirect clause. The spec does not clearly require this pattern to work.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-99",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Functions tw and th are in declare target without an indirect clause, and are called through a function pointer f. The specification says that, unless an indirect clause says otherwise, procedures may not be called with an indirect device invocation. Whether a pointer assigned and called wholly inside the target region counts as an indirect device invocation is not settled, but the absence of the indirect clause means the specification does not require the call to work.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-28",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The call f(a[i]) inside the target region is an indirect device invocation, so the absence of an indirect clause means the call need not work."
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "It is not settled whether a pointer assigned and called inside the target region is an indirect device invocation"
+     ],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "90fbe430d1a261b6c0ab23b4b9450ccba0e919df996ff8715edbd3d3251cb8d1",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading disputed it; 2 adjudicating readings that weighed both find the program legal and the result required: Both readings misapply the indirect clause. An indirect device invocation is defined as a call through a pointer that refers to the host version of the procedure. Here f is assigned inside the target region from tw and th, which are in declare target, so f refers to the device versions and the call is an ordinary device call. The indirect clause rules do not apply. No restriction is violated, and base-language semantics give the expected result.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Reading A fails: an indirect device invocation is defined as a call to the device version through a pointer that refers to the host version. Here the pointer is formed inside the target region from the names of declare target functions and holds the device addresses, so the indirect clause is not needed. Assignment and indirect calls are explicitly allowed uses of function addresses in a target region. Reading B is right; the missing device kernel is a compiler defect."
+  },
+  {
+   "run": "adj-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Reading A fails: the glossary defines indirect device invocation as a call through a pointer that refers to the host version of the procedure. Here f is assigned inside the target region from tw/th, so it holds the device version's address and no indirect clause is needed. The address-use restriction allows assignments and indirect calls, which is all the program does. Reading B is right; the missing device function is a compiler defect."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings misapply the indirect clause. An indirect device invocation is defined as a call through a pointer that refers to the host version of the procedure. Here f is assigned inside the target region from tw and th, which are in declare target, so f refers to the device versions and the call is an ordinary device call. The indirect clause rules do not apply. No restriction is violated, and base-language semantics give the expected result. The runtime error about a missing device kernel is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-22",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "An indirect device invocation is defined as a call through a pointer that refers to the host version of the procedure. Here f is assigned inside the target region from tw and th, so it refers to the device version and the call is an ordinary device call. No indirect clause is needed. Both readings misapply the indirect restriction; a compiler must run this.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

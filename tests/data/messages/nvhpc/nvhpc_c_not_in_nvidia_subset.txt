@@ -1,0 +1,9 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-clause-link (OpenMP/OpenACC version 52), compile sweep
+# exit status: 2
+==== verbatim output below ====
+"<tmpdir>/p.c", line 17: error: this OpenMP construct is not supported in NVIDIA subset: try using 'to' clause instead
+  #pragma omp declare target link(dv)
+                             ^
+
+1 error detected in the compilation of "<tmpdir>/p.c".

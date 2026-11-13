@@ -1,0 +1,8 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.gen omp50-clause-depend-depobj (OpenMP/OpenACC version 50), compile sweep
+# exit status: 2
+==== verbatim output below ====
+NVFORTRAN-W-0287-Unrecognized OpenMP directive - depobj (<tmpdir>/p.f90: 31)
+NVFORTRAN-W-0287-Unrecognized OpenMP directive - depobj (<tmpdir>/p.f90: 49)
+NVFORTRAN-F-1234-The dependence-type of the DEPEND clause may be one of the following: in, out, inout or mutexinoutset. (<tmpdir>/p.f90: 32)
+NVFORTRAN/x86-64 Linux 25.11-0: compilation aborted

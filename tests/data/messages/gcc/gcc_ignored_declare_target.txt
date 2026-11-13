@@ -1,0 +1,9 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a (gcc_g90) -O2 on offload.engine.gen omp52-illegal-declaretarget-clause-002 (illegal; the compile-only sweep, tools/campaigns/gcc_compile_sweep.py)
+# exit status: 0
+==== verbatim output below ====
+<tmpdir>/p.f90:16:26:
+
+   16 |       !$omp declare target device_type(any)
+      |                          1
+Warning: OMP DECLARE TARGET directive at (1) with only DEVICE_TYPE or INDIRECT clauses is ignored [-Wopenmp]

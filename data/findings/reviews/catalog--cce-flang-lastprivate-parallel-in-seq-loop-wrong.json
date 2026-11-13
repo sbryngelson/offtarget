@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-17",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "last is a scalar, implicitly firstprivate in the target region; lastprivate in parallel do assigns the sequentially last iteration value (64+k) to that private copy, which b(k)=last then reads in the target region. Expected b(1:3)=n+1..n+3. No races. Wrong check=fail is a compiler bug."
+  },
+  {
+   "run": "run-20261112/batch-21",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "last is implicitly firstprivate on target, then lastprivate on parallel do receives the value from the sequentially last iteration (i=n), so last = a(n)+k = n+k and b(1:3) = n+1..n+3. No race: the k loop is sequential on the target thread. The value copied in for last is undefined on the host but is never read. A wrong result is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-49",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "last is a scalar, implicitly firstprivate in the target region. The lastprivate clause on parallel do assigns the value from the sequentially last iteration (i=n) to the original item, so last = a(n)+k = n+k, and b(k) receives n+1, n+2, n+3. No race and no unspecified behavior, so the wrong answer is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-43",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-81",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "last is an implicitly firstprivate scalar in the target region; the parallel do with lastprivate(last) assigns it the value from the sequentially last iteration, a(n)+k = n+k, after the region. b(k)=last then holds n+k, and check=pass is required. No races: k is advanced sequentially outside the parallel region, i is the predetermined loop variable.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-68",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "caffe14c8920bc7ca27f032954a78f0127dfdf863e6595a836887f6dbedd12b0",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

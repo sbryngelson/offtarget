@@ -1,0 +1,113 @@
+{
+ "finding": "stress/cce-teams-reduction-many-teams-wrap.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-17",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The reduction(+: s) on the combined construct gives a deterministic, exact integer(8) sum (i*715 cannot overflow). num_teams is only an upper bound, thread_limit is permitted, and s is mapped back from the target region. The sum is order independent, so 8455717314 is required; a different value is a compiler or runtime error."
+  },
+  {
+   "run": "run-20261113/batch-51",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Valid combined construct with reduction(+:s) on integer(8); the sum is at most about 1.7e10, so no overflow in 64 bits. num_teams is an upper bound and the reduction result is well defined regardless of team count, so the value is deterministic. Wrong answer is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Combined construct with reduction(+: s); i is the private loop variable. num_teams gives only bounds, the team count is implementation defined, but the reduction result must be the full sum regardless. The sum fits in integer(8). A wrong sum is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-62",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-67",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Sum of mod(i*715,1009) over 2^24 iterations is about 8.46e9, fits in integer(8); i*715 does not overflow. Reduction(+:s) on the combined construct is well defined and the sum is order independent for integers. num_teams is an upper bound so fewer teams is fine. The expected value must be produced.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-45",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "3c3d1132175323cad03cfc45c56954aece2b4fc4a8308b3683e7e9bcef28e5dd",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

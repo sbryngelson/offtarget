@@ -1,0 +1,280 @@
+# The confirmer's decision rules (offload/engine/confirm/rules.py),
+# tried in order; the first rule whose `when` conditions all hold decides.
+# `needs`: the collectors whose evidence the conditions read (run only
+# when the rule is reached, cheapest first). `cite`: registry ids
+# (catalog/rulings.yaml). Conditions are the predicates of
+# rules.PREDICATES; a value list means "one of". No rule names a vendor or
+# a machine: memory modes are `unified` / `copy` and arches come from the
+# toolchain data. Version 2:. Version 3: R11c.
+version: 3
+rules:
+  - id: R01-environment
+    verdict: environment
+    rationale: "the failure is the environment's (a missing library, a loader error, the module system, a node of the wrong arch), not the compiler's"
+    cite: [RUL-PRELUDE-ENVIRONMENT, RUL-RUNNER-FAILURE]
+    needs: []
+    when: {environment: true}
+
+  - id: R02-not-a-failure
+    verdict: not_a_failure
+    rationale: "the cell ran correctly on the device (or ran with no checked effect)"
+    cite: [RUL-OBSERVED-FAILURE]
+    needs: []
+    when: {outcome_in: [correct_on_device, unobservable]}
+
+  - id: R03-illegal
+    verdict: our_bug
+    rationale: "the legality gate says the program is illegal: a failure of an illegal program is not the compiler's"
+    cite: [RUL-NO-SELF-CHECK, RUL-FUZZ-G1-ILLEGAL]
+    needs: []
+    when: {legality: illegal}
+
+  - id: R04-legality-unknown
+    verdict: needs_human
+    rationale: "the legality gate cannot decide (a checker could not run, a corpus test, a construct outside the device-offload scope, or its two witnesses disagree or only one could judge)"
+    cite: [RUL-SCOPE-STRUCTURAL, RUL-OMPVV-UNTRUSTED, RUL-NO-SELF-CHECK, RUL-TWO-WITNESSES]
+    needs: []
+    when: {legality: unknown}
+
+  - id: R04b-gate-unconfirmed
+    verdict: needs_human
+    rationale: "The reproduction gate did not confirm the failure (another build directory, another node or a second run gave another result, or no rerun failed): a legality and determinism question first"
+    cite: [RUL-REPRODUCTION-GATE]
+    needs: []
+    when: {gate_unconfirmed: true}
+
+  - id: R05-unsupported
+    verdict: unsupported
+    rationale: "the compiler says it does not implement the construct, or accepted it and said it ignores it: a support gap, not wrong code"
+    cite: [RUL-COMPILE-TIME]
+    needs: []
+    when: {unsupported_message: true}
+
+  - id: R09-flaky
+    verdict: flaky
+    rationale: "some repeats of the failing cell pass and some fail (rate: failing runs / runs)"
+    cite: [RUL-FLAKY-MIXED]
+    needs: [stored_repeats, repeats]
+    when: {flaky: true}
+
+  - id: R10-compile-ice
+    verdict: compiler_bug
+    rationale: "an internal compiler error (or the compiler rejecting code it generated) on a legal program: always the compiler's defect"
+    cite: [RUL-COMPILE-TIME]
+    needs: [stored_repeats]
+    when: {outcome_in: [ice]}
+
+  - id: R10r-ruling-link
+    verdict: ruling
+    rationale: "A recorded ruling (catalog/rulings.yaml, an entry with `decides` naming the outcome class) decides a link failure that the compiler's own code does not cause (a host object's library call the build recipe does not link): its verdict class, the ruling cited"
+    cite: [RUL-HOST-LIBATOMIC]
+    needs: [stored_repeats]
+    when: {own_link_or_hang: true, ruling_decides: true}
+
+  - id: R10b-own-link-or-hang
+    verdict: compiler_bug
+    rationale: "a link failure on symbols the compiler's own generated code needs, or a compile that does not finish, on a legal program: the compiler's defect (never a rejection)"
+    cite: [RUL-COMPILE-TIME]
+    needs: [stored_repeats]
+    when: {own_link_or_hang: true}
+
+  - id: R11r-ruling-decides
+    verdict: ruling
+    rationale: "A recorded ruling (catalog/rulings.yaml, an entry with `decides`) decides the case: its verdict class (e.g. unsupported_everywhere for a program the front ends of the named families reject; requirement_refused for a compile-time refusal of an implementation-defined requirement); it takes precedence over another family's compile (R11) and over R12b, and the ruling that decided is cited"
+    cite: [RUL-NOHOST-C-UNSUPPORTED-EVERYWHERE, RUL-REQUIRES-IMPLDEF]
+    needs: [stored_repeats]
+    when: {compile_failure: true, ruling_decides: true}
+
+  - id: R11a-newer-form-unclaimed
+    verdict: unsupported
+    rationale: "a diagnostic rejection of an OpenMP 6.0 form with no recorded vendor claim of support (no claim recorded)"
+    cite: [RUL-NO-CLAIM-UNSUPPORTED]
+    needs: [stored_repeats]
+    when: {compile_failure: true, newer_form_unclaimed: true}
+
+  - id: R11c-later-form-unclaimed
+    verdict: unsupported
+    rationale: "a diagnostic rejection at a form a later OpenMP version added to an earlier construct or clause (catalog/later_forms.yaml: the enter clause, thread_limit on target, a num_teams lower bound, defaultmap's all category, order on distribute), with no recorded vendor claim of that form: a general claim of the earlier version (full OpenMP 5.0) does not cover it"
+    cite: [RUL-LATER-FORM-UNCLAIMED, RUL-NO-CLAIM-UNSUPPORTED]
+    needs: [stored_repeats]
+    when: {compile_failure: true, later_form_unclaimed: true}
+
+  - id: R11d-documented-unsupported
+    verdict: unsupported
+    rationale: "final review 3: a diagnostic rejection of a feature the vendor's own documents call unsupported (a recorded claim `unsupported` for the program's primary atom and no claim of support): the documented support gap, not a defect; an ICE, link failure or hang stays compiler_bug"
+    cite: [RUL-DOCUMENTED-UNSUPPORTED]
+    needs: [stored_repeats]
+    when: {compile_failure: true, documented_unsupported: true}
+
+  - id: R11-compile-rejection
+    verdict: compiler_bug
+    rationale: "a legal program the compiler rejects with a diagnostic (or whose link fails on symbols the compiler's own code needs, or whose compile does not finish) while another compiler family compiles it"
+    cite: [RUL-COMPILE-TIME]
+    needs: [stored_repeats, other_toolchains]
+    when: {compile_failure: true, other_family_compiles: true}
+
+  - id: R12a-every-family-rejects-claimed
+    verdict: compiler_bug
+    rationale: "amendment of ruling C: every family rejects the program, but an independent legality checker that is not under test accepts it, the spec text making it legal is quoted (a legality registry entry naming the program) and the vendor claims support for the feature"
+    cite: [RUL-UNSUPPORTED-EVERYWHERE-AMENDED, RUL-NO-SELF-CHECK, RUL-R12-NOT-FOR-FUZZ]
+    needs: [stored_repeats, other_toolchains]
+    when: {compile_failure: true, every_family_rejects: true, independent_accepts: true, spec_legal: true, vendor_claims: true}
+
+  - id: R12-every-family-rejects
+    verdict: unsupported_everywhere
+    rationale: "the case and every other measured compiler family reject the program with a diagnostic or a not-implemented message (no ICE, hang or link failure among them), and the gate establishes its legality without the compilers under test: not a bug, not needs_human"
+    cite: [RUL-UNSUPPORTED-EVERYWHERE, RUL-NO-SELF-CHECK, RUL-R12-NOT-FOR-FUZZ]
+    needs: [stored_repeats, other_toolchains]
+    when: {compile_failure: true, every_family_rejects: true}
+
+  - id: R12b-compile-undecided
+    verdict: needs_human
+    rationale: "a compile failure no other rule decides (no other family measured, or the other families fail otherwise)"
+    cite: [RUL-R12-NOT-FOR-FUZZ]
+    needs: [stored_repeats, other_toolchains]
+    when: {compile_failure: true}
+
+  - id: R19r-ruling-runtime
+    verdict: ruling
+    rationale: "A recorded ruling (catalog/rulings.yaml, an entry with `decides` naming run-time outcome classes and the compiler releases) decides a run-time case from evidence the cell cannot show itself: a region that ran on the device but reports ran_on_host=1 because the map(tofrom) flag was not copied back is a wrong answer, not a host fallback; its verdict class, the ruling cited"
+    cite: [RUL-MAPPED-FLAG-NOT-COPIED-BACK]
+    # Once it matched, the expected-value
+    # collectors too, so a decided cell keeps its expected-value record (the
+    # cells R20 decided before were trusted); `needs_after`, so the cases it
+    # does not decide collect nothing more here
+    needs: [stored_repeats]
+    needs_after: [model, expected_record, derivation, elision, other_toolchains, other_mode, other_arch, port]
+    when: {outcome_in: [fell_back_to_host], ruling_decides: true}
+
+  - id: R19b-host-fallback
+    verdict: compiler_bug
+    rationale: "under the mandatory offload policy the region reports a host run, deterministically, with the check passing, while another compiler family runs the same program on the device in the same memory mode: the region must run on the device (no expected-value verdict needed)"
+    cite: [RUL-MANDATORY-DEVICE]
+    needs: [stored_repeats, repeats, other_toolchains]
+    when: {outcome_in: [fell_back_to_host], deterministic: true, other_family_on_device: true}
+
+  - id: R07-needs-unified-memory
+    verdict: needs_unified_memory
+    rationale: "a run-time failure in copy mode of a program that requires memory the device can access (needs zero_copy: requires unified_shared_memory or self_maps, the self modifier): supporting a requirement is implementation defined"
+    cite: [RUL-NEEDS-ZERO-COPY, RUL-REQUIRES-IMPLDEF, RUL-VALUE-RULES-RUNTIME-ONLY]
+    needs: []
+    when: {mode: copy, runtime_failure: true, needs_unified_memory: true}
+
+  - id: R08-requirement-refused
+    verdict: requirement_refused
+    rationale: "the runtime refuses a requires directive in copy mode and ends before the region; the same toolchain runs it in unified mode: a conforming refusal of an implementation-defined requirement"
+    cite: [RUL-REQUIREMENT-REFUSED, RUL-REQUIRES-IMPLDEF]
+    needs: [stored_repeats, other_mode]
+    when: {mode: copy, requires_any: [unified_address], outcome_in: [crash, run_error], other_mode_passes: true}
+
+  - id: R06-no-fixed-value
+    verdict: unspecified
+    rationale: "a wrong answer of a program for which a registry entry says the spec fixes no single value"
+    cite: [RUL-NO-FIXED-VALUE-SELF, RUL-NO-FIXED-VALUE-STRICT-THREADS, RUL-NO-FIXED-VALUE-RELAXED-INDUCTION, RUL-VALUE-RULES-RUNTIME-ONLY]
+    needs: []
+    when: {outcome_in: [wrong_answer], registry_open: true}
+
+  - id: R13-oracle-wrong
+    verdict: our_bug
+    rationale: "the sequential elision and the device runs of two or more compiler families agree with each other against the program's own claim, and no comparable device run prints the claim: the claim is wrong"
+    cite: [RUL-ELISION-AGAINST-CLAIM]
+    needs: [model, stored_repeats, other_toolchains, other_mode, other_arch, elision]
+    when: {elision_and_compilers_against_model: true}
+
+  - id: R13a-oracle-contested
+    verdict: needs_human
+    rationale: "the sequential elision and some device runs disagree with the program's claim, but other device runs print the claim: both sides listed"
+    cite: [RUL-ELISION-AGAINST-CLAIM]
+    needs: [model, stored_repeats, other_toolchains, other_mode, other_arch, elision]
+    when: {oracle_contested: true}
+
+  - id: R13b-fuzz-noncompliant
+    verdict: noncompliant
+    rationale: "no host build and not the sequential elision prints the fuzz model's value, host builds of two or more families ran, and the case is a wrong answer: excluded by the rule (neither a bug nor ours)"
+    cite: [RUL-FUZZ-NONCOMPLIANT]
+    needs: []
+    when: {task22_noncompliant: 2}
+
+  - id: R13c-fuzz-noncompliant-weak
+    verdict: needs_human
+    rationale: "the fuzz program is noncompliant by the rule, but too few host builds ran (or the case is not a wrong answer) to exclude it"
+    cite: [RUL-FUZZ-NONCOMPLIANT]
+    needs: []
+    when: {fuzz_noncompliant: true}
+
+  - id: R14-expected-disputed
+    verdict: needs_human
+    rationale: "independent sources give different expected values and no finding withdraws the disagreeing runs"
+    cite: [RUL-WITHDRAW-WITH-FINDING]
+    needs: [model, expected_record, derivation, elision]
+    when: {expected_status: [disputed]}
+
+  - id: R15-implementation-defined
+    verdict: unspecified
+    rationale: "the stored triage says the spec leaves the observed behaviour implementation defined (quoted there)"
+    cite: [RUL-DISPOSITION-PER-PROGRAM]
+    needs: [expected_record]
+    when: {expected_status: [implementation_defined]}
+
+  - id: R16-copy-check-blind-in-unified
+    verdict: compiler_bug
+    rationale: "the program checks its effect in copy mode only (copy_mode_only evidence), so the unified-mode pass is no evidence; the copy-mode failure stands against a trusted expected value; whether the failure is copy-specific is not shown"
+    cite: [RUL-X1-ORACLE-BLIND, RUL-PRESENCE-WITNESS]
+    needs: [model, expected_record, derivation, elision, stored_repeats, other_toolchains, other_mode, other_arch, port]
+    when: {mode: copy, copy_mode_only_check: true, runtime_failure: true, deterministic: true, expected_status: [trusted], witness: true}
+
+  - id: R17-copy-mode-failure
+    verdict: copy_mode_failure
+    rationale: "wrong in copy mode, the same toolchain gives the expected value in unified mode, the same compiler on another arch does not give it in copy mode, and the expected value is trusted: a compiler failure specific to separate host and device memory"
+    cite: [RUL-DERIVED-NEEDS-EXECUTION, RUL-WITNESS-PER-MODE, RUL-PRESENCE-WITNESS]
+    needs: [model, expected_record, derivation, elision, stored_repeats, other_toolchains, other_mode, other_arch, port]
+    when: {mode: copy, runtime_failure: true, deterministic: true, expected_status: [trusted], witness: true, other_mode_passes: true, other_arch_passes_same_mode: false}
+
+  - id: R18-unified-memory-failure
+    verdict: unified_memory_failure
+    rationale: "wrong in unified mode, the same toolchain gives the expected value in copy mode, and the expected value is trusted: a failure specific to unified memory"
+    cite: [RUL-DERIVED-NEEDS-EXECUTION, RUL-WITNESS-PER-MODE, RUL-PRESENCE-WITNESS]
+    needs: [model, expected_record, derivation, elision, stored_repeats, other_toolchains, other_mode, port]
+    when: {mode: unified, runtime_failure: true, deterministic: true, expected_status: [trusted], witness: true, other_mode_passes: true}
+
+  - id: R19-arch-specific
+    verdict: arch_specific
+    rationale: "wrong on this arch, the same compiler gives the expected value on another arch in the same memory mode (the like-for-like comparison), and the expected value is trusted"
+    cite: [RUL-ARCH-VS-COPY-MODE, RUL-SAME-COMPILER-RUNS, RUL-PRESENCE-WITNESS]
+    needs: [model, expected_record, derivation, elision, stored_repeats, other_toolchains, other_mode, other_arch, port]
+    when: {runtime_failure: true, deterministic: true, expected_status: [trusted], witness: true, other_arch_passes_same_mode: true}
+
+  - id: R20-runtime-bug
+    verdict: compiler_bug
+    rationale: "a legal program fails at run time, deterministically, against an expected value from two or more independent sources with an executed witness, and another toolchain, mode, arch or the elision gives the expected value"
+    cite: [RUL-DERIVED-NEEDS-EXECUTION, RUL-WITNESS-PER-MODE, RUL-SAME-COMPILER-RUNS, RUL-PRESENCE-WITNESS, RUL-METAMORPHIC-OTHER-FAMILY]
+    needs: [model, expected_record, derivation, elision, stored_repeats, other_toolchains, other_mode, other_arch, port, metamorphic]
+    when: {runtime_failure: true, deterministic: true, expected_status: [trusted], witness: true}
+
+  - id: R21-not-reproduced
+    verdict: needs_human
+    rationale: "a run-time failure whose repeats are too few to call it deterministic (run the repeats collector)"
+    cite: [RUL-FLAKY-MIXED]
+    needs: [stored_repeats, repeats]
+    when: {runtime_failure: true, deterministic: false}
+
+  - id: R22-expected-weak
+    verdict: needs_human
+    rationale: "the expected value is not trusted (fewer than two independent sources, or no executed witness)"
+    cite: [RUL-DERIVED-NEEDS-EXECUTION, RUL-METAMORPHIC-OTHER-FAMILY]
+    needs: [model, expected_record, derivation, elision, metamorphic]
+    when: {expected_status: [provisional, derived]}
+
+  - id: R22b-expected-disputed-late
+    verdict: needs_human
+    rationale: "the expected value is disputed by a source collected for the run-time rules (the metamorphic relation gives another value than the program's claim): both values listed"
+    cite: [RUL-DERIVED-NEEDS-EXECUTION, RUL-METAMORPHIC-DISPUTE, RUL-METAMORPHIC-OTHER-FAMILY]
+    needs: [model, expected_record, derivation, elision, metamorphic]
+    when: {runtime_failure: true, expected_status: [disputed]}
+
+  - id: R99-default
+    verdict: needs_human
+    rationale: "no rule decides"
+    cite: [RUL-REGISTRY-ONLY]
+    needs: []
+    when: {}

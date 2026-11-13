@@ -1,0 +1,22 @@
+# Verbatim compiler output captured on tuolumne2151, 2026-10-17.
+# source: amdflang -fopenmp --offload-arch=gfx942 -L/usr/lib/gcc/x86_64-redhat-linux/8 -O2 on a 40,000-line plain Fortran program; the flang-24 -fc1 frontend process was sent SIGKILL after 4 s (standing in for the OOM killer or an external kill)
+# exit status: 254
+==== verbatim output below ====
+flang-24: error: unable to execute command: Killed
+flang-24: error: flang frontend command failed with exit code -2 (use -v to see invocation)
+AMD flang version 24.0.0git (https://github.com/ROCm/llvm-project.git 3ba19712e9fbf709f6c93d33394211ed4eeec8a7)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: <site>/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c/lib/llvm/bin
+Configuration file: <site>/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c/lib/llvm/bin/flang.cfg
+Distribution: AMD AFAR drop #24.3.0 09/17/26
+flang-24: note: diagnostic msg: 
+********************
+
+PLEASE ATTACH THE FOLLOWING CRASH REPRODUCER FILES TO THE BUG REPORT:
+flang-24: note: diagnostic msg: /tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/env2/big-gfx942-51bc8c
+flang-24: note: diagnostic msg: /tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/env2/big-5de44d
+flang-24: note: diagnostic msg: /tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/env2/big-gfx942-51bc8c.sh
+flang-24: note: diagnostic msg: 
+
+********************

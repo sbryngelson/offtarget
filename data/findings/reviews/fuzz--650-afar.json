@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/650-afar.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "o1 is an allocatable array referenced in the target construct, hence implicitly mapped tofrom. Each (i,j) element is written by exactly one thread (distinct i per team iteration, distinct j per do iteration), so no race. The end directive of the combined loop construct is optional. After the region the host holds o1 values, so the checksum must be nonzero; 0 means the data was not copied back."
+  },
+  {
+   "run": "run-20261112/batch-19",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "o1 is an allocatable array, not a scalar, so it is implicitly mapped tofrom. Each distribute iteration i writes distinct row o1(i,:); the nested parallel with a worksharing loop over j has no race. Parallel inside teams distribute is permitted. Checksum must be nonzero; 0 means the copy-back or inner writes were lost."
+  },
+  {
+   "run": "run-v2-20261113/batch-57",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 is a non-scalar referenced in the target construct with no explicit map and no defaultmap, so it is implicitly mapped tofrom and its values return to the host. Distinct (i,j) elements are written, so there is no race. Nested parallel with a worksharing do inside distribute is allowed. Checksum 0 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-58",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-96",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 is an allocatable array, not a scalar, so it is implicitly mapped tofrom on the target. Each (i,j) element is written by exactly one iteration, so there is no race; a parallel region nested in teams distribute is permitted and the allocatable array holds nonzero values after the region. A checksum of 0 means the writes were lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-60",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "af4c9b47a47c7e2e5c8a409c9be0d0598fe052f8ebca2619df80b268ffaa0ba7",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

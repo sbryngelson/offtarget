@@ -1,0 +1,210 @@
+{
+ "finding": "cce21-defaultmap-aggregate-flag.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "defaultmap(to: aggregate) is valid syntax (implicit-behavior to, category aggregate); it affects only implicitly mapped aggregates, and a is explicitly mapped, while x is explicitly map(tofrom). The target region must run on the available device so omp_is_initial_device() is false and x becomes 0; the result 1 means host execution or lost map. Host fallback is only allowed if no device is available, which is not the case as other compilers ran it on device. Slight uncertainty: spec does not force a device to exist."
+  },
+  {
+   "run": "run-20261112/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "x and a are explicitly mapped, so defaultmap(to: aggregate) has no effect on them and the clause is syntactically valid (one category once). The target region must execute on the default device when one is available, so omp_is_initial_device() is false. Compilers A and C ran it on the host, while the identical region without defaultmap (B) ran on the device. In C, writing the map(to) array a on the device is legal (device copy only)."
+  },
+  {
+   "run": "run-v2-20261113/batch-115",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming: defaultmap(to: aggregate) names a map type, and x and a are explicitly mapped. The spec only says the initial thread may execute on the requested target device; host execution is permitted, so x=1 is not forbidden.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-53",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-40",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "x and a are explicitly mapped, so defaultmap(to: aggregate) only affects implicitly mapped aggregates and none are referenced implicitly. The program has no race. With a separate-memory device present the target region runs on the device, so omp_is_initial_device() gives 0 in all three regions; a result of 1 is a compiler defect. Case C writes only to the mapped copy of a.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-09",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "36cbd813b85fd0fec15fca19fc3b8db83aa4bd87531e26b60914afbf57e2d7be",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: defaultmap(to: aggregate) is a valid implicit-behavior (a map type) and only affects implicitly mapped aggregates; x and a are explicitly mapped, so the program is conforming and race free.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming: defaultmap accepts the to implicit-behavior with the aggregate category, and x and a are explicitly mapped. Reading B overstates: the specification says the initial thread may execute on the requested target device if available, which does not strictly forbid host execution. Reading A is right that host execution is permitted by the wording, but the inconsistency between regions B and A suggests a defect; the text does not settle it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-56",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "defaultmap(to: aggregate) is a valid implicit-behavior (a map type) and only affects implicitly mapped aggregates; x and a are explicitly mapped, so the program is conforming and race free. Reading B overstates the requirement: the specification says the initial thread only may execute on the requested device, so host execution (omp_is_initial_device true) is permitted. Reading A is right.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-39",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The specification permits the target region to run on the host although the device exists and supports it (B ran on the device)"
+     ],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,11 @@
+# The claims the findings made before tools/repo/check_findings.py existed that no recorded row backs.
+# A ratchet: tools/repo/check_findings.py fails on a violation not listed here (a new or edited finding must
+# be backed by rows) and on an entry that no longer holds (remove it), so this file only shrinks.
+# Do not add entries for new findings: record the rows (tools/new_finding.py writes the lines from them).
+# One entry per finding and claim. mode: committed = decided from the committed rows
+# (data/vendor/checks/results-compact, results-site); full = needs the git-ignored results/ too.
+violations:
+- finding: cce-trim-merge-output-one-character.f90
+  claim: other-families afar
+  reason: the header says afar runs it correctly; no recorded passing row of the program on it
+  mode: full

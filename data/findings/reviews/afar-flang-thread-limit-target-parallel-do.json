@@ -1,0 +1,113 @@
+{
+ "finding": "afar-flang-thread-limit-target-parallel-do.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "thread_limit is a permitted clause on target in 5.2. Section 17.2 applies thread_limit on a combined construct to all leaf constructs that permit it, here target. Section 17.3 makes target parallel do a valid combined construct. The only combined-construct clause restrictions are copyin on target and nowait/in_reduction on parallel. The refusal is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-68",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target parallel do is a combined construct and thread_limit is a clause of target. Section 17.2 applies thread_limit to all leaf constructs that permit it, so it applies to target; the clause applies to at least one leaf. The program has no other violations, so refusing it is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-114",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "thread_limit is a permitted clause of the target construct, and a combined construct accepts the clauses of its leaf constructs; thread_limit applies to every leaf construct permitting it, here target. So target parallel do thread_limit(8) is conforming and must be accepted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-50",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "thread_limit is permitted on the target construct, a constituent of target parallel do, so a combined construct accepts it. The clause applies to all leaf constructs that permit it. The program is conforming and must be accepted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-12",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "a976bb9ebc50ad25fde4c5c9c103a6a27c5fb876fe5286f4b93e475befbe2f07",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

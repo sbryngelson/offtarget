@@ -1,0 +1,217 @@
+{
+ "finding": "fuzz/b2-85-cce20.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dr%o1 is explicitly mapped tofrom, while defaultmap(firstprivate: aggregate) applies to aggregates. A reference to a structure element is treated as a reference to the structure for implicit attributes. It is unclear whether dr is then firstprivate, which would hide the mapped dr%o1 from the host copy. The allocatable ib may count as aggregate or allocatable. Iterations write distinct elements, so there is no race. Because the interaction is ambiguous, the checksum of 0 may be permitted."
+  },
+  {
+   "run": "run-20261113/batch-77",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dr%o1 is mapped tofrom, so each distinct element dr%o1(i) is written by exactly one iteration with no race. ic is mapped to; ib is allocatable and gets the default implicit map; p1 is firstprivate. defaultmap(firstprivate: aggregate) affects only unmapped aggregates, and the aggregate category excludes allocatables. All indices are in bounds. The tofrom result must be copied back, so checksum=0 is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-57",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "dr%o1 is explicitly mapped tofrom, so dr has an explicit data-environment attribute and the defaultmap(firstprivate: aggregate) rule for implicit attributes should not apply to it. The spec says references to structure elements are treated as references to the structure when determining implicit attributes, so a reading where dr is firstprivate and the copy-back is lost is arguable. Iterations write distinct elements, no race. Most likely the explicit map governs, but the text does not state it for a mapped component of a structure.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-37",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-96",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "dr%o1 is explicitly mapped tofrom and ic to. p1 is a scalar and firstprivate. ib is allocatable and read only, so tofrom or firstprivate gives the same values. Each iteration writes a distinct dr%o1(i) and t1 is private, so there is no race. The result is deterministic; checksum 0 means the writes were lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-55",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9586e066db0c1746a3229fea947f29b28239778c0f81a109647cd48540ab1afc",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: The program is race-free: distinct dr%o1(i) per iteration, t1 private. dr%o1 is explicitly mapped tofrom, and the data-environment attribute clause is stated to take precedence over implicit rules.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Section 5.8.1 opens with 'explicit data-environment attribute clauses on target directives determine the attributes for variables referenced', and the implicit rules including defaultmap only fill in for variables without them. dr%o1 is explicitly mapped tofrom, so dr is not made firstprivate by the structure-reference sentence (which serves implicit determination); Reading B's doubt fails. ib is allocatable, outside the aggregate category, so it gets the implicit tofrom map. Distinct elements are written per iteration, indices are in bounds, so the tofrom copy-back must occur and checksum=0 is a compiler bug."
+  },
+  {
+   "run": "adj-20261113/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Iterations write distinct elements of dr%o1, so there is no race; ic is mapped and p1 and ib are read only. Reading A overstates: the specification says a structure element reference counts as a reference to the structure for implicit attributes and defaultmap(firstprivate:aggregate) applies by category, so whether dr gets firstprivate despite the explicit map of dr%o1 is not stated. Reading B is right that the interaction is unsettled, though the program is legal."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B is right and Reading A's doubt fails. dr%o1 appears in an explicit map(tofrom:) clause, and explicit clauses determine the attribute, so the implicit defaultmap(firstprivate: aggregate) rule is not applied to dr and the copy back is required. Iterations write distinct elements, t1 is private, so no race. A checksum of 0 means writes were lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is race-free: distinct dr%o1(i) per iteration, t1 private. dr%o1 is explicitly mapped tofrom, and the data-environment attribute clause is stated to take precedence over implicit rules. But the implicit rules treat a reference to a structure element as a reference to the structure, and defaultmap(firstprivate: aggregate) would make dr firstprivate if dr is considered not to have an explicit attribute; the text never says how a mapped component affects the structure itself. Reading B asserts the outcome without a passage, so the result is not clearly required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-59",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

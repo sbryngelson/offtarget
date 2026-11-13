@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-target-simd-collapse-translate-failure.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-23",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target simd with collapse(2) over a perfectly nested rectangular loop nest is conforming. Each (i,j) iteration writes a distinct element of o1, so there is no race. Loop iteration variables are private. map clauses cover o1 and ia. A conforming compiler must accept and compile it, so the crash is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-57",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target simd with collapse(2) is a valid combined construct; the i and j loop iteration variables are private, each o1(i,j) is written by one iteration, no race. A compiler must accept it and o1(1,1)=ia(1)+1."
+  },
+  {
+   "run": "run-v2-20261113/batch-115",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target simd with collapse(2) over a rectangular nest is a valid combined construct; each iteration writes a distinct o1(i,j), so no race. A conforming compiler must accept it; the compile abort is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-67",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-26",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target simd is a valid combined construct. collapse(2) applies to two perfectly nested loops with rectangular bounds, and each iteration writes a distinct o1(i,j), so there is no race. o1 is mapped from, ia to. Loop variables are privatized. The expected value o1(1,1)=ia(1)+1 holds. A compiler abort translating the region is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-43",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7a604a2166f79e56afcfba1f03327dd952570f083db1425d28070a0aa9c987c3",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

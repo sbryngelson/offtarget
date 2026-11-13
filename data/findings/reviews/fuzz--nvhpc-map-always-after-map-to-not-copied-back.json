@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-map-always-after-map-to-not-copied-back.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a is mapped to, r tofrom with always, h tofrom. Inside the region h is set and r = a(5) = 5; on exit r and h are copied back. Expected r=5 and h=0 (device). Observed r=0 means the assignment or copy-back was lost. No race, no restriction broken; always is a valid map-type-modifier. The observed output (h=0, r=0) is not allowed."
+  },
+  {
+   "run": "run-20261112/batch-19",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "a is mapped to, r with always,tofrom, h tofrom. Device sets h=0 and r=a(5)=5; both are copied back at exit. Expected r=5,h=0; observed r=0 means r was not copied back. Nothing unspecified."
+  },
+  {
+   "run": "run-v2-20261113/batch-45",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a is mapped to, r with always and tofrom, h with tofrom. The target region assigns h and r from scalars and a(5), with no race. On exit r and h are copied back, so r=5 and h=0 on a device. The program is conforming, so the observed r=0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-78",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(always, tofrom: r) is a valid map clause. On exit from the target region, the always modifier forces the original r to be updated from the device copy, so r=5 and h=0 are required when run on the device. Observed r=0 means the from-copy was not performed. a is mapped to, so a(5)=5 is visible on the device.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-69",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "3b9d5729d4ccb49b88f21538597720906aa52715e1f08fc7261e0af0f424618c",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

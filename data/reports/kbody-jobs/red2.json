@@ -1,0 +1,286 @@
+[
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "search",
+  "loc": "ctor",
+  "rec": "ghost",
+  "spacing": 16,
+  "nper": 20,
+  "dims": [
+   336,
+   336,
+   336
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "elem",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "none",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "none",
+  "branch": "all",
+  "loc": "elem",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "none",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "ghost",
+  "aux": "grid",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "none",
+  "branch": "all",
+  "loc": "elem",
+  "rec": "ghost",
+  "aux": "none",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   95,
+   95,
+   95
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   255,
+   255,
+   255
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 1,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 2,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "div",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20,
+  "hda": false
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "elem",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20,
+  "hda": false
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20,
+  "storage": "enter",
+  "marker": "alloc",
+  "hda": false
+ },
+ {
+  "collapse": 3,
+  "claim": "cap_uf",
+  "branch": "all",
+  "loc": "elem",
+  "rec": "small",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20,
+  "storage": "enter",
+  "marker": "alloc",
+  "hda": false
+ },
+ {
+  "collapse": 3,
+  "claim": "none",
+  "branch": "all",
+  "loc": "ctor",
+  "rec": "ghost",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20,
+  "aux": "grid",
+  "hda": false
+ },
+ {
+  "collapse": 3,
+  "claim": "none",
+  "branch": "all",
+  "loc": "elem",
+  "rec": "ghost",
+  "extras": false,
+  "geom": "dense",
+  "dims": [
+   159,
+   159,
+   159
+  ],
+  "trials": 20,
+  "aux": "grid",
+  "hda": false
+ }
+]

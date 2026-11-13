@@ -1,0 +1,21 @@
+# Paths named in tracked text that are not files (and, for tools/..., old paths kept on purpose): scripts deleted on 2026-11-07, placeholders (N, ranges),
+# names the test fixtures make up, and files a later task creates. One 'file<TAB>path' per line.
+catalog/gate_queue.yaml	data/evidence/gate_probe/reduce/red_c_N.c
+data/findings/cce19-c-reduction-63-scalars-one-wrong.c	data/evidence/gate_probe/reduce/red_c_N.c
+data/findings/fuzz/s1-6085-cce21.f90	data/evidence/dataenv_probe/ice/b1-b3.f90
+data/reports/fuzz-stress.md	data/evidence/gate_probe/reduce/red_c_N.c
+data/reports/gate-queue.md	data/evidence/gate_probe/reduce/red_c_N.c
+tools/campaigns/harvest_probe.py	tools/run_harvest_probe.sh
+data/evidence/gate_probe/build_queue.py	data/evidence/gate_probe/reduce/red_c_N.c
+tests/site/test_site_inputs.py	tools/p.c
+tests/cluster/test_standing_rules.py	tools/new.sh
+tests/cluster/test_standing_rules.py	tools/old.sh
+tests/cluster/test_standing_rules.py	tools/x.sh
+tests/cluster/test_standing_rules.py	tools/y.sh
+tests/cluster/test_lanes.py	tools/a.py
+tests/cluster/test_lanes.py	tools/t.py
+tests/cluster/test_lanes.py	tools/x.py
+offload/engine/harvest2/split.py	tools/fresh_bench.py
+tools/campaigns/fresh_bench.py	tools/fresh_bench.py
+tools/campaigns/harvest_known.py	tools/fresh_bench.py
+docs/tooling/contributing.md	tools/agent_worktree.sh

@@ -1,0 +1,377 @@
+# OpenMP 5.0 against 5.2 for the slice: the deltas the 5.0 catalog
+# version (50) is built from. Every entry is `status: provisional` (spec-
+# derived, not owner-reviewed). Read by tools/derive/omp50_delta.py, which renders
+# docs/tooling/omp5-vs-52.md, and checked by tests/engine/test_findings.py against the
+# catalog: every 5.2 slice atom outside the 5.0 slice has a `since` entry,
+# every 5.2 rule without a 5.0 entry has an `absent_rules` reason, every
+# cited section and page exists in the spec text.
+#
+# Sources: the 5.0 text (spec/openmp/openmp-5.0.pdf) and the Features
+# History appendices of 5.1 (§B.2), 5.2 (§B.1-B.3) and 6.0 (§B.1-B.4).
+# The appendices do not list every change (order-modifiers, the num_teams
+# lower bound, the present modifiers, acquire/release for
+# atomic_default_mem_order are not in them); those entries cite the syntax
+# of the first version that has the form.
+#
+# atoms_since: atom -> first version (51 = 5.1, 52 = 5.2), the citation of
+#   the history appendix (`quote`, verbatim, checked) or of the first
+#   version's syntax (`note`), and of the 5.0 syntax that lacks the form
+#   (`cite50`).
+# spelling: atoms in both slices whose 5.0 spelling, program shape or
+#   meaning differs; `spelling50` / `spelling52` are the program forms.
+# absent_rules: 5.2 rules (rule stem) without a 5.0 counterpart.
+# changed_rules: 5.2 rules whose 5.0 sentence differs in substance (the
+#   5.0 entry in rules.yaml quotes it); `predicate` says what the rule
+#   checks at 50.
+# legal50_not52: legal 5.0 programs that are not legal 5.2 programs, or
+#   whose meaning changed.
+status: provisional
+
+atoms_since:
+  omp.clause.allocate.align:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "Support for the align clause on the allocate directive and allocator and align modifiers on the allocate clause was added"
+    cite50: "OpenMP 5.0 §2.11.4, p.158"
+  omp.clause.allocate.allocator:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "Support for the align clause on the allocate directive and allocator and align modifiers on the allocate clause was added"
+    cite50: "OpenMP 5.0 §2.11.4, p.158"
+  omp.clause.atomic_default_mem_order.acquire:
+    since: 52
+    cite: "OpenMP 5.2 §8.2.1, p.212"
+    note: "5.0 and 5.1 list atomic_default_mem_order(seq_cst | acq_rel | relaxed) (5.1 §2.5.1, p.83)"
+    cite50: "OpenMP 5.0 §2.4, p.60"
+  omp.clause.atomic_default_mem_order.release:
+    since: 52
+    cite: "OpenMP 5.2 §8.2.1, p.212"
+    note: "5.0 and 5.1 list atomic_default_mem_order(seq_cst | acq_rel | relaxed) (5.1 §2.5.1, p.83)"
+    cite50: "OpenMP 5.0 §2.4, p.60"
+  omp.clause.defaultmap.all:
+    since: 52
+    cite: "OpenMP 5.2 §5.8.7, p.161"
+    note: "the 5.1 variable-category list is scalar, aggregate, allocatable, pointer (5.1 §2.21.7.3, p.357)"
+    cite50: "OpenMP 5.0 §2.19.7.2, p.324"
+  omp.clause.defaultmap.present:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "The present argument was added to the defaultmap clause"
+    cite50: "OpenMP 5.0 §2.19.7.2, p.324"
+  omp.clause.depend.inoutset:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.629"
+    quote: "To support inout sets, the inoutset argument was added to the depend clause"
+    cite50: "OpenMP 5.0 §2.17.11, p.255"
+  omp.clause.enter:
+    since: 52
+    cite: "OpenMP 5.2 §B.2, p.626"
+    quote: "The enter clause was added as a synonym for the to clause on the declare target directive, and the corresponding to clause was deprecated"
+    cite50: "OpenMP 5.0 §2.12.7, p.180"
+  omp.clause.from.iterator:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "Support was added so that iterators may be defined and used in a map clause"
+    cite50: "OpenMP 5.0 §2.12.6, p.176"
+  omp.clause.from.present:
+    since: 51
+    cite: "OpenMP 5.1 §2.14.6, p.206"
+    note: "5.1 motion-modifier: present, mapper, iterator; 5.0: to/from([mapper(mapper-identifier):]locator-list)"
+    cite50: "OpenMP 5.0 §2.12.6, p.176"
+  omp.clause.has_device_addr:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.629"
+    quote: "The has_device_addr clause was added to the target construct"
+    cite50: "OpenMP 5.0 §2.12.5, p.170"
+  omp.clause.indirect:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "Support was added for indirect calls to the device version of a procedure or function in target regions"
+    cite50: "OpenMP 5.0 §2.12.7, p.180"
+  omp.clause.indirect.invoked_by_fptr:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "Support was added for indirect calls to the device version of a procedure or function in target regions"
+    cite50: "OpenMP 5.0 §2.12.7, p.180"
+  omp.clause.linear.step:
+    since: 52
+    cite: "OpenMP 5.2 §B.2, p.626"
+    quote: "the syntax of the linear clause that specifies its argument and linear-modifier as linear-modifier(list) was deprecated and the step modifier was added for specifying the linear step"
+    cite50: "OpenMP 5.0 §2.19.4.6, p.290"
+  omp.clause.map.iterator:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "Support was added so that iterators may be defined and used in a map clause"
+    cite50: "OpenMP 5.0 §2.19.7.1, p.315"
+  omp.clause.map.present:
+    since: 51
+    cite: "OpenMP 5.1 §2.21.7.1, p.347"
+    note: "5.1 map-type-modifier: always, close, mapper, present, iterator; 5.0: always, close, mapper"
+    cite50: "OpenMP 5.0 §2.19.7.1, p.315"
+  omp.clause.num_teams.lower_bound:
+    since: 51
+    cite: "OpenMP 5.1 §2.7, p.100"
+    note: "num_teams([lower-bound:]upper-bound); 5.0: num_teams(integer-expression)"
+    cite50: "OpenMP 5.0 §2.7, p.82"
+  omp.clause.order.reproducible:
+    since: 51
+    cite: "OpenMP 5.1 §2.11.3, p.125"
+    note: "order([ order-modifier :]concurrent); 5.0: order(concurrent)"
+    cite50: "OpenMP 5.0 §2.9.5, p.128"
+  omp.clause.order.unconstrained:
+    since: 51
+    cite: "OpenMP 5.1 §2.11.3, p.125"
+    note: "order([ order-modifier :]concurrent); 5.0: order(concurrent)"
+    cite50: "OpenMP 5.0 §2.9.5, p.128"
+  omp.clause.proc_bind.primary:
+    since: 51
+    cite: "OpenMP 5.1 §2.6, p.92"
+    note: "affinity-policy: primary, master [deprecated], close, spread (5.2 §B.1, p.625: the master affinity policy was deprecated in 5.1); 5.0: proc_bind(master | close | spread)"
+    cite50: "OpenMP 5.0 §2.6, p.74"
+  omp.clause.to.iterator:
+    since: 51
+    cite: "OpenMP 5.2 §B.3, p.628"
+    quote: "Support was added so that iterators may be defined and used in a map clause"
+    cite50: "OpenMP 5.0 §2.12.6, p.176"
+  omp.clause.to.present:
+    since: 51
+    cite: "OpenMP 5.1 §2.14.6, p.206"
+    note: "5.1 motion-modifier: present, mapper, iterator; 5.0: to/from([mapper(mapper-identifier):]locator-list)"
+    cite50: "OpenMP 5.0 §2.12.6, p.176"
+  omp.clause.uses_allocators.memspace:
+    since: 52
+    cite: "OpenMP 5.2 §B.2, p.627"
+    quote: "the argument that specified the arguments of the uses_allocators as a comma-separated list in which each list item is a clause-argument-specification of the form allocator[(traits)] was deprecated"
+    cite50: "OpenMP 5.0 §2.12.5, p.170"
+
+# clauses that 5.0 does not allow on a slice directive although 5.2 does
+# (spec_overrides.yaml entries with since 51/52)
+clause_rules:
+  - directives: [distribute, teams distribute, target teams distribute]
+    clause: order
+    since: 51
+    cite50: "OpenMP 5.0 §2.9.4.1, p.121"
+    cite: "OpenMP 5.1 §2.11.6.1, p.144"
+    note: "the 5.0 distribute clause list has no order clause"
+  - directives: [distribute parallel do, teams distribute parallel do, target teams distribute parallel do]
+    clause: linear
+    since: 52
+    cite50: "OpenMP 5.0 §2.9.4.3, p.126"
+    cite: "OpenMP 5.2 §17.5, p.344"
+    note: "5.0 and 5.1: 'No linear clause can be specified.' on the distribute parallel worksharing-loop construct; 5.2 allows linear for loop iteration variables"
+  - directives: [target, target parallel, target parallel do, target parallel do simd, target parallel loop, target simd]
+    clause: thread_limit
+    since: 51
+    cite50: "OpenMP 5.0 §2.12.5, p.170"
+    cite: "OpenMP 5.2 §B.3, p.629"
+    note: "The thread_limit clause was added to the target construct (TableGen's version range already says so)"
+
+spelling:
+  omp.clause.to:
+    on: declare target
+    spelling50: "!$omp declare target to(f)"
+    spelling52: "!$omp declare target enter(f) (to is deprecated in 5.2, removed in 6.0)"
+    cite50: "OpenMP 5.0 §2.12.7, p.180"
+    cite: "OpenMP 5.2 §B.2, p.626"
+    note: "the slice's to atom is the target update motion clause; procedure and variable programs use to(...) at 5.0 and 5.2 alike"
+  omp.clause.linear.val:
+    spelling50: "!$omp declare simd(lf) linear(val(x))"
+    spelling52: "!$omp parallel do linear(x: val, step(1))"
+    cite50: "OpenMP 5.0 §2.9.2, p.107"
+    cite: "OpenMP 5.2 §5.4.6, p.117"
+    note: "5.0: linear(linear-list[ : linear-step]) with linear-list = modifier(list), and 'A modifier may not be specified on a linear clause.' on the worksharing-loop and simd constructs: the val form exists only on declare simd. 5.2 allows val on loop constructs and deprecates modifier(list) (declare simd only)."
+  omp.clause.linear.ref:
+    spelling50: "!$omp declare simd(lf) linear(ref(x)), x a scalar dummy argument"
+    spelling52: "!$omp declare simd(lf) linear(x: ref), x an assumed-shape array"
+    cite50: "OpenMP 5.0 §2.19.4.6, p.293"
+    cite: "OpenMP 5.2 §5.4.6, p.119"
+    note: "5.0: with ref, ALLOCATABLE, assumed-shape and polymorphic list items 'may not appear'; 5.2: with ref, list items 'must be polymorphic variables, assumed-shape arrays, or variables with the ALLOCATABLE attribute' (the reverse)"
+  omp.clause.linear.uval:
+    spelling50: "!$omp declare simd(lf) linear(uval(x))"
+    spelling52: "!$omp declare simd(lf) linear(x: uval)"
+    cite50: "OpenMP 5.0 §2.19.4.6, p.290"
+    cite: "OpenMP 5.2 §5.4.6, p.117"
+    note: "modifier(list) syntax (deprecated in 5.2)"
+  omp.clause.linear.step_simple_modifier:
+    spelling50: "linear(x: 2) (linear-step)"
+    spelling52: "linear(x: 2) (step-simple-modifier)"
+    cite50: "OpenMP 5.0 §2.19.4.6, p.290"
+    cite: "OpenMP 5.2 §5.4.6, p.117"
+    note: "same text, a different grammar role"
+  omp.clause.uses_allocators.traits:
+    spelling50: "uses_allocators(my_alloc(my_traits))"
+    spelling52: "uses_allocators(traits(my_traits): my_alloc)"
+    cite50: "OpenMP 5.0 §2.12.5, p.170"
+    cite: "OpenMP 5.2 §6.8, p.181"
+    note: "the 5.0 form is deprecated in 5.2 (§B.2, p.627)"
+  omp.clause.map:
+    spelling50: "map(always close to: a) and map(always, close, to: a)"
+    spelling52: "map(always, close, to: a) (without commas: deprecated)"
+    cite50: "OpenMP 5.0 §2.19.7.1, p.315"
+    cite: "OpenMP 5.2 §B.2, p.626"
+    note: "the slice programs use commas at every version"
+  omp.clause.num_teams:
+    spelling50: "num_teams(1), checked: exactly 1 team (at most 1)"
+    spelling52: "num_teams(4), checked: exactly 4 teams (the lower bound defaults to the upper bound)"
+    cite50: "OpenMP 5.0 §2.7, p.83"
+    cite: "OpenMP 5.2 §10.2.1, p.233"
+    note: "meaning change: 5.0 'The number of teams created is implementation defined, but is less than or equal to the value specified in the num_teams clause.' A bound of 4 was met without the clause on AFAR and CCE 19 (audit: mutant survived), so the 5.0 program asks for one team (AFAR makes two without the clause)"
+  omp.directive.teams:
+    spelling50: "!$omp teams default(none) shared(...) private(i) around a sequential DO i loop"
+    spelling52: "!$omp teams default(none) shared(...) around a sequential DO i loop"
+    cite50: "OpenMP 5.0 §2.19.1.1, p.271"
+    cite: "OpenMP 5.2 §5.1.1, p.97"
+    note: "5.0: 'A loop iteration variable for a sequential loop in a parallel or task generating construct is private' (teams is neither); 5.2 adds teams. Under default(none) a 5.0 teams region must list the DO variable (AFAR -fopenmp-version=50 rejects the 5.2 form); the 5.0 rule default-dsa-001 checks it"
+  omp.directive.target_teams:
+    spelling50: "!$omp target teams ... default(none) shared(...) private(i) around a sequential DO i loop"
+    spelling52: "!$omp target teams ... default(none) shared(...) around a sequential DO i loop"
+    cite50: "OpenMP 5.0 §2.19.1.1, p.271"
+    cite: "OpenMP 5.2 §5.1.1, p.97"
+    note: "as for teams"
+  omp.clause.is_device_ptr:
+    spelling50: "is_device_ptr(pa, pb) in a module subroutine whose dummy arguments are pa and pb"
+    spelling52: "is_device_ptr(pa, pb) on local type(c_ptr) variables of the main program"
+    cite50: "OpenMP 5.0 §2.12.5, p.176"
+    cite: "OpenMP 5.2 §5.4.7, p.120"
+    note: "5.0 (Fortran): 'A list item that appears in an is_device_ptr clause must be a dummy argument that does not have the ALLOCATABLE, POINTER or VALUE attribute.'; 5.1 relaxed it (non-C_PTR items deprecated)"
+  omp.clause.use_device_ptr:
+    spelling50: "target data use_device_ptr(pa, pb) around a call of the is_device_ptr subroutine"
+    spelling52: "target data use_device_ptr(pa, pb) around a target is_device_ptr(pa, pb) region"
+    cite50: "OpenMP 5.0 §2.12.5, p.176"
+    cite: "OpenMP 5.2 §5.4.7, p.120"
+    note: "same oracle (copy-mode pointer translation); the inner target region moves into a subroutine for the 5.0 is_device_ptr restriction"
+  omp.clause.use_device_addr:
+    spelling50: "target data map(...) { target data use_device_addr(a, b) { address check } ; target kernel }"
+    spelling52: "target data map(...) use_device_addr(a, b) { address check ; target has_device_addr(a, b) kernel }"
+    cite50: "OpenMP 5.0 §2.12.2, p.161"
+    cite: "OpenMP 5.2 §B.3, p.629"
+    note: "5.0 has no has_device_addr (5.1); the address check and the copy-mode oracle are the same"
+
+absent_rules:
+  map-clause-005: {cite50: "OpenMP 5.0 §2.19.7.1, p.315", reason: "5.0 has no iterator modifier on map (added in 5.1, 5.2 §B.3 p.628), so no iterator restriction"}
+  mapitem-map-001: {cite50: "OpenMP 5.0 §2.19.7.1, p.321", reason: "5.0 has no same-mapper requirement for a list item mapped twice on one construct"}
+  defaultmap-map-002: {cite50: "OpenMP 5.0 §2.19.7.2, p.324", reason: "the all variable-category is 5.2"}
+  usedevice-clause-001: {cite50: "OpenMP 5.0 §2.12.2, p.163", reason: "5.0 has no structure-element restriction on use_device_addr"}
+  dnm-clause-001: {cite50: "OpenMP 5.0 §2.15, p.220", reason: "the 5.0 if clause section states no restriction on the directive-name-modifier (the combined target constructs only limit how many if clauses carry one)"}
+  numteams-clause-002: {cite50: "OpenMP 5.0 §2.7, p.82", reason: "the num_teams lower bound is 5.1"}
+  device-clause-001: {cite50: "OpenMP 5.0 §2.12.5, p.170", reason: "5.0 states it only through syntax: the device-modifier appears only in the target construct's device clause; target data, enter/exit data and update list device(scalar-integer-expression). Ruling: no 5.0 rule (no sentence to quote); a 5.0 linter relies on the grammar, which here accepts the modifier on every device clause"}
+  declaretarget-clause-001: {cite50: "OpenMP 5.0 §2.12.7, p.180", reason: "5.0 states it only through syntax (declare target (extended-list) or declare target [clause ...])"}
+  declaretarget-clause-002: {cite50: "OpenMP 5.0 §2.12.7, p.184", reason: "5.0 has no 'at least one enter (to) or link clause' requirement"}
+  declaretarget-clause-003: {cite50: "OpenMP 5.0 §2.12.7, p.184", reason: "5.0 has no nohost/link restriction"}
+  simd-clause-002: {cite50: "OpenMP 5.0 §2.9.3.1, p.113", reason: "5.0 simd has no order(concurrent)/safelen restriction"}
+  indirect-clause-001: {cite50: "OpenMP 5.0 §2.12.7, p.180", reason: "the indirect clause is 5.1"}
+  usesallocators-clause-003: {cite50: "OpenMP 5.0 §2.12.5, p.175", reason: "the mem-space modifier is 5.2"}
+  depend-clause-001: {cite50: "OpenMP 5.0 §2.17.11, p.258", reason: "the omp_all_memory reserved locator is 5.1"}
+  taskwait-clause-002: {cite50: "OpenMP 5.0 §2.17.5, p.232", reason: "nowait on taskwait is 5.1"}
+  update-clause-001: {cite50: "OpenMP 5.0 §2.17.10, p.255", reason: "5.0 states no restriction on the dependence type of the depobj update clause"}
+  scan-loop-001: {cite50: "OpenMP 5.0 §2.9.6, p.134", reason: "5.0 scan has no perfectly-nested requirement"}
+  declaremapper-clause-001: {cite50: "OpenMP 5.0 §2.19.7.3, p.327", reason: "5.0 declare mapper does not restrict the map-type"}
+  declaremapper-clause-002: {cite50: "OpenMP 5.0 §2.19.7.3, p.327", reason: "5.0 declare mapper does not restrict the mapper modifier"}
+  loopvar-loop-001: {cite50: "OpenMP 5.0 §2.9.1, p.96", reason: "5.0 states it only for C/C++ for-loops; a Fortran DO variable is protected by the base language"}
+  nonrect-loop-001: {cite50: "OpenMP 5.0 §2.9.1, p.96", reason: "5.0 lists the non-rectangular bound forms without requiring both bounds to use the same outer variable"}
+  aligned-clause-001: {cite50: "OpenMP 5.0 §2.9.3.3, p.119", reason: "5.0 states the aligned type restriction only for declare simd, not for the simd construct"}
+  declarative-placement-001: {cite50: "OpenMP 5.0 §1.2.2, p.3", reason: "5.0 has no rule placing declarative directives after USE, IMPORT and IMPLICIT statements"}
+
+changed_rules:
+  loop-nesting-001: "5.0 requires bind only for an orphaned loop construct that appears in a procedure; the predicate checks that at 50 (an orphaned loop in the main program is legal 5.0, illegal 5.2)"
+  targetenterdata-map-001: "5.0: a map-type is required and must be to or alloc (5.2: map-entering, default tofrom); the predicate checks that at 50"
+  targetexitdata-map-001: "5.0: a map-type is required and must be from, release or delete (5.2: map-exiting, default from); the predicate checks that at 50"
+  requires-clause-001: "5.0: at most one requires directive with atomic_default_mem_order per compilation unit (5.2: all must agree); the predicate flags any second one at 50"
+  reduction-clause-002: "5.0 lists five constructs (do, do simd, simd, parallel do, parallel do simd); 5.2 any compound with a do or simd leaf and no distribute (target parallel do is legal 5.2, not 5.0); the predicate uses the 5.0 list at 50"
+  linear-clause-002: "5.0: no linear modifier at all on the worksharing-loop and simd constructs (5.2: no ref or uval); the predicate flags val too at 50"
+  ordered-loop-005: "5.0: with any ordered clause the associated loops must be perfectly nested (5.2: only with ordered(n)); the predicate checks the bare clause too at 50"
+  declaretarget-placement-003: "5.0: the placement rule is for a declare target without clauses (5.2: also with only device_type/indirect); the predicate checks only the clause-less form at 50"
+  worksharing-nesting-001: "5.0 also forbids a worksharing region closely nested in a loop region; the predicate adds loop at 50"
+  teams-nesting-003: "5.0's list of regions allowed in teams omits loop regions, although 5.0 defines teams loop (§2.13.15) and loop bind(teams) (§2.9.5). Ruling: the predicate allows loop at 50 as at 52 (the 5.0 text contradicts itself)"
+  default-dsa-001: "5.0 predetermines a sequential loop's variable as private only in a parallel or task generating construct (5.0 §2.19.1.1, p.271; 5.2 adds teams), so under default(none) on teams the predicate at 50 counts the DO variable of a sequential loop that no nested parallel/task construct or loop directive covers as unlisted"
+  if-clause-001: "5.0 states the limit per construct ('At most one if clause can appear') and, on the combined target constructs, all-or-none directive-name modifiers with at most one per modifier; the 5.2 predicate (at most one if per constituent) flags the same slice programs"
+  target-dsa-001: "5.0: a list item may not be in both a map clause and a data-sharing attribute clause unless the construct is combined (5.2: same base variable, target construct); same predicate (bare target only)"
+  mapitem-map-002: "5.0: list items must not share storage unless the same variable or array section (5.2: also a containing structure); same predicate"
+  threadprivate-clause-001: "5.0 also allows a threadprivate variable in schedule, num_threads, thread_limit and if (expressions); the predicate checks list items only, so it is the same"
+  scan-placement-001: "5.0: exactly one scan directive (5.2: at most one, plus the item rule); same predicate"
+  declaremapper-clause-004: "5.0: the type must be a non-intrinsic type in Fortran (and not abstract); same predicate"
+  target-nesting-001: "5.0: a device data construct in a target region gives unspecified behavior (5.2: must not); counted as a restriction at 50"
+  collapse-loop-001: "5.0: a parameter larger than the nest depth gives unspecified behavior (5.2: must not)"
+  ordered-loop-002: "5.0: a parameter larger than the nest depth gives unspecified behavior (5.2: must not)"
+  order-nesting-001: "5.0 states it through the loop construct's restrictions, which an order(concurrent) clause imports"
+  order-nesting-002: "5.0 states it through the loop construct's restrictions, which an order(concurrent) clause imports"
+  distribute-clause-001: "5.0 states it for the composite distribute constructs; on distribute alone the 5.0 syntax lastprivate(list) has no modifier"
+  requires-placement-001: "5.0: requires is a declarative directive, placed in a declarative context (glossary); no explicit Fortran placement sentence"
+  positive-clause-001: "5.0 states positivity per clause (num_threads, safelen, simdlen, chunk_size, ordered, alignment); quoted: num_threads, others under also"
+  constant-clause-001: "5.0 states constancy per clause (safelen, simdlen, ordered)"
+  clauseset-clause-001: "5.0 states required clauses per directive (target update motion clause, scan, depobj syntax)"
+  clauseset-clause-002: "5.0 states exclusive clauses per directive (task detach/mergeable, taskloop reduction/nogroup and grainsize/num_tasks)"
+  listitem-clause-001: "5.0 states it per clause (privatization, shared, reduction, threadprivate, declare target)"
+  listitem-clause-002: "5.0 states uniqueness per clause family (data copying, aligned, declare target, data-sharing)"
+
+legal50_not52:
+  - construct: "!$omp teams default(none) without listing the variable of a sequential DO loop in the region (the reverse direction: legal 5.2, illegal 5.0)"
+    cite50: "OpenMP 5.0 §2.19.1.1, p.271"
+    cite: "OpenMP 5.2 §5.1.1, p.97"
+    kind: reverse
+    note: "5.2 made the variable predetermined private in teams; a 5.0 compiler must diagnose the 5.2 form (AFAR with -fopenmp-version=50 does)"
+  - construct: "!$omp loop (orphaned, no bind clause) in the main program"
+    cite50: "OpenMP 5.0 §2.9.5, p.131"
+    cite: "OpenMP 5.2 §11.7, p.258"
+    kind: removed
+    note: "5.0 needs bind only in a procedure; 5.2 for every orphaned loop construct (rule loop-nesting-001)"
+  - construct: "!$omp declare simd(f) linear(ref(x)) with x a scalar (not assumed-shape, not allocatable) dummy argument"
+    cite50: "OpenMP 5.0 §2.19.4.6, p.293"
+    cite: "OpenMP 5.2 §5.4.6, p.119"
+    kind: removed
+    note: "5.2 requires a ref list item to be polymorphic, assumed-shape or allocatable, which 5.0 forbids: no linear(ref) program is legal at both versions. The 5.0 program omp50-clause-linear-ref uses a scalar dummy argument"
+  - construct: "!$omp target update / target data / target enter data / target exit data inside a target region"
+    cite50: "OpenMP 5.0 §2.12.5, p.174"
+    cite: "OpenMP 5.2 §13.8, p.286"
+    kind: tightened
+    note: "5.0: the behavior is unspecified; 5.2: must not be encountered (rule target-nesting-001)"
+  - construct: "num_teams(n) without a lower bound"
+    cite50: "OpenMP 5.0 §2.7, p.83"
+    cite: "OpenMP 5.2 §10.2.1, p.233"
+    kind: meaning
+    note: "5.0: at most n teams; 5.1 and 5.2: exactly n (the lower bound is the upper bound when omitted). A 5.0 implementation that creates fewer teams is not 5.2-conforming"
+  - construct: "order(concurrent)"
+    cite50: "OpenMP 5.0 §2.9.2, p.104"
+    cite: "OpenMP 5.2 §B.2, p.627"
+    kind: meaning
+    note: "5.2: 'The behavior of the order clause with the concurrent parameter was changed so that it only affects whether a loop schedule is reproducible if a modifier is explicitly specified'"
+  - construct: "proc_bind(master)"
+    cite50: "OpenMP 5.0 §2.6, p.74"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "legal in 5.2 (deprecated since 5.1), removed in 6.0"
+  - construct: "!$omp declare target to(list) and the bare declare target (list)"
+    cite50: "OpenMP 5.0 §2.12.7, p.180"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "to on declare target is deprecated in 5.2 (use enter) and not allowed in 6.0"
+  - construct: "linear(val(x)) / linear(ref(x)) / linear(uval(x)) (modifier(list) syntax)"
+    cite50: "OpenMP 5.0 §2.19.4.6, p.290"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "deprecated in 5.2 and allowed only on declare simd, which is the only place 5.0 allows a modifier"
+  - construct: "uses_allocators(alloc(traits)) and a comma-separated allocator list"
+    cite50: "OpenMP 5.0 §2.12.5, p.170"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "deprecated in 5.2"
+  - construct: "map modifiers without commas (map(always to: a))"
+    cite50: "OpenMP 5.0 §2.19.7.1, p.315"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "deprecated in 5.2"
+  - construct: "reduction(-: x)"
+    cite50: "OpenMP 5.0 §2.19.5.1, p.294"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "the minus operator is deprecated in 5.2 and removed in 6.0"
+  - construct: "is_device_ptr / use_device_ptr list items that are not of type C_PTR (Fortran)"
+    cite50: "OpenMP 5.0 §2.12.5, p.176"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "deprecated in 5.1"
+  - construct: "depend(source) / depend(sink: vec) on ordered"
+    cite50: "OpenMP 5.0 §2.17.11, p.255"
+    cite: "OpenMP 5.2 §B.1, p.625"
+    kind: deprecated
+    note: "deprecated in 5.2 (doacross); outside the slice's programs"

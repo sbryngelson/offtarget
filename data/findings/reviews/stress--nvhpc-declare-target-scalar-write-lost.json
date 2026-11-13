@@ -1,0 +1,113 @@
+{
+ "finding": "stress/nvhpc-declare-target-scalar-write-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "declare target(g) with an extended-list is equivalent to enter(g), so g has a corresponding list item in the device data environment for the whole program. target update to(g) assigns 101 to it, the target region computes 203, and target update from(g) assigns it back. Result 101 means the from update (or the device store) was lost. No race, no restriction broken."
+  },
+  {
+   "run": "run-20261112/batch-24",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "g is a module variable with declare target (extended-list form, equivalent to enter). target update to(g) sends 101 to the device copy, the target region computes 2*101+1=203 there, update from returns it. dev is mapped tofrom. Expected g=203; observed 101 means the device write or update is lost, a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-46",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "g is a module variable with declare target, so a device copy exists. target update to(g) sends 101, the target region computes 203 on the device (g is not firstprivate since it is declare target), and target update from(g) makes the host copy consistent, giving 203. Observed 101 means the update from did not take effect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-36",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-84",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "g is a module variable named in declare target, treated as an enter clause, so it has a device copy. target update to(g) copies 101 to the device, the target region doubles it plus one (203) on the device, and target update from(g) copies it back. Assignments of motion clauses occur when the target task executes. Host g must be 203; 101 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "cf852d992939526ea380eab3a05ef93c2042dfe2e3dcb074dd84483809df328a",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

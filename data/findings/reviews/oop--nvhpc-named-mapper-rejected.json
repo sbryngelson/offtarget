@@ -1,0 +1,113 @@
+{
+ "finding": "oop/nvhpc-named-mapper-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A declare mapper in a module specification part is permitted (visibility follows variable declarations). The mapper maps var and v%a(1:v%n), a section of an allocatable component; the type is not mapped recursively. map(mapper(deep), tofrom: x) in 5.2 invokes it. Sum is 64*65/2*64=133120. A compiler that does not recognize declare mapper must reject nothing here; the program is conforming, so the refusal is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-45",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Module-level declare mapper with mapper-identifier, type :: var syntax; map clauses map v and an array section of its allocatable component v%a(1:v%n), which is allowed. The map clause uses mapper(deep) before the map type, valid 5.2 syntax. The mapper is visible via use. Sum is 2080*64=133120. Refusal of the syntax is lack of support for a standard feature."
+  },
+  {
+   "run": "run-v2-20261113/batch-38",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "declare mapper in a module specification part with Fortran syntax 'mapper-identifier : type :: var' is a valid declarative directive; the map list item v%a(1:v%n) refers only to the declared variable v. The mapper is invoked by map(mapper(deep), tofrom: x). Every iteration is independent, r1 = 64*2080 = 133120. A conforming compiler must recognize declare mapper and the mapper modifier, so the refusal is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-23",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-76",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare mapper with identifier deep for type vec maps var and an allocatable-component section, satisfying the restriction of at least one map clause mapping var. v and v%a share storage but v contains v%a, which is allowed. map(mapper(deep), tofrom: x) invokes it. The sum is 2080*64=133120. A compiler must accept this; NVFORTRAN does not recognize the directive.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "e1f1ec1168829d6bc39995ce4abd922958cfbbd4e5b928318915d9707e0e5eaa",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

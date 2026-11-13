@@ -1,0 +1,52 @@
+start 2026-10-26T04:04:54-04:00 wingtip-gpu3.cc.gatech.edu gpu 0
+25.11 alloc_31.f90 run1 rc=0 s= 1082331768994 
+25.11 alloc_31.f90 run2 rc=0 s= 1082331768994 
+25.11 alloc_32.f90 run1 rc=0 s= 2164663527981 
+25.11 alloc_32.f90 run2 rc=0 s= 2164663527981 
+25.11 iter_32.f90 run1 rc=0 s= 2164663527981 
+25.11 iter_32.f90 run2 rc=0 s= 2164663527981 
+25.11 nont.f90 run1 rc=0 lp= 0 
+25.11 nont.f90 run2 rc=0 lp= 0 
+25.11 nt2.f90 run1 rc=0 lp= 0 
+25.11 nt2.f90 run2 rc=0 lp= 0 
+25.11 red_acc_100.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s100= 600 
+25.11 red_acc_100.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s100= 600 
+25.11 red_acc_200.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+25.11 red_acc_200.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+25.11 red_acc_50.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s50= 350 
+25.11 red_acc_50.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s50= 350 
+25.11 red_c_64.c run1 rc=0 bad= 0 first= -1 s1= 105 s64= 420 
+25.11 red_c_64.c run2 rc=0 bad= 0 first= -1 s1= 105 s64= 420 
+25.11 red_c_8.c run1 rc=0 bad= 0 first= -1 s1= 105 s8= 140 
+25.11 red_c_8.c run2 rc=0 bad= 0 first= -1 s1= 105 s8= 140 
+25.11 unh_k1.f90 run1 rc=0 r1a= 243 r1b= 0 
+25.11 unh_k1.f90 run2 rc=0 r1a= 243 r1b= 0 
+25.11 unh_k2.f90 compile rc=2 NVFORTRAN-S-0034-Syntax error at or near identifier task_reduction (unh_k2.f90: 12)
+25.11 unh_k3.f90 compile rc=2 NVFORTRAN-S-0104-Illegal control structure - unterminated TARGET (unh_k3.f90: 9)
+25.11 unh_k4.f90 compile rc=2 NVFORTRAN-S-0034-Syntax error at or near identifier task_reduction (unh_k4.f90: 13)
+26.9 alloc_31.f90 run1 rc=0 s= 1082331768994 
+26.9 alloc_31.f90 run2 rc=0 s= 1082331768994 
+26.9 alloc_32.f90 run1 rc=0 s= 2164663527981 
+26.9 alloc_32.f90 run2 rc=0 s= 2164663527981 
+26.9 iter_32.f90 run1 rc=0 s= 2164663527981 
+26.9 iter_32.f90 run2 rc=0 s= 2164663527981 
+26.9 nont.f90 run1 rc=0 lp= 0 
+26.9 nont.f90 run2 rc=0 lp= 0 
+26.9 nt2.f90 run1 rc=0 lp= 0 
+26.9 nt2.f90 run2 rc=0 lp= 0 
+26.9 red_acc_100.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s100= 600 
+26.9 red_acc_100.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s100= 600 
+26.9 red_acc_200.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+26.9 red_acc_200.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s200= 1100 
+26.9 red_acc_50.f90 run1 rc=0 bad= 0 first= -1 s1= 105 s50= 350 
+26.9 red_acc_50.f90 run2 rc=0 bad= 0 first= -1 s1= 105 s50= 350 
+26.9 red_c_64.c run1 rc=0 bad= 0 first= -1 s1= 105 s64= 420 
+26.9 red_c_64.c run2 rc=0 bad= 0 first= -1 s1= 105 s64= 420 
+26.9 red_c_8.c run1 rc=0 bad= 0 first= -1 s1= 105 s8= 140 
+26.9 red_c_8.c run2 rc=0 bad= 0 first= -1 s1= 105 s8= 140 
+26.9 unh_k1.f90 run1 rc=0 r1a= 243 r1b= 0 
+26.9 unh_k1.f90 run2 rc=0 r1a= 243 r1b= 0 
+26.9 unh_k2.f90 compile rc=2 NVFORTRAN-S-0034-Syntax error at or near identifier task_reduction (unh_k2.f90: 12)
+26.9 unh_k3.f90 compile rc=2 NVFORTRAN-S-0104-Illegal control structure - unterminated TARGET (unh_k3.f90: 9)
+26.9 unh_k4.f90 compile rc=2 NVFORTRAN-S-0034-Syntax error at or near identifier task_reduction (unh_k4.f90: 13)
+end 2026-10-26T04:06:07-04:00

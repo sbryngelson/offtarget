@@ -1,0 +1,44 @@
+! Fresh-058 control: element assignment A(II) = Z over 10
+! iterations (race-free). Expected: 7.
+MODULE GLOBALS
+   IMPLICIT NONE
+   REAL :: Z
+   REAL, ALLOCATABLE, DIMENSION(:)::A
+
+END MODULE GLOBALS
+
+MODULE RECON
+   USE GLOBALS
+
+   IMPLICIT NONE
+
+CONTAINS
+
+   SUBROUTINE CRASH_REPRO()
+
+      IMPLICIT NONE
+      INTEGER::II
+
+      ALLOCATE (A(10))
+      Z = 7
+
+      !$OMP target teams loop
+      DO II = 1, 10
+         A(II) = Z
+      END DO
+      !$OMP end target teams loop
+
+      PRINT *, A(1)
+
+   END SUBROUTINE CRASH_REPRO
+
+END MODULE RECON
+
+PROGRAM compilerCrashTest
+
+   USE RECON
+   IMPLICIT NONE
+
+   CALL CRASH_REPRO()
+
+END PROGRAM compilerCrashTest

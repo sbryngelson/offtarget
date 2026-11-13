@@ -1,0 +1,20 @@
+name: Mistake on an issue or feature page
+description: An issue page or the feature-support table says something that is not so
+labels: [data]
+body:
+  - type: input
+    id: finding
+    attributes:
+      label: Finding or feature
+      description: The finding's name, or the feature as `offload can-use --list` names it.
+    validations: {required: true}
+  - type: textarea
+    id: what
+    attributes:
+      label: What the page says, and what is so instead
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes:
+      label: How you know
+      description: Your compiler version, command line, GPU and output, or a reference.

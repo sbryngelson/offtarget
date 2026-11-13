@@ -1,0 +1,433 @@
+# Restriction rules for the OpenACC slice (OpenACC 3.4, free-form Fortran;
+# ).
+#
+# Same schema as catalog/omp/rules.yaml (offload/engine/rules.py docstring); the
+# rule id of an entry is ACC34-<id>, the only version is 34, citations read
+# "OpenACC 3.4 §<sec>, p.<n>" (the printed page where the sentence starts in
+# spec/openacc/openacc-3.4.pdf) and the text is the spec sentence verbatim
+# (line-break hyphens kept). Predicates are in offload/engine/acc_rules.py. Every
+# entry is `status: provisional` until the maintainer reviews it. Restrictions the
+# grammar already enforces (required clauses, once-only clauses: data,
+# enter/exit data, update, host_data, set; at most one if/default; seq,
+# independent, auto exclusive) have no rule here.
+# Kinds: clause, nesting, placement, loop, dsa, exec (runtime).
+
+rules:
+
+# --- device_type ------------------------------------------------------------------
+
+  - id: compute-clause-001
+    check: static
+    status: provisional
+    predicate: acc_compute_after_device_type
+    example: "!$acc parallel device_type(*) private(x)"
+    notes: "On a combined construct the loop clauses may follow device_type as well (3.4 §2.11: the restrictions of both constructs apply; read as either list)."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.5.4, p.36"
+        text: "Only the async, wait, num_gangs, num_workers, and vector_length clauses may follow a device_type clause."
+
+  - id: data-clause-001
+    check: static
+    status: provisional
+    predicate: acc_data_after_device_type
+    example: "!$acc data copy(a) device_type(*) if(.true.)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.6.5, p.44"
+        text: "Only the async and wait clauses may follow a device_type clause."
+
+  - id: loop-clause-001
+    check: static
+    status: provisional
+    predicate: acc_loop_after_device_type
+    example: "!$acc loop device_type(*) private(x)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9, p.65"
+        text: "Only the collapse, gang, worker, vector, seq, independent, auto, and tile clauses may follow a device_type clause."
+
+  - id: update-clause-001
+    check: static
+    status: provisional
+    predicate: acc_update_after_device_type
+    example: "!$acc update device_type(*) if_present self(a)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.14.4, p.90"
+        text: "Only the async and wait clauses may follow a device_type clause."
+
+  - id: routine-clause-001
+    check: static
+    status: provisional
+    predicate: acc_routine_after_device_type
+    example: "!$acc routine seq device_type(*) nohost"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.15.1, p.93"
+        text: "Only the gang, worker, vector, seq and bind clauses may follow a device_type clause."
+
+# --- compute constructs -----------------------------------------------------------
+
+  - id: compute-clause-002
+    check: static
+    status: provisional
+    predicate: acc_reduction_with_multi_num_gangs
+    example: "!$acc parallel num_gangs(2, 2) reduction(+: s)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.5.4, p.36"
+        text: "A reduction clause may not appear on a parallel construct with a num_gangs clause that has more than one argument."
+
+  - id: numgangs-clause-001
+    check: static
+    status: provisional
+    predicate: acc_kernels_num_gangs_single
+    example: "!$acc kernels num_gangs(2, 2)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.5.10, p.38"
+        text: "On a kernels construct, the num_gangs clause must have a single argument, the value of which will define the number of parallel gangs that will execute each kernel created for the kernels region."
+
+  - id: numgangs-clause-002
+    check: static
+    status: provisional
+    predicate: acc_parallel_num_gangs_three
+    example: "!$acc parallel num_gangs(2, 2, 2, 2)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.5.10, p.37"
+        text: "On a parallel construct, it may have one, two, or three arguments."
+
+  - id: hostonly-placement-001
+    check: static
+    status: provisional
+    predicate: acc_host_only_directive_in_compute
+    example: "!$acc parallel / !$acc init / !$acc end parallel"
+    notes: "init, shutdown and set each have this restriction (3.4 §2.14.1 p.85, §2.14.2 p.86, §2.14.3 p.88); a directive in a compute construct is code executed on the device."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.14.1, p.85"
+        text: "This directive may only appear in code executed on the host."
+        also: ["OpenACC 3.4 §2.14.2, p.86", "OpenACC 3.4 §2.14.3, p.88"]
+
+# --- loop -------------------------------------------------------------------------
+
+  - id: loop-clause-002
+    check: static
+    status: provisional
+    predicate: acc_loop_seq_with_level
+    example: "!$acc loop seq gang"
+    notes: "Checked per device-type section (default clauses apply to every section)."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9, p.65"
+        text: "A gang, worker, or vector clause may not appear if a seq clause appears."
+
+  - id: loop-nesting-001
+    check: static
+    status: provisional
+    predicate: acc_loop_level_nesting
+    example: "!$acc loop vector / !$acc loop worker"
+    notes: "Levels: vector 1, worker 2, gang(dim:d) 2 + d; the inner loop's highest level against the outer loop's lowest."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9, p.65"
+        text: "A loop construct with a gang, worker, or vector clause must not lexically enclose another loop construct with a gang, worker, or vector clause specifying an equal or higher level of parallelism unless the loop constructs have different parent compute scopes."
+
+  - id: loop-clause-003
+    check: static
+    status: provisional
+    predicate: acc_loop_one_gang
+    example: "!$acc loop gang gang(dim: 1)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9, p.65"
+        text: "At most one gang clause may appear on a loop construct."
+
+  - id: gang-clause-001
+    check: static
+    status: provisional
+    predicate: acc_gang_num_outside_kernels
+    example: "!$acc parallel / !$acc loop gang(num: 4)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.2, p.67"
+        text: "The number of gangs in dimension d is controlled by the parallel construct; the num argument is not allowed."
+
+  - id: gang-clause-002
+    check: static
+    status: provisional
+    predicate: acc_gang_dim_in_kernels
+    example: "!$acc kernels / !$acc loop gang(dim: 1)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.2, p.67"
+        text: "The dim argument is not allowed."
+
+  - id: gang-clause-003
+    check: static
+    status: provisional
+    predicate: acc_gang_dim_range
+    example: "!$acc loop gang(dim: 4)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.2, p.67"
+        text: "The dim argument must be an integral-constant-expression that evaluates to the value 1, 2, or 3."
+
+  - id: collapse-clause-001
+    check: static
+    status: provisional
+    predicate: acc_collapse_positive
+    example: "!$acc loop collapse(0)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.1, p.65"
+        text: "The argument to the collapse clause must be a positive, non-zero integral-constant-expression."
+
+  - id: collapse-loop-001
+    check: static
+    status: provisional
+    predicate: acc_collapse_within_depth
+    example: "!$acc loop collapse(2) / do i = 1, n / end do"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.1, p.66"
+        text: "Each associated loop, except the innermost, must contain exactly one loop or loop nest."
+
+  - id: collapse-loop-002
+    check: static
+    status: provisional
+    predicate: acc_collapse_tightly_nested
+    example: "!$acc loop collapse(2) / do j / x = 1 / do i"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.1, p.66"
+        text: "If the force modifier does not appear, then the associated loops must be tightly nested."
+
+  - id: tile-loop-001
+    check: static
+    status: provisional
+    predicate: acc_tile_within_depth
+    example: "!$acc loop tile(4, 4) / do i = 1, n / end do"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.8, p.69"
+        text: "If there are n tile sizes in the list, the loop construct must be immediately followed by n tightly nested loops."
+
+  - id: tile-clause-001
+    check: static
+    status: provisional
+    predicate: acc_tile_size_positive
+    example: "!$acc loop tile(0)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.8, p.69"
+        text: "The argument to the tile clause is a list of one or more tile sizes, where each tile size is a positive, non-zero integral-constant-expression or an asterisk."
+
+# --- data -------------------------------------------------------------------------
+
+  - id: hostdata-clause-001
+    check: static
+    status: provisional
+    predicate: acc_use_device_variable_name
+    example: "!$acc host_data use_device(a(1))"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.8, p.63"
+        text: "A var in a use_device clause must be the name of a variable or array."
+
+  - id: declare-clause-001
+    lang: f90  # A Fortran sentence (the OpenACC C slice)
+    check: static
+    status: provisional
+    predicate: acc_declare_module_clauses
+    example: "module m / integer :: x / !$acc declare copy(x)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.13, p.82"
+        text: "In a Fortran module declaration section, only create, copyin, device_resident, and link clauses are allowed."
+
+  - id: declare-clause-002
+    check: static
+    status: provisional
+    predicate: acc_declare_var_once
+    example: "!$acc declare create(x) / !$acc declare copyin(x)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.13, p.82"
+        text: "A var may appear at most once in all the clauses of declare directives for a function, subroutine, program, or module."
+
+  - id: declare-placement-001
+    lang: f90  # A Fortran sentence (the OpenACC C slice)
+    check: static
+    status: provisional
+    predicate: acc_declare_link_placement
+    example: "program p / integer :: x / !$acc declare link(x)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.13, p.82"
+        text: "In Fortran, the link clause must appear in a module declaration section, or the arguments must be common block names enclosed in slashes."
+
+  - id: declare-placement-002
+    check: static
+    status: provisional
+    predicate: acc_declare_same_scope
+    example: "program p / integer :: x / contains / subroutine s / !$acc declare create(x)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.13, p.82"
+        text: "A declare directive must be in the same scope as the declaration of any var that appears in the clauses of the directive or any scope within a C or C++ function or Fortran function, subroutine, or program."
+
+  - id: attach-clause-001
+    check: static
+    status: provisional
+    predicate: acc_attach_pointer_or_allocatable
+    example: "integer :: x(4) / !$acc enter data attach(x)"
+    notes: "Checked for attach and detach (3.4 §2.7.14, p.59, the same sentence)."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.7.13, p.59"
+        text: "Each var argument to an attach clause must be a C or C++ pointer or a Fortran variable or array with the pointer or allocatable attribute."
+        also: ["OpenACC 3.4 §2.7.14, p.59"]
+
+  - id: deviceptr-clause-001
+    lang: f90  # A Fortran sentence (the OpenACC C slice)
+    check: static
+    status: provisional
+    predicate: acc_deviceptr_attribute
+    example: "integer, allocatable :: x(:) / !$acc parallel deviceptr(x)"
+    notes: "Only the attribute part is checked (dummy-argument-ness is not)."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.7.5, p.53"
+        text: "In Fortran, the vars in var-list must be dummy arguments (arrays or scalars), and may not have the Fortran pointer, allocatable, or value attributes."
+
+# --- routine, atomic, cache -------------------------------------------------------
+
+  - id: routine-clause-002
+    check: static
+    status: provisional
+    predicate: acc_routine_one_level
+    example: "!$acc routine gang seq"
+    notes: "Checked on routine directives without device_type clauses."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.15.1, p.93"
+        text: "Exactly one of the gang, worker, vector, or seq clauses must appear."
+
+  - id: routine-placement-001
+    lang: f90  # A Fortran sentence (the OpenACC C slice)
+    check: static
+    status: provisional
+    predicate: acc_routine_placement
+    example: "program p / !$acc routine seq"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.15.1, p.91"
+        text: "In Fortran, the routine directive without a name may appear within the specification part of a subroutine or function definition, or within an interface body for a subroutine or function in an interface block, and applies to the containing subroutine or function."
+
+  - id: atomic-clause-001
+    check: static
+    status: provisional
+    predicate: acc_atomic_one_clause
+    example: "!$acc atomic read write"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.12, p.77"
+        text: "Where atomic-clause is one of read, write, update, or capture."
+
+  - id: cache-placement-001
+    check: static
+    status: provisional
+    predicate: acc_cache_in_loop
+    example: "!$acc parallel / !$acc cache(a(1:4)) / ..."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.10, p.75"
+        text: "When the cache directive appears at the top of (inside of) a loop, it suggests array elements or subarrays would benefit by being fetched into the highest level of the cache for the body of the loop."
+
+  - id: cache-clause-001
+    check: static
+    status: provisional
+    predicate: acc_cache_element_or_subarray
+    example: "!$acc cache(a)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.10, p.75"
+        text: "A var in a cache directive must be a single array element or a contiguous subarray."
+
+# --- data-sharing -----------------------------------------------------------------
+
+  - id: default-dsa-001
+    check: static
+    status: provisional
+    predicate: acc_default_none_listed
+    example: "!$acc parallel loop default(none) copyout(b) / b(i) = a(i)"
+    notes: "The legality oracle of acc.clause.default.none. Referenced names are the variables declared in the source; DO variables are predetermined private (3.4 §2.6.1, p.40)."
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.6.2, p.42"
+        text: "If there is a default(none) clause visible at a compute construct, for any variable access exposed to the compute construct, the compiler requires the variable to appear either in an explicit data clause visible at the compute construct or in a firstprivate, private, or reduction clause on the compute construct."
+
+  - id: reduction-dsa-001
+    check: static
+    status: provisional
+    predicate: acc_loop_reduction_scalar_listed
+    example: "!$acc parallel copyin(a) / !$acc loop reduction(+: s)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.6.2, p.42"
+        text: "If a scalar variable appears in a reduction clause on a loop construct that has a parent parallel or serial construct, and if the reduction’s access to the original variable is exposed to the parent compute construct, the variable must appear either in an explicit data clause visible at the compute construct or in a firstprivate, private, or reduction clause on the compute construct."
+
+  - id: reduction-clause-001
+    check: static
+    status: provisional
+    predicate: acc_reduction_same_operator
+    example: "!$acc parallel reduction(+: s) / !$acc loop reduction(*: s)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.9.11, p.71"
+        text: "Reduction clauses on nested constructs for the same reduction var must have the same reduc- tion operator."
+
+  - id: reduction-clause-002
+    check: static
+    status: provisional
+    predicate: acc_reduction_not_member
+    example: "!$acc parallel loop reduction(+: s%x)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.5.15, p.39"
+        text: "The reduction var may not be a member of a composite variable."
+
+# --- runtime ------------------------------------------------------------------------
+
+  - id: update-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "presence on the device is a run-time property (data lifetimes, reference counters)"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.14.4, p.90"
+        text: "If no if_present clause appears on the directive, each var in var-list must be present in the device-accessible memory of the current device."
+
+  - id: compute-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "branches into or out of a construct need control-flow analysis (GOTO, computed targets, alternate returns) that the directive scanner does not do"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.5.4, p.36"
+        text: "A program may not branch into or out of a compute construct."
+
+  - id: cache-exec-001
+    check: runtime
+    status: provisional
+    predicate: null
+    why: "the elements a loop iteration references depend on run-time subscript values"
+    spec:
+      34:
+        citation: "OpenACC 3.4 §2.10, p.75"
+        text: "If an array element or a subarray is listed in a cache directive, all references to that array during execution of that loop iteration must not refer to elements of the array outside the index range specified in the cache directive."

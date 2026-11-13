@@ -1,0 +1,130 @@
+{
+ "finding": "fuzz/s1-6760-cce20.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-22",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "declare target with an enter clause is valid in OpenMP 5.2. The variable g is a module variable with an initializer, declared in the module specification part where the directive appears, as required. The target region accesses g on the device and target update from(g) copies it back. Rejecting the enter clause is a compiler defect (it is a 5.2 feature)."
+  },
+  {
+   "run": "run-20261113/batch-54",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 5.2 declare target accepts the enter clause for variables. g is a module variable with initialization, so it has static storage and a device copy exists; the target region and target update from are conforming and the result is determined. Refusing the directive is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-22",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "declare target with an enter clause in a module specification part is valid in 5.2. g has static storage (module variable with initializer), a mappable type, and is not in a link clause. The target region can reference it, and target update from(g) is permitted for a variable with a device copy. The initializer is a constant. The Cray refusal of enter is a missing 5.2 feature.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-79",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "declare target with the enter clause (OpenMP 5.2 syntax) on a module variable in the module specification part is conforming, and target update from(g) of a variable with a device copy is valid. The compiler rejecting the enter clause is a defect or a lack of 5.2 support; the program must be accepted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-40",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "de6402861056e0c415a07309f0a28b74c274db4647d3def1fbb91bca0968cb64",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

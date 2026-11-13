@@ -1,0 +1,5 @@
+# Verbatim program output (stdout, then stderr) of the OMP_TARGET_OFFLOAD=mandatory run, captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran (gcc_g90) on offload.engine.gen omp52-clause-to-present (the gcc smoke subset, tools/jobs/run_gcc_lane.sh); flags: -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2
+# exit status: 1
+==== verbatim output below ====
+libgomp: present clause: not present on the device (addr: 0x736a10, size: 256 (0x100), dev: 0)

@@ -1,0 +1,345 @@
+{
+ "generated_by": "tools/campaigns/presence_x1.py",
+ "programs": {
+  "omp50-c-clause-map-alloc": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-c-clause-map-delete": {
+   "afar": "wrong_answer",
+   "cce19": "wrong_answer",
+   "cce20": "wrong_answer",
+   "cce21": "wrong_answer"
+  },
+  "omp50-c-clause-map-release": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-c-directive-target_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-c-directive-target_enter_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-c-directive-target_exit_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-clause-map-alloc": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-clause-map-delete": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-clause-map-release": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-directive-target_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-directive-target_enter_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp50-directive-target_exit_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-c-clause-map-alloc": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-c-clause-map-delete": {
+   "afar": "wrong_answer",
+   "cce19": "wrong_answer",
+   "cce20": "wrong_answer",
+   "cce21": "wrong_answer"
+  },
+  "omp52-c-clause-map-iterator": {
+   "afar": "wrong_answer",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp52-c-clause-map-release": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-c-directive-target_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-c-directive-target_enter_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-c-directive-target_exit_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-clause-map-alloc": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-clause-map-delete": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-clause-map-iterator": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp52-clause-map-release": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-directive-target_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-directive-target_enter_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp52-directive-target_exit_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-c-clause-map-alloc": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-c-clause-map-delete": {
+   "afar": "wrong_answer",
+   "cce19": "wrong_answer",
+   "cce20": "wrong_answer",
+   "cce21": "wrong_answer"
+  },
+  "omp60-c-clause-map-iterator": {
+   "afar": "wrong_answer",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-c-clause-map-release": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-c-clause-map-storage": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-c-clause-nogroup": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-c-clause-nogroup-directive_name": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-c-clause-nogroup-do_not_synchronize": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-c-clause-transparent": {
+   "afar": "wrong_answer",
+   "cce19": "accepted_ignored",
+   "cce20": "accepted_ignored",
+   "cce21": "accepted_ignored"
+  },
+  "omp60-c-clause-transparent-directive_name": {
+   "afar": "rejected",
+   "cce19": "accepted_ignored",
+   "cce20": "accepted_ignored",
+   "cce21": "accepted_ignored"
+  },
+  "omp60-c-clause-transparent-impex_type": {
+   "afar": "rejected",
+   "cce19": "accepted_ignored",
+   "cce20": "accepted_ignored",
+   "cce21": "accepted_ignored"
+  },
+  "omp60-c-directive-target_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-c-directive-target_enter_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-c-directive-target_exit_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-clause-map-alloc": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-clause-map-delete": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-clause-map-iterator": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-clause-map-release": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-clause-map-storage": {
+   "afar": "wrong_answer",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "correct_on_device"
+  },
+  "omp60-clause-nogroup": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-clause-nogroup-directive_name": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-clause-nogroup-do_not_synchronize": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-clause-transparent": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-clause-transparent-directive_name": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-clause-transparent-impex_type": {
+   "afar": "rejected",
+   "cce19": "rejected",
+   "cce20": "rejected",
+   "cce21": "rejected"
+  },
+  "omp60-directive-target_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-directive-target_enter_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  },
+  "omp60-directive-target_exit_data": {
+   "afar": "wrong_answer",
+   "cce19": "correct_on_device",
+   "cce20": "correct_on_device",
+   "cce21": "correct_on_device"
+  }
+ },
+ "run": {
+  "host": "tuolumne1037",
+  "repeats": 3,
+  "source": "results/task26/presence_x1.jsonl",
+  "started": "2026-10-24T18:02:31-0700",
+  "thp": [
+   "always"
+  ],
+  "toolchains": [
+   "afar",
+   "cce19",
+   "cce20",
+   "cce21"
+  ],
+  "xnack": 1
+ }
+}

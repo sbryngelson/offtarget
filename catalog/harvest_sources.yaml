@@ -1,0 +1,14 @@
+# The pinned sources of the harvest (tools/campaigns/harvest.py). Clones are
+# untrusted data outside the repository (harvest-src),
+# read only: git log/show/ls-tree; their scripts are never run.
+llvm:
+  url: https://github.com/llvm/llvm-project
+  commit: b216f903b60184784840983218c215568aa551c9   # main, 2026-10-26
+  paths: [offload/test]
+  history: [offload/test, openmp/libomptarget/test]
+  license: Apache-2.0 WITH LLVM-exception
+aomp:
+  url: https://github.com/ROCm/aomp
+  commit: 53c90994aeec8492bbfc0e3489f151dcfdac873e   # aomp-dev, 2026-10-24
+  paths: [test/smoke, test/smoke-fails]
+  license: Apache-2.0

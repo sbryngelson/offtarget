@@ -1,0 +1,113 @@
+{
+ "finding": "oop/nvhpc-udr-derived-type-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The user-defined reduction vsum on a derived type is declared in the program's specification part, and the combiner calls vadd, which has an explicit interface (module procedure) and is declared target. The reduction clause uses a declared identifier of matching type. Nothing in the text limits declare reduction in target regions. Sum values 2080 and 4160 are correct. A's rejection (unimplemented) is not permitted."
+  },
+  {
+   "run": "run-20261113/batch-83",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The user-defined reduction is declared in the program's specification part, its combiner calls vadd, a module procedure with an explicit interface that is declare target and accessible by use association. A derived type v2 is valid for a user-defined reduction. The sum over 1..64 gives 2080 and 4160. The program is conforming, so refusing the declare reduction is a compiler limitation."
+  },
+  {
+   "run": "run-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare reduction for v2 appears in the main program's specification part before its use in the reduction clause. The combiner and initializer call or build v2 values; vadd is a module function with an explicit interface reached by use association and is declare target. Reduction variable acc is a derived-type scalar, and the user-defined reduction identifier carries no restriction on the update form. The sum over 1..64 gives x=2080, y=4160. A conforming compiler must accept the directive; the refusal is a missing feature.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-105",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare reduction names the derived type v2 with a combiner that is an assignment statement and an initializer, in the program's specification part, so vsum is visible to the reduction clause. vadd is declare target, so the combiner is callable in the target region. A user-defined identifier may be used in a reduction clause for variables of the declared type. The sums 2080 and 4160 are deterministic. Refusing declare reduction rejects a conforming program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "368d90ac25e77b3ed80fda57ef7fd8df8dc7c9162b6b34ebb1576f91327e1d13",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,10 @@
+# Sealed benchmark sets that have been scored (spent). A set is sealed when
+# data/bench/<set>/SEAL exists; until its name is listed here its files never
+# leave Tuolumne: tools/lanes/wingtip_offline.sh and tools/lanes/wingtip_sync.sh copy
+# the tree to wingtip without data/bench/<set>/ (tools/lanes/wingtip_offline.py
+# code-files; tests/cluster/test_wingtip_offline.py). Add a set only after its
+# scores are final.
+spent:
+  - fresh
+  - fresh2
+  - harvest-holdout   # scored once 2026-10-28

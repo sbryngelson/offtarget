@@ -1,0 +1,223 @@
+{
+ "finding": "oop/nvhpc-polymorphic-dispatch-translate-failure.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-40",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Type-bound procedures sq_area, rect_area and the helper area_of carry declare target, satisfying the rule that type-bound procedures accessed in a target region be declare target. Mapped variables q and rr are non-polymorphic, non-allocatable. Dispatch through a class(shape) dummy is ordinary Fortran. Expected r1=29 is required; the nvfortran translation failure is a compiler limitation."
+  },
+  {
+   "run": "run-20261113/batch-59",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "All type-bound procedures used in target regions (sq_area, rect_area, area_of) carry declare target, and the mapped variables are non-polymorphic. The dynamic dispatch through the deferred binding in area_of is not addressed by any OpenMP 5.2 rule, so the program appears conforming, but the spec does not say a device must support dispatch via type descriptors. The failure is a compile-time device-symbol error. Required acceptance is plausible but not explicit."
+  },
+  {
+   "run": "run-20261113b/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "All type-bound procedures that can be accessed in the target region (sq_area, rect_area, and area_of) appear in declare target directives, and the dynamic dispatch goes through the non-allocatable, non-polymorphic-variable actual arguments q and rr (type(sq) and type(rect)) mapped tofrom. The polymorphic-mapping restrictions concern polymorphic allocatable variables, which are not present. The device symbol failure is a compiler limitation; acceptance is required."
+  },
+  {
+   "run": "run-v2-20261113/batch-49",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "area_of dispatches s%area() through the deferred binding of the abstract type. The spec requires all type-bound procedures accessed in a target region to appear in a declare target directive. The deferred binding area is declared only through an abstract interface with no declare target, while the overriding procedures do have one. Whether the deferred binding counts as appearing in a declare target directive is not settled, and device-side dynamic dispatch is not specified in detail. A compiler failing here is not clearly violating a requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-55",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-71",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is ordinary Fortran 2003 OOP. Dynamic dispatch through a deferred type-bound procedure inside a target region needs device-side type information. The specification gives no rule requiring that, and its restrictions mention only polymorphic allocatable list items. q and rr are not polymorphic, and the callees are declare target. The compile-time failure may still be a quality-of-implementation limit rather than a violation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-44",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "the specification gives no rule about device-side type info and its restrictions mention only polymorphic allocatable list items"
+     ],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The specification requires type-bound procedures accessed in a target region to appear in a declare target directive. The overriding procedures sq_area, rect_area and area_of carry one, but the deferred binding is declared only through an abstract interface, so whether the requirement is met is not settled. Nothing specifies device-side dynamic dispatch, so refusal is not shown to violate a requirement.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The only type-bound rule requires accessed type-bound procedures to appear in a declare target directive. The overriding procedures sq_area, rect_area and area_of carry declare target, and the abstract interface is not a procedure. No restriction bans non-polymorphic-allocatable class dummies. The program appears conforming, but the spec does not describe device-side dynamic dispatch, so a required result is not settled. Reading A's legality doubt is unfounded.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-07",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The specification requires type-bound procedures accessed in a target region to appear in a declare target directive. The overriding procedures sq_area, rect_area and area_of carry one, but the deferred binding is declared only through an abstract interface, so whether the requirement is met is not settled. Nothing specifies device-side dynamic dispatch, so refusal is not shown to violate a requirement. Reading B is right that the quoted restriction does not mention polymorphism, but Reading A's point about the deferred binding keeps legality open.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-39",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

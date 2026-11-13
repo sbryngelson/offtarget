@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/b3-188-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "kp1 is a never-called internal subroutine containing target teams with a composite distribute parallel do carrying schedule(dynamic) and dist_schedule(static, 16); both clauses are permitted on this composite construct, and the loop is a canonical do loop with an empty body. The target construct contains only the teams construct, satisfying the teams-in-target rule. No mapped variables, no data races. Base-language declarations (allocatable, optional, explicit-shape dummies) are valid. A compiler must accept; the optimizer crash is a defect."
+  },
+  {
+   "run": "run-20261113/batch-46",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "kp1 is never called. The target teams construct strictly contains a distribute parallel do with schedule(dynamic) and dist_schedule(static,16); both clauses are allowed on the combined construct and are independent. The empty loop is valid. A conforming compiler must accept it."
+  },
+  {
+   "run": "run-v2-20261113/batch-118",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "kp1 is never called; the only construct is target teams containing distribute parallel do with schedule(dynamic) and dist_schedule(static, 16). Both clauses are permitted on the composite (schedule applies to the worksharing-loop leaf, dist_schedule to distribute). The chunk size is a constant, so the same for all teams. The loop body is empty, which is a valid loop. A conforming compiler must accept it; the internal 'Unexpected schedule' error is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-35",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The loop is a rectangular distribute parallel do with schedule(dynamic) and dist_schedule(static, 16). dist_schedule restricts only non-rectangular loops and requires the same chunk_size in all teams, which holds. An empty loop body is allowed. kp1 is never called. A conforming compiler must accept it, so the crash is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-17",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f71ce8aceb5ccfbc9b59698388cf5c1d7780061b4dc6f8d919ddb63e14b1a364",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/2334-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-25",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Atomic statement has the form x = x operator expr; expr (a merge call on constants) does not reference r1b. An orphaned do inside target binds to the implicit parallel region; legal. r1b is firstprivate by default on target. A conforming compiler must accept it."
+  },
+  {
+   "run": "run-20261113/batch-73",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Orphaned omp do inside target binds to the implicit one-thread team; legal. The atomic statement r1b = r1b * expr has form x = x op expr with * allowed and expr (merge of constants) not referencing x. r1b is implicitly firstprivate on target so host value stays -1 and the printed checksum is deterministic. A conforming compiler must compile it; the crash is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-100",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The atomic statement r1b = r1b * merge(...) has the form x = x operator expr with * allowed, x scalar of intrinsic type, and expr a scalar expression that does not reference x. The do construct inside target binds to the implicit one-thread team, which is legal. r1b is implicitly firstprivate, so the atomic update is on a private copy and the program is race free. A conforming compiler must accept it, so the front end crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-21",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The do construct inside target without enclosing parallel binds to the implicit parallel region of a one-thread team, which is allowed. The atomic update r1b = r1b * merge(...) has x op expr with expr not referencing x; expr need not be atomic. The program is conforming, so a compiler must accept it; the crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "e93f8cde09b0cd351f62ee0a02d3c0d1a1e72401b85649c72b6097406b4fea63",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

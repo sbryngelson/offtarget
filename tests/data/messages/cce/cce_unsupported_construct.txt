@@ -1,0 +1,12 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: ftn -fopenmp -O2 after module load cce/19.0.0 craype-accel-amd-gfx942 rocm (CCE 19.0.0, rocm 6.4.3) on a hand-written probe with '!$omp assumes no_openmp_routines'
+# exit status: 1
+==== verbatim output below ====
+
+  !$omp assumes no_openmp_routines
+ftn-7032 ftn: ERROR P, File = assumes.f90, Line = 4 
+  Unsupported OpenMP construct ASSUMES
+
+Cray Fortran : 11 source lines
+Cray Fortran : 1 errors, 0 warnings, 0 other messages, 0 ansi
+Cray Fortran : "explain ftn-message number" gives more information about each message.

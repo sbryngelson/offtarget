@@ -1,0 +1,15 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: amdflang -fopenmp --offload-arch=gfx942 -L/usr/lib/gcc/x86_64-redhat-linux/8 -O2 (AFAR 24.0.0git, therock-afar-24.3.0) on offload.engine.gen omp52-illegal-target-nesting-001 (target update inside target)
+# exit status: 1
+==== verbatim output below ====
+/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-illegal-target-nesting-001.f90:30:9: portability: If TARGET UPDATE directive is nested inside TARGET region, the behaviour is unspecified [-Wopenmp-usage]
+    !$omp target update from(b)
+          ^^^^^^^^^^^^^
+/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-illegal-target-nesting-001.f90:30:9: portability: If TARGET UPDATE directive is nested inside TARGET region, the behaviour is unspecified [-Wopenmp-usage]
+    !$omp target update from(b)
+          ^^^^^^^^^^^^^
+loc("/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-illegal-target-nesting-001.f90":30:9): error: 'omp.target_update' op not allowed in a target device
+loc("/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-illegal-target-nesting-001.f90":30:9): error: LLVM Translation failed for operation: omp.target_update
+loc("/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-illegal-target-nesting-001.f90":25:9): error: LLVM Translation failed for operation: omp.target
+Error of kind: 0 when emitting offload entries and metadata during OMPIRBuilder finalization 
+error: failed to create the LLVM module

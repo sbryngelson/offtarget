@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-end-distribute-simd-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "distribute simd is a composite construct allowed by the directive-name rules (distribute followed by simd), nested in teams within target. The Fortran end directive is standard. Iterations write distinct elements, so no race. A syntax error is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-71",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "distribute simd is a composite construct strictly nested in teams, which is nested in target; the teams region may contain distribute regions from composite constructs. Loop is a canonical counted loop writing distinct elements. A conforming compiler must accept it."
+  },
+  {
+   "run": "run-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "distribute simd is a composite construct allowed by the combined-construct rules (directive-name-A distribute, directive-name-B simd), and it is strictly nested in teams inside target. The Fortran end directive is valid and each iteration writes a distinct element, so there is no race. A conforming compiler must accept it; the syntax error is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-06",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-63",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "distribute simd is a valid composite construct (directive-name-A distribute, directive-name-B simd). It sits directly in a teams region inside target, which is permitted, and the loop has canonical form. Each a(i) is written once, so there is no race. The sum of 1..64 is 2080. A compiler must accept the directive; a syntax error is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-24",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4d8fa9010da1534fe86a3b03d8ac30f53beb324109590609cf60ae276ebd0c83",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

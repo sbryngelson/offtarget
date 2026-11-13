@@ -1,0 +1,5869 @@
+{
+ "dispositions": {
+  "unaudited_no_passing_original": "unaudited: no toolchain passes the original, so nothing can be credited to a toolchain",
+  "valid": "the mutant is killed on at least one toolchain (copy mode)",
+  "weak": "the mutant survived on every toolchain where the result was conclusive"
+ },
+ "generated_by": "python3 -I tools/campaigns/widen.py audit-summary",
+ "versions": {
+  "34": {
+   "base.device.alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-alloc-component"
+   },
+   "base.device.allocate": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "acc34-w-allocate-in-device"
+   },
+   "base.device.allocate_derived": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "acc34-w-allocate-derived-default-init"
+   },
+   "base.device.array_syntax": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-array-syntax"
+   },
+   "base.device.associate": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-associate"
+   },
+   "base.device.assumed_shape_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-assumed-shape-dummy"
+   },
+   "base.device.assumed_shape_target": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-assumed-shape-in-target"
+   },
+   "base.device.assumed_size_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-assumed-size-dummy"
+   },
+   "base.device.block": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-block"
+   },
+   "base.device.character": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-character-local"
+   },
+   "base.device.character_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-character-mapped"
+   },
+   "base.device.common_block": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "inconclusive"
+     },
+     "drop_update": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-common-block"
+   },
+   "base.device.complex": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-complex-arith"
+   },
+   "base.device.declared_alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-declared-alloc-component"
+   },
+   "base.device.derived_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-derived-type-array"
+   },
+   "base.device.derived_assign": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-derived-assignment"
+   },
+   "base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-derived-scalar"
+   },
+   "base.device.do_concurrent": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-do-concurrent-in-region"
+   },
+   "base.device.elemental": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-elemental-routine"
+   },
+   "base.device.error_stop": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "acc34-w-error-stop-unreached"
+   },
+   "base.device.exit_cycle": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-exit-cycle"
+   },
+   "base.device.generic_interface": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-generic-interface"
+   },
+   "base.device.host_data_generic": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-host-data-generic"
+   },
+   "base.device.implicit_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-implicit-routine"
+   },
+   "base.device.int8_index": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-int8-loop"
+   },
+   "base.device.internal_procedure": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-internal-procedure"
+   },
+   "base.device.intrinsic_bits": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-bits"
+   },
+   "base.device.intrinsic_conversion": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-conversions"
+   },
+   "base.device.intrinsic_count": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-count-any-all"
+   },
+   "base.device.intrinsic_dot_product": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-dot-product"
+   },
+   "base.device.intrinsic_math": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-transcendental"
+   },
+   "base.device.intrinsic_matmul": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-matmul"
+   },
+   "base.device.intrinsic_maxloc": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-maxloc-minloc"
+   },
+   "base.device.intrinsic_maxval": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-maxval-minval"
+   },
+   "base.device.intrinsic_modulo_int8": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-modulo-int8"
+   },
+   "base.device.intrinsic_reshape": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-transpose-reshape"
+   },
+   "base.device.intrinsic_sum": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-intrinsic-sum"
+   },
+   "base.device.loop_in_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-loop-in-routine"
+   },
+   "base.device.module_variable": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "inconclusive"
+     },
+     "drop_update": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-module-variable-routine"
+   },
+   "base.device.nested_type": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-nested-derived-type"
+   },
+   "base.device.optional_absent": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-optional-absent"
+   },
+   "base.device.optional_present": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-optional-present"
+   },
+   "base.device.optional_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-optional-device-routine"
+   },
+   "base.device.pointer_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-pointer-component"
+   },
+   "base.device.print": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-print-in-device"
+   },
+   "base.device.private_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-private-array"
+   },
+   "base.device.private_array_dynamic": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-private-array-dynamic-index"
+   },
+   "base.device.private_array_dynamic_write": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-private-array-dynamic-write"
+   },
+   "base.device.pure": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-pure-routine"
+   },
+   "base.device.recursion": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-recursive-routine"
+   },
+   "base.device.routine_call": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-routine-call"
+   },
+   "base.device.select_case": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-select-case"
+   },
+   "base.device.sequence_association": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-sequence-association"
+   },
+   "base.device.stop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-stop-unreached"
+   },
+   "base.device.type_bound_nopass": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-type-bound-nopass"
+   },
+   "base.device.type_bound_pass": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "acc34-w-type-bound-pass"
+   },
+   "base.device.where": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-where"
+   },
+   "form.acc.tile_inner_loops": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc269|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc269|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc269|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-tile-inner-loops"
+   },
+   "pair.acc.clause.collapse+acc.clause.reduction": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-collapse-reduction"
+   },
+   "pair.acc.clause.collapse+base.device.alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-collapse-alloc-component"
+   },
+   "pair.acc.clause.collapse+base.device.derived_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-collapse-derived-array"
+   },
+   "pair.acc.clause.collapse+base.device.private_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-collapse-private-array"
+   },
+   "pair.acc.clause.collapse+base.device.routine_call": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-collapse-routine-call"
+   },
+   "pair.acc.clause.collapse+base.device.select_case": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-collapse-select-case"
+   },
+   "pair.acc.clause.collapse+base.device.stop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-collapse-stop"
+   },
+   "pair.acc.clause.firstprivate+base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-firstprivate-derived-scalar"
+   },
+   "pair.acc.clause.private+base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-private-derived-scalar"
+   },
+   "pair.acc.clause.reduction+base.device.complex": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-reduction-complex"
+   },
+   "pair.acc.clause.reduction+base.device.derived_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-reduction-derived-array"
+   },
+   "pair.acc.clause.reduction+base.device.intrinsic_math": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-reduction-math"
+   },
+   "pair.acc.clause.reduction+base.device.private_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-reduction-private-array"
+   },
+   "pair.acc.clause.reduction+base.device.routine_call": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-reduction-routine-call"
+   },
+   "pair.acc.directive.atomic+acc.clause.collapse": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-atomic-collapse"
+   },
+   "pair.acc.directive.atomic+acc.clause.reduction": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-atomic-reduction"
+   },
+   "pair.acc.directive.atomic+base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-atomic-derived-component"
+   },
+   "pair.acc.directive.data+base.device.alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-data-alloc-component"
+   },
+   "pair.acc.directive.data+base.device.optional_absent": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-data-optional-absent"
+   },
+   "pair.acc.directive.enter_data+base.device.assumed_shape_target": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-enter-assumed-shape"
+   },
+   "pair.acc.directive.kernels+base.device.derived_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-kernels-derived-array"
+   },
+   "pair.acc.directive.update+base.device.alloc_component": {
+    "device_only": "copy semantics: without the update the device keeps the old values (separate memory only)",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "drop_update": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-update-alloc-component"
+   },
+   "pair.acc.directive.update+base.device.derived_array": {
+    "device_only": "copy semantics: without the update the device keeps the old values (separate memory only)",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "drop_update": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-update-derived-array"
+   },
+   "pair.base.device.elemental+base.device.array_syntax": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-elemental-array-syntax"
+   },
+   "pair.base.device.loop_in_routine+base.device.sequence_association": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-loop-in-routine-sequence-association"
+   },
+   "pair.base.device.private_array+base.device.assumed_shape_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-private-array-routine-arg"
+   },
+   "pair.base.device.routine_call+base.device.character": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "acc34-w-routine-character"
+   },
+   "pair.base.device.routine_call+base.device.stop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "acc34-w-routine-stop"
+   }
+  },
+  "52": {
+   "base.device.alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-alloc-component"
+   },
+   "base.device.alloc_component_whole": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-alloc-component-whole"
+   },
+   "base.device.allocate": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-allocate-in-device"
+   },
+   "base.device.allocate_derived": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-allocate-derived-default-init"
+   },
+   "base.device.array_syntax": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-array-syntax"
+   },
+   "base.device.associate": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-associate"
+   },
+   "base.device.assumed_shape_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-assumed-shape-dummy"
+   },
+   "base.device.assumed_shape_target": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-assumed-shape-in-target"
+   },
+   "base.device.assumed_size_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-assumed-size-dummy"
+   },
+   "base.device.block": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-block"
+   },
+   "base.device.character": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-character-local"
+   },
+   "base.device.character_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-character-mapped"
+   },
+   "base.device.common_block": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "drop_update": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-common-block"
+   },
+   "base.device.complex": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-complex-arith"
+   },
+   "base.device.declared_alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-declared-alloc-component"
+   },
+   "base.device.derived_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-derived-type-array"
+   },
+   "base.device.derived_assign": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-derived-assignment"
+   },
+   "base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-derived-scalar"
+   },
+   "base.device.do_concurrent": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-do-concurrent-in-region"
+   },
+   "base.device.elemental": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-elemental-routine"
+   },
+   "base.device.error_stop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-error-stop-unreached"
+   },
+   "base.device.exit_cycle": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-exit-cycle"
+   },
+   "base.device.generic_interface": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-generic-interface"
+   },
+   "base.device.implicit_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-implicit-routine"
+   },
+   "base.device.int8_index": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-int8-loop"
+   },
+   "base.device.internal_procedure": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-internal-procedure"
+   },
+   "base.device.intrinsic_bits": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-bits"
+   },
+   "base.device.intrinsic_conversion": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-conversions"
+   },
+   "base.device.intrinsic_count": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-count-any-all"
+   },
+   "base.device.intrinsic_dot_product": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-dot-product"
+   },
+   "base.device.intrinsic_math": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-transcendental"
+   },
+   "base.device.intrinsic_matmul": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-matmul"
+   },
+   "base.device.intrinsic_maxloc": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-maxloc-minloc"
+   },
+   "base.device.intrinsic_maxval": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-maxval-minval"
+   },
+   "base.device.intrinsic_modulo_int8": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-modulo-int8"
+   },
+   "base.device.intrinsic_reshape": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-transpose-reshape"
+   },
+   "base.device.intrinsic_sum": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-intrinsic-sum"
+   },
+   "base.device.module_variable": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "drop_update": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-module-variable-routine"
+   },
+   "base.device.nested_type": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-nested-derived-type"
+   },
+   "base.device.optional_absent": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-optional-absent"
+   },
+   "base.device.optional_present": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-optional-present"
+   },
+   "base.device.optional_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-optional-device-routine"
+   },
+   "base.device.parallel_in_seq_loop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-parallel-in-seq-loop"
+   },
+   "base.device.pointer_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-pointer-component"
+   },
+   "base.device.print": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-print-in-device"
+   },
+   "base.device.private_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-private-array"
+   },
+   "base.device.private_array_dynamic": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-private-array-dynamic-index"
+   },
+   "base.device.private_array_dynamic_write": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-private-array-dynamic-write"
+   },
+   "base.device.pure": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-pure-routine"
+   },
+   "base.device.recursion": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-recursive-routine"
+   },
+   "base.device.routine_call": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-routine-call"
+   },
+   "base.device.save_local": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-save-local-routine"
+   },
+   "base.device.select_case": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-select-case"
+   },
+   "base.device.sequence_association": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-sequence-association"
+   },
+   "base.device.stop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-stop-unreached"
+   },
+   "base.device.type_bound_nopass": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-type-bound-nopass"
+   },
+   "base.device.type_bound_pass": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-type-bound-pass"
+   },
+   "base.device.where": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-where"
+   },
+   "form.omp.critical_named": {
+    "device_only": "a race: without the construct the updates race",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-critical-named"
+   },
+   "form.omp.declare_mapper_extended_type": {
+    "device_only": "copy semantics: without the mapper the pointer component's association on the device is undefined (OpenMP 5.2 \u00a75.8.3, p.150); under unified memory the host pointer still works",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "inconclusive"
+    },
+    "program": "omp52-w-declare-mapper-extended-type"
+   },
+   "form.omp.target_update_depend_nowait": {
+    "device_only": "copy semantics: without the update the host keeps b = 0 (separate memory only)",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "drop_update": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc269|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-update-depend-nowait"
+   },
+   "form.omp.teams_private_array_nested_parallel": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc269|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc269|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-teams-private-array-parallel"
+   },
+   "omp.clause.capture": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic-capture"
+   },
+   "omp.clause.hint": {
+    "device_only": "a race: without the construct the updates race",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-critical-hint"
+   },
+   "omp.clause.read": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic-read"
+   },
+   "omp.clause.update": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic-update"
+   },
+   "omp.clause.write": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic-write"
+   },
+   "omp.directive.atomic": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic"
+   },
+   "omp.directive.barrier": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-barrier"
+   },
+   "omp.directive.critical": {
+    "device_only": "a race: without the construct the updates race",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-critical"
+   },
+   "omp.directive.declare_mapper": {
+    "device_only": "copy semantics: without the mapper the pointer component's association on the device is undefined (OpenMP 5.2 \u00a75.8.3, p.150); under unified memory the host pointer still works",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "inconclusive"
+    },
+    "program": "omp52-w-declare-mapper"
+   },
+   "omp.directive.masked": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-masked"
+   },
+   "omp.directive.ordered": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-ordered"
+   },
+   "omp.directive.parallel_sections": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "swap_to_from": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-parallel-sections"
+   },
+   "omp.directive.sections": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-sections"
+   },
+   "omp.directive.single": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-single"
+   },
+   "omp.directive.task": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-task"
+   },
+   "pair.base.device.elemental+base.device.array_syntax": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-elemental-array-syntax"
+   },
+   "pair.base.device.private_array+base.device.assumed_shape_routine": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-private-array-routine-arg"
+   },
+   "pair.base.device.routine_call+base.device.character": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-routine-character"
+   },
+   "pair.base.device.routine_call+base.device.stop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-routine-stop"
+   },
+   "pair.omp.clause.allocate+omp.clause.firstprivate": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-allocate-const-firstprivate"
+   },
+   "pair.omp.clause.collapse+base.device.alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-collapse-alloc-component"
+   },
+   "pair.omp.clause.collapse+base.device.derived_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-collapse-derived-array"
+   },
+   "pair.omp.clause.collapse+base.device.private_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-collapse-private-array"
+   },
+   "pair.omp.clause.collapse+base.device.routine_call": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-collapse-routine-call"
+   },
+   "pair.omp.clause.collapse+base.device.select_case": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-collapse-select-case"
+   },
+   "pair.omp.clause.collapse+base.device.stop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-collapse-stop"
+   },
+   "pair.omp.clause.collapse+omp.clause.reduction": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-collapse-reduction"
+   },
+   "pair.omp.clause.defaultmap.present+base.device.private_array": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-defaultmap-present-private-array"
+   },
+   "pair.omp.clause.firstprivate+base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-firstprivate-derived-scalar"
+   },
+   "pair.omp.clause.lastprivate+base.device.parallel_in_seq_loop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "survived"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-lastprivate-parallel-in-seq-loop"
+   },
+   "pair.omp.clause.private+base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-private-derived-scalar"
+   },
+   "pair.omp.clause.reduction+base.device.complex": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-reduction-complex"
+   },
+   "pair.omp.clause.reduction+base.device.derived_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-reduction-derived-array"
+   },
+   "pair.omp.clause.reduction+base.device.intrinsic_math": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-reduction-math"
+   },
+   "pair.omp.clause.reduction+base.device.parallel_in_seq_loop": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-reduction-parallel-in-seq-loop"
+   },
+   "pair.omp.clause.reduction+base.device.private_array": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-reduction-private-array"
+   },
+   "pair.omp.clause.reduction+base.device.routine_call": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-reduction-routine-call"
+   },
+   "pair.omp.directive.atomic+base.device.derived_scalar": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic-derived-component"
+   },
+   "pair.omp.directive.atomic+omp.clause.collapse": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic-collapse"
+   },
+   "pair.omp.directive.atomic+omp.clause.reduction": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-atomic-reduction"
+   },
+   "pair.omp.directive.critical+omp.clause.reduction": {
+    "device_only": "",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive"
+    },
+    "program": "omp52-w-critical-reduction"
+   },
+   "pair.omp.directive.declare_mapper+omp.clause.map.iterator": {
+    "device_only": "copy semantics: without the mapper the pointer component's association on the device is undefined (OpenMP 5.2 \u00a75.8.3, p.150); under unified memory the host pointer still works",
+    "disposition": "unaudited_no_passing_original",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "inconclusive",
+      "cce20|0": "inconclusive",
+      "cce21|0": "inconclusive",
+      "nvhpc|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "inconclusive",
+     "cce20|0": "inconclusive",
+     "cce21|0": "inconclusive",
+     "nvhpc|0": "inconclusive"
+    },
+    "program": "omp52-w-mapper-iterator"
+   },
+   "pair.omp.directive.declare_mapper+omp.clause.reduction": {
+    "device_only": "copy semantics: without the mapper the pointer component's association on the device is undefined (OpenMP 5.2 \u00a75.8.3, p.150); under unified memory the host pointer still works",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "inconclusive"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "inconclusive"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "inconclusive"
+    },
+    "program": "omp52-w-mapper-reduction"
+   },
+   "pair.omp.directive.target_data+base.device.alloc_component": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-data-alloc-component"
+   },
+   "pair.omp.directive.target_data+base.device.optional_absent": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "inconclusive",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-data-optional-absent"
+   },
+   "pair.omp.directive.target_enter_data+base.device.alloc_component_whole": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed"
+    },
+    "program": "omp52-w-enter-alloc-component-whole"
+   },
+   "pair.omp.directive.target_enter_data+base.device.assumed_shape_target": {
+    "device_only": "",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-enter-assumed-shape"
+   },
+   "pair.omp.directive.target_update+base.device.alloc_component": {
+    "device_only": "copy semantics: without the update the device keeps the old values (separate memory only)",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "killed"
+     },
+     "drop_update": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-update-alloc-component"
+   },
+   "pair.omp.directive.target_update+base.device.derived_array": {
+    "device_only": "copy semantics: without the update the device keeps the old values (separate memory only)",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "survived",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "drop_update": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "killed",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "killed",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-update-derived-array"
+   },
+   "pair.omp.directive.target_update+omp.clause.depend": {
+    "device_only": "copy semantics: without the update the host keeps b = 0 (separate memory only)",
+    "disposition": "valid",
+    "map": {
+     "drop_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "survived",
+      "cce20|0": "survived",
+      "cce21|0": "survived",
+      "nvhpc269|0": "survived",
+      "nvhpc|0": "survived"
+     },
+     "drop_update": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "swap_to_from": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     },
+     "weaken_map": {
+      "afar|0": "inconclusive",
+      "cce19|0": "killed",
+      "cce20|0": "killed",
+      "cce21|0": "killed",
+      "nvhpc269|0": "killed",
+      "nvhpc|0": "killed"
+     }
+    },
+    "oracle": {
+     "afar|0": "inconclusive",
+     "cce19|0": "killed",
+     "cce20|0": "killed",
+     "cce21|0": "killed",
+     "nvhpc269|0": "killed",
+     "nvhpc|0": "killed"
+    },
+    "program": "omp52-w-update-depend"
+   }
+  }
+ }
+}

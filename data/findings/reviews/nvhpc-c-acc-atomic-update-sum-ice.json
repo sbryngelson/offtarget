@@ -1,0 +1,277 @@
+{
+ "finding": "nvhpc-c-acc-atomic-update-sum-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-38",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The statement x = x + v + 1 parses as (x + v) + 1, so it is neither x = x binop expr nor x = expr binop x with x as a direct operand; x is not the sole operand of the top-level operator. The atomic update form is violated, so the program is non-conforming and rejection is permitted."
+  },
+  {
+   "run": "run-20261113/batch-62",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The statement x = x + v + 1 parses as (x + v) + 1. The top-level operator's left operand is (x+v), not x, so it matches neither x = x binop expr nor x = expr binop x. The x binop (expr) equivalence sentence constrains the written form of those two patterns; it does not make other shapes legal. The atomic update is non-conforming, so the compiler may reject it and diagnosing it is correct."
+  },
+  {
+   "run": "run-v2-20261113/batch-102",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The update form is x = x binop expr. The statement x = x + v + 1 parses as (x + v) + 1, whose outer left operand is not x, so it matches neither x = x binop expr nor x = expr binop x. The rewritten form is not given by parenthesising expr. The program is non-conforming, so rejecting it is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-69",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "x = x + v + 1 parses as (x + v) + 1 and so matches neither x = x binop expr nor x = expr binop x",
+      "The program is non-conforming, so rejection is permitted"
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "x = x + v + 1 matches neither x = x binop expr nor x = expr binop x"
+     ],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-56",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "x = x + v + 1 parses as (x + v) + 1, so it does not literally match x = x binop expr, where x is the left operand of the top-level operator. The spec also requires only that x binop expr be mathematically equivalent to x binop (expr), which holds for integer addition. The text can be read either way, so a compiler rejecting it is not clearly wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-53",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113c/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The statement x = x + v + 1 has the form x = x binop expr with expr = v + 1, which does not access x. The spec requires x binop expr to be mathematically equivalent to x binop (expr), and for int addition it is, though the precedence rule given is only a sufficient condition. The compiler's rejection and ICE are therefore errors.",
+   "verifications": [
+    {
+     "run": "verify-20261113d/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6b8f41ad357e5b57d956caac520e1db71247be8b28c60243a99d3b7eb4a62775",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: The statement x = x + v + 1 parses as (x + v) + 1, so it does not match x = x binop expr with x as the left operand of the top-level operator. The spec requires only that x binop expr be mathematically equivalent to x binop (expr), and the precedence condition is given as a sufficient case. For integer addition, x + (v + 1) is equivalent, so the form can be read as admitted.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The rule is semantic: x binop expr must be mathematically equivalent to x binop (expr). With binop + and expr = v+1, x+v+1 equals x+(v+1) for integer addition, so the statement has the form x = x binop expr. Both readings treat the parse tree shape as decisive, but the text only requires mathematical equivalence; the precedence/parentheses sentence is a sufficient condition, not the only one. The atomic update is conforming, so an internal compiler error is not permitted."
+  },
+  {
+   "run": "adj-20261113/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings rely only on the parse (x+v)+1. The specification requires that x binop expr be mathematically equivalent to x binop (expr); for integer + , x+v+1 equals x+(v+1), and the satisfied-if sentence is a sufficient condition, not a necessary one. The syntactic form is arguable, so legality and the required acceptance are unsettled."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The statement x = x + v + 1 parses as (x + v) + 1, so it does not match x = x binop expr with x as the left operand of the top-level operator. The spec requires only that x binop expr be mathematically equivalent to x binop (expr), and the precedence condition is given as a sufficient case. For integer addition, x + (v + 1) is equivalent, so the form can be read as admitted. Reading A overstates that the form fails. Reading B is right that the text supports both readings. An internal compiler error is not a permitted diagnostic for a legal program, but legality is unsettled.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-07",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "x = x + v + 1 parses as (x + v) + 1, so it does not literally match x = x binop expr with x as left operand of the top operator. The spec only requires x binop expr to be mathematically equivalent to x binop (expr), and says that is satisfied by precedence or parentheses; the equal-precedence case is not addressed, and integer addition is equivalent. Reading A overstates; Reading B is right that the text supports either reading.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-62",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

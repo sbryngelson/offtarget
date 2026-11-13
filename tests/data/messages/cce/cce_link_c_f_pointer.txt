@@ -1,0 +1,7 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: ftn -fopenmp -O2 after module load cce/19.0.0 craype-accel-amd-gfx942 rocm (CCE 19.0.0, rocm 6.4.3) on offload.engine.gen omp52-clause-use_device_ptr (c_f_pointer in device code)
+# exit status: 1
+==== verbatim output below ====
+lld: error: undefined symbol: _C_F_POINTER
+>>> referenced by <site>/cooltmpdir-qDODYp/a.out-cce-openmp__llc.amdgpu:(gen_prog_$ck_L31_1)
+>>> referenced by <site>/cooltmpdir-qDODYp/a.out-cce-openmp__llc.amdgpu:(gen_prog_$ck_L31_1)

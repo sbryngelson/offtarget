@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/s1-3463-cce21.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "A structure-component array section dr%nd%k(1:n) is a valid map list item; omp_get_team_num is a permitted API call in a target region; the declare reduction in the module and the unused empty type are valid Fortran. Nothing conflicts with the specification, so a conforming compiler must compile it; the crash is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-63",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "kp3 is never called. target map(dr%nd%k(1:n)) maps an array section of a structure component, which is permitted; the region has no other references. Empty derived type, module-level declare reduction and unused dummies are valid Fortran. A conforming compiler must compile it; the dope-vector crash is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-46",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target map clause lists dr%nd%k(1:n), a contiguous array section of a structure element, which is allowed. omp_get_team_num may be called in a target region outside teams. The declare reduction, empty derived type, empty contains and empty if body are valid Fortran/OpenMP. A conforming compiler must accept it; an internal compiler error is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-55",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-62",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The map clause names the array section dr%nd%k(1:n), a component of a dummy argument of derived type, which is a valid list item. The declare reduction sits in a module specification part and the internal procedures are well formed. Nothing in the program breaks a rule, so a conforming compiler must accept it. The dope vector error is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b3ef67d75b9a1e7e2f5c7e424e84c8b89326000bb30c9ab2facf0b2de05921a6",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

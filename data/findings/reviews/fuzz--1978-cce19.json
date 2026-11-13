@@ -1,0 +1,130 @@
+{
+ "finding": "fuzz/1978-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "o1 is explicitly mapped with always,from; defaultmap(firstprivate: aggregate) applies only to implicitly determined variables. The target region sets o1(i)=i and the from map copies it back, so the checksum is non-zero. acc1 and jj are private, i is an implicitly firstprivate scalar. No restriction broken. Observed 0 is wrong."
+  },
+  {
+   "run": "run-20261112/batch-30",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "o1 has an explicit map(always,from), so defaultmap(firstprivate:aggregate) does not apply to it. The target region (sequential loop) sets o1(i)=i and the always,from map copies it back at exit; checksum must be nonzero. Result 0 means the copy-back was skipped. i is an implicitly firstprivate scalar; jj/acc1 private are fine."
+  },
+  {
+   "run": "run-v2-20261113/batch-24",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 has an explicit map(always, from:) clause, which takes precedence over defaultmap(firstprivate: aggregate) for the implicit rules. acc1 and jj are private, and i is a loop iteration variable of a sequential loop. The single initial thread writes every o1(i) = i with no race, and the always,from map copies o1 back on exit. The checksum must therefore be nonzero. The observed 0 means the copy-back was lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-71",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target region is executed by one thread. o1 appears in map(always, from:), so it is copied back at exit. The loop assigns o1(i)=i for all i, so the host must see 1..24 and a nonzero checksum. defaultmap(firstprivate: aggregate) does not apply to o1 because it is explicitly mapped. acc1 and jj are private. Observed checksum 0 means the from copy was lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "5b07c945edb9b5149ad31451d9d526b2dcf77d51a440e1dc5cf96b121f49752b",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,204 @@
+{
+ "finding": "nested/gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-21",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Struct members and subarrays of pointer members may appear in data clauses; copyin(r) then copyin(r.nx[0:2]) and r.nx[0][0:1] attach pointers in present device data, and the exit data deletes run in child-before-parent order, so counters reach zero cleanly. The subarray applies to the array element r.nx[0], not to a struct subarray, so the 'members of a subarray' ban does not apply (small ambiguity). The delete clause defines detach and deallocate actions for exactly this; a hang from an unhandled delete kind is a runtime defect, not a permitted outcome."
+  },
+  {
+   "run": "run-20261113/batch-48",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Struct r copied in, then member sections attached via nested enter data; deletes mirror the enters with dynamic reference counts of one. Present(r) holds. Nothing nonconforming; the hang/unhandled kind is a runtime defect."
+  },
+  {
+   "run": "run-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r is copied in, then r.nx[0:2] and r.nx[0][0:1] are copied in with attach of r.nx and r.nx[0]; exit data deletes happen in reverse order. Each delete decrements the attachment counter, detaches at zero, and decrements the dynamic count; any extra decrement leaves the counter at zero. The serial region only uses r.v. All well defined, so a conforming implementation must run it without hanging."
+  },
+  {
+   "run": "run-v2-20261113/batch-103",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Whole struct r is copied in, then r.nx[0:2] and the subarray r.nx[0][0:1] are copied in, which attach the pointer members in turn. Members and subarrays of members may appear in data clauses. Exit deletes in reverse order, so no pointer is detached from freed data. The serial region uses only r.v. The program is conforming and must run with tot=6; the libgomp UNHANDLED kind and hang are an implementation defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-33",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Struct members and subarrays of members may appear in data clauses; r.nx[0:2] uses subarray notation on a member whose parent r is not a subarray, and r.nx[0][0:1] selects no member of a subarray. Delete order mirrors the copyin order. The program appears conforming, and a hang with an unhandled map kind in the runtime is a compiler or runtime defect, but attach/detach of nested pointers is not spelled out fully enough to be sure.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-62",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6d8d656b48251f16a07cc41d5cce8467c3128f6932b8b988322c5f9a561c953b",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: Struct member r.nx with subarray r.nx[0:2] is allowed because the parent r is not a subarray; r.nx[0][0:1] is a subarray of a pointer element, not a member of a subarray. Copying r copies the pointer members without their targets, so the later member copyins attach them. Deletes run in reverse order. The serial region reads only r.v, so tot=6 is required; the UNHANDLED kind hang is a runtime defect.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Struct member r.nx with subarray r.nx[0:2] is allowed because the parent r is not a subarray; r.nx[0][0:1] is a subarray of a pointer element, not a member of a subarray. Copying r copies the pointer members without their targets, so the later member copyins attach them. Deletes run in reverse order. The serial region reads only r.v, so tot=6 is required; the UNHANDLED kind hang is a runtime defect. Reading B's doubt about attach rules does not make the result optional.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-29",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is copied in, then r.nx[0:2] attaches the member pointer, then r.nx[0][0:1] copies a section of an element. Subarrays of struct members are allowed and no parent of the member uses subarray notation. The compute region only reads r.v. Deletes run in reverse order. The libgomp unhandled kind is a runtime defect. Reading B's doubt about attach rules is answered by the attach description.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-17",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "gcc/gcc-acc-init-set-shutdown-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The OpenACC init directive is standalone in Fortran syntax '!$acc init [clause-list]' with optional clauses, so '!$acc init' is conforming. The parallel loop has independent iterations; only iteration 1 writes host_flag. A conforming OpenACC 3.4 compiler must accept it."
+  },
+  {
+   "run": "run-20261113/batch-55",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The init directive is defined in OpenACC 3.4 with Fortran syntax !$acc init [clause-list]. The rest is ordinary: parallel loop with copyin/copyout/copy, host_flag written by a single iteration (no race), acc_on_device usable in compute regions. A compiler claiming OpenACC support must accept !$acc init; the 'Unclassifiable OpenACC directive' is a compiler limitation."
+  },
+  {
+   "run": "run-v2-20261113/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The init directive exists in OpenACC 3.4 with Fortran syntax !$acc init [clause-list]. The rest is a plain parallel loop with data clauses; host_flag is written by a single iteration, so no race. A conforming compiler must recognize the directive, so the refusal is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-52",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-92",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The init directive with no clauses is valid Fortran syntax and initializes all devices. The remaining program is a conforming parallel loop with copyin, copyout and copy. A compiler must accept the directive.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-59",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7f4cbe0a37b3bd20af95f66f59fc31d316df19e2bcfa337562d9cb9230adcb19",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

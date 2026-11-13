@@ -1,0 +1,16 @@
+# Verbatim compiler output (stdout and stderr merged) captured on Tioga (MI250X), 2026-11-06.
+# source: GCC 16.2.0 gcc -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2 on a C program using __builtin_popcountll in a target region (tools/reduce.py, HeCBench popcount-omp; the temporary directory is shortened)
+# exit status: 1
+==== verbatim output below ====
+/tmp/gcc/cc9Q7Gdh.mkoffload.2.s:641:2: error: too few operands for instruction
+        v_bcnt_u32_b32  v4, v4
+        ^
+/tmp/gcc/cc9Q7Gdh.mkoffload.2.s:642:2: error: too few operands for instruction
+        v_bcnt_u32_b32  v6, v6
+        ^
+gcn mkoffload: fatal error: /opt/gcc-16.2/bin/x86_64-pc-linux-gnu-accel-amdgcn-amdhsa-gcc returned 1 exit status
+compilation terminated.
+lto-wrapper: fatal error: /opt/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0//accel/amdgcn-amdhsa/mkoffload returned 1 exit status
+compilation terminated.
+/usr/bin/ld: error: lto-wrapper failed
+collect2: error: ld returned 1 exit status

@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-flang-dist-schedule-chunk.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each element of b and team is written by one iteration; nt and host_flag are written only by i==1, so no race; default(none) lists all variables. dist_schedule(static,4) assigns chunks of 4 iterations round-robin by team number, so iteration i goes to team mod((i-1)/4, nt) where nt is the actual team count (num_teams(4) is an upper bound, nt read back). The check is therefore required to pass; check=fail is a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-20",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Combined target teams distribute parallel do with num_teams(4) and dist_schedule(static,4) is legal; default(none) lists all referenced variables, i is the predetermined loop variable. Chunks of 4 iterations go round-robin by team number over the actual number of teams nt, so team(i)==mod((i-1)/4,nt). Single writers for nt and host_flag, no race. Execution on the device is required, with b computed correctly; observed fail is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-29",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each team's chunk assignment follows the spec: chunks of size 4 go round-robin to the teams in team-number order, so team(i) equals mod((i-1)/4, nt) when nt is the actual team count. The variable nt is written by a single iteration and the other writes go to distinct elements, so there is no race. The check is valid, and the observed fail is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-24",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-84",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The combined construct is conforming: default(none) lists every variable, i is the predetermined loop variable, writes to nt and host_flag come from a single iteration (no race), team(i) elements are distinct. With dist_schedule(static, 4) chunks of 4 iterations go to the league's teams round-robin in team-number order, so team(i) == mod((i-1)/4, nt) holds for the actual team count nt. The failing check on the device is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-17",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "347fc786589d894877288c22bf414db9c659fca23386b2c2057b0d47622f6dfe",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

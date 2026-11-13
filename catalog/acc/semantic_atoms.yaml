@@ -1,0 +1,27 @@
+# Semantic atoms of the OpenACC slice: behaviour the spec defines
+# that no clause syntax carries (same schema as catalog/omp/semantic_atoms.yaml;
+# read by offload/engine/catalog.py semantic_atoms("acc")). Implicitly determined
+# data attributes (OpenACC 3.4 §2.6.2) are such behaviour: no clause is
+# written, yet the spec fixes what happens. Every entry is
+# `status: provisional` until the project owner reviews it.
+atoms:
+  acc.clause.firstprivate.implicit_scalar:
+    clause: firstprivate
+    status: provisional
+    since: 34
+    citations:
+      34: "OpenACC 3.4 §2.6.2, p.41 (a scalar variable in no visible data clause is treated as firstprivate on a compute construct that is not kernels)"
+    behaviour: >-
+      A scalar referenced in a serial construct without any data clause is
+      firstprivate: the region's write to it does not reach the host's
+      variable (in both memory modes: the region works on a private copy).
+  acc.clause.copy.implicit_kernels_scalar:
+    clause: copy
+    status: provisional
+    since: 34
+    citations:
+      34: "OpenACC 3.4 §2.6.2, p.41 (a scalar variable in no visible data clause is treated as copy on a kernels construct)"
+    behaviour: >-
+      A scalar written in a kernels construct without any data clause is
+      copy: the device's write reaches the host's variable (in copy mode it
+      is copied back; under shared memory the storage is the host's).

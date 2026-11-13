@@ -1,0 +1,130 @@
+{
+ "finding": "harvest/nvhpc2511-target-nowait-in-parallel-for-ice.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-42",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Each iteration generates a nowait target task mapping a distinct single element a[i:1]; sections are disjoint, so the map restrictions on shared storage and partially present arrays do not apply. Each task writes only its own element. Completion of all explicit tasks is guaranteed at the implicit barrier at the end of the parallel region, before the host reads a. The final target is ordinary. A conforming compiler must compile it; the targetinfo ICE is a defect."
+  },
+  {
+   "run": "run-20261113/batch-61",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The target tasks are generated inside the omp for; the barrier at the end of the for (and of the parallel region) waits for all explicit tasks, so a[] is complete before the host reads it. Each iteration maps a distinct one-element section, so there is no overlap or race. Nothing is non-conforming; the NVC++ internal error is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-28",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each iteration maps a distinct one-element section a[i:1] on a nowait target task and writes only a[i]. The host reads a only after the parallel region. The for construct and the parallel region end with barriers that complete all bound explicit tasks. There is no race and no overlap. The program is conforming and must compile.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-94",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each iteration launches a deferrable target task mapping a distinct element a[i:1], so there is no overlap or race. The implicit barrier at the end of the parallel region completes all explicit tasks, including the from-copies, before bad is computed. check=pass is required, so the ICE is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-15",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "496c1aa28efd2baca2a0a253690fc11bc446a0c6e409a21d08191e29396dd209",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

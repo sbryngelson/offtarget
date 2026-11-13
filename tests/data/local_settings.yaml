@@ -1,0 +1,73 @@
+# The settings of a made-up user, laid over the catalogs for every test (tests/conftest.py), so the
+# tests read the same machines whoever runs them and wherever they run.
+machines.yaml:
+  machines:
+    tuolumne:
+      access: local
+      scheduler:
+        kind: flux
+        queue: pdebug
+        max_minutes: 60
+        attrs:
+          thp: always
+    tioga:
+      access:
+        ssh: tio
+        root: /srv/vast/user/compliant
+        python: /usr/tce/bin/python3
+        run_prefix: flux run -N1 -q pdebug -t 60
+      scheduler:
+        kind: flux
+        queue: pdebug
+        max_minutes: 60
+    wingtip:
+      access:
+        ssh: wingtip
+        root: /home/user/compliant
+        python: /home/user/compliant-venv/bin/python
+        master: false
+        run_prefix: nice -n 10
+        cap: tools/jobs/wingtip_capped.sh
+        env:
+          CUDA_VISIBLE_DEVICES: '3'
+          COMPLIANT_RUN_SLOTS: '1'
+        ssh_options:
+        - -o
+        - BatchMode=yes
+        - -o
+        - ControlMaster=auto
+        - -o
+        - ControlPath=~/.ssh/cm-compliant-%r@%h:%p
+        - -o
+        - ControlPersist=10m
+      scheduler:
+        kind: direct
+        max_minutes: 600
+        nice: 10
+        max_compile_jobs: 16
+  independent_checkers:
+    nvhpc269_f90:
+      command: /scratch/user/nvhpc/Linux_x86_64/26.9/compilers/bin/nvfortran -mp=gpu -gpu=cc80 -c -o /dev/null
+      version: /scratch/user/nvhpc/Linux_x86_64/26.9/compilers/bin/nvfortran --version
+    nvhpc269_acc:
+      command: /scratch/user/nvhpc/Linux_x86_64/26.9/compilers/bin/nvfortran -acc=gpu -gpu=cc80 -c -o /dev/null
+      version: /scratch/user/nvhpc/Linux_x86_64/26.9/compilers/bin/nvfortran --version
+    nvhpc269_c:
+      command: /scratch/user/nvhpc/Linux_x86_64/26.9/compilers/bin/nvc -mp=gpu -gpu=cc80 -c -o /dev/null
+      version: /scratch/user/nvhpc/Linux_x86_64/26.9/compilers/bin/nvc --version
+    nvhpc_f90:
+      command: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran -mp=gpu -gpu=cc80 -c -o /dev/null
+      version: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran --version
+    nvhpc_acc:
+      command: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran -acc=gpu -gpu=cc80 -c -o /dev/null
+      version: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran --version
+    nvhpc_c:
+      command: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvc -mp=gpu -gpu=cc80 -c -o /dev/null
+      version: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvc --version
+toolchains.yaml:
+  campaign_lanes:
+    tioga: /srv/vast/user
+    wingtip: /scratch/user
+wingtip_offline.yaml:
+  data_root: /scratch/user/compliant-data
+  lane_root: /home/user/compliant-offline

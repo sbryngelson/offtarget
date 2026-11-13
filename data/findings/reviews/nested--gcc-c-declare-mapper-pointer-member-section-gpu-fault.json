@@ -1,0 +1,113 @@
+{
+ "finding": "nested/gcc-c-declare-mapper-pointer-member-section-gpu-fault.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-34",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The declare mapper without identifier overrides the default mapper for struct n0; its map(tofrom: v) maps v without recursively invoking a mapper, and map(tofrom: v.a[0:NM]) is an allowed array-section list item on a mapper. Pointee storage is not v's storage, so no overlap restriction applies. The kernel writes 500+q to r.a, sum 4028. A device memory fault means the pointee was not mapped, which the spec requires."
+  },
+  {
+   "run": "run-20261113/batch-55",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The declare mapper maps v with map(tofrom: v) and the pointee section v.a[0:NM]. A map clause with list item var maps var without invoking the mapper, so there is no recursion. The mapper supplies the array section and pointer attachment, so r.a[q] is accessible on the device and the expected sum 4028 follows. The GPU memory fault is a compiler/runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-101",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The user-defined mapper for struct n0 maps only var v and v.a[0:NM], satisfying the declare mapper restrictions. The loop writes distinct r.a[q], so no data race. The map(tofrom: r) uses the mapper, which maps the pointed-to array, so the device access is valid; the GPU fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-09",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-40",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The user-defined default mapper for struct n0 overrides the predefined one, so map(tofrom: r) maps r and the section r.a[0:NM] with pointer attachment. Mapping v together with v.a[0:NM] is allowed since one is the containing structure of the other. The device writes r.a[q] and copies back; ha = 4028 is required. The GPU fault is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "62ccb88d40c3edf168f70902ff3b4a3dab41c8f78802aa1565976d481ff18c3e",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

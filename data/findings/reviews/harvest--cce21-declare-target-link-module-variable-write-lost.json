@@ -1,0 +1,113 @@
+{
+ "finding": "harvest/cce21-declare-target-link-module-variable-write-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "v is a module variable (static storage) in a declare target link clause. link does not map it; it is mapped by the ordinary rules, and here map(tofrom: v) is explicit, so the device copy gets 0, is set to 1 and is copied back. Host v must be 1 after the region. The observed v=0 means the explicit map was not honored for the linked variable."
+  },
+  {
+   "run": "run-20261112/batch-33",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "v is a static module variable in a link clause; link does not map it, so it is mapped by the explicit map(tofrom: v) on the target construct. The target region sets v=1 and it is copied back, so v=1 is required. A host value 0 is a compiler error."
+  },
+  {
+   "run": "run-v2-20261113/batch-21",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The link clause does not map v; v is mapped by the data-mapping rules, here the explicit map(tofrom: v) on the target construct. v=1 is assigned on the device and copied back at exit, so v==1 is required. Linked variables with static storage and an explicit map are conforming.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-61",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "v is a module variable with static storage in declare target link. The link clause does not map it. It is mapped by the data-mapping rules, and here the target construct has an explicit map(tofrom: v). The device write v = 1 is copied back at exit, so v == 1 is required. Observing 0 is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-57",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "1ce240db3574673c87abd41afea5f6e22e4c1504698f06886b5c9813a0be9986",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

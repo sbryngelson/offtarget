@@ -1,0 +1,113 @@
+{
+ "finding": "afar-c-lastprivate-distribute-parallel-for-small-type.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate(lp) applies to the distribute and parallel-for leaves; the map(tofrom: lp) goes to target, so lp is mapped and the final value reaches the original item on the device and then the host. The value of the sequentially last iteration (i=64, 192) is assigned. No race: each iteration writes its own private copy. Expected lp=192 is required; 0 or garbage is a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-25",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lastprivate on the combined target teams distribute parallel for applies to the leaves that allow it (distribute, for); lp is also mapped tofrom on target. Each iteration writes only its private copy, and only the sequentially last iteration assigns to the original, so no race. The value 192 must reach lp and be mapped back. Result 0 or garbage for 4-byte items is a compiler defect. Slight uncertainty on nested lastprivate leaf semantics."
+  },
+  {
+   "run": "run-v2-20261113/batch-114",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lastprivate on the combined construct applies to all leaf constructs that permit it (distribute, for); lp is explicitly mapped tofrom on target, so the value of the sequentially last iteration (3*64=192) is assigned to the original list item and returned to the host. Each iteration writes its own private copy, so no race. Result lp=0 is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-22",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "lp is explicitly mapped tofrom on the target leaf, so the implicit lastprivate map does not apply. lastprivate applies to the leaf constructs that permit it (distribute and for), with shared on teams and parallel. The value from the sequentially last iteration (i=64, lp=192) is assigned to the original item, which the map brings back to the host. Each iteration writes its own private copy, so there is no race. Printing 0 is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-23",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "e48c4556201e842b33d7385e9aa609f521bf452f9cf87f67d78aac9d8c358eca",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

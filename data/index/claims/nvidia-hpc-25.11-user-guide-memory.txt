@@ -1,0 +1,191 @@
+NVIDIA HPC Compilers User's Guide — NVIDIA HPC Compilers User's Guide 25.11 documentation
+NVIDIA HPC Compilers User's Guide, version 25.11 (https://docs.nvidia.com/hpc-sdk/archive/25.11/compilers/hpc-compilers-user-guide/index.html), fetched 2026-10-24; HTML stripped to one paragraph per line (section 5.4 Memory Model to 5.4.2.2).
+5.4. Memory Model
+The most significant difference between a host-only program and a host+accelerator program is that the memory on the accelerator can be completely separate from host memory, which is the case on many GPUs. For example:
+The host cannot read or write accelerator memory directly because it is not mapped into the virtual memory space of the host.
+All data movement between host memory and accelerator memory must be performed by the host through runtime library calls that explicitly move data between the separate memories.
+In general it is not valid for the compiler to assume the accelerator can read or write host memory directly. This is well-defined starting with the OpenACC 2.7 and OpenMP 5.0 specifications.
+The systems with the latest GPUs provide a unified single address space between CPU and GPU for some or all memory regions, as detailed in the Managed and Unified Memory Modes subsection below. In these systems data can be accessed from host and accelerator subprograms without the need for explicit data movement.
+The NVIDIA HPC Compilers support the following system memory modes:
+Table 12 GPU Memory Modes
+|
+Memory Mode
+|
+Description
+|
+Compiler flags
+|
+Separate
+|
+All data accessed in host and accelerator programs are in separate (CPU and GPU) memories. Data in the application need to be physically moved between CPU and GPU memory either by adding explicit annotations or by relying on a compiler to detect and migrate the data.
+|
+-gpu=mem:separate
+|
+Managed
+|
+Dynamically allocated host data are placed in CUDA Managed Memory which is a unified single address space between host and accelerator programs and can therefore be accessed on device without explicit data movement. All other data (host, stack, or global data) remain in separate memory.
+|
+-gpu=mem:managed
+|
+Unified
+|
+All host data are placed in a unified single address space between the host and accelerator subprograms; no explicit data movements are required. This mode is intended for targets with full CUDA Unified Memory capability and it may utilize CUDA Managed Memory for dynamic allocations.
+|
+-gpu=mem:unified
+If the memory mode is not selected explicitly by passing one of the above -gpu=mem:* options, the compiler selects a default memory mode. The default memory mode for Stdpar is explained in Using Stdpar. When Stdpar is not enabled, the default memory mode is Separate Memory. Memory modes may have specific semantics in each programming language and the compilers can sometimes implicitly determine the data movement that’s required. More details can be found in the subsections of each programming model.
+The following options -gpu=[no]managed, -gpu=[no]unified and -gpu=pinned are deprecated but still accepted. Refer to Command-line Options Selecting Compiler Memory Modes for compatibility between the current and deprecated memory specific flags.
+The compiler implicitly defines the following macros corresponding to the memory mode it compiles for:
+When the code is compiled for Separate Memory Mode, the compiler defines __NVCOMPILER_GPU_SEPARATE_MEM macro.
+When the code is compiled for Managed Memory Mode, the compiler defines __NVCOMPILER_GPU_MANAGED_MEM macro.
+When the code is compiled for Unified Memory Mode, the compiler defines __NVCOMPILER_GPU_UNIFIED_MEM macro. If CUDA Managed Memory is utilised, the compiler defines additionally __NVCOMPILER_GPU_MANAGED_MEM.
+When a binary is compiled for one memory mode it may need to be run on a system with specific memory capabilities as follows:
+Applications compiled for Separate Memory Mode can run on any CUDA platforms.
+Applications compiled for Managed Memory Mode must be run on platforms with CUDA Managed Memory or full CUDA Unified Memory capabilities.
+Applications compiled for Unified Memory Mode must be run on platforms with full CUDA Unified Memory.
+Note
+Memory allocated in the accelerator subprogram can’t be accessed or deallocated from the host.
+5.4.1. Separate Host and Accelerator Memory Considerations
+The programmer must be aware of the potentially separate memories for many reasons, including but not limited to:
+Memory bandwidth between host memory and accelerator memory determines the compute intensity required to effectively accelerate a given region of code.
+Limited size of accelerator memory may prohibit offloading of regions of code that operate on very large amounts of data.
+5.4.1.1. Accelerator Memory
+On the accelerator side, current GPUs implement a weak memory model. In particular, they do not support memory coherence between threads unless those threads are parallel only at the synchronous level and the memory operations are separated by an explicit barrier. Otherwise, if one thread updates a memory location and another reads the same location, or two threads store a value to the same location, the hardware does not guarantee the results. While the results of running such a program might be inconsistent, it is not accurate to say that the results are incorrect. By definition, such programs are defined as being in error. While a compiler can detect some potential errors of this nature, it is nonetheless possible to write an accelerator region that produces inconsistent numerical results.
+Stack data in accelerator subprograms are allocated per thread. Stack data from one thread are not accessible by the other threads.
+5.4.1.2. Staging Memory Buffer
+Memory transfers between the accelerator and host may not always be asynchronous with respect to the host, even if the chosen programming model (for instance, OpenACC) declares that. This limitation may be due to the specific GPU and host memory architectures.
+In order to help the host program proceed while a memory transfer to or from the accelerator is underway, the NVIDIA HPC Compilers Runtime maintains a designated staging memory area, also known as a pinned buffer. This memory area is registered with the CUDA API, which makes it suitable for asynchronous memory transfers between the GPU and the host. When an asynchronous memory transfer is started, the data being transferred is staged through the pinned buffer. Multiple asynchronous operations on the same data can be issued - in that case, the runtime system will operate on the data staged in the pinned buffer, not on the original host memory. When the host program issues an explicit or implicit synchronization request, the data is moved from the pinned buffer to its destination transparently to the application.
+The runtime has the discretion to enable or disable the pinned buffer depending on the host and GPU memory architecture. Also, the size of the pinned buffer is determined by the runtime system as appropriate. The user can control some of these decisions using environment variables at the start of the application. Please refer to Environment Variables Controlling Device Memory Management to learn more.
+5.4.1.3. Cache Management
+Some current GPUs have a software-managed cache, some have hardware-managed caches, and most have hardware caches that can be used only in certain situations and are limited to read-only data. In low-level programming models such as CUDA, it is up to the programmer to manage these caches. The OpenACC programming model provides directives the programmer can use as hints to the compiler for cache management.
+5.4.1.4. Environment Variables Controlling Device Memory Management
+This section summarizes the environment variables that NVIDIA HPC Compilers use to control device memory management.
+The following table contains the environment variables that are currently supported and provides a brief description of each.
+Table 13 Memory Management Environment Variables
+|
+Environment Variable
+|
+Use
+|
+NVCOMPILER_ACC_BUFFERSIZE
+|
+For NVIDIA CUDA devices, this defines the size of the pinned buffer used to transfer data between host and device.
+|
+NVCOMPILER_ACC_CHECK_UNIFIED
+|
+For NVIDIA CUDA devices, in the Unified Memory mode, when set to a non-zero integer value, this environment variable enables the run-time data validation checks for data shared between host and device. For more information, please refer to OpenACC with CUDA Unified Memory.
+|
+NVCOMPILER_ACC_CUDA_CTX_SCHED
+|
+For NVIDIA CUDA devices, sets flags to be used when creating a new CUDA context. By default, the CU_CTX_SCHED_YIELD flag is used. Please refer to the CUDA Toolkit Documentation for the detailed description of the cuCtxCreate function and the possible flag values.
+|
+NVCOMPILER_ACC_CUDA_HEAPSIZE
+|
+For NVIDIA CUDA devices, sets the heap size limit for malloc() when called on device.
+|
+NVCOMPILER_ACC_CUDA_MAX_L2_FETCH_GRANULARITY
+|
+For NVIDIA CUDA devices, sets the maximum L2 cache fetch granularity size in bytes. A correct value is an integer between 0 and 128.
+|
+NVCOMPILER_ACC_CUDA_MEMALLOCASYNC
+|
+For NVIDIA CUDA devices, when set to a non-zero integer value, enables CUDA asynchronous memory allocations from the default CUDA memory pool as descibed in the CUDA Toolkit Documentation. By default, an internal NVIDIA HPC Runtime memory pool is used instead.
+|
+NVCOMPILER_ACC_CUDA_MEMALLOCASYNC_POOLSIZE
+|
+For NVIDIA CUDA devices, sets the size of the default CUDA memory pool for asynchronous allocations if the NVCOMPILER_ACC_CUDA_MEMALLOCASYNC environment variable is also set to a non-zero integer value.
+|
+NVCOMPILER_ACC_CUDA_NOCOPY
+|
+Disables the use of the pinned buffer when transferring user data between host and NVIDIA CUDA devices. When this variable is set to a non-zero integer value, user data will be transferred directly bypassing the pinned buffer. Asynchronous execution of such data transfers can be limited when this setting is in effect.
+|
+NVCOMPILER_ACC_CUDA_PIN
+|
+For NVIDIA CUDA devices, enables host memory pinning at data directives. When host memory is pinned, data transfers to and from the device can be asynchronous, which can potentially improve program performance. A non-zero integer value enables this mechanism. A value of 2 or greater additionally disallows unpinning the host data after it is pinned. A value of 3 or greater also enables pinning the whole array referenced in a data directive (provided that the size of the array is known), rather than its subarray specified in the data directive. By default, host data referenced at data directives is not pinned unless directed by the compiler at compile-time; refer to Command-line Options Selecting Compiler Memory Modes for more information about the compile-time memory modes.
+|
+NVCOMPILER_ACC_CUDA_PINSIZE
+|
+For NVIDIA CUDA devices, sets the host memory pinning granularity. If host memory pinning is enabled with the NVCOMPILER_ACC_CUDA_PIN environment variable, the runtime will attempt to use this setting to pin larger regions of memory at once, thus potentially lowering the cost of pinning memory when the program needs to pin multiple data regions separately. The maximum allowed value is 1 MB. By default, single byte pinning granularity is used.
+|
+NVCOMPILER_ACC_CUDA_PRINTFIFOSIZE
+|
+For NVIDIA CUDA devices, sets the buffer size for formatted output calls on device. In particular, it controls the buffer size for the printf C function.
+|
+NVCOMPILER_ACC_CUDA_STACKSIZE
+|
+For NVIDIA CUDA devices, sets the stack size limit for device threads.
+|
+NVCOMPILER_ACC_DEV_MEMORY
+|
+For NVIDIA CUDA devices, when set to a valid non-zero size value, enables the use of a device memory pool and sets its size. By default, the device memory pool is not used.
+|
+NVCOMPILER_ACC_MEM_MANAGE
+|
+For NVIDIA CUDA devices, when set to the integer value 0, disables the use of an internal device memory manager. By default, the device memory manager is enabled. It maintains a list of deallocated chunks of device memory in an attempt to efficiently reuse them for future allocations.
+|
+NVCOMPILER_ACC_MEMHINTS
+|
+For NVIDIA CUDA devices, controls the use of automatic memory hints at data constructs in the managed and unified memory modes. Below is a breakdown of the permitted values (case insensitive):
+DEFAULT: Use the default settings. On NVIDIA Grace Hopper systems, the default is currently ENABLE_EXPLICIT; on all other systems, the default is DISABLE.
+DISABLE: Memory hints are disabled for all data constructs.
+ENABLE_EXPLICIT: Memory hints are enabled for explicit data constructs only.
+ENABLE_ALL: Memory hints are enabled for explicit and implicit data constructs.
+|
+NVCOMPILER_ACC_MEMPREFETCH
+|
+For NVIDIA CUDA devices, controls the use of automatic memory prefetching at data constructs in the managed and unified memory modes. Below is a breakdown of the permitted values (case insensitive):
+DEFAULT: Use the default settings. On NVIDIA Grace Hopper systems, the default is currently DISABLE; on all other systems, the default is ENABLE_UPDATE.
+DISABLE: Memory prefetching is disabled for all data constructs.
+ENABLE_UPDATE: Memory prefetching is enabled for update data constructs only.
+ENABLE_EXPLICIT: Memory prefetching is enabled for explicit data constructs only.
+ENABLE_ALL: Memory prefetching is enabled for explicit and implicit data constructs.
+|
+NVCOMPILER_ACC_UNIFED_ALLOC_MODE
+|
+For NVIDIA CUDA devices, controls the type of dynamically allocated memory when the application is compiled in the Unified Memory mode using the -gpu=mem:unified switch (case insensitive):
+DEFAULT: Use the default settings. Currently, the default is MANAGED.
+SYSTEM: Allocate system memory.
+MANAGED: Allocate CUDA managed memory.
+PINNED: Allocate host pinned memory.
+5.4.2. Managed and Unified Memory Modes
+The NVIDIA HPC Compilers support interoperability with CUDA Unified Memory. This feature is available with the x86-64 and Arm Server compilers. Unified memory provides a single address space for CPU and GPU; data movement between CPU and GPU memories is implicitly handled by the NVIDIA CUDA driver.
+Whenever data is accessed on the CPU or the GPU, it could trigger a data transfer if the last time it was accessed was not on the same device. In some cases, page thrashing may occur and impact performance. An introduction to CUDA Unified Memory is available on Parallel Forall.
+5.4.2.1. Managed Memory Mode
+In Managed Memory Mode, all Fortran, C++ and C explicit allocation statements (e.g. allocate, new, and malloc, respectively) in a program unit are replaced by equivalent CUDA managed data allocation calls that place the data in CUDA Managed Memory. The result is that OpenACC and OpenMP data clauses and directives are not needed to manage data movement. They are essentially ignored and can be omitted. For Stdpar this is the minimal required memory mode since there are no specific annotations for data used in the parallel region.
+To enable Managed Memory Mode, add the option -gpu=mem:managed to the compiler and linker command lines.
+When a program allocates managed memory, it allocates host pinned memory as well as device memory thus making allocate and free operations somewhat more expensive and data transfers somewhat faster. A memory pool allocator is used to mitigate the overhead of the allocate and deallocate operations. More details can be found in Memory Pool Allocator.
+Managed Memory Mode has the following limitations:
+Use of managed memory applies only to dynamically-allocated data.
+Given an allocatable aggregate with a member that points to local, global, or static data, compiling with -gpu=mem:managed and attempting to access memory through that pointer from the compute kernel will cause a failure at runtime.
+C++ virtual functions are not supported.
+The -gpu=mem:managed compiler option must be used to compile the files in which variables (accessed from GPU) are allocated, even if there is no code to accelerate on the GPU in the source file.
+When linking multiple translation units, the application must ensure that all data are deallocated using the scheme corresponding to their allocation. For example if the data are allocated in managed memory the deallocation must be performed using CUDA API calls for managed memory. More details and extra compiler support is detailed in Interception of Deallocations.
+Managed Memory Mode has the following additional limitations when used with NVIDIA Kepler GPUs:
+Data motion on Kepler GPUs is achieved through fast pinned asynchronous data transfers; from the program’s perspective, however, the transfers are synchronous.
+The NVIDIA HPC Compiler Runtime enforces synchronous execution of kernels when -gpu=mem:managed is used on a system with a Kepler GPU. This situation may result in slower performance because of the extra synchronizations and decreased overlap between CPU and GPU.
+The total amount of managed memory is limited to the amount of available device memory on Kepler GPUs.
+Memory Allocations/Deallocations Automatically Changed to Managed Memory
+When the compiler utilizes CUDA Managed Memory capability either with -gpu=mem:managed or -gpu=mem:unified, the following explicit allocations/deallocations are automatically changed into cudaMallocManaged/cudaFree-type allocations/deallocations:
+For C++:
+All calls to global operator new and operator delete that allocate or deallocate memory, such as:
+operator new(std::size_t size) operator new(std::size_t size, const std::nothrow_t &nothrow_value) operator new(std::size_t size, std::align_val_t align) operator new(std::size_t size, std::align_val_t align, const std::nothrow_t &nothrow_value) operator delete(void *p) operator delete(void *p, std::size_t size) operator delete(void *p, std::align_val_t align) operator delete(void *p, std::size_t size, std::align_val_t align) operator delete(void *p, const std::nothrow_t &nothrow_value) operator delete(void *p, std::align_val_t align, const std::nothrow_t &nothrow_value)
+All the array forms of the above overloads.
+All calls to malloc/free functions.
+For C: all calls to malloc/free functions.
+For Fortran:
+All allocations of automatic arrays.
+all allocate/deallocate statements with allocatable arrays or pointer variables.
+5.4.2.2. Unified Memory Mode
+In Unified Memory Mode, the requirements for the program are further relaxed compared to Managed Memory Mode. Specifically, not only is dynamically allocated system memory accessible on the GPU, but global and local memory are also accessible.
+To enable this feature, add the option -gpu=mem:unified to the compiler and linker command lines.
+Programs compiled with -gpu=mem:unified must be run on systems that support full CUDA Unified Memory capability. At this time, full CUDA Unified Memory is supported on NVIDIA Grace Hopper Superchip systems and Linux x86-64 systems running with the Heterogeneous Memory Management (HMM) feature enabled in the Linux kernel. Details about these platforms are available in the following blog posts on the NVIDIA website: Simplifying GPU Programming for HPC with NVIDIA Grace Hopper Superchip and Simplifying GPU Application Development with Heterogeneous Memory Management.
+In Unified Memory Mode, the compiler assumes that any system memory is accessible on the GPU. Even so, the compiler may generate managed memory allocations for explicit data allocations when it considers them beneficial for program performance. If you would like to enforce or prohibit the use of managed memory for dynamic allocations pass -gpu=mem:unified:[no]managedalloc to compilation and linking.
+If the program is compiled with the -gpu=mem:unified switch, you can also use the NVCOMPILER_ACC_UNIFED_ALLOC_MODE environment variable to select the dynamic memory allocation mode at runtime. Please refer to Environment Variables Controlling Device Memory Management for a comprehensive list of its recognized values.
+Unified Memory Mode has the following limitations:
+Unified memory support for OpenACC, OpenMP and Stdpar Fortran is not mix-and-match; all object files containing OpenACC/OpenMP directives or Fortran DO CONCURRENT constructs must be compiled and linked with -gpu=mem:unified to ensure correct execution.
+C++ virtual functions are not supported.
+Transitioning to Unified Memory Mode
+Applications transitioning to architectures that support Unified Memory Mode can be recompiled with -gpu=mem:unified without any code modifications.
+The programmer should be aware that in Unified Memory Mode, the whole program state becomes essentially shared between the CPU and the GPU. By implication, modifications to program variables made on the GPU are visible on the CPU. That is, the GPU does not operate on a copy of the data even if the program contains respective directives, but instead the GPU operates directly on the data in system memory. To understand the importance of this idea, consider the following OpenACC C program:
+int x[N]; void foo() { #pragma acc enter data create(x[0:N]) #pragma acc parallel loop for (int i = 0; i < N; i++) { x[i] = i; } }
+When compiled in Separate Memory Mode, in the foo() function a copy of the array x is created in GPU memory and initialized as written in the loop construct. When -gpu=mem:unified is added, however, the compiler ignores the acc enter data construct, and the loop construct initializes the array x in system memory.
+Another implication of which to be aware, asynchronous code execution on the GPU can introduce race conditions over access to program data. More details about code patterns to avoid when writing application sources for Unified Memory Mode can be found in the sections about specific programming models of this guide e.g. OpenACC, OpenMP, or CUDA Fortran.

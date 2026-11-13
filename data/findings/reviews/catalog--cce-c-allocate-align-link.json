@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-c-allocate-align-link.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "omp_default_mem_alloc is a predefined allocator, allowed in uses_allocators with no modifiers, and the allocate clause on parallel for names private t on the same directive with allocator and align (power of two). The restriction on target regions is satisfied by the simple/complex allocator modifier. Hence the program conforms and a link failure on __kmpc_aligned_alloc is a compiler/runtime deficiency; result 2*i+1 expected."
+  },
+  {
+   "run": "run-20261113/batch-46",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "allocate clause with allocator and align on a private list item of parallel for is permitted. The predefined omp_default_mem_alloc is made available by uses_allocators on target. No data race: t is private. Nothing makes a missing runtime entry point an allowed outcome, so a conforming implementation must compile and link."
+  },
+  {
+   "run": "run-v2-20261113/batch-104",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "uses_allocators names a predefined allocator, permitted on target. The allocate clause on parallel for privatizes t via private and uses an allocator modifier and a constant positive align(8), as required inside a target region. Conforming, so the compiler must accept and link; the missing __kmpc_aligned_alloc is a runtime library gap.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-15",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "uses_allocators names a predefined allocator, so it is available in the target region. The allocate clause on parallel for names a private list item, gives an allocator as the target-region rule requires, and uses an align modifier with a positive constant. t is private, so there is no race. The program is conforming, so a link failure on __kmpc_aligned_alloc is a compiler or runtime library bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d05fdb96e2afe5232c1860e174c865150e79734e637f850703498bfbbfa39df0",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

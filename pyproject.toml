@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61", "pyyaml"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "offtarget"
+version = "0.1.0"
+description = "Known OpenMP and OpenACC offload compiler problems: look up support, search issues"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["pyyaml"]
+
+[project.scripts]
+offload = "offload.cli:main"
+
+[tool.setuptools]
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+
+[tool.setuptools.packages.find]
+include = ["offload*"]

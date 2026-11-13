@@ -1,0 +1,8 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: amdclang -fopenmp --offload-arch=gfx942 -fopenmp-version=60 -O2 (AFAR 24.0.0git) on offload.engine.c_gen omp60-c-clause-num_threads-strict
+# exit status: 0
+==== verbatim output below ====
+omp60-c-clause-num_threads-strict.c:33:63: warning: modifier 'strict' is currently not supported on a GPU for the 'num_threads' clause; modifier ignored [-Wopenmp-clauses]
+   33 |     #pragma omp parallel for default(none) shared(a, b, nthr) num_threads(strict: 4)
+      |                                                               ^
+1 warning generated.

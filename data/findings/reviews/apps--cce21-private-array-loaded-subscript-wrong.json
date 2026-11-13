@@ -1,0 +1,113 @@
+{
+ "finding": "apps/cce21-private-array-loaded-subscript-wrong.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "v is private to each thread/team, assigned before use, so v(s(3)) with s(3)=3 reads 30. d is declare target and updated to the device; s is mapped to. Writes to zb, zc, zt, zn are by distinct r. teams distribute accepts private. No race, no unspecified behavior; 64 mismatches means private array indexed by a loaded subscript is miscompiled."
+  },
+  {
+   "run": "run-20261112/batch-30",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "v is private in every region and fully assigned before use; s, w, d are read-only (s,w mapped to, d declare target and updated). No race. s(3)=3 so v(3)=30 for each construct; expected 0 mismatches. Subscript through a mapped/declare-target array into a private array is ordinary Fortran, so nonzero counts are a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each iteration defines the private array v before use, so v(s(3)) is v(3)=30 with s mapped to; d is declare target and updated with target update to(d), so v(d(3)) is 30. private applies to the innermost leaf (do or distribute); no data race since each iteration or thread has its own v and writes z(r). Expected counts 0; observed 64 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-37",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-80",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each loop iteration writes only zb(r) etc. and uses its own private copy of v, which is set before use. s is mapped to, d is declare target and updated, so v(s(3)) and v(d(3)) must give 30 on every iteration. No race or restriction is violated; a result of 0 correct entries is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 5,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "10c681997e7c388be5a173aae6b3bc058ac4a4ea4c4563c54924092dcde635d1",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

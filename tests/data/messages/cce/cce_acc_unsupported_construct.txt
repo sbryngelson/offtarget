@@ -1,0 +1,11 @@
+# Verbatim compiler output stored by the widened catalog (results/widen/matrix.jsonl, acc34-w-character-local cce19 xnack=0), Tuolumne, 2026-10-24. Module-system notices dropped.
+# source: ftn -h acc -O2 (CCE 19.0.0) on offload.engine.widen acc34-w-character-local
+# exit status: 1
+# (review I7): CCE says it does not implement the OpenACC construct: not_implemented, like "Unsupported OpenMP construct"
+==== verbatim output below ====
+ftn-7060 ftn: ERROR WIDE_PROG, File = ../../acc34-w-character-local.f90, Line = 30 
+  Unsupported OpenACC construct Fortran character
+
+Cray Fortran : 35 source lines
+Cray Fortran : 1 errors, 0 warnings, 0 other messages, 0 ansi
+Cray Fortran : "explain ftn-message number" gives more information about each message.

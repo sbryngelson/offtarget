@@ -1,0 +1,7 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.gen omp50-clause-aligned (OpenMP/OpenACC version 50), compile sweep
+# exit status: 0
+==== verbatim output below ====
+NVFORTRAN-W-0547-OpenMP feature, ALIGNED, not yet implemented in this version of the compiler. (<tmpdir>/p.f90: 29)
+NVFORTRAN-W-0547-OpenMP feature, ALIGNED, not yet implemented in this version of the compiler. (<tmpdir>/p.f90: 29)
+  0 inform,   2 warnings,   0 severes, 0 fatal for gen_prog

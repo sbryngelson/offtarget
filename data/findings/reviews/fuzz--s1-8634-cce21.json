@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/s1-8634-cce21.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Mapping a fixed-length character scalar with target enter data and exit data release is conforming; a compiler crash is not permitted."
+  },
+  {
+   "run": "run-20261113/batch-72",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Fortran character is an aggregate variable, mapped explicitly with enter/exit data using to and release; no restriction is broken. A conforming compiler must accept it; the observed crash is a compiler defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-53",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A fixed-length character scalar is a valid list item in map clauses of target enter data and target exit data (release). The program is conforming and a conforming compiler must compile it; an internal compiler crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-71",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-74",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A scalar character variable of length 8 is a legal list item in map clauses on target enter data and target exit data. The spec says a character variable is an aggregate variable but nothing forbids mapping it. A conforming compiler must compile it, so the crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-44",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "701c53faceb6d717f59fd04d10093b0d1cde9c4f842411f3c529814bfb37753e",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{description}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="{root}static/site.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="{root}index.html">OffTarget</a>
+  <nav class="nav" aria-label="Sections">
+    <a href="{root}index.html"{cur_issues}>Observed issues</a>
+    <a href="{root}compilers/index.html"{cur_compilers}>Compilers</a>
+    <a href="{root}canuse.html"{cur_canuse}>Feature support</a>
+    <a href="{root}method.html"{cur_method}>Method</a>
+  </nav>
+  <form class="search" role="search" action="{root}index.html" method="get">
+    <label for="q" class="lbl" style="position:absolute;left:-9999px">Search issues</label>
+    <input id="q" name="q" type="search" placeholder="Search: lastprivate, defaultmap, link, ICE…">
+  </form>
+</div></header>
+<main class="wrap">
+{body}
+</main>
+<footer class="foot"><div class="in">{footer}</div></footer>
+{scripts}
+</body>
+</html>

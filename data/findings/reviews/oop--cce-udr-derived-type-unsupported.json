@@ -1,0 +1,132 @@
+{
+ "finding": "oop/cce-udr-derived-type-unsupported.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-29",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The declare reduction is in the main program's specification part; the combiner calls vadd, which is a module procedure with an explicit interface, accessible by use association, and is declare target. The initializer sets omp_priv with a structure constructor. acc is a reduction list item in a combined target construct and is mapped tofrom. Sum of i is 2080 and of 2i is 4160. A conforming compiler must accept it; the refusal is a limitation, not a spec allowance."
+  },
+  {
+   "run": "run-20261113/batch-82",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "declare reduction precedes its use in the same subprogram. The combiner and initializer reference vadd, which has an explicit interface (module procedure) and is declare target. The Fortran-specific restrictions on reduction identifiers are met. acc is a non-scalar and is mapped tofrom. A conforming compiler must compile the program. The refusal is a compiler limitation."
+  },
+  {
+   "run": "run-v2-20261113/batch-103",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare reduction precedes its use in the reduction clause, is in the program subprogram, and the combiner is an assignment statement using only omp_in and omp_out. vadd comes from a module, so it has an explicit interface, and it is declare target so the device can call it. The refusal of a user-defined reduction in a target construct is a compiler limitation; a conforming compiler must accept the program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-33",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The reduction identifier vsum is declared before its use in the reduction clause for type v2. The combiner is an assignment statement, allowed by the combiner rules, and uses only omp_in and omp_out as variables; vadd is a function with a declare target directive. The initializer sets omp_priv. Result is 2080 and 4160. A conforming compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": true,
+     "false_claims": [
+      "The combiner may call vadd, since vadd is a function with a declare target directive."
+     ],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "368d90ac25e77b3ed80fda57ef7fd8df8dc7c9162b6b34ebb1576f91327e1d13",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,160 @@
+{
+ "finding": "fuzz/b1-121-afar.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "An empty teams region is a valid structured block in Fortran. Each team's private r1a is initialized to the iand identity (all ones); after the region the original (1048575) is combined with the copies: iand(1048575, -1...)=1048575, so checksum must be 1048575, not 0. The number of teams is unspecified but does not change the result. firstprivate(p1) is unused but legal."
+  },
+  {
+   "run": "run-20261112/batch-34",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "An empty teams region with reduction(iand) is conforming. Each team's private copy starts with all bits on, and at the end of the region the original list item (r1a, mapped tofrom on the enclosing target) is combined with the private copies. iand(1048575, all ones) = 1048575, regardless of the number of teams, so the checksum must be 1048575. Observed 0 means the private copies were initialized to 0 or the result was not combined correctly. p1 is an unused firstprivate scalar and harmless."
+  },
+  {
+   "run": "run-20261112b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "reasoning": "teams is directly nested in target; an empty teams region with reduction(iand:r1a) and firstprivate(p1) is allowed. Each team's private copy is initialized to all bits on, and at the end the original list item is combined with the private copies using iand. Original 1048575 iand all-ones = 1048575, regardless of the number of teams. The result cannot be 0, so checksum=0 is wrong (expected 1048575 mod 2147483629 = 1048575)."
+  },
+  {
+   "run": "run-v2-20261113/batch-116",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "teams with reduction(iand) and an empty body is conforming. Private copies start as all bits on; after the region the original r1a is updated by combining them, so iand(1048575, all ones) = 1048575 is required. The checksum must be 1048575, not 0. r1a is mapped tofrom, so the device value returns to the host.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-50",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "teams with reduction(iand) on r1a, which is mapped tofrom. The iand initializer is all bits on, and combining with the original value gives 1048575 for any number of teams. The expected checksum is 1048575, so the observed 0 is wrong. The empty teams body and unused firstprivate p1 are legal.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-64",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113c/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6c9add99fc1c7efe54ecf738d8b9714abba3867ee803d4f16d8639835dbebd54",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

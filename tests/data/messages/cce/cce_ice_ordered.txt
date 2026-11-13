@@ -1,0 +1,39 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: ftn -fopenmp -O2 after module load cce/19.0.0 craype-accel-amd-gfx942 rocm (CCE 19.0.0, rocm 6.4.3) on offload.engine.gen omp52-clause-ordered (block ordered in a parallel do in target)
+# exit status: 1
+==== verbatim output below ====
+MT_CONTEXT_ORDERED
+   Error message      ::  unhandled construct type
+   Error detected     ::  File '/workspace/crayftn/pdgcs/v_openmp.c', line 7617
+   Initiated from     ::  Line 660 (v_main.c)
+   Optimizer built    ::  2025-02-07 (production)
+
+   File               ::  /tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-clause-ordered.f90
+   Function           ::  gen_prog
+   at or near line    ::  10
+
+   Compiler hash      ::  cc4d36e4ff3377d45f0e6e892b5dacd82009a0ca
+   Target             ::  Heterogeneous
+     CPU              ::  x86-trento
+     ACCEL            ::  amdgcn-gfx942
+
+Creating internal compiler error backtrace (please wait):
+[0x00000000d5ff89] linux_backtrace ??:?
+[0x00000000d60e21] pdgcs_internal_error(char const*, char const*, int) ??:?
+[0x00000000af7e60] acc_process_if_clause() ??:?
+[0x00000000b0e832] initial_mt_processing() ??:?
+[0x0000000094fea5] void run_pass_helper<void>::exec<void (&)()>(int, char const*, void (&)()) ??:?
+[0x0000000093c1c0] pdgcs_main ??:?
+[0x000000008d1fcd] PDGCS_do_proc ??:?
+[0x00000000824374] m_cvrt_to_pdg ??:?
+[0x0000000085678c] m_start_ipa ??:?
+[0x0000000070592f] main ??:?
+[0x00155553100864] ?? ??:0
+[0x00000000804f6d] _start ??:?
+
+Note:  This is a non-debug compiler.  Technical support should
+       continue problem isolation using a compiler built for
+       debugging.
+
+ftn-7991 ftn: INTERNAL GEN_PROG, File = ../../claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp52-clause-ordered.f90, Line = 10 
+  INTERNAL COMPILER ERROR:  "unhandled construct type" (/workspace/crayftn/pdgcs/v_openmp.c, line 7617, version cc4d36e4ff3377d45f0e6e892b5dacd82009a0ca)

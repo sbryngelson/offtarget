@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/afar-flang-workdistribute-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "'teams workdistribute' is a conforming combined name (teams followed by partitioned-nonworksharing-workdist-dir-name), so 'target teams workdistribute' is valid in 6.0. The block holds only an intrinsic array assignment, with no explicit region inside. default(none) lists a, b and on_dev (declare target variable). Device on_dev=1 persists, so b=2a+1. A conforming compiler must accept; a crash is a defect."
+  },
+  {
+   "run": "run-20261113/batch-54",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Body of workdistribute is a single intrinsic array assignment with a scalar operand, which is permitted. It is closely nested in teams via the combined target teams workdistribute. on_dev is a declare target (enter) module variable set on the device earlier and listed in shared under default(none). No race. The observed result is a compiler crash, so a conforming compiler must compile it. Minor uncertainty about combined-construct clause placement."
+  },
+  {
+   "run": "run-v2-20261113/batch-115",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "teams workdistribute is a valid combined name in 6.0 and so is target teams workdistribute. The body is a single intrinsic array assignment, with on_dev a declare target scalar listed in shared. No restriction is broken, so the compiler must accept it; a crash is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-37",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target teams workdistribute is a valid combined construct: workdistribute is nested directly in teams. The body is one intrinsic array assignment, which the restrictions allow. on_dev is a declare-target scalar listed in shared, so default(none) is satisfied, and the earlier target region sets the device copy to 1, so b equals ref. The workdistribute binding thread set is the initial threads, not a team, so it is not a worksharing construct and the compound-name rule requiring parallel does not apply. A compiler crash is not permitted for a legal program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-29",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "a72a37441ec59c7afa8a7d4fd492d2faa75648084c4965fefb9718d929da6d20",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

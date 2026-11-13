@@ -1,0 +1,113 @@
+{
+ "finding": "gcc/gcc-c-motion-mapper-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 5.2 allows the mapper modifier on the to clause of target update. The mapper mm maps only q.v, so the update moves s.v and leaves device s.w at its earlier value 1, giving rv==5, rw==1 when memory is separate. Without separate memory the check is skipped. The declare mapper is at file scope. Rejecting the mapper modifier is a compiler gap."
+  },
+  {
+   "run": "run-20261113/batch-67",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 5.2 lists a mapper modifier for the to clause on target update, with a declare mapper in file scope. The enter data maps all of s with the default mapping, the update with mapper mm refreshes only s.v, so rv==5 and rw==1 on a separate-memory device. Implicit map of s in the later target finds it present. The compiler rejecting the mapper modifier is a missing feature."
+  },
+  {
+   "run": "run-v2-20261113/batch-17",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 lists a mapper modifier for the to clause on target update, and a declare mapper named mm exists for struct dt. The motion clause invoking the mapper replaces the update with updates derived from the mapper map(q.v), so only s.v is updated and s.w stays. s is present from enter data, so the update is legal. A refusal of to(mapper(mm): s) is a compiler gap.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-43",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-69",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The to clause of target update accepts the mapper modifier in 5.2, and mapper mm operates on struct dt, matching s. The program is conforming, so a compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "5a64e9e3015b3dc6e52438144b32cacbfba60858e3fadc023bbd1f9c2b4fc5fd",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

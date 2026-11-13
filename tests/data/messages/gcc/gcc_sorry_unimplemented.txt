@@ -1,0 +1,14 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a (gcc_g90) -O2 on offload.engine.gen omp50-clause-uses_allocators-traits (legal; the compile-only sweep, tools/campaigns/gcc_compile_sweep.py)
+# exit status: 1
+==== verbatim output below ====
+<tmpdir>/p.f90:31:25:
+
+   31 |   !$omp& uses_allocators(my_alloc(my_traits))
+      |                         1
+Warning: The specification of arguments to ‘uses_allocators’ at (1) where each item is of the form ‘allocator(traits)’ is deprecated since OpenMP 5.2; instead use ‘uses_allocators(traits(my_traits): my_alloc)’ [-Wdeprecated-openmp]
+<tmpdir>/p.f90:31:45:
+
+   31 |   !$omp& uses_allocators(my_alloc(my_traits))
+      |                                             1
+sorry, unimplemented: ‘uses_allocators’ clause with traits and memory spaces

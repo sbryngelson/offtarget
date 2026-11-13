@@ -1,0 +1,16 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: bash: . /etc/profile; module load cce/19.9.9 craype-accel-amd-gfx942 rocm (nonexistent module version)
+# exit status: 1
+==== verbatim output below ====
+Lmod has detected the following error: The following module(s) are unknown:
+"cce/19.9.9"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore_cache load "cce/19.9.9"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+

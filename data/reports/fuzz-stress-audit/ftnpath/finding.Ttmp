@@ -1,0 +1,14 @@
+92030012680681Leaf "g3" was inlined.G210Leaf "g3" was inlined.
+92030012800801Tree "g2" was flattened.#"g2"(/tmp/cce-cif/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/stress.f90:64)   "g3"(/tmp/cce-cif/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/stress.f90:52)G110Tree "g2" was flattened.#"g2"(/tmp/cce-cif/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/stress.f90:64)   "g3"(/tmp/cce-cif/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/stress.f90:52)
+966202291091191CHAIN11A loop starting at line 91 was replaced by a library call.
+911640529209229296CHAIN11A region starting at line 92 and ending at line 96 was placed on the accelerator.
+917682329209229296CHAIN21A region starting at line 92 and ending at line 96 was multi-threaded.
+91164162920922user shaped variable "out"96CHAIN31If not already present: allocate memory and copy user shaped variable "out" to accelerator, copy back at line 96 (acc_copy).
+917682329209229296CHAIN41A region starting at line 92 and ending at line 96 was multi-threaded.
+917682329209229296CHAIN51A region starting at line 92 and ending at line 96 was multi-threaded.
+9116430293093293 across the threadblocks and the 256 threads within a threadblockCHAIN11A loop starting at line 93 was partitioned across the threadblocks and the 256 threads within a threadblock.
+9760052970972974CHAIN11A loop starting at line 97 was unrolled 4 times.
+966204297097197CHAIN21A loop starting at line 97 was vectorized.
+91616742101400110 10Cray Fortran : 0 errors, 0 warnings, 11 other messages, 0 ansi
+916163621012Cray Fortranftn 20Cray Fortran : "explain ftn-message number" gives more information about each message.
+-1

@@ -1,0 +1,113 @@
+{
+ "finding": "gcc/gcc-declare-mapper-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-17",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "declare mapper in a program's specification part is allowed. The mapper uses map(to:) and the construct uses tofrom; map-type decay gives to, so s%v is not copied back and stays 1 with separate memory. Shared memory is handled by the check. No race. A conforming OpenMP 5.2 compiler must accept the directive and the mapper modifier."
+  },
+  {
+   "run": "run-20261113/batch-50",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Fortran declare mapper(mm: dt :: q) with map(to: q%v) matches the 5.2 mapper-specifier syntax and sits in the specification part. map(mapper(mm), tofrom: s) is a valid mapper modifier use. Map-type decay of mapper 'to' with construct 'tofrom' gives 'to', so s%v is not copied back on separate memory and the program's check (s%v==1) is right; with shared memory the check is skipped. No races. A conforming compiler must accept it; the refusal is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-22",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare mapper directive in the program specification part uses the Fortran form mapper-identifier : type :: var, with a map clause on var. The target construct invokes it once with map(mapper(mm), tofrom: s), and s is not mapped by another clause, so the same-mapper restriction is met. The type dt is declared before the directive. A conforming compiler must accept it, so the gfortran refusal is a missing feature.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-69",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-92",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare mapper for dt is in the specification part and the target construct invokes it with map(mapper(mm), tofrom: s). Map-type decay of mapper type to with construct type tofrom gives to. The program is conforming and the expected result is well defined, so the refused directive is a compiler gap.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-07",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4ad850542f6ec67cb01c044016ae189f09100b43f6cb7c4da92eb4386fbd54c8",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,217 @@
+{
+ "finding": "gcc/gcc-c-omp60-undocumented-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-15",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 6.0 lists device_safesync as a requirement clause of the requires directive, valid at file scope in C before device constructs. The program is conforming. The specification states that if an implementation does not support a requirement it must perform compile-time error termination, so a refusal is permitted. The rest (distribute parallel for, distinct b elements, host_flag written by one iteration) is race free."
+  },
+  {
+   "run": "run-20261113/batch-83",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "device_safesync is a requirement clause in 6.0, and the requires directive at file scope precedes the device constructs. The rest is conforming and race free. However, if the implementation does not support the requirement it must perform compile-time error termination, so refusal by a compiler lacking the clause is permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-39",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The device_safesync clause is a valid requires clause in 6.0, and the requires directive appears at file scope before any device construct. The specification says that if an implementation does not support a requirement it must perform compile-time error termination. A refusal is therefore permitted, so acceptance is not required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-07",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-93",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "requires device_safesync is a valid clause in 6.0, appears at file scope before any device construct. However support for any requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination, so a refusal is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-16",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "02a59217d8398374d30da0c9fce1b2d79b69e1cbb66c01ca481b9908db1dce62",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: Both readings agree. device_safesync is a member of the requirement clause group in 6.0 and the requires directive is at file scope before any device construct. But support for a requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. The compiler's refusal is therefore permitted.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-03",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "device_safesync is a requirement clause of requires in 6.0; file-scope placement before device constructs is allowed. Support is implementation defined and an unsupporting implementation must perform compile-time error termination, so the refusal is permitted. Both readings are right."
+  },
+  {
+   "run": "adj-20261113/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "device_safesync is a requirement clause in 6.0, so the file-scope requires is valid. The rest is race free. If the implementation does not support the requirement it must perform compile-time error termination, so refusal is permitted. Both readings are right."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree. device_safesync is a member of the requirement clause group in 6.0 and the requires directive is at file scope before any device construct. But support for a requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. The compiler's refusal is therefore permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "device_safesync is a requirement clause of requires in 6.0 and the directive is at file scope before device constructs. Support for each requirement clause is implementation-dependent, and an implementation that does not support it must perform compile-time error termination, so the refusal is permitted. Both readings agree and are right.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+# The ratchet of tests/cluster/test_standing_rules.py (docs/tooling/contributing.md, "Standing
+# rules"): the violations of the maintainer's standing rules that existed on
+# 2026-11-01 when the rules became tests, one entry per rule and offender,
+# each with the reason it is still here. The tests fail on an offender that is
+# not listed (fix it; do not add it here) and on a listed offender that is
+# fixed (remove its entry), so this file only shrinks. None of the listed
+# offenders was edited when the tests were written.
+version: 1
+entries:
+  - {rule: no-gcc-witness, offender: data/findings/nested/afar-cce-c-call-result-member-in-target-rejected.c, reason: "the legality line says GCC 16.2 compiles and runs the program, without saying GCC is no legality witness (the rules and NVHPC are the witnesses it cites); the finding source was not edited by this task"}
+  - {rule: pdebug-job-name, offender: tools/derive/expected.py, reason: "usage text runs a pdebug job without --job-name=compile-...; documentation, left as it was"}
+  - {rule: pdebug-job-name, offender: tools/jobs/run_copy_subset_c.sh, reason: "usage text runs a pdebug job without --job-name=compile-...; documentation, left as it was"}
+  - {rule: pdebug-job-name, offender: tools/jobs/run_matrix_rerun_xnack1.sh, reason: "usage text runs a pdebug job without --job-name=compile-...; documentation, left as it was"}

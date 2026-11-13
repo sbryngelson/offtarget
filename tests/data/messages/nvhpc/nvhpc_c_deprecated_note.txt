@@ -1,0 +1,10 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-clause-is_device_ptr (OpenMP/OpenACC version 52), compile sweep
+# exit status: 0
+==== verbatim output below ====
+"<tmpdir>/p.c", line 34: warning: The use of use_device_ptr is deprecated, use use_device_addr instead [omp_use_device_ptr_deprecated]
+    #pragma omp target data map(to: a) map(from: b) use_device_ptr(pa, pb)
+                                                    ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+

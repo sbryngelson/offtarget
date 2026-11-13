@@ -1,0 +1,12 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -fopenmp-version=60 -O2 (CCE 19.0.0) on offload.engine.c_gen omp60-c-clause-replayable
+# exit status: 0
+==== verbatim output below ====
+omp60-c-clause-replayable.c:29:69: warning: extra tokens at the end of '#pragma omp target' are ignored [-Wextra-tokens]
+   29 |   #pragma omp target map(to: a) map(from: b) map(tofrom: host_flag) replayable
+      |                                                                     ^
+1 warning generated.
+omp60-c-clause-replayable.c:29:69: warning: extra tokens at the end of '#pragma omp target' are ignored [-Wextra-tokens]
+   29 |   #pragma omp target map(to: a) map(from: b) map(tofrom: host_flag) replayable
+      |                                                                     ^
+1 warning generated.

@@ -1,0 +1,16 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran (gcc_g90) on offload.engine.gen acc34-clause-link (the gcc smoke subset, tools/jobs/run_gcc_lane.sh); flags: -fopenacc -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a -O2
+# exit status: 1
+==== verbatim output below ====
+<tmpdir>/acc34-clause-link.f90:13:14:
+
+   13 |   integer :: lv(64)
+      |              ^~~~~~
+Error: ‘lv’ with ‘link’ clause used in ‘routine’ function
+<tmpdir>/acc34-clause-link.f90:13:14: Error: ‘lv’ with ‘link’ clause used in ‘routine’ function
+<tmpdir>/acc34-clause-link.f90:13:14: Error: ‘lv’ with ‘link’ clause used in ‘routine’ function
+<tmpdir>/acc34-clause-link.f90:13:14: Error: ‘lv’ with ‘link’ clause used in ‘routine’ function
+<tmpdir>/acc34-clause-link.f90:13:14: Error: ‘lv’ with ‘link’ clause used in ‘routine’ function
+<tmpdir>/acc34-clause-link.f90:13:14: Error: ‘lv’ with ‘link’ clause used in ‘routine’ function
+<tmpdir>/acc34-clause-link.f90:13:14: Error: ‘lv’ with ‘link’ clause used in ‘routine’ function
+<tmpdir>/acc34-clause-link.f90:13:14: Error: ‘lv’ with ‘link’ clause used in ‘routine’ function

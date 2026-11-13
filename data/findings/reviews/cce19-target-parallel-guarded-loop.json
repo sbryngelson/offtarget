@@ -1,0 +1,113 @@
+{
+ "finding": "cce19-target-parallel-guarded-loop.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Allocatable arrays are mapped with their data; the target parallel region runs thread 0 over all 64 iterations. The loop variable i is a sequential loop iteration variable inside parallel, hence private, so no race. Only thread 0 writes b, so the result is deterministic and b equals ref (bad=0). Observed bad=63 means the other compilers lose work or data, contrary to the specification."
+  },
+  {
+   "run": "run-20261112/batch-27",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Only thread 0 of the target parallel team executes the loop, so the shared i is used by one thread (also private as a loop iteration variable inside parallel) and b is written by one thread; no race. Thread 0 exists in any team, so it must run the loop, b is copied back, and bad must be 0. bad=63 is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-56",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Only the thread with number 0 runs the sequential loop, and it writes all of b. i is a loop iteration variable of a sequential loop inside a parallel construct, so it is private to that construct. There is no race. b is mapped from, and every element is set, so bad=0 is required. Observed bad=63 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-86",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Only thread 0 of the parallel region executes the loop, so b and i are written by one thread and there is no race. a is mapped to and b from, so b holds 2*a(i)+1 after the region. Expected bad=0 is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "66ab8861f72e19a7a690d854d7f045fcb1580555cf4f8490d68b577b734844d2",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

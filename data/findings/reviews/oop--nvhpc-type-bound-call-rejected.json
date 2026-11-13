@@ -1,0 +1,113 @@
+{
+ "finding": "oop/nvhpc-type-bound-call-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Each type-bound procedure target of the generic binding (scale_i, scale_ij) has a declare target directive in its definition, which meets the stated restriction. v is a non-polymorphic, non-allocatable variable mapped tofrom. Calls through the generic binding resolve statically. Results are 3,6,9 then x10 giving 180. The device compiler's refusal of type-bound calls is not licensed by the specification."
+  },
+  {
+   "run": "run-20261113/batch-71",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "v is non-polymorphic, so v%scale resolves statically to scale_i / scale_ij; both type-bound procedures accessed in the target region contain declare target, meeting the derived-type rule. No data race (one thread executes the target region). r1=(3+6+9)*10=180."
+  },
+  {
+   "run": "run-v2-20261113/batch-117",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Every procedure that the type-bound bindings (scale generic to scale_i, scale_ij) name carries its own declare target directive, so the restriction on type-bound procedures in target regions is met. v is a non-polymorphic variable mapped tofrom, so the generic call resolves statically to scale_i and scale_ij. Result: x,y,z = 1,2,3 scaled by 3 then 10 gives 180. Rejecting the call is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-33",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Every type-bound procedure reached through the generic binding scale (scale_i, scale_ij) has a declare target directive in its definition, which is the only derived-type restriction for target regions. v has no pointer or allocatable components and is mapped tofrom. The generic call resolves statically to scale_i or scale_ij. The expected r1 is 180 (3*10*... per component sum 30+60+90). A conforming compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-19",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4a6215c8da3f678c0d2fc3ee1729bcb67cb3c6970bd7bfdab909585e92986951",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,570 @@
+# The rulings registry. Every legality or spec-reading ruling of
+# data/reports/rulings.md that a confirmer rule (catalog/confirm_rules.yaml)
+# or the legality gate can use, as an entry the confirmer cites by id.
+# Nothing here is new: `rulings_md` is text of rulings.md (whitespace
+# normalized; tests/confirm/test_confirm.py checks it occurs there), and
+# each spec citation's `quote` occurs in that version's spec text, starting
+# on the cited printed page or on the page after it (an item cited where
+# it starts). A reading with no entry is needs_human for the confirmer.
+# Keys: id, kind (legality | spec_reading | implementation_defined |
+# unspecified | no_fixed_value | oracle | mode | environment | process),
+# task, rulings_md, citations [{version, section, page, quote}] (empty for
+# a process or maintainer ruling, which has no spec text), applies (programs:
+# fnmatch patterns of program ids; needs: program markers; reasons:
+# regular expressions on a failure's reason; requires: requirement
+# clauses in the program text), test (a test that exercises the entry).
+version: 1
+entries:
+  - id: RUL-REQUIRES-IMPLDEF
+    kind: implementation_defined
+    task: 26
+    rulings_md: "supporting a requirement is implementation defined, 5.2 §8.2 p.211"
+    citations:
+      - {version: "5.2", section: "8.2", page: 211,
+         quote: "Whether an implementation supports the feature that a given requirement clause specifies is implementation defined."}
+    applies: {requires: [unified_shared_memory, unified_address, self_maps]}
+    # NVHPC refuses the requirement at
+    # compile time unless built with -gpu=unified (separate and managed
+    # memory): a conforming refusal of an implementation-defined feature
+    decides: {verdict: requirement_refused, families: [nvhpc], modes: [copy, managed], reason: "-gpu=unified", outcome: frontend_rejection}
+    test: tests/confirm/test_confirm.py::test_needs_unified_memory_in_copy_mode
+
+  - id: RUL-NEEDS-ZERO-COPY
+    kind: mode
+    task: 26
+    rulings_md: "A program that needs zero-copy memory (needs zero_copy: requires unified_shared_memory, self_maps, the self modifier) gets `needs_zero_copy`, not `x1_only`, and its differences are `needs_unified_memory`"
+    citations:
+      - {version: "5.2", section: "8.2", page: 211,
+         quote: "Whether an implementation supports the feature that a given requirement clause specifies is implementation defined."}
+      - {version: "6.0", section: "7.9.6", page: 285,
+         quote: "If a map-entering clause specifies a self map for a list item then runtime error termination is performed if any of the following is true"}
+    applies: {needs: [zero_copy]}
+    test: tests/confirm/test_confirm.py::test_needs_unified_memory_in_copy_mode
+
+  - id: RUL-REQUIREMENT-REFUSED
+    kind: mode
+    task: 26
+    rulings_md: "`requirement_refused` is its own verdict (AFAR C unified_address, 4 cells), not `neither`: a conforming refusal of an implementation-defined requirement"
+    citations:
+      - {version: "5.2", section: "8.2", page: 211,
+         quote: "Whether an implementation supports the feature that a given requirement clause specifies is implementation defined."}
+    applies: {requires: [unified_address]}
+    test: tests/confirm/test_confirm.py::test_requirement_refused
+
+  - id: RUL-SECTIONS-TWO-CONSTRUCTS
+    kind: unspecified
+    task: 25
+    rulings_md: "a program whose concurrent target constructs map sections of one array that the target regions reference whole is conforming only while no construct can find sections from two other constructs present"
+    citations:
+      - {version: "5.2", section: "5.8.3", page: 155,
+         quote: "was created by maps from more than one earlier construct, the behavior is unspecified."}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_quotes_are_in_the_spec
+
+  - id: RUL-ITERATOR-CONTAINING-ARRAY
+    kind: legality
+    task: 26
+    rulings_md: "the list item instances that would result from different values of the iterator must not have the same containing array"
+    citations:
+      - {version: "5.2", section: "5.8.3", page: 155,
+         quote: "the list item instances that would result from different values of the iterator must not have the same containing array"}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_quotes_are_in_the_spec
+
+  - id: RUL-LOOP-CONCURRENT
+    kind: legality
+    task: 27a
+    rulings_md: "the loop construct's iterations \"may execute in any order, including concurrently\" (5.2 §11.7 p.257), so `mine = mine + 1` in every iteration was a data race"
+    citations:
+      - {version: "5.2", section: "11.7", page: 257,
+         quote: "may execute in any order, including concurrently."}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_quotes_are_in_the_spec
+
+  - id: RUL-BIND-THREAD-SET
+    kind: spec_reading
+    task: 27a
+    rulings_md: "bind(thread) in a parallel region still fails on AFAR flang and CCE ftn (finding)"
+    citations:
+      - {version: "5.2", section: "11.7", page: 257,
+         quote: "Each logical iteration is executed once per instance of the loop region that is encountered by exactly one thread that is a member of the binding thread set."}
+    applies: {programs: ["omp5?-clause-bind-thread*", "omp60-clause-bind-thread*"]}
+    test: tests/confirm/test_confirm.py::test_match_by_program
+
+  - id: RUL-SCHEDULE-IMPLDEF
+    kind: oracle
+    task: 27a
+    rulings_md: "schedule(static) and dist_schedule(static) without a chunk size are treated alike: both no-oracle `implementation_defined`, checked."
+    citations:
+      - {version: "5.2", section: "11.5", page: 248,
+         quote: "If the schedule clause is not specified then the schedule is implementation defined."}
+      - {version: "5.2", section: "11.5.3", page: 253,
+         quote: "One compliant implementation of the static schedule (with no specified chunk_size) would behave as though chunk_size had been specified with value q."}
+    applies: {programs: ["omp5?-clause-schedule", "omp60-clause-schedule", "omp5?-clause-schedule-static", "omp60-clause-schedule-static", "omp5?-clause-dist_schedule", "omp60-clause-dist_schedule", "omp5?-clause-dist_schedule-static", "omp60-clause-dist_schedule-static"]}
+    test: tests/confirm/test_confirm.py::test_oracle_entry_does_not_excuse_a_failure
+
+  - id: RUL-PRESENT-TERMINATION
+    kind: spec_reading
+    task: 26
+    rulings_md: "AFAR not enforcing map(present) at HSA_XNACK=1 is a unified_memory_failure (finding), not \"the negative probe needs copy mode\""
+    citations:
+      - {version: "5.2", section: "5.8.3", page: 152,
+         quote: "If a map clause with a present map-type-modifier appears on a construct and on entry to the region the corresponding list item is not present in the device data environment, runtime error termination is performed."}
+    applies: {programs: ["omp5?-clause-map-present", "omp60-clause-map-present", "omp5?-c-clause-map-present", "omp60-c-clause-map-present"]}
+    test: tests/confirm/test_confirm.py::test_match_by_program
+
+  - id: RUL-DELETE-REFCOUNT
+    kind: spec_reading
+    task: 26
+    rulings_md: "CCE C map(delete) fails in both modes but the program only checks presence in copy mode"
+    citations:
+      - {version: "5.2", section: "5.8.3", page: 153,
+         quote: "If the map-type is delete and the reference count of the corresponding storage block is finite then the reference count is set to zero."}
+      # The pattern also matches the C 5.0 program
+      # (omp50-c-clause-map-delete); the 5.0 text has the same rule
+      - {version: "5.0", section: "2.19.7.1", page: 319,
+         quote: "If the map-type is delete and the corresponding list item's reference count is finite then: a) The corresponding list item's reference count is set to zero;"}
+    applies: {programs: ["omp5?-c-clause-map-delete", "omp60-c-clause-map-delete"]}
+    test: tests/confirm/test_confirm.py::test_match_by_program
+
+  - id: RUL-IS-PRESENT-X1
+    kind: spec_reading
+    task: 26
+    rulings_md: "The AFAR presence reading is confirmed by a second review (5.2 §5.8.3 p.153, §18.8.3 p.389)"
+    citations:
+      - {version: "5.2", section: "18.8.3", page: 389,
+         quote: "The omp_target_is_present routine tests whether a host pointer refers to storage that is mapped to a given device."}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_quotes_are_in_the_spec
+
+  - id: RUL-DEFAULTMAP-IMPLICIT-ONLY
+    kind: spec_reading
+    task: 30
+    rulings_md: "the host copy must stay unchanged (5.2 §5.8.3 p.154 exit step 1a; \"may share storage\" p.153; §5.8.7 p.161; §5.8.1 p.148)"
+    citations:
+      - {version: "5.2", section: "5.8.7", page: 161,
+         quote: "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables that are referenced in a target construct"}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_quotes_are_in_the_spec
+
+  - id: RUL-MAY-SHARE-STORAGE
+    kind: mode
+    task: 30
+    rulings_md: "for the defaultmap regions separate storage is the premise (copy-mode-only evidence)"
+    citations:
+      - {version: "5.2", section: "5.8.3", page: 153,
+         quote: "The original and corresponding list items may share storage"}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_quotes_are_in_the_spec
+
+  - id: RUL-NO-FIXED-VALUE-SELF
+    kind: no_fixed_value
+    task: 27a
+    rulings_md: "map.self and defaultmap.self (6.0; the value depends on whether the device can access the storage, which differs between the memory modes)"
+    citations:
+      - {version: "6.0", section: "7.9.6", page: 285,
+         quote: "If a map-entering clause specifies a self map for a list item then runtime error termination is performed if any of the following is true"}
+    applies: {programs: ["omp60-clause-map-self", "omp60-clause-defaultmap-self", "omp60-c-clause-map-self", "omp60-c-clause-defaultmap-self"]}
+    test: tests/confirm/test_confirm.py::test_unspecified_by_registry
+
+  - id: RUL-NO-FIXED-VALUE-STRICT-THREADS
+    kind: no_fixed_value
+    task: 27a
+    rulings_md: "num_threads(strict: 4) (6.0; a run may end in error termination if 4 threads cannot be provided, so no single value)"
+    citations:
+      - {version: "6.0", section: "12.1.2", page: 389,
+         quote: "Otherwise, if prescriptiveness is specified as strict and Algorithm 12.1 would result in a number of threads other than the value of the first item of the nthreads list then runtime error termination is performed."}
+    applies: {programs: ["omp60-clause-num_threads-strict*", "omp60-c-clause-num_threads-strict*"]}
+    test: tests/confirm/test_confirm.py::test_unspecified_by_registry
+
+  - id: RUL-NO-FIXED-VALUE-RELAXED-INDUCTION
+    kind: no_fixed_value
+    task: 27a
+    rulings_md: "under the relaxed modifier the text does not fix the new list item at the start of a chunk, so no value is fixed (they stay provisional)"
+    citations:
+      - {version: "6.0", section: "7.6.13", page: 258,
+         quote: "When an induction-modifier is not specified, the behavior is as if the relaxed induction-modifier is present."}
+    applies: {programs: ["omp60-clause-induction", "omp60-clause-induction-plus", "omp60-clause-induction-step", "omp60-clause-induction-relaxed", "omp60-clause-induction-times", "omp60-c-clause-induction", "omp60-c-clause-induction-plus", "omp60-c-clause-induction-step", "omp60-c-clause-induction-relaxed", "omp60-c-clause-induction-times"]}
+    test: tests/confirm/test_confirm.py::test_unspecified_by_registry
+
+  - id: RUL-DERIVED-NEEDS-EXECUTION
+    kind: process
+    task: 27a
+    rulings_md: "trusted needs, besides two agreeing independent sources, a positive executed witness"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_runtime_bug_needs_an_executed_witness
+
+  - id: RUL-WITNESS-PER-MODE
+    kind: process
+    task: 27a
+    rulings_md: "for a copy-dependent program (offload.engine.expected.copy_independent false) the witness must come from the verdict's memory mode"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_runtime_bug_needs_an_executed_witness
+
+  - id: RUL-WITHDRAW-WITH-FINDING
+    kind: process
+    task: 27a
+    rulings_md: "it needs a finding with a minimal reproducer and a spec citation"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_disagreeing_toolchain_withdrawn_only_with_a_finding
+
+  - id: RUL-WITHDRAW-FORTRAN-ONLY
+    kind: process
+    task: 27a
+    rulings_md: "a withdrawn compiler's rows of the catalog (Fortran) program are no witness; its C port is not withdrawn"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_disagreeing_toolchain_withdrawn_only_with_a_finding
+
+  - id: RUL-SAME-COMPILER-RUNS
+    kind: process
+    task: 30
+    rulings_md: "gfx90a runs are more runs of the same compilers (afar_g90 counted as afar) and join a copy-independent program's evidence like the copy-mode runs; never an independent source"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_runtime_bug_needs_an_executed_witness
+
+  - id: RUL-ARCH-VS-COPY-MODE
+    kind: mode
+    task: 30
+    rulings_md: "the gfx90a cell is compared with the same compiler's MI300A HSA_XNACK=0 cell (the like-for-like copy mode; a difference from X1 is already a mode difference)"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_arch_specific
+
+  - id: RUL-X1-ORACLE-BLIND
+    kind: mode
+    task: 26
+    rulings_md: "New mode class `x1_oracle_blind` (the X1 cell reads correct only because the check runs in copy mode; a copy-independent check shows the compiler wrong at X1 too)"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_copy_mode_failure
+
+  - id: RUL-PRELUDE-ENVIRONMENT
+    kind: environment
+    task: 26
+    rulings_md: "With cray-mpich loaded, CCE 19 and 20 executables linked it and failed to load under rocm/6.4.3 (exit 127; 7 suite tests)."
+    citations: []
+    applies: {reasons: ["error while loading shared libraries", "cannot open shared object file", "exit_status: 127\\b", "^environment:", "wrong_arch"]}
+    test: tests/confirm/test_confirm.py::test_environment
+
+  - id: RUL-HOST-REFERENCES
+    kind: process
+    task: 24
+    rulings_md: "fuzz host runs and sequential elision remain references; host_path_failure stays in the data and moves to a labelled appendix (\"not offload findings\")"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_our_bug_when_elision_and_compilers_agree_against_the_model
+
+  - id: RUL-SEMANTIC-ATOM-CARRIED
+    kind: process
+    task: 25
+    rulings_md: "a semantic atom (catalog/<model>/semantic_atoms.yaml) is carried by every statement of its program, so a rejection at a directive line is the atom's own failure, not a confound"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_compile_time_bug
+
+  - id: RUL-SCOPE-STRUCTURAL
+    kind: legality
+    task: 24
+    rulings_md: "scope check is structural (offload/engine/offload_scope.py)"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm_legality.py::test_out_of_scope_file_is_not_legal_for_the_catalog
+
+  - id: RUL-MANDATORY-DEVICE
+    kind: spec_reading
+    task: 31
+    rulings_md: "under OMP_TARGET_OFFLOAD=mandatory a legal program whose target region reports that it ran on the host (fell_back_to_host: the program's check passed, ran_on_host=1) while another compiler family runs the same program on the device of the same machine and mode is a compiler or runtime failure whatever the computed value"
+    citations:
+      - {version: "5.2", section: "13.8", page: 284,
+         quote: "The device clause determines the device on which the target region executes."}
+      - {version: "5.2", section: "21.2.8", page: 610,
+         quote: "or uses a non-conforming device number, is as if the omp_invalid_device device number was used."}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_host_fallback_under_mandatory
+
+  - id: RUL-FUZZ-NONCOMPLIANT
+    kind: process
+    task: 31
+    rulings_md: "a fuzz program that no compiler runs correctly on the host is `noncompliant` (excluded from findings and tallies: neither a bug nor our_bug), only when the case is a value outcome (wrong answer; never a device crash) and host builds of at least two compiler families ran to a value"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_fuzz_noncompliant_needs_host_builds
+
+  - id: RUL-OMPVV-UNTRUSTED
+    kind: legality
+    task: 31
+    rulings_md: "Ruling A: omp_vv stays untrusted. Its failures remain needs_human (legality unknown)"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm_legality.py::test_corpus_fortran_is_unknown
+
+  - id: RUL-PORT-DERIVATION
+    kind: process
+    task: 31
+    rulings_md: "Ruling B: a Fortran program's hand derivation counts for its C port when the port computes and checks the same value from the same construct"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_recorded_ports_are_equivalent
+
+  - id: RUL-UNSUPPORTED-EVERYWHERE
+    kind: process
+    task: 31
+    rulings_md: "Ruling C: when every compiler family rejects a program and the legality gate passes without the compilers under test, the verdict is `unsupported_everywhere`"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_compile_time_bug
+
+  - id: RUL-NO-SELF-CHECK
+    kind: legality
+    task: 31
+    rulings_md: "Ruling D: a compiler under test is never a legality checker for its own cases; for other cases a front-end (AFAR flang or clang) rejection counts only if another checker or a ruling agrees"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm_legality.py::test_frontend_rejection_alone_does_not_count
+
+  - id: RUL-REPRODUCTION-GATE
+    kind: process
+    task: 45
+    rulings_md: "a row counts as a compiler failure in the reports and the confirmer only when its gate verdict is confirmed; environment, nondeterministic and not_reproduced rows go to the review queue"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_gate_unconfirmed_goes_to_review
+
+  - id: RUL-TWO-WITNESSES
+    kind: process
+    task: 45
+    rulings_md: "must both accept it for legal and both reject it for illegal; otherwise its legality is unknown (needs_human)"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm_legality.py::test_frontend_rejection_alone_does_not_count
+
+  - id: RUL-COMPILE-TIME
+    kind: process
+    task: 31
+    rulings_md: "a rejection the compiler itself calls not implemented (harness reason `not_implemented`, which includes CCE's \"Unsupported OpenMP construct\") and a construct it accepted and said it ignores (`accepted_ignored`) are `unsupported`"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_compile_time_bug
+
+  - id: RUL-SPEC-READING-DERIVATION
+    kind: process
+    task: 31
+    rulings_md: "a registry spec reading whose `applies` names the program (e.g. RUL-DELETE-REFCOUNT for the map-delete programs, RUL-PRESENT-TERMINATION for the map-present probes) is a hand derivation from the spec text"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_derivation_from_port_and_registry
+
+  - id: RUL-NO-CLAIM-UNSUPPORTED
+    kind: process
+    task: 31
+    rulings_md: "a diagnostic rejection of an OpenMP 6.0 form (a program of spec version 6.0 or later) is compiler_bug only if a recorded vendor claim says the toolchain supports that construct at 6.0"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_newer_form_rejection_without_claim
+
+  - id: RUL-DOCUMENTED-UNSUPPORTED
+    kind: process
+    task: final-review-3
+    rulings_md: "a compile-time rejection of a feature the vendor documents as unsupported is `unsupported` (documented), not compiler_bug"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_rejection_by_vendor_claim_status
+
+  - id: RUL-ELISION-AGAINST-CLAIM
+    kind: process
+    task: 31
+    rulings_md: "our_bug from the elision (R13) needs every comparable device cell with a value (the case's mode for a copy-dependent program; withdrawn compilers excluded) to print the elision's value, from at least two families"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_our_bug_blocked_by_a_device_run_printing_the_claim
+
+  - id: RUL-RUNNER-FAILURE
+    kind: environment
+    task: 31
+    rulings_md: "runner and collector failures (harness errors: environment, ssh or Tioga failure, a node of the wrong arch, loader errors, no result line) are never evidence"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_runner_failure_is_not_evidence
+
+  - id: RUL-FLAKY-MIXED
+    kind: process
+    task: 31
+    rulings_md: "flaky means that some repeats of the cell pass and some fail; a failure on every run whose value varies is deterministic"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_always_failing_with_varying_values_is_not_flaky
+
+  - id: RUL-DEDUPE-SIGNATURE
+    kind: process
+    task: 31
+    rulings_md: "a dedupe hit needs the same front end, outcome group, a mode and arch the finding lists, and for an ICE the same compiler-source site"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm_outputs.py::test_different_ice_site_or_mode_is_not_a_duplicate
+
+  - id: RUL-VALUE-RULES-RUNTIME-ONLY
+    kind: process
+    task: 31
+    rulings_md: "the \"no fixed value\" (R06) and \"needs unified memory\" (R07) rules apply only to run-time failures (R06: wrong answers only)"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_value_rules_do_not_swallow_rejections
+
+  # (amendment of ruling C)
+  - id: RUL-UNSUPPORTED-EVERYWHERE-AMENDED
+    kind: process
+    task: 27b
+    rulings_md: "Amendment of ruling C: \"every family rejects\" stays `unsupported_everywhere` by default, but is `compiler_bug` when all of: an independent legality checker that is not under test accepts the program, the spec text making it legal is quoted with section and page, and the vendor claims support for the feature"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_every_family_rejects_with_all_three_conditions_is_a_bug
+
+  - id: RUL-LEGAL-DEFAULTMAP-NONE
+    kind: legality
+    task: 27b
+    rulings_md: "every variable referenced in the omp5x-clause-defaultmap-none target regions has a data-environment attribute (5.2 §5.8.7 p.162), so the programs are legal"
+    citations:
+      - {version: "5.2", section: "5.8.7", page: 162,
+         quote: "If implicit-behavior is none, each variable that is specified by variable-category and is referenced in the construct but does not have a predetermined data-sharing and does not appear in an enter or link clause on a declare target directive must be explicitly listed in a data-environment attribute clause on the construct."}
+    applies: {programs: ["omp5?-clause-defaultmap-none", "omp60-clause-defaultmap-none"]}
+    test: tests/confirm/test_confirm.py::test_every_family_rejects_with_all_three_conditions_is_a_bug
+
+  - id: RUL-LEGAL-NOHOST-REFERENCE
+    kind: legality
+    task: 27b
+    rulings_md: "the spec says of nohost only that \"If nohost is specified for a procedure then only non-host device versions of the procedure are made available\" (5.2 §13.1 p.275) and states no restriction on a target region that calls such a procedure, so the C nohost programs are legal"
+    citations:
+      - {version: "5.2", section: "13.1", page: 275,
+         quote: "If nohost is specified for a procedure then only non-host device versions of the procedure are made available."}
+    applies: {programs: ["omp52-c-clause-device_type-nohost", "omp60-c-clause-device_type-nohost"]}
+    test: tests/confirm/test_confirm.py::test_every_family_rejects_with_all_three_conditions_is_a_bug
+
+  - id: RUL-MAPPED-FLAG-NOT-COPIED-BACK
+    # process, not spec_reading: a spec reading that names programs is a
+    # derivation of their claimed value (collectors.Derivation); this
+    # ruling decides how CCE 21's cells read, not what the programs print
+    kind: process
+    task: 47
+    rulings_md: "CCE 21's defaultmap family is a wrong answer, not a host fallback: the region runs on the device and the map(tofrom) ran_on_host flag is not copied back (5.2 §5.8.3 p.154 exit step 1a)"
+    citations:
+      - {version: "5.2", section: "5.8.3", page: 154,
+         quote: "map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated as if the list item appeared in a from clause on a target update directive."}
+    # a correction (data/vendor/errata-for-findings.md): CRAY_ACC_DEBUG shows
+    # the kernel and an array flag mapped from in the same region returns 0
+    # (vendor case cce21-defaultmap-device-probe); the catalog's
+    # fell_back_to_host cells of the family rest on the lost scalar
+    # Fortran programs only: the evidence is ftn's (the vendor
+    # probe and the review's probe of every defaultmap kind); no C form shown
+    applies: {programs: ["omp[0-9][0-9]-clause-defaultmap", "omp[0-9][0-9]-clause-defaultmap-[!s]*", "omp[0-9][0-9]-clause-defaultmap-scalar*", "omp[0-9][0-9]-clause-defaultmap-storage*"]}
+    decides: {verdict: compiler_bug, families: [cce], toolchains: [cce21, cce21_g90, cce21_4], outcome: [fell_back_to_host], reason: "^ran_on_host=1 check=pass"}
+    test: tests/confirm/test_confirm.py::test_a_ruling_decides_a_runtime_case
+
+  - id: RUL-HOST-LIBATOMIC
+    kind: environment
+    task: 47
+    rulings_md: "The double _Complex reduction program's undefined __atomic_load is the host object's call into libatomic, which the build recipe does not link: our build, not a compiler defect"
+    citations: []
+    # a correction (data/vendor/errata-for-findings.md): the program without
+    # the target construct fails the same way; with -latomic it builds and
+    # passes on the device in both modes (vendor case
+    # afar-c-complex-reduction-latomic); the finding
+    # catalog/afar-c-complex-reduction-link.c is withdrawn
+    applies: {programs: ["omp52-c-w-reduction-complex"]}
+    decides: {verdict: our_bug, families: [afar], outcome: [rejected], reason: "undefined symbol: __atomic_"}
+    test: tests/confirm/test_confirm.py::test_a_ruling_decides_a_link_failure
+
+  - id: RUL-NOHOST-C-UNSUPPORTED-EVERYWHERE
+    kind: process
+    task: 45
+    rulings_md: "both clang front ends under test, CCE's included, reject the C twin"
+    citations: []
+    applies: {programs: ["omp50-c-clause-device_type-nohost", "omp52-c-clause-device_type-nohost", "omp60-c-clause-device_type-nohost"]}
+    # The C nohost programs are
+    # unsupported_everywhere on the clang front ends (AFAR, CCE) whatever
+    # another machine's NVHPC cell does (data/findings/README.md, the
+    # cce-nohost-link.f90 row; data/reports/rulings.md, withdrawal in the matrix witness)
+    decides: {verdict: unsupported_everywhere, families: [afar, cce], outcome: frontend_rejection}
+    test: tests/confirm/test_confirm.py::test_a_ruling_decides_before_the_family_witness
+
+  - id: RUL-LATER-FORM-UNCLAIMED
+    kind: process
+    task: 28
+    rulings_md: "a diagnostic rejection at a form that a later OpenMP version added to an earlier construct or clause is unsupported, not compiler_bug, unless a recorded vendor claim names that form; a general claim of the earlier version (CCE's \"full OpenMP 5.0\") does not cover it"
+    citations:
+      - {version: "5.2", section: "B.2", page: 627,
+         quote: "The enter clause was added as a synonym for the to clause on the declare target directive"}
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_later_form_rejection_without_claim_is_unsupported
+
+  # The rulings the rules and facts use, and
+  # the rulings behind the rules that cited nothing
+  - id: RUL-PRESENCE-WITNESS
+    kind: process
+    task: 28
+    rulings_md: "A presence or overlap abort (\"Variable not found in present table\", \"Host region ... overlaps present region\", the LLVM offload runtime's present-modifier error) is witnessed only by a run that enforces the present check: another family's CCE run, or AFAR at HSA_XNACK=0 (copy mode); AFAR at HSA_XNACK=1 does not enforce present (data/findings/afar-xnack1-present-not-enforced.f90) and the sequential elision has no device data environment"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_presence_abort_needs_a_witness_that_checks_presence
+
+  - id: RUL-METAMORPHIC-OTHER-FAMILY
+    kind: process
+    task: 28
+    rulings_md: "A compiler family is no metamorphic witness against the expected value in a case of its own (spot-check fix): a compiler that fails deterministically prints the same wrong value on the spec-equivalent rewrites too, so its stable runs made every such wrong answer \"disputed\" or \"conflict\" (needs_human R22) however many other sources agreed; now only other families' rewrites count as the metamorphic source (as a family is never independent evidence)"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_the_case_family_is_no_metamorphic_witness_against_itself
+
+  - id: RUL-METAMORPHIC-DISPUTE
+    kind: process
+    task: 28
+    rulings_md: "R22b: a run-time failure whose expected value the metamorphic runs dispute (another family's runs of the original and its spec-equivalent rewrites give one value, the program's model another) is needs_human by its own rule with both values in the reason"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_metamorphic_dispute_is_named
+
+  - id: RUL-FUZZ-G1-ILLEGAL
+    kind: legality
+    task: 28
+    rulings_md: "Generator defect G1 (fuzz-3; found by CCE 19/20/21's ftn-1510 on 11 s1 programs and b5 seed 193): default(none) on a combined construct must also list the variable of an if(<leaf>:) clause whose leaf is nested inside the default's leaf (if(simd: lsimd) on parallel do simd, if(parallel: lpar) on teams distribute parallel do): the clause is applied to its leaf (5.2 §17.2 p.340), so the expression is evaluated inside the region where default(none) applies, and \"each variable that is referenced in the construct and does not have a predetermined data-sharing attribute must have its data-sharing attribute explicitly determined\" (5.2 §5.4.1 p.109)"
+    citations:
+      - {version: "5.2", section: "5.4.1", page: 109,
+         quote: "each variable that is referenced in the construct and does not have a predetermined data-sharing attribute must have its data-sharing attribute explicitly determined"}
+    applies: {}
+    test: tests/confirm/test_confirm_legality.py::test_fuzz_program_with_a_known_generator_defect_is_illegal
+
+  - id: RUL-R12-NOT-FOR-FUZZ
+    kind: process
+    task: 28
+    rulings_md: "R12 (every family rejects) is not applied to any fuzz program, by design: a fuzz program's rejections by different families concern different constructs; such cells are R12b and go to an agent"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_every_family_rejects_is_not_for_fuzz_programs
+
+  - id: RUL-DISPOSITION-PER-PROGRAM
+    kind: process
+    task: 27a
+    rulings_md: "Disputed verdicts: a written disposition per program in catalog/expected_triage.yaml."
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_stored_implementation_defined_disposition_is_unspecified
+
+  - id: RUL-REGISTRY-ONLY
+    kind: process
+    task: 31
+    rulings_md: "Anything else a rule would need is needs_human"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_rules_file_loads_and_cites_only_registry_entries
+
+  - id: RUL-OBSERVED-FAILURE
+    kind: process
+    task: 26
+    rulings_md: "Portable verdict: `neither` now needs an observed failure in some mode (counted rejection, wrong answer, crash, host fallback, a probe that did not terminate, a presence check failing at HSA_XNACK=1); cells with no observable verdict in either mode (unobservable, accepted and ignored, no-oracle and unverified categories, harness errors, rejections not counted) are `not_verifiable`"
+    citations: []
+    applies: {}
+    test: tests/confirm/test_confirm.py::test_passing_cell_is_not_a_failure

@@ -1,0 +1,113 @@
+{
+ "finding": "cce19-c-reduction-63-scalars-one-wrong.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-41",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Scalar reduction list items on a combined target construct are implicitly mapped tofrom; each is reduced once, with the original value combined once with the partial sums, giving 100+i + 5*i... i.e. s_k = 100+k + 4k = 100+5k. Observed s11=620 is 4x the expected value, so the original value was combined per iteration or team. No race; 64 reduction items are not limited by the spec."
+  },
+  {
+   "run": "run-20261113/batch-63",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The reduction on 64 int64_t scalars on target teams distribute parallel for is valid. Reduction items are implicitly mapped tofrom, and each original value is combined with the partial sums: 100+i plus 4*i = 100+5i, as expected. No race or unspecified behavior; the observed value 620 is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-117",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A reduction clause with 64 list items on a combined target teams distribute parallel for is conforming. The scalars are not in a map clause, so they are mapped tofrom implicitly. Each reduction combines the original value (101+k-1) with 4 iterations of +k, so s_k = 100+k+4k = 100+5k. No race or unspecified behavior. A wrong value for s11 (620) is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-70",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-25",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "All 64 scalars are in reduction(+) on a combined target teams distribute parallel for. They are implicitly mapped tofrom, so the original value (101+) is combined with the sum over 4 iterations: s1=101+4=105, s11=111+44=155. The host value is initialized before the construct. No limit on the number of reduction items exists. The observed s11 value 620 is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-22",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "dddd9db2933b9392f2b7b8b53ca2e0af3c1c6669233d22f0e75fcba5a80891a8",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

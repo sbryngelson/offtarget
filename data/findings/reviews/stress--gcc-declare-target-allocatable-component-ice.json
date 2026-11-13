@@ -1,0 +1,191 @@
+{
+ "finding": "stress/gcc-declare-target-allocatable-component-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-42",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "gq is a declare target module variable; its allocatable component v1 is allocated on the host before being mapped with enter data, and not reallocated while mapped, so the Fortran allocatable restriction holds. host_flag is written by one iteration only (no race). Map clauses are on distinct items. A conforming compiler must accept and compile; the ICE in lower_omp_target is a compiler defect. Slight residual doubt about attach semantics for a declare target parent."
+  },
+  {
+   "run": "run-20261113/batch-44",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "gq is a module variable named in declare target (extended-list, no clauses, in a module specification part, as required). Its allocatable component is mapped by enter data and not reallocated while mapped. The teams loop writes distinct out(i); host_flag is written only by iteration 1. No rule violated found; an internal compiler error is not permitted. Some residual uncertainty about attachment of a component of a declare target variable."
+  },
+  {
+   "run": "run-v2-20261113/batch-45",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "gq is a module variable with static storage in a declare target directive. Its allocatable component v1 is allocated and mapped by enter data and deleted by exit data, so the map restriction on allocation changes is respected. The target region references only mapped or declared-target variables. Each iteration writes a distinct out(i), and only i==1 writes host_flag. The program is conforming, so a compiler ICE is an error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-24",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-65",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Mapping an allocatable component of a declare-target module variable with enter data and using it in a target region appears conforming, but the descriptor/attachment semantics for a component of an already statically mapped variable are subtle. If legal, acceptance is required and an ICE is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-37",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ecfc5b97cd2da11c460ef9dbff88114b2f1e47c9620f51917dd37577b06f3eba",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: gq%v1 is allocated before the enter data map and not reallocated or deallocated while mapped, satisfying the allocation restriction. The target region maps out and host_flag; gq is declare target. Only iteration 1 writes host_flag and each iteration writes a distinct out(i), so there is no race. Acceptance is required, so the ICE is a compiler bug.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "gq%v1 is allocated before the enter data map and not reallocated or deallocated while mapped, satisfying the allocation restriction. The target region maps out and host_flag; gq is declare target. Only iteration 1 writes host_flag and each iteration writes a distinct out(i), so there is no race. Reading B's doubt about attachment has no basis in a restriction. Acceptance is required, so the ICE is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-30",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "gq is a declare target module variable; v1 is allocated before the enter data and deleted by the exit data, so the allocation-change restriction holds. No other element of gq is mapped separately and no polymorphic allocatable is involved. The target region references only gq%v1, out and host_flag, all mapped or declared target. Each iteration writes its own out(i); only i==1 writes host_flag. Reading A is right. Reading B names no passage that makes the program illegal. The internal compiler error is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

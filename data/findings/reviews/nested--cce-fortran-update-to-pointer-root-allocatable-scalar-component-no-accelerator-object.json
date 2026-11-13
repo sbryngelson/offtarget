@@ -1,0 +1,297 @@
+{
+ "finding": "nested/cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r is an associated pointer in map(alloc: r), so its target is implicitly mapped in the same clause; the structure default mapper maps each element, including the allocated component nx. target update to(r) on an associated pointer acts on the pointer target, and allocated subobjects are assigned. The expected sum 996 then follows. The sequence is legal, but the interaction of implicit pointee mapping with alloc and then update through the default mapper is not spelled out for allocatable components, so a required result is not certain."
+  },
+  {
+   "run": "run-20261113/batch-59",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "r is an associated pointer; map(alloc: r) maps its target as if implicitly mapped, including the allocated allocatable component nx via the default mapper. target update to(r) assigns allocated storage. The reduction variable tot is mapped tofrom; the region reads r%a and r%nx%s without changing allocation or association. Expected tot = 8*21 + sum(100..107)=168+828=996. The runtime error indicates a compiler/runtime bug. Mild uncertainty about default-mapper handling of allocatable components in enter data/update."
+  },
+  {
+   "run": "run-v2-20261113/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(alloc: r) of an associated pointer maps its target, but the allocatable component r%nx is a separate allocation that is not mapped or attached, and target update to(r) cannot transfer it. The device region reads r%nx%s, whose storage is not present in the device data environment, so with separate memory the access is not specified to work. The failure is not shown to be a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-39",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The allocatable component r%nx is not mapped by map(alloc: r)",
+      "target update to(r) cannot transfer r%nx"
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The allocatable component r%nx is a separate allocation that is not mapped by the map of r.",
+      "target update to(r) cannot transfer the component."
+     ],
+     "quotes": {
+      "ok": 5,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-104",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Only the pointer r is mapped (alloc), which implicitly maps its target. The allocatable component nx is not an explicit list item, so when the later target region maps r again with nx already present, the map clause may treat nx as unallocated. The device access to r%nx%s is then not guaranteed, so the observed failure is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-66",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113c/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 4,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is an associated Fortran pointer to a derived type with an allocated allocatable component nx. Mapping an associated pointer implicitly maps its target. The predefined default mapper maps each structure element, including the allocated components a and nx (and nx%s via n1's default mapper), so device storage exists. target update to(r) assigns allocated components and the pointer target. The combined construct then finds r present; r is not a scalar, so it is implicitly tofrom with a bumped count. tot=828+168=996. The failure 'no associated accelerator object' is a compiler mapping defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113d/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 6,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ad91ae70ae88199dc81cf2058da98a3f0f1bd1f6edad64f85888988db9af3e00",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: map(alloc: r) of an associated pointer maps its target as if implicitly mapped. The default-mapper rule for components says an allocatable component that is not an explicit list item may be treated as unallocated if the corresponding component lacks allocated storage. Whether target update to(r) transfers the pointer target and the allocatable component nx is not stated.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Program appears conforming: r is an associated pointer, its target is implicitly mapped in the same clause, the predefined default mapper maps each structure element tofrom including allocatable nx, and update assigns only allocated storage. Reading B's chain is plausible, but the text does not clearly say that map(alloc) attaches the device descriptor of an allocatable component to device storage, or that update to(r) through the pointer reaches the component. A required result is not firmly established; Reading A's caution is justified."
+  },
+  {
+   "run": "adj-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The pointer r is associated, so map(alloc: r) maps its target. Reading B overreaches: the pointee rule is stated only for map clauses, and target update to(r) has no stated rule that moves the pointee or its allocatable component nx; it makes the corresponding list item consistent with the original. Whether r%a and r%nx%s reach the device is therefore not specified, and tot==996 is not clearly required. The program itself is conforming."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-04",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(alloc: r) of an associated pointer maps its target as if implicitly mapped. The default-mapper rule for components says an allocatable component that is not an explicit list item may be treated as unallocated if the corresponding component lacks allocated storage. Whether target update to(r) transfers the pointer target and the allocatable component nx is not stated. Both readings admit the device access to r%nx%s is not guaranteed to work, so the failure is not shown to be a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": true,
+     "false_claims": [
+      "The specification does not state whether target update to(r) transfers the pointer target and the allocatable component nx."
+     ],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming: r is an associated pointer, so its target is implicitly mapped, and the default mapper maps the allocatable component nx. The spec lets a map clause treat an allocated component that is present and not an explicit list item as unallocated only if the corresponding component has no allocated storage. Whether enter data alloc plus update to(r) gives nx allocated device storage with a transferred value, and whether the later implicit map of r keeps nx usable, is not stated precisely enough to require the result. Neither reading shows the failure is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-19",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

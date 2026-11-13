@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-c-dist-schedule-chunk.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-15",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dist_schedule(static,4) divides iterations into chunks of 4 and assigns them round-robin to the initial teams in team-number order, so iteration i goes to team ((i-1)/4) mod nt. nt is read at runtime, so num_teams(4) being an upper bound does not matter. No data race: nt and host_flag are written by one iteration. omp_get_team_num/num_teams are valid inside the parallel region. Check must pass."
+  },
+  {
+   "run": "run-20261112/batch-21",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "dist_schedule(static,4) is allowed on the composite construct; no data race (single iteration writes nt and host_flag, team[] elements distinct). The spec fixes chunk-to-team assignment as round-robin in team-number order, so team[i-1] == ((i-1)/4) mod nt holds for any actual team count nt (num_teams is only an upper bound). Compiler A's wrong result is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-117",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "dist_schedule(static, 4) divides iterations into chunks of 4 assigned round-robin to the initial teams in team-number order, so iteration i goes to team ((i-1)/4) mod nt, where nt is the actual number of teams. The check uses exactly this. nt and host_flag are written by one iteration only, and team[] entries are distinct, so there is no race. The failing result is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-35",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-26",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Legal: all variables in default(none) are listed shared; loop variable is predetermined private; n is an enum constant. dist_schedule(static, 4) assigns chunks of 4 iterations round-robin to initial teams in team-number order, so iteration i belongs to team ((i-1)/4) mod nt, where nt is the actual number of teams read with omp_get_num_teams. The check is therefore specified. b and team are fully written; nt and host_flag are single-writer. A wrong answer with execution on the device is a compiler or runtime bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7fe1e8c215a9abcd6303fcb5e6a141073e1cca033c13384c34450d923887fc96",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

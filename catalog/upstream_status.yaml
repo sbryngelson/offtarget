@@ -1,0 +1,100 @@
+# The filing status of the suspected omp_vv test bugs (the agent decisions
+# of catalog/triage_27b.yaml with disposition test_bug), rendered by
+# offload.engine.confirm.triage.render_upstream into docs/upstream.md
+# (`tools/confirm.py triage`; `tools/regenerate.py --check` compares it).
+# `defects`: one entry per defect; `tests`: every test file it covers,
+# each with its own upstream status (`status`: already_fixed | filed |
+# changed_upstream | not_filed), `refs` (issue / PR links), `note` and
+# `defect` (the defect in that file, with the spec citation). Test files
+# with the same defect text and status are rendered as one table row.
+version: 1
+decision: "Maintainer decision 2026-10-24: file upstream."
+corpus: {path: corpus/omp_vv, repo: OpenMP-Validation-and-Verification/OpenMP_VV,
+         commit: f7d95b34, date: "2026-09-17",
+         note: "; before, the archived SOLLVE/sollve_vv d978684 of 2024"}
+active: {repo: OpenMP-Validation-and-Verification/OpenMP_VV,
+         url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV",
+         checked: "2026-10-24"}
+defects:
+  - id: map-iterator-containing-array
+    title: "map iterator instances with one containing array or base pointer"
+    tests:
+      - path: tests/5.1/target/test_target_map_iterators.c
+        defect: "iterator instances share the containing array test_lst (5.1 §2.21.7.1 p.353; 5.2 §5.8.3 p.156; 6.0 §7.9.6 p.286)"
+        status: already_fixed
+        refs:
+          - {text: "issue #868", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/issues/868"}
+          - {text: "PR #869", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/pull/869"}
+        note: "now maps test_lst[it][:1] over an array of pointers; the fixed test is still rejected by AFAR amdclang and CCE craycc at the default OpenMP 5.1 (clang-c-map-iterator-omp51.c) (rerun)"
+      - path: tests/5.1/target/test_target_map_iterators.F90
+        defect: "iterator instances share the containing array test_lst (5.1 §2.21.7.1 p.353; 5.2 §5.8.3 p.156; 6.0 §7.9.6 p.286)"
+        status: already_fixed
+        refs:
+          - {text: "issue #868", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/issues/868"}
+          - {text: "PR #869", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/pull/869"}
+        note: "now maps test_lst(it)%ptr, a pointer component per element, with map(test_lst); the fixed test passes on CCE 19/20/21 on both GPUs, AFAR does not implement it (rerun)"
+      - path: tests/5.2/declare_mapper/test_declare_mapper_iterator.c
+        where: "line 26"
+        defect: "`map(iterator(it = 0:v.len), tofrom: v.data[it])`: every instance has base pointer v.data (same restriction)"
+        status: filed
+        refs:
+          - {text: "OpenMP_VV#921", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/issues/921"}
+        date: "2026-10-24"
+        note: "proposed fix posted as an issue comment, not a PR: the OpenMP Examples document uses the same pattern (Chap_directives.tex), and no compiler here builds either version"
+  - id: declare-mapper-present-unmapped-struct
+    title: "present mapper over a structure that was mapped only in part"
+    tests:
+      - path: tests/5.2/declare_mapper/test_declare_mapper_present.c
+        defect: "present mapper maps all of `v`, but only s.len and s.data[0:s.len] were mapped (5.2 §5.8.3 p.152, p.156)"
+        status: changed_upstream
+        note: "the enter data now also maps s.data (`map(alloc: s.data)`), so every member of s is mapped and the mapper's list item is present. AFAR passes it in both modes on both GPUs; CCE 19/20/21 abort in the runtime (cce-c-map-present-assert.c)"
+  - id: is-accessible-false-is-a-failure
+    title: "omp_target_is_accessible returning false fails the test"
+    tests:
+      - path: tests/5.1/target/test_target_is_accessible.c
+        defect: "a false result (conforming without unified shared memory: 5.1 §3.8.4 p.417; 5.2 §18.8.4 p.390; 6.0 §25.2.2 pp.605-606) returns OMPVV_SKIPPED_EXIT_CODE from check_device(), which main() turns into errors = 1 (`check_device() != 0`): 'Test failed', exit 1"
+        status: filed
+        refs:
+          - {text: "OpenMP_VV#923", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/issues/923"}
+          - {text: "PR #925", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/pull/925"}
+        date: "2026-10-24"
+        note: "the test changed in OpenMP_VV #891"
+      - path: tests/5.1/target/test_target_is_accessible.F90
+        defect: "a false result (conforming without unified shared memory: 5.1 §3.8.4 p.417; 5.2 §18.8.4 p.390; 6.0 §25.2.2 pp.605-606) sets errors (`OMPVV_TEST_AND_SET(errors, check_test.EQ.0)`): 'Test failed', exit 1"
+        status: filed
+        refs:
+          - {text: "OpenMP_VV#923", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/issues/923"}
+          - {text: "PR #925", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/pull/925"}
+        date: "2026-10-24"
+        note: "the test changed in OpenMP_VV #891"
+  - id: c-header-exit-status
+    title: "the C header returns the error count as the exit status"
+    observed: >-
+      Observed here (rerun, OpenMP_VV f7d95b34): 42 runs of the
+      headline toolchains (and 9 of the cce21_4 regression runs) exit 0
+      but print "Test failed" (the error count is a multiple of 256), in
+      five C tests:
+      tests/4.5/target_teams_distribute_parallel_for/test_target_teams_distribute_parallel_for_devices.c,
+      tests/4.5/target_teams_distribute_parallel_for/test_target_teams_distribute_parallel_for_schedule_private.c,
+      tests/5.0/target_update/test_target_update_mapper_from_discontiguous.c,
+      tests/5.0/target_update/test_target_update_mapper_to_discontiguous.c
+      (every CCE cell; AFAR at HSA_XNACK=1 for three of them) and
+      tests/5.0/loop/test_loop_bind_device.c (CCE 20 on gfx90a, CCE 21 at
+      HSA_XNACK=0 and on gfx90a). The suite's own Makefile (CHECK_OUTPUT)
+      reads the exit status, so it would record them as PASS; our baseline
+      reads the result line (offload.engine.baseline.suite_result).
+    tests:
+      - path: ompvv/ompvv.h
+        defect: "`OMPVV_RETURN(err)` is now `return err;` (was `return ((err) == 0) ? EXIT_SUCCESS : EXIT_FAILURE;`): main's return value is reduced modulo 256 by the host (C11 §7.22.4.4 exit: the status is returned to the host environment, of which POSIX keeps the low 8 bits), so an error count that is a multiple of 256 exits 0 and the Makefile's CHECK_OUTPUT records PASS; OMPVV_SKIPPED_EXIT_CODE (-667) exits 109"
+        status: filed
+        refs:
+          - {text: "OpenMP_VV#922", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/issues/922"}
+          - {text: "PR #924", url: "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/pull/924"}
+        date: "2026-10-24"
+observed: >-
+  Observed here (old versions): AFAR amdclang and CCE craycc 19/20/21 reject
+  the C map-iterator tests at OpenMP 5.1 (a separate front-end defect,
+  clang-c-map-iterator-omp51.c); AFAR amdclang terminates
+  test_declare_mapper_present.c at HSA_XNACK=0 and passes at HSA_XNACK=1
+  (afar-xnack1-present-not-enforced.f90); CCE aborts in its runtime
+  (cce-c-map-present-assert.c).

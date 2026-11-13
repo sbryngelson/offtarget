@@ -1,0 +1,12 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: ftn -fopenmp -O2 after module load cce/19.0.0 craype-accel-amd-gfx942 rocm (CCE 19.0.0, rocm 6.4.3) on offload.engine.gen omp60-clause-severity (6.0 clause)
+# exit status: 1
+==== verbatim output below ====
+
+
+ftn-1519 ftn: ERROR GEN_PROG, File = ../../claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/probe/src/omp60-clause-severity.f90, Line = 27, Column = 50 
+  Invalid clause "SEVERITY" for directive !$OMP PARALLEL DO.  Valid clauses: IF, PRIVATE, SHARED, FIRSTPRIVATE, DEFAULT, COPYIN, REDUCTION, LASTPRIVATE, ORDERED, SCHEDULE, SCHEDULE, NUM_THREADS, COLLAPSE, LINEAR, PROC_BIND, IF (PARALLEL:expr), MONOTONIC, NONMONOTONIC, SIMD, ORDERED (n), ALLOCATE, ORDER, LASTPRIVATE(CONDITIONAL:..).
+
+Cray Fortran : 36 source lines
+Cray Fortran : 1 errors, 0 warnings, 0 other messages, 0 ansi
+Cray Fortran : "explain ftn-message number" gives more information about each message.

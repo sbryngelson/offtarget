@@ -1,0 +1,54 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (wingtip, NVIDIA A100), 2026-10-28.
+# source: GCC 16.2.0 gfortran -fopenmp -foffload=nvptx-none -foffload-options=nvptx-none=-march=sm_80 -foffload-options=nvptx-none=-latomic (gcc_sm80) -O2 on the harvested dev program hv-aomp-smoke-fails-flang-324387 (results/harvest/src; coverage parity, tools/campaigns/parity.py)
+# exit status: 1
+==== verbatim output below ====
+during GIMPLE pass: omplower
+hv-aomp-smoke-fails-flang-324387.f90:60:50:
+
+   60 |     !$omp target teams distribute parallel do SIMD
+      |                                                  ^
+internal compiler error: in gfc_omp_clause_default_ctor, at fortran/trans-openmp.cc:840
+0x214aceb internal_error(char const*, ...)
+	<site>/gcc-build/gcc-16.2.0/gcc/diagnostic-global-context.cc:787
+0x7db5a3 fancy_abort(char const*, int, char const*)
+	<site>/gcc-build/gcc-16.2.0/gcc/diagnostics/context.cc:1813
+0x79905c gfc_omp_clause_default_ctor(tree_node*, tree_node*, tree_node*)
+	<site>/gcc-build/gcc-16.2.0/gcc/fortran/trans-openmp.cc:840
+0xde4b71 lower_rec_input_clauses
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:5940
+0xdef3b9 lower_omp_for
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:11793
+0xdde114 lower_omp_1
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15077
+0xdde114 lower_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15289
+0xddefa5 lower_omp_1
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15061
+0xddefa5 lower_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15289
+0xddefa5 lower_omp_1
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15061
+0xddefa5 lower_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15289
+0xdef4b3 lower_omp_for
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:11798
+0xdde114 lower_omp_1
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15077
+0xdde114 lower_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15289
+0xdeb5a5 lower_omp_taskreg
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:12580
+0xddded4 lower_omp_1
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15156
+0xddded4 lower_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15289
+0xddefa5 lower_omp_1
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15061
+0xddefa5 lower_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15289
+0xdef4b3 lower_omp_for
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:11798
+<site>/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0/f951 hv-aomp-smoke-fails-flang-324387.f90 -quiet -dumpdir a- -dumpbase hv-aomp-smoke-fails-flang-324387.f90 -dumpbase-ext .f90 -mtune=generic -march=x86-64 -O2 -fopenmp -foffload-options=nvptx-none=-march=sm_80 -foffload-options=nvptx-none=-latomic -foffload-options=-l_GCC_gfortran -foffload-options=-l_GCC_m -fintrinsic-modules-path <site>/gcc-16.2/lib/gcc/x86_64-pc-linux-gnu/16.2.0/finclude -fpre-include=/usr/include/finclude/x86_64-linux-gnu/math-vector-fortran.h -o /tmp/ccSioWtN.s
+Please submit a full bug report, with preprocessed source (by using -freport-bug).
+Please include the complete backtrace with any bug report.
+See <https://gcc.gnu.org/bugs/> for instructions.

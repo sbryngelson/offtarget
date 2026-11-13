@@ -1,0 +1,2453 @@
+# The machine-readable findings index (offload/engine/confirm/
+# findings.py). One entry per hand-written finding of data/findings/
+# (README.md tables); the minimized fuzz findings (data/findings/fuzz/)
+# are read from their file headers and need no entry. Keys: file;
+# toolchains (gfx942 names: the compilers the finding shows wrong; a
+# gfx90a twin is the same compiler); lang (f90 | c); outcome (the class:
+# ice, rejected, timeout, crash, run_error, wrong_answer,
+# fell_back_to_host); message (a normalized compiler or runtime message,
+# for compile-time and crash findings); modes (unified, copy); arch
+# (modes and arch are the recorded scope extended by every
+# (mode, arch) where a stored failing catalog or omp_vv cell instance-links
+# the finding, `tools/confirm.py index --scope --write`; a test fails when
+# a linked cell is outside them);
+# expected (the stated output, for a run of the file; optional); scope
+# (device | host+device | out_of_scope); programs (fnmatch patterns of
+# catalog programs the finding explains, from README.md,
+# catalog/mode_differences.yaml and catalog/expected_triage.yaml);
+# constructs (the key constructs of a run-time failure, for signatures;
+# default: those of the file minus target and map); sites (fix
+# The ICE's compiler-source site per compiler release, as
+# recorded in README.md; a release without one gives "related" matches,
+# never duplicates).
+findings:
+  - file: afar-cce19-character-defaultmap.f90
+    toolchains: [afar, cce19, cce20]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "ch=b s=wxyz k=1"
+    programs: ["omp*-clause-defaultmap-character*"]
+    constructs: ["clause:defaultmap"]
+  - file: cce19-target-parallel-guarded-loop.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "base_cond bad= 0"
+    constructs: ["dir:target parallel"]
+    programs: ["omp5?-directive-target_parallel", "omp60-directive-target_parallel", "omp5?-clause-bind-thread", "omp60-clause-bind-thread"]
+    # the catalog programs README.md names as failing through this finding;
+    # CCE's bind(thread) programs, the same
+    # sequential-loop defect (the loop fails without the loop directive; right at -O0)
+  - file: cce19-target-parallel-single-ice.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "unhandled (acc )?construct type"
+    sites: {cce19: "v_openmp.c:7617"}
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-w-single", "omp52-w-critical", "omp52-w-critical-named", "omp52-w-critical-hint", "omp52-w-critical-reduction", "omp52-w-sections", "omp52-w-parallel-sections", "omp52-w-masked", "omp52-w-barrier", "omp52-w-ordered"]
+    # The widened catalog's synchronization and worksharing constructs in target regions end in the same ICE (CCE 19, 20, 21)
+  - file: afar-cce19-task-in-target-ice.f90
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "unhandled (acc )?construct type|createTask"
+    sites: {cce19: "v_openmp.c:7617"}
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp5?-clause-default-shared", "omp60-clause-default-shared", "omp60-clause-default-all", "omp52-w-task"]
+    # the catalog programs README.md names as failing through this finding; the widened catalog's task program
+  - file: afar-loop-bind-thread-in-teams.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    message: "BIND\\(TEAMS\\)` must be specified"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: cce21-defaultmap-aggregate-flag.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "A 0 B 0 C 0"
+    # the defaultmap family, not defaultmap(self) (RUL-NO-FIXED-VALUE-SELF)
+    programs: ["omp*-clause-defaultmap", "omp*-clause-defaultmap-[!s]*", "omp*-clause-defaultmap-scalar*", "omp*-clause-defaultmap-storage*"]
+    constructs: ["clause:defaultmap"]
+  - file: multithread-allocatable-section-maps.f90
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "bad= 0"
+    scope: host+device
+  - file: target-update-sections-in-parallel.f90
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    expected: "bad= 0"
+    scope: host+device
+    programs: ["omp5?-directive-target-hostdev", "omp60-directive-target-hostdev"]
+    constructs: ["dir:target update"]
+  - file: cce21-in-reduction-taskwait-link.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: rejected
+    message: "_cray\\$mt_taskwait"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: cce-acc-init-set-runtime-assert.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: crash
+    message: "Incorrect device type set"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: cce-acc-routine-bind-module-ice.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "host associated to itself"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: cce-acc-self-condition-ignored.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    scope: out_of_scope
+  - file: cce19-acc-if-false-link.f90
+    toolchains: [cce19]
+    lang: f90
+    outcome: rejected
+    message: "_cray\\$mt_execute_parallel"
+    modes: [unified, copy]
+    arch: [gfx942]
+    scope: out_of_scope
+  - file: afar-linear-ref-omp50.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    message: "REF 'linear-modifier' must be polymorphic"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    # : declare simd on a host procedure, no target region
+    scope: out_of_scope
+  - file: cce-uses-allocators-traits-omp50.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "ftn-451"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: afar-flang-task-reduction-max.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    message: "no symbol found for|Invalid reduction identifier in TASK_REDUCTION"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: afar-flang-loop-bind-teams-reduction.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    message: "'REDUCTION' clause not allowed with '!\\$OMP LOOP BIND\\(TEAMS\\)'"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: afar-flang-thread-limit-target-parallel-do.f90
+    # CCE 19's part is unsupported by R11c (its claim of
+    # thread_limit on target is C/C++ only); kept for the record
+    toolchains: [afar, cce19]
+    lang: f90
+    outcome: rejected
+    message: "THREAD_LIMIT clause is not allowed on TARGET PARALLEL DO|ftn-1370"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: afar-flang-firstprivate-map-two-targets.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    message: "may not appear on both MAP and FIRSTPRIVATE"
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "a(3) = 6"
+  - file: clang-c-shared-declare-target-combined.c
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    constructs: ["clause:shared", "dir:target teams loop"]
+  - file: cce-c-map-present-assert.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: crash
+    message: "clang_flags == 0"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp5?-c-clause-map-present", "omp60-c-clause-map-present"]
+    # the catalog programs README.md names as failing through this finding
+  - file: afar-clang-requires-device-safesync-hang.c
+    toolchains: [afar]
+    lang: c
+    outcome: timeout
+    message: "compile_timeout"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: cce-c-parallel-for-in-target.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "static 64 of 64; lastprivate t=63; linear 64 of 64, x=64"
+    constructs: ["dir:parallel for"]
+    programs: ["omp5?-c-clause-linear", "omp5?-c-clause-linear-step", "omp5?-c-clause-linear-step_simple_modifier", "omp5?-c-clause-linear-val", "omp60-c-clause-linear", "omp60-c-clause-linear-step", "omp60-c-clause-linear-step_simple_modifier", "omp60-c-clause-linear-val", "omp5?-c-clause-schedule", "omp5?-c-clause-schedule-static", "omp60-c-clause-schedule", "omp60-c-clause-schedule-static"]
+    # the catalog programs README.md names as failing through this finding
+  - file: cce-c-dist-schedule-segv.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: crash
+    message: "SIGSEGV"
+    modes: [unified]
+    arch: [gfx942]
+    programs: ["omp5?-c-clause-dist_schedule", "omp5?-c-clause-dist_schedule-static", "omp60-c-clause-dist_schedule", "omp60-c-clause-dist_schedule-static"]
+    constructs: ["clause:dist_schedule"]
+  - file: cce-c-openmp45-device-link.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: omp_is_initial_device"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: afar-c-error-directive-in-target-link.c
+    toolchains: [afar]
+    lang: c
+    outcome: rejected
+    message: "__kmpc_error"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: clang-c-linear-directive-name-hang.c
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: c
+    outcome: timeout
+    message: "compile_timeout"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: afar-nontemporal-assumed-shape-ice.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: ice
+    message: "verification of lowering to FIR failed"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: afar-xnack1-atomic-min-nested-parallel.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: crash
+    message: "memory access fault"
+    modes: [unified]
+    arch: [gfx942]
+    expected: "r=0 s=0"
+    constructs: ["clause:min", "dir:atomic", "dir:parallel do"]
+  - file: afar-udr-derived-type-link.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    message: "flang_rt_verbose_abort"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: cce-mapper-next-map-copy-back.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    expected: "host_flag= 0 b1= 3 sv= 1"
+    programs: ["omp5?-clause-map-mapper"]
+    constructs: ["clause:mapper"]
+  - file: afar-c-update-iterator-copy-mode.c
+    toolchains: [afar]
+    lang: c
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    expected: "to iterator: bad= 0"
+    programs: ["omp5?-c-clause-to-iterator", "omp60-c-clause-to-iterator", "omp5?-c-clause-from-iterator", "omp60-c-clause-from-iterator", "omp5?-c-clause-map-iterator", "omp60-c-clause-map-iterator"]
+    constructs: ["clause:iterator"]
+  - file: cce-c-map-delete-refcount.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "bad= 0 a_present= 0 b_present= 0"
+    programs: ["omp5?-c-clause-map-delete", "omp60-c-clause-map-delete"]
+    constructs: ["clause:delete"]
+  - file: afar-xnack1-target-is-present.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified]
+    arch: [gfx942]
+    constructs: ["dir:target enter data"]
+  - file: afar-c-xnack1-target-is-present.c
+    toolchains: [afar]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified]
+    arch: [gfx942]
+    programs: ["omp5?-c-clause-map-iterator", "omp60-c-clause-map-iterator"]
+    constructs: ["dir:target enter data"]
+  - file: afar-xnack1-present-not-enforced.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified]
+    arch: [gfx942]
+    programs: ["omp5?-clause-map-present", "omp60-clause-map-present", "omp5?-c-clause-map-present", "omp60-c-clause-map-present"]
+    constructs: ["clause:present"]
+  - file: cce-defaultmap-tofrom-explicit-map.f90
+    # : back in CCE 21 (21.0.3, 21.0.4) at HSA_XNACK=0, the gate's
+    # four environments in data/vendor/hpe/cce21-defaultmap-aggregate-flag.md
+    toolchains: [cce19, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    constructs: ["clause:defaultmap"]
+  - file: fortran-schedule-static-in-target.f90
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp5?-clause-schedule", "omp60-clause-schedule", "omp5?-clause-schedule-static", "omp60-clause-schedule-static", "omp5?-clause-schedule-chunk_size", "omp60-clause-schedule-chunk_size"]
+    constructs: ["clause:schedule"]
+  - file: fortran-loop-bind-thread-in-parallel.f90
+    # : AFAR's bind(thread)
+    # defect only; on CCE the bind(thread) programs fail by the sequential-loop
+    # defect of cce19-target-parallel-guarded-loop.f90, which now names them
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp5?-clause-bind-thread", "omp60-clause-bind-thread"]
+    constructs: ["clause:bind", "dir:loop"]
+  # (claim mismatches and omp_vv flags)
+  - file: clang-c-declare-target-to-omp52.c
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "unexpected 'to' clause, use 'enter' instead"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT ran_on_host=0 check=pass"
+  - file: clang-c-map-iterator-omp51.c
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "incorrect map type modifier, expected one of"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT ran_on_host=0 check=pass"
+  - file: defaultmap-none-loop-variable.f90
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "DEFAULTMAP\\(NONE\\) clause requires|default map\\(none\\) was specified"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT ran_on_host=0 check=pass"
+  - file: cce21-linear-modifier-default-none.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: rejected
+    message: "must have its data scope explicitly declared because DEFAULT\\(NONE\\)"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT ran_on_host=0 check=pass"
+  # (fuzz campaign s1): findings written by hand from the
+  # confirmer's reductions; indexed here (their headers are not the
+  # fuzz_min header format)
+  - file: fuzz/s1-4339-afar.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: crash
+    message: "memory access fault"
+    modes: [unified]
+    arch: [gfx942]
+    expected: "RESULT check=pass"
+  - file: fuzz/s1-6760-cce20.f90
+    toolchains: [cce20]
+    lang: f90
+    outcome: rejected
+    message: 'ftn-1725 .*"INDIRECT, LINK, TO or DEVICE_TYPE" was expected but found "E"'
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT check=pass"
+    programs: ["omp52-clause-enter"]
+    constructs: ["clause:enter"]
+  - file: fuzz/s1-6888-cce21.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "ftn-1747"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT check=pass"
+    constructs: ["dir:target update"]
+  - file: fuzz/s1-2370-cce21.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: 'ftn-1510 .*Variable "I"|ftn-1310 .*Object "I"'
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT check=pass"
+    constructs: ["dir:parallel do"]
+  - file: fuzz/s1-8634-cce21.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "optcg.*signal 013|get base or dv mem|unexpected type in TYPE_DEREF"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT check=pass"
+  - file: fuzz/s1-2592-cce21.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "Should never reach this code \\(doehmke\\)"
+    sites: {cce19: "v_mt_util_misc.c:2697", cce20: "v_mt_util_misc.c:2711", cce21: "v_mt_util_misc.c:2719"}
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "RESULT check=pass"
+  - file: fuzz/s1-3463-cce21.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "Error getting dope vector information"
+    sites: {cce19: "v_dope_utl.c:931", cce20: "v_dope_utl.c:933", cce21: "v_dope_utl.c:935"}
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: fuzz/s1-6085-cce21.f90
+    toolchains: [cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "optcg.*signal 06"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: fuzz/s1-9914-cce19.f90
+    toolchains: [cce19]
+    lang: f90
+    outcome: timeout
+    message: "compile_timeout"
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: fuzz/s1-91-cce21.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: 'ftn-1510 .*Variable "(?!I"|J"|LSIMD"|LPAR")\w+" must have its data scope'
+    modes: [unified, copy]
+    arch: [gfx942]
+  - file: catalog/afar-c-ordered-doacross-link.c
+    toolchains: [afar]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: __kmpc_doacross_init"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-ordered-n", "omp60-c-clause-ordered-n"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-ordered-n:afar:gfx942:unified
+  - file: catalog/afar-c-reduction-task-link.c
+    toolchains: [afar]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: __kmpc_taskred_modifier_init"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-reduction-task", "omp60-c-clause-reduction-task"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-reduction-task:afar:gfx942:unified
+  - file: catalog/afar-flang-reduction-task-ice.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: ice
+    message: "Call parameter type does not match function signature"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-reduction-task", "omp52-clause-reduction-task", "omp60-clause-reduction-task"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-reduction-task:afar:gfx942:unified
+  - file: catalog/afar-flang-linear-parallel-ice.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-linear", "omp50-clause-linear-step_simple_modifier", "omp52-clause-linear", "omp52-clause-linear-step", "omp52-clause-linear-step_simple_modifier", "omp52-clause-linear-val", "omp60-clause-linear", "omp60-clause-linear-step", "omp60-clause-linear-step_simple_modifier", "omp60-clause-linear-val", "*/bench/fresh/fresh-033.f90"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-linear:afar:gfx942:unified
+  - file: catalog/afar-flang-workdistribute-ice.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp60-directive-target_teams_workdistribute", "omp60-directive-teams_workdistribute"]
+    # promoted from the confirmer's draft of catalog:omp60-directive-target_teams_workdistribute:afar:gfx942:unified
+  - file: catalog/afar-flang-reduction-minus-rejected.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    message: "The minus reduction operator is deprecated"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-in_reduction-minus", "omp50-clause-reduction-minus", "omp52-clause-in_reduction-minus", "omp52-clause-reduction-minus"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-in_reduction-minus:afar:gfx942:unified
+  - file: catalog/afar-flang-dist-schedule-chunk.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    programs: ["omp50-clause-dist_schedule-chunk_size", "omp52-clause-dist_schedule-chunk_size", "omp60-clause-dist_schedule-chunk_size"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-dist_schedule-chunk_size:afar:gfx942:unified
+    # The file's own key ({clause:do, dir:target teams
+    # distribute parallel}, a parser artifact) matched every combined loop
+    constructs: ["clause:dist_schedule", "dir:target teams distribute parallel"]
+  - file: catalog/afar-flang-ordered-wrong.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    programs: ["omp50-clause-ordered", "omp52-clause-ordered", "omp60-clause-ordered", "omp52-w-ordered"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-ordered:afar:gfx942:unified
+  - file: catalog/cce-c-device-type-directive-name-ice.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp60-c-clause-device_type-directive_name"]
+    # promoted from the confirmer's draft of catalog:omp60-c-clause-device_type-directive_name:cce19:gfx942:unified
+  - file: catalog/cce-c-map-iterator-ice.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-map-iterator", "omp60-c-clause-map-iterator"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-map-iterator:cce19:gfx942:unified
+  - file: catalog/cce-c-reduction-inscan-ice.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-reduction-inscan", "omp60-c-clause-reduction-inscan"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-reduction-inscan:cce19:gfx942:unified
+  - file: catalog/cce21-c-target-loop-ice.c
+    toolchains: [cce21]
+    lang: c
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp60-c-directive-target_loop"]
+    # promoted from the confirmer's draft of catalog:omp60-c-directive-target_loop:cce21:gfx942:unified
+  - file: catalog/cce20-c-defaultmap-private-storage-rejected.c
+    toolchains: [cce20]
+    lang: c
+    outcome: rejected
+    message: "expected 'alloc', 'from', 'to', 'tofrom', 'firstprivate', 'none', 'default', 'present' in OpenMP clause 'defaultmap'"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp60-c-clause-defaultmap-private", "omp60-c-clause-defaultmap-storage"]
+    # promoted from the confirmer's draft of catalog:omp60-c-clause-defaultmap-private:cce20:gfx942:unified
+  - file: catalog/cce-c-allocate-align-link.c
+    toolchains: [cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: __kmpc_aligned_alloc"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-allocate-align", "omp60-c-clause-allocate-align"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-allocate-align:cce20:gfx942:unified
+  - file: catalog/cce-c-ordered-link.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: __kmpc_dispatch_init_4"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-ordered", "omp60-c-clause-ordered"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-ordered:cce19:gfx942:unified
+  - file: catalog/cce-c-ordered-doacross-link.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: __kmpc_doacross_init"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-ordered-n", "omp60-c-clause-ordered-n"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-ordered-n:cce19:gfx942:unified
+  - file: catalog/cce-c-task-in-target-link.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: __kmpc_omp_task_alloc"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-default-shared", "omp60-c-clause-default-all", "omp60-c-clause-default-shared"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-default-shared:cce19:gfx942:unified
+  - file: catalog/cce-c-reduction-task-link.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "undefined symbol: __kmpc_taskred_modifier_init"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-reduction-task", "omp60-c-clause-reduction-task"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-reduction-task:cce19:gfx942:unified
+  - file: catalog/cce-c-allocate-allocator-modifier-rejected.c
+    toolchains: [cce19]
+    lang: c
+    outcome: rejected
+    message: "call to undeclared function 'allocator'"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-allocate-align", "omp52-c-clause-allocate-allocator", "omp60-c-clause-allocate-align", "omp60-c-clause-allocate-allocator"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-allocate-allocator:cce19:gfx942:unified
+  - file: catalog/cce-c-motion-iterator-rejected.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "call to undeclared function 'iterator'"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-from-iterator", "omp52-c-clause-to-iterator", "omp60-c-clause-from-iterator", "omp60-c-clause-to-iterator"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-from-iterator:cce19:gfx942:unified
+  - file: catalog/cce-c-uses-allocators-traits-rejected.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    message: "call to undeclared function 'traits'"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-c-clause-uses_allocators-traits", "omp60-c-clause-uses_allocators-traits"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-uses_allocators-traits:cce19:gfx942:unified
+  - file: catalog/cce21-c-declare-target-local-rejected.c
+    toolchains: [cce21]
+    lang: c
+    outcome: rejected
+    message: "unexpected 'local' clause"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp60-c-clause-local"]
+    # promoted from the confirmer's draft of catalog:omp60-c-clause-local:cce21:gfx942:unified
+  - file: catalog/cce-c-dist-schedule-chunk.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    programs: ["omp52-c-clause-dist_schedule-chunk_size", "omp60-c-clause-dist_schedule-chunk_size"]
+    # promoted from the confirmer's draft of catalog:omp52-c-clause-dist_schedule-chunk_size:cce19:gfx942:unified
+  - file: catalog/cce-linear-lastprivate-ice.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "barrier/reset/protected last private not supported"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-linear", "omp50-clause-linear-step_simple_modifier", "omp52-clause-linear", "omp52-clause-linear-step", "omp52-clause-linear-step_simple_modifier", "omp60-clause-linear", "omp60-clause-linear-step", "omp60-clause-linear-step_simple_modifier", "*/bench/fresh/fresh-033.f90"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-linear:cce19:gfx942:copy
+  - file: catalog/cce-allocators-stack-ice.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "Too few arguments on the stack"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-allocate-allocator_simple_modifier", "omp50-clause-uses_allocators", "omp52-clause-allocate-align", "omp52-clause-allocate-allocator", "omp52-clause-allocate-allocator_simple_modifier", "omp52-clause-uses_allocators", "omp60-clause-allocate-align", "omp60-clause-allocate-allocator", "omp60-clause-allocate-allocator_simple_modifier", "omp60-clause-uses_allocators"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-uses_allocators:cce19:gfx942:unified
+  - file: catalog/cce-reduction-inscan-ice.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: ice
+    message: "analyze_object: unknown object type"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-reduction-inscan", "omp52-clause-reduction-inscan", "omp60-clause-reduction-inscan"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-reduction-inscan:cce19:gfx942:unified
+  - file: catalog/cce19-reduction-task-addrspacecast-ice.f90
+    toolchains: [cce19]
+    lang: f90
+    outcome: ice
+    message: "invalid addrspacecast"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-reduction-task", "omp52-clause-reduction-task", "omp60-clause-reduction-task"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-reduction-task:cce19:gfx942:unified
+  - file: catalog/cce-atomic-default-mem-order-acquire-release-rejected.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "ftn-1725 .*\\(seq_cst \\| acq_rel \\| relaxed\\)"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-clause-atomic_default_mem_order-acquire", "omp52-clause-atomic_default_mem_order-release", "omp60-clause-atomic_default_mem_order-acquire", "omp60-clause-atomic_default_mem_order-release"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-atomic_default_mem_order-release:cce19:gfx942:unified
+  - file: catalog/cce20-map-self-rejected.f90
+    toolchains: [cce20]
+    lang: f90
+    outcome: rejected
+    message: "ftn-810"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp60-clause-map-self"]
+    # promoted from the confirmer's draft of catalog:omp60-clause-map-self:cce20:gfx942:unified
+  - file: catalog/cce-iterator-link.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "undefined reference to `OmpIt\\$"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-clause-from-iterator", "omp52-clause-map-iterator", "omp52-clause-to-iterator", "omp60-clause-from-iterator", "omp60-clause-map-iterator", "omp60-clause-to-iterator"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-from-iterator:cce19:gfx942:unified
+  - file: catalog/cce-c-f-pointer-device-link.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "undefined symbol: _C_F_POINTER"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-is_device_ptr", "omp50-clause-use_device_ptr", "omp52-clause-is_device_ptr", "omp52-clause-use_device_ptr", "omp60-clause-is_device_ptr", "omp60-clause-use_device_ptr"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-is_device_ptr:cce19:gfx942:unified
+  - file: catalog/cce-reduction-task-link.f90
+    toolchains: [cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "undefined symbol: _cray\\$mt_taskred_modifier_init"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-reduction-task", "omp52-clause-reduction-task", "omp60-clause-reduction-task"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-reduction-task:cce20:gfx942:unified
+  - file: catalog/cce-nohost-link.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "undefined reference to `f\\$gen_mod_"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-device_type-nohost", "omp52-clause-device_type-nohost", "omp60-clause-device_type-nohost"]
+    # promoted from the confirmer's draft of catalog:omp52-clause-device_type-nohost:cce19:gfx942:unified
+  # NVHPC 25.11 on wingtip (NVIDIA A100, sm_80)
+  - file: nvhpc-acc-atomic-update-sum-fort2-crash.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: ice
+    message: "fort2 TERMINATED by signal 11"
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    programs: ["acc34-clause-gang", "acc34-clause-gang-dim", "acc34-directive-loop"]
+    # The Fortran form of nvhpc-c-acc-atomic-update-sum-ice.c.
+    # Re-linked by the crash: a failure is classified by all of its
+    # messages (the worst one), so the S-0155 diagnostic followed by the front
+    # end's crash (fort2 signal 11) is an ICE in 11 of the 12 cells; the 12th
+    # (gang-dim on 25.11 in separate memory) only rejected when it was stored,
+    # so it is not linked, but each of its four reproduction-gate reruns
+    # crashed (gate verdict environment: the stored run alone differs).
+    # (the errata): that stored rejection without the crash was 1
+    # compile in 157; the other 156 crashed (data/evidence/gate_probe/logs/wingtip1-4.log)
+  - file: nvhpc-c-acc-atomic-update-sum-ice.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: ice
+    message: "invalid ILM atomic region"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ["acc34-c-*-binop"]
+    constructs: ["dir:atomic update"]
+    # The x = x + e1 + e2 atomic updates of the OpenACC C ports
+    # (the Fortran form: nvhpc-acc-atomic-update-sum-fort2-crash.f90)
+  - file: nvhpc-managed-acc-shutdown-host-access.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: crash
+    modes: [managed]
+    arch: [sm_80]
+    expected: "sum 64"
+    programs: ["acc34-directive-shutdown"]
+    constructs: ["dir:shutdown"]
+  - file: nvhpc-parallel-if-in-target-nvvm-ice.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: ice
+    message: "nvvmCompileProgram: failed"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ["omp5?-clause-if", "omp60-clause-if"]
+    constructs: ["clause:if"]
+  - file: nvhpc-c-parallel-for-firstprivate-in-target.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: ice
+    message: "Compiler failed to translate OpenMP region"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ["omp5?-c-clause-firstprivate", "omp60-c-clause-firstprivate", "omp5?-c-clause-lastprivate", "omp60-c-clause-lastprivate", "omp5?-c-clause-schedule-monotonic", "omp60-c-clause-schedule-monotonic"]
+    constructs: ["clause:firstprivate"]
+  - file: nvhpc-dist-schedule-chunk-illegal-address.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: crash
+    message: "CUDA_ERROR_ILLEGAL_ADDRESS"
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "sum 2080"
+    programs: ["omp5?-clause-dist_schedule-chunk_size", "omp60-clause-dist_schedule-chunk_size"]
+    constructs: ["clause:dist_schedule"]
+  - file: nvhpc-defaultmap-from-allocatable-indexing.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "b(1) 1 b(64) 64 sum 2080"
+    programs: ["omp5?-clause-defaultmap-from", "omp60-clause-defaultmap-from"]
+    constructs: ["clause:defaultmap"]
+  - file: nvhpc-defaultmap-firstprivate-explicit-map.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "sum 2144 host_flag 0"
+    programs: ["omp5?-clause-defaultmap-firstprivate", "omp60-clause-defaultmap-firstprivate"]
+    constructs: ["clause:defaultmap"]
+  - file: nvhpc-depend-inoutset-ignored.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "sum(b) 2080"
+    programs: ["omp5?-clause-depend-inoutset", "omp60-clause-depend-inoutset", "omp5?-clause-depend-mutexinoutset", "omp60-clause-depend-mutexinoutset"]
+    constructs: ["clause:depend"]
+  - file: nvhpc-c-map-present-ignored.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ["omp5?-c-clause-map-present", "omp60-c-clause-map-present"]
+    constructs: ["clause:map"]
+  - file: nvhpc-c-dist-schedule-chunk-compile-hang.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: timeout
+    message: "compile_timeout"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ["omp5?-c-clause-dist_schedule-chunk_size", "omp60-c-clause-dist_schedule-chunk_size"]
+    constructs: ["clause:dist_schedule"]
+  - file: nvhpc-c-parallel-if-in-target-nvvm-ice.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: ice
+    message: "nvvmCompileProgram: failed"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ["omp5?-c-clause-if", "omp60-c-clause-if"]
+    constructs: ["clause:if"]
+  - file: catalog/afar-flang-absent-optional-target-crash.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: crash
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "SIGABRT;\\ without\\ mandatory:\\ crash:\\ SIGABRT"
+    expected: "check=pass"
+    constructs: ["feature:base.device.optional_absent"]
+    programs: ["omp52-w-optional-absent", "omp52-w-data-optional-absent"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-optional-absent:afar:gfx942:unified (the widened catalog)
+  - file: catalog/afar-flang-critical-target-parallel-wrong.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    programs: ["omp52-w-critical", "omp52-w-critical-reduction"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-critical:afar:gfx942:unified (the widened catalog)
+  - file: catalog/afar-flang-named-critical-link.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: rejected
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "ld\\.lld:\\ error:\\ undefined\\ symbol:\\ __kmpc_critical_with_hint"
+    constructs: ["dir:critical", "feature:form.omp.critical_named"]
+    programs: ["omp52-w-critical-named", "omp52-w-critical-hint"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-critical-named:afar:gfx942:unified (the widened catalog)
+  - file: catalog/afar-c-critical-hint-link.c
+    toolchains: [afar]
+    lang: c
+    outcome: rejected
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "ld\\.lld:\\ error:\\ undefined\\ symbol:\\ __kmpc_critical_with_hint"
+    programs: ["omp52-c-w-critical-hint"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-critical-hint:afar:gfx942:unified (the widened catalog)
+  - file: catalog/afar-flang-sections-in-target-ice.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "Call\\ parameter\\ type\\ does\\ not\\ match\\ function\\ signature!"
+    programs: ["omp52-w-sections", "omp52-w-parallel-sections"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-sections:afar:gfx942:unified (the widened catalog)
+  - file: catalog/c-allocate-const-mem-firstprivate-wrong.c
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    constructs: ["clause:allocate", "clause:firstprivate", "clause:uses_allocators"]
+    programs: ["omp52-c-w-allocate-const-firstprivate"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-allocate-const-firstprivate:afar:gfx942:unified (the widened catalog)
+  # : catalog/afar-c-complex-reduction-link.c is withdrawn (the host
+  # object needs -latomic; with it the program passes on the device): no entry
+  - file: catalog/cce-flang-stop-in-target-crash.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: crash
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "SIGABRT;\\ without\\ mandatory:\\ crash:\\ SIGABRT"
+    expected: "check=pass"
+    constructs: ["feature:base.device.stop"]
+    programs: ["omp52-w-stop-unreached", "omp52-w-error-stop-unreached", "omp52-w-routine-stop", "omp52-w-collapse-stop"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-stop-unreached:cce19:gfx942:unified (the widened catalog)
+    # related: fresh/cce-if-stop-in-target-ice.f90 and
+    # fresh/cce-if-stop-in-target-ice-one-condition.f90 (an IF ... STOP
+    # directly in a target region: CCE ICEs instead)
+  - file: catalog/cce-acc-stop-in-compute-crash.f90
+    toolchains: [cce20, cce21]
+    lang: f90
+    outcome: crash
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "SIGABRT"
+    expected: "check=pass"
+    constructs: ["feature:base.device.stop"]
+    programs: ["acc34-w-stop-unreached", "acc34-w-error-stop-unreached", "acc34-w-routine-stop", "acc34-w-collapse-stop"]
+    # Promoted from the confirmer's draft of catalog:acc34-w-stop-unreached:cce20:gfx942:unified (the widened catalog)
+  - file: catalog/cce-flang-allocate-in-target-crash.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: crash
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "SIGABRT;\\ without\\ mandatory:\\ crash:\\ SIGABRT"
+    expected: "check=pass"
+    constructs: ["feature:base.device.allocate"]
+    programs: ["omp52-w-allocate-in-device", "omp52-w-allocate-derived-default-init"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-allocate-in-device:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-acc-allocate-in-compute-crash.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: crash
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "SIGABRT"
+    expected: "check=pass"
+    constructs: ["feature:base.device.allocate"]
+    programs: ["acc34-w-allocate-in-device", "acc34-w-allocate-derived-default-init"]
+    # Promoted from the confirmer's draft of catalog:acc34-w-allocate-in-device:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    constructs: ["clause:lastprivate", "feature:base.device.parallel_in_seq_loop"]
+    programs: ["omp52-w-lastprivate-parallel-in-seq-loop"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-lastprivate-parallel-in-seq-loop:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-c-lastprivate-parallel-in-seq-loop-wrong.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    constructs: ["clause:lastprivate", "feature:base.device.parallel_in_seq_loop"]
+    programs: ["omp52-c-w-lastprivate-parallel-in-seq-loop"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-lastprivate-parallel-in-seq-loop:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-c-sections-in-target-wrong.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    programs: ["omp52-c-w-sections", "omp52-c-w-parallel-sections"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-sections:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-c-single-masked-task-link.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: rejected
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "lld:\\ error:\\ undefined\\ symbol:\\ __kmpc_single"
+    programs: ["omp52-c-w-single", "omp52-c-w-masked", "omp52-c-w-task"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-single:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-flang-allocate-const-mem-ice.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "INTERNAL\\ COMPILER\\ ERROR:\\ \\ \"Too\\ few\\ arguments\\ on\\ the\\ stack\"\\ \\(/workspace/crayftn/p"
+    constructs: ["clause:allocate", "clause:firstprivate", "clause:uses_allocators"]
+    programs: ["omp52-w-allocate-const-firstprivate"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-allocate-const-firstprivate:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-c-long-double-ice.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "PLEASE\\ submit\\ a\\ bug\\ report\\ to\\ HPE\\ at\\ https://support\\.hpe\\.com/\\ and\\ include\\ the\\ cr"
+    constructs: ["feature:base.device.long_double"]
+    programs: ["omp52-c-w-long-double"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-long-double:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-c-recursive-function-ice.c
+    toolchains: [cce19, cce20]
+    lang: c
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "clang:\\ error:\\ clang\\ frontend\\ command\\ failed\\ due\\ to\\ signal\\ \\(use\\ \\-v\\ to\\ see\\ invocat"
+    constructs: ["feature:base.device.recursion"]
+    programs: ["omp52-c-w-recursive-routine"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-recursive-routine:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/cce-acc-loop-seq-in-routine-wrong.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    constructs: ["feature:base.device.loop_in_routine"]
+    programs: ["acc34-w-loop-in-routine", "acc34-w-loop-in-routine-sequence-association"]
+    # Promoted from the confirmer's draft of catalog:acc34-w-loop-in-routine:cce19:gfx942:unified (the widened catalog)
+  - file: catalog/defaultmap-present-private-array-abort.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: crash
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    message: "SIGABRT;\\ without\\ mandatory:\\ crash:\\ SIGABRT"
+    expected: "check=pass"
+    constructs: ["clause:defaultmap", "feature:base.device.private_array"]
+    programs: ["omp52-w-defaultmap-present-private-array"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-defaultmap-present-private-array:afar:gfx942:copy (the widened catalog)
+    # (review 5): AFAR copy mode only; on CCE 19, 20, 21 defaultmap(present) alone already fails (the single-feature cells are needs_human), so the pair's CCE failure is not attributed to the pair
+  - file: catalog/cce-acc-character-dummy-routine-ice.f90
+    toolchains: [cce20, cce21]
+    lang: f90
+    outcome: ice
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "INTERNAL\\ COMPILER\\ ERROR:\\ \\ \"Bad\\ cast\\ from\\ fcd\\ to\\ \\.\\.\\.\\ \"\\ \\(/workspace/crayftn/pdgcs/"
+    constructs: ["feature:base.device.character", "feature:base.device.routine_call"]
+    programs: ["acc34-w-routine-character"]
+    # Promoted from the confirmer's draft of catalog:acc34-w-routine-character:cce20:gfx942:unified (the widened catalog)
+  - file: catalog/nvhpc-flang-type-bound-kernel-missing.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: run_error
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    constructs: ["feature:base.device.type_bound"]
+    programs: ["omp52-w-type-bound-nopass", "omp52-w-type-bound-pass", "acc34-w-type-bound-nopass", "acc34-w-type-bound-pass", "oop-tbp-function", "oop-tbp-nopass", "oop-tbp-argument", "oop-tbp-override", "oop-tbp-nested-call"]
+    # Promoted from the confirmer's draft of catalog:omp52-w-type-bound-nopass:nvhpc:sm_80:copy (the widened catalog)
+  - file: catalog/nvhpc-c-function-pointer-kernel-missing.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: run_error
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    constructs: ["feature:base.device.function_pointer"]
+    programs: ["omp52-c-w-function-pointer"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-function-pointer:nvhpc:sm_80:copy (the widened catalog)
+  - file: catalog/nvhpc-acc-associate-illegal-address.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: run_error
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    constructs: ["feature:base.device.associate"]
+    programs: ["acc34-w-associate"]
+    # Promoted from the confirmer's draft of catalog:acc34-w-associate:nvhpc:sm_80:copy (the widened catalog)
+  - file: catalog/nvhpc-c-static-local-kernel-missing.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: run_error
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    constructs: ["feature:base.device.save_local"]
+    programs: ["omp52-c-w-save-local-routine"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-save-local-routine:nvhpc:sm_80:copy (the widened catalog)
+  - file: catalog/nvhpc-c-vla-kernel-missing.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: run_error
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    constructs: ["feature:base.device.vla"]
+    programs: ["omp52-c-w-vla-local"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-vla-local:nvhpc:sm_80:copy (the widened catalog)
+  - file: catalog/nvhpc-c-long-double-kernel-missing.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: run_error
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    constructs: ["feature:base.device.long_double"]
+    programs: ["omp52-c-w-long-double"]
+    # Promoted from the confirmer's draft of catalog:omp52-c-w-long-double:nvhpc:sm_80:copy (the widened catalog)
+  # Promoted by hand from the confirmer's drafts of the first sealed
+  # benchmark (data/bench/fresh, scored and no longer held out):
+  # reduced reproducers, same-compiler
+  # controls, other families on the same program; scope from the hand runs
+  # (MI300A both modes, Tioga MI250X, wingtip A100 both memory modes)
+  - file: fresh/cce-list-directed-print-in-target-copy-crash.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: crash
+    message: "SIGABRT"
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    expected: "Hello, world!"
+    programs: ["*/bench/fresh/fresh-022.f90"]
+    # the key constructs are only target: no run-time signature, the
+    # program pattern links the draft's cells
+  - file: fresh/cce19-acc-automatic-array-copyout-copy-crash.f90
+    toolchains: [cce19]
+    lang: f90
+    outcome: crash
+    message: "SIGSEGV"
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    expected: "s 3150."
+    programs: ["*/bench/fresh/fresh-084.f90"]
+  - file: fresh/cce21-combined-if-runtime-expr-loop-skipped.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "b(1) 1 b(64) 64 dev 1"
+    constructs: ["clause:if", "dir:target teams distribute parallel"]
+    # data/bench/fresh/fresh-046.f90 is an instance; its check stops with code 1
+    # (run_error), so its cells are not of this outcome group
+  - file: fresh/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: ice
+    message: "fort2 TERMINATED by signal 11"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ["*/bench/fresh/fresh-058.f90"]
+    # the message is that of nvhpc-acc-atomic-update-sum-fort2-crash.f90 too
+    # (no site to tell them apart): other fort2 crashes are only related
+  - file: fresh/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "pass 10000000."
+    # data/bench/fresh/fresh-076.f90 (no data clause for the reduction variable,
+    # not conforming) ends in CUDA_ERROR_ILLEGAL_ADDRESS at its size
+  - file: fresh/cce-common-block-name-in-map-rejected.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "must not be specified on the MAP clause"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+  - file: fresh/cce-if-stop-in-target-ice.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "Condition statement not found in condition node"
+    sites: {cce19: "v_region.c:636", cce20: "v_region.c:636", cce21: "v_region.c:646"}
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["*/bench/fresh/fresh-106.f90"]
+    # an IF with two operands whose action is STOP, directly in a target
+    # region; the one-operand form ICEs at another site: the next entry
+    # (one entry per site, so both forms are duplicates);
+    # related: catalog/cce-flang-stop-in-target-crash.f90
+  - file: fresh/cce-if-stop-in-target-ice-one-condition.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "COND PDG [0-9]+ with no stmts"
+    sites: {cce19: "v_fs.c:2323", cce20: "v_fs.c:2325", cce21: "v_fs.c:2325"}
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    # The one-operand form of
+    # fresh/cce-if-stop-in-target-ice.f90; related:
+    # catalog/cce-flang-stop-in-target-crash.f90
+  # Promoted from the confirmer's drafts of the stress
+  # audit reproducers (results/stress/audit; data/reports/fuzz-stress.md),
+  # scope from the hand runs (MI300A both modes, Tioga MI250X)
+  - file: stress/afar-target-scalar-implicit-firstprivate.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "rd= 101 s= 203 dev= 1"
+    # NVHPC 25.11 / 26.9 fail the same program: the sibling entry
+    # stress/nvhpc-target-scalar-implicit-firstprivate.f90
+  - file: stress/cce-teams-reduction-many-teams-wrap.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "s= 8455717314"
+    constructs: ["clause:num_teams", "clause:reduction"]
+  - file: stress/cce21-declare-target-scalar-map-write-lost.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "g= 203 dev= 1"
+    constructs: ["dir:declare", "dir:target update", "clause:map"]
+  - file: stress/cce-lastprivate-num-threads-collapse-simd.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "lp= 200"
+    constructs: ["clause:lastprivate", "clause:num_threads"]
+    # The reproducer is now the 10-line num_threads(2) form
+    # (collapse and simd are not needed; if(parallel: .false.) triggers it too)
+  - file: stress/cce-c-flto-offload-dropped.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: crash
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    message: "OpenMP offload failed when OMP_TARGET_OFFLOAD=MANDATORY"
+    expected: "sum= 2016 dev= 1"
+    # by hand (the confirmer's builds cannot add -flto); build with -O2 -flto
+  # Promoted by hand from the confirmer's needs_human
+  # (R22) cases after the audit rerun: same-compiler
+  # controls and executed other-family results on the same program
+  - file: stress/nvhpc-target-scalar-implicit-firstprivate.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "rd= 101 s= 203 dev= 1"
+  - file: stress/nvhpc-declare-target-scalar-write-lost.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "g= 203 dev= 1"
+    constructs: ["dir:declare", "dir:target update"]
+  - file: stress/nvhpc-acc-derived-type-component-not-copied.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "c1= 203"
+  - file: stress/nvhpc-lastprivate-combined-target-not-mapped.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "l= 2560 dev= 1"
+    constructs: ["clause:lastprivate"]
+  - file: stress/cce-acc-declare-create-scalar-serial-firstprivate.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "g= 203"
+    # the finding rests on the reading of "visible" for a declare reached by
+    # USE association (OpenACC 3.4 does not define it; see the file header)
+  - file: stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "l= 2560 dev= 1"
+    constructs: ["clause:lastprivate"]
+  - file: stress/afar-c-lastprivate-combined-target-not-mapped.c
+    toolchains: [afar]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "l= 2560 dev= 1"
+    constructs: ["clause:lastprivate"]
+    # no other family witnesses: CCE and NVHPC fail the explicit-map control
+    # too (see the file header); the audit's XNACK 1 timeouts did not
+    # reproduce at a 600 s limit on four nodes
+  - file: stress/cce-c-distribute-lastprivate-lost.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "l= 2560 dev= 1"
+    constructs: ["clause:lastprivate"]
+  # Compile-time and host-side; the trigger is the absolute source
+  # path (build in the directory the file header names, see
+  # tools/jobs/run_ftn_cif_split.sh repro); the confirmer cannot choose a path
+  - file: stress/cce-ftn-cif-record-split-abort.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "free\\(\\): invalid pointer|double free or corruption"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    path_rule: cif_split
+    # a row links as a duplicate only when its recorded build
+    # path can cut the CIF; without a recorded path, a CCE ftn row at
+    # -O2/-O3 with the message is related (findings.path_allows)
+  # From the application corpus (PRK transpose; the widened catalog program)
+  - file: apps/afar-cce-teams-private-array-nested-parallel-wrong.f90
+    toolchains: [afar, cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "bad= 0 dev= 1 b(1:4)= 9 7 5 3"
+    programs: ["omp52-w-teams-private-array-parallel"]
+    constructs: ["clause:private", "dir:parallel do", "dir:target teams distribute"]
+  # Found while reducing MFC's CCE 20 device-link crash (MFC's private arrays indexed through dir_idx)
+  - file: apps/cce21-private-array-loaded-subscript-wrong.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "bad: mapped-subscript 0 declare-target-subscript 0 teams-distribute-parallel-do 0 teams-distribute 0"
+    constructs: ["clause:private", "dir:target parallel do"]
+  # MFC's CCE 20 device-link crash (m_cbc.fpp:597), reduced
+  - file: apps/cce20-device-link-infer-address-spaces-crash.f90
+    toolchains: [cce20]
+    lang: f90
+    outcome: ice
+    message: "Infer address spaces"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "bad= 0 out(:,1)=    0.00    9.50   11.00    6.00    8.00"
+    constructs: ["feature:base.device.nested_type", "feature:base.device.routine_call", "dir:target teams distribute parallel"]
+  # MFC's CCE 21 device-link crash (m_bubbles_EE.fpp:186), reduced
+  - file: apps/cce21-device-link-agpr-copy-mfma-assert.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: ice
+    message: "Rewrite AGPR-Copy-MFMA|Attempt to compare reserved index"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "bad= 0 stops= 256 R(1)=   1.001249"
+    constructs: ["feature:base.device.implicit_routine", "dir:target teams distribute parallel"]
+  # The reproduction gate's review queue (omp52-c-w-ordered on NVHPC:
+  # the crash after the documented ordered diagnostic is intermittent; lower
+  # tier). Fix: modes narrowed to managed, where both releases crashed
+  # (25.11 26 of 52, 26.9 6 of 7); 25.11 in separate memory never crashed (0
+  # of 7) and the index cannot give modes per release, so 26.9's separate-memory
+  # crashes (31 of 58) are in the header only (one entry per file: the scope
+  # check derives modes per file)
+  - file: nvhpc-c-ordered-in-target-nvcpfe-crash.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: ice
+    message: "nvcpfe TERMINATED by signal 11"
+    modes: [managed]
+    arch: [sm_80]
+    expected: "RESULT ran_on_host=0 check=pass"
+    programs: ["omp52-c-w-ordered"]
+    constructs: ["dir:ordered"]
+  # Reduced from the reproduction gate's review queue
+  - file: cce19-c-reduction-63-scalars-one-wrong.c
+    toolchains: [cce19]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "bad= 0"
+  - file: cce-acc-reduction-200-int8-scalars-wrong.f90
+    toolchains: [cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "bad= 0"
+  - file: cce21-alloc-2e32-sum-wrong.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "s= 2164663527981"
+  - file: cce21-in-reduction-assumed-shape-write-lost.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "r= 3 y(16)= 32"
+  # The data-environment pilot's new defect;
+  # the gfx90a cells are the trial's generator form (module procedure), this file ran on gfx942
+  - file: dataenv/cce-value-dummy-target-write-visible.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "rd= 5 vout= 101 dev= 1"
+    constructs: ["dir:target"]
+  # The leads ("Leads"); reproduced in the gate's four
+  # environments by hand (the file headers)
+  - file: afar-c-teams-distribute-reduction-first-team.c
+    toolchains: [afar]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "l= 83200 dev= 1"
+    constructs: ["dir:target teams distribute", "clause:reduction"]
+  - file: afar-c-lastprivate-distribute-parallel-for-small-type.c
+    toolchains: [afar]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "lp= 192 dev= 1"
+    constructs: ["dir:target teams distribute parallel", "clause:lastprivate",
+                 "clause:map"]
+    # no other family witnesses: CCE fails the program with int and long long alike, and
+    # NVIDIA documents lastprivate on distribute as unsupported (see the file header)
+  - file: cce-trim-merge-output-one-character.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    expected: "A check=pass"
+    scope: out_of_scope
+  # (known-issues harvest): bugs reported in
+  # centre pages, the NVIDIA forum and application workaround history, still present
+  - file: harvest/cce-named-constant-array-declare-target-routine-rejected.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: rejected
+    message: "Global in accelerator routine without declare"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    source: holdout
+    # the OpenACC form (hk-015) fails the same way; its legality is not
+    # claimed (OpenACC 3.4 §2.15.2 may cover named-constant arrays)
+  - file: harvest/nvhpc-named-constant-array-declare-target-routine-rejected.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: rejected
+    message: "NVFORTRAN-S-1079-Module variables used in omp target routine need to be in omp declare target"
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    source: holdout
+  - file: harvest/nvhpc-c-target-data-if-false-use-device-ptr-garbage.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    programs: ["*/bench/harvest-known/hk-018.c", "hk-018"]
+  - file: harvest/nvhpc-use-device-ptr-c-ptr-not-found.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: run_error
+    message: "data in use_device clause was not found"
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    programs: ["*/bench/harvest-known/hk-040.f90", "hk-040"]
+  - file: harvest/cce-use-device-ptr-c-ptr-not-converted.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    expected: "check=pass"
+    programs: ["*/bench/harvest-known/hk-040.f90", "hk-040"]
+  - file: harvest/nvhpc2511-target-nowait-in-parallel-for-ice.c
+    toolchains: [nvhpc]
+    lang: c
+    outcome: ice
+    message: "targetinfo symbol not found in uplevel struct"
+    modes: [copy, managed]
+    arch: [sm_80]
+    expected: "check=pass"
+    programs: ["*/bench/harvest-known/hk-030.c", "hk-030"]
+    # the signature at its site: a target nowait launched from host threads (the
+    # worksharing loop of a parallel region); its own host parallel and for put
+    # the derived key constructs on different directives (scope program)
+    constructs: ["clause:nowait"]
+  - file: harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: crash
+    message: "Memory access fault by GPU|hipErrorIllegalAddress"
+    modes: [unified]
+    arch: [gfx942]
+    expected: "check=pass"
+    programs: ["*/bench/harvest-known/hk-008.f90", "hk-008", "*/bench/harvest-known/hk-007.f90", "hk-007", "*/bench/harvest-known/hk-013.f90", "hk-013"]
+    # CCE 21 reports hipErrorIllegalAddress (exit 1, run_error) instead of the fault; hk-007 (MFC OLCFHELP-19298)
+    # and hk-013 (thornado) are the same declare create module allocatable and fail the same way
+  # Harvested upstream tests
+  - file: harvest/cce-c-strided-target-update.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942, gfx90a]
+    expected: "a: 10 1 12 3 14 5 16 7"
+    # the stride is in no construct key: "feature:strided_section" (no program
+    # shows it) keeps the confirmer from linking every target update from; the
+    # linter finds the stride (offload/engine/lint/patterns.py SHAPES)
+    constructs: ["dir:target update", "clause:from", "feature:strided_section"]
+    source: harvest
+  - file: harvest/afar-flang-strided-target-update.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]  # gated on gfx942; gfx90a was one ungated probe
+    expected: "a:  11.0   2.0  13.0   4.0  15.0   6.0  17.0   8.0"
+    # the stride is in no construct key: "feature:strided_section" (no program
+    # shows it) keeps the confirmer from linking every target update from; the
+    # linter finds the stride (offload/engine/lint/patterns.py SHAPES)
+    constructs: ["dir:target update", "clause:from", "feature:strided_section"]
+    source: harvest
+  - file: harvest/cce-ftn-target-parallel-thread-query-ice.f90
+    toolchains: [cce19, cce20, cce21]
+    lang: f90
+    outcome: ice
+    message: "Could not find call"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "x= "
+    constructs: ["dir:target parallel"]
+    source: harvest
+  # The second harvest's dev set
+  - file: harvest/cce-c-implicit-struct-map-partly-present.c
+    toolchains: [cce19, cce20, cce21]
+    lang: c
+    outcome: run_error
+    message: "overlaps present region"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "4 202 dev= 1"
+    # the key: a target data construct that maps members of a structure, then a target region in the
+    # same unit that references the structure (the partly present implicit map is no construct key)
+    constructs: ["dir:target data", "dir:target"]
+    programs: ["h2-ompex-target-struct-map-4-c", "h2-gomp-ccc-target-link-2"]
+    source: harvest
+  - file: harvest/cce21-declare-target-link-module-variable-write-lost.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "v= 1 dev= T"
+    constructs: ["dir:declare target", "clause:link", "feature:base.device.module_variable"]
+    programs: ["h2-aomp-smoke-fort-declare-target-link-2", "h2-aomp-fortran-map-tests-even-basicer-example"]
+    source: harvest
+  - file: harvest/cce21-internal-procedure-calls-internal-in-target-fault.f90
+    toolchains: [cce21]
+    lang: f90
+    outcome: run_error
+    message: "unspecified launch failure"
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    expected: "r= 43 44 a= 6 7 dev= T"
+    constructs: ["dir:target", "feature:base.device.internal_procedure"]
+    programs: ["h2-gomp-f-declare-target-3"]
+    source: harvest
+
+  # GCC 16.2 (gcc_g90 MI250X, gcc_sm80 A100; separate memory only): GCC's own gate-confirmed
+  # failures (results/gcc/gate-*/verdicts.jsonl, confirmer results/gcc/confirm/), one entry per
+  # defect and language; programs lists every catalog program of the group (data/findings/gcc/)
+  - file: gcc/gcc-c-target-in-task-mandatory-device-not-found.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: run_error
+    message: "OMP_TARGET_OFFLOAD is set to MANDATORY, but device not found"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "bad= 0"
+    programs: ["omp5?-c-clause-in_reduction*", "omp60-c-clause-in_reduction*"]
+    constructs: ["dir:task"]
+  - file: gcc/gcc-target-in-task-mandatory-device-not-found.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: run_error
+    message: "OMP_TARGET_OFFLOAD is set to MANDATORY, but device not found"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "bad= 0"
+    programs: ["omp5?-clause-in_reduction*", "omp60-clause-in_reduction*"]
+    constructs: ["dir:task"]
+  - file: gcc/gcc-defaultmap-to-pointer-copy-back.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp5?-clause-defaultmap-pointer", "omp60-clause-defaultmap-pointer"]
+  - file: gcc/gcc-acc-detach-delete-attach-underflow.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: run_error
+    message: "attach count underflow"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "sum= 2144"
+    programs: ["acc34-clause-detach"]
+  - file: gcc/gcc-acc-c-detach-delete-attach-underflow.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: run_error
+    message: "attach count underflow"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "sum= 2144"
+    programs: ["acc34-c-clause-detach"]
+  - file: gcc/gcc-c-omp60-unimplemented-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: "expected an OpenMP clause before"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp60-c-clause-aligned-directive_name", "omp60-c-clause-allocate-directive_name", "omp60-c-clause-atomic_default_mem_order-directive_name", "omp60-c-clause-bind-directive_name", "omp60-c-clause-collapse-directive_name", "omp60-c-clause-default-aggregate", "omp60-c-clause-default-all", "omp60-c-clause-default-directive_name", "omp60-c-clause-default-pointer", "omp60-c-clause-default-scalar", "omp60-c-clause-defaultmap-directive_name", "omp60-c-clause-defaultmap-self", "omp60-c-clause-defaultmap-storage", "omp60-c-clause-depend-directive_name", "omp60-c-clause-device-directive_name", "omp60-c-clause-device_type-directive_name", "omp60-c-clause-dist_schedule-directive_name", "omp60-c-clause-dynamic_allocators-directive_name", "omp60-c-clause-dynamic_allocators-required", "omp60-c-clause-enter-directive_name", "omp60-c-clause-firstprivate-directive_name", "omp60-c-clause-firstprivate-saved", "omp60-c-clause-from-directive_name", "omp60-c-clause-has_device_addr-directive_name", "omp60-c-clause-in_reduction-directive_name", "omp60-c-clause-indirect-directive_name", "omp60-c-clause-induction", "omp60-c-clause-induction-directive_name", "omp60-c-clause-induction-plus", "omp60-c-clause-induction-relaxed", "omp60-c-clause-induction-step", "omp60-c-clause-induction-strict", "omp60-c-clause-induction-times", "omp60-c-clause-is_device_ptr-directive_name", "omp60-c-clause-lastprivate-directive_name", "omp60-c-clause-linear-directive_name", "omp60-c-clause-link-directive_name", "omp60-c-clause-local", "omp60-c-clause-local-directive_name", "omp60-c-clause-map-directive_name", "omp60-c-clause-map-mapper", "omp60-c-clause-map-self", "omp60-c-clause-map-storage", "omp60-c-clause-message-directive_name", "omp60-c-clause-nogroup", "omp60-c-clause-nogroup-directive_name", "omp60-c-clause-nogroup-do_not_synchronize", "omp60-c-clause-nontemporal-directive_name", "omp60-c-clause-nowait-directive_name", "omp60-c-clause-nowait-do_not_synchronize", "omp60-c-clause-num_teams-directive_name", "omp60-c-clause-num_threads-directive_name", "omp60-c-clause-num_threads-strict", "omp60-c-clause-order-directive_name", "omp60-c-clause-ordered-directive_name", "omp60-c-clause-private-directive_name", "omp60-c-clause-proc_bind-directive_name", "omp60-c-clause-reduction-directive_name", "omp60-c-clause-reduction-original", "omp60-c-clause-replayable", "omp60-c-clause-replayable-directive_name", "omp60-c-clause-replayable-replayable_expression", "omp60-c-clause-reverse_offload-directive_name", "omp60-c-clause-reverse_offload-required", "omp60-c-clause-safelen-directive_name", "omp60-c-clause-schedule-directive_name", "omp60-c-clause-self_maps-directive_name", "omp60-c-clause-self_maps-required", "omp60-c-clause-severity-directive_name", "omp60-c-clause-shared-directive_name", "omp60-c-clause-simdlen-directive_name", "omp60-c-clause-thread_limit-directive_name", "omp60-c-clause-to-directive_name", "omp60-c-clause-transparent", "omp60-c-clause-transparent-directive_name", "omp60-c-clause-transparent-impex_type", "omp60-c-clause-unified_address-directive_name", "omp60-c-clause-unified_address-required", "omp60-c-clause-unified_shared_memory-directive_name", "omp60-c-clause-unified_shared_memory-required", "omp60-c-clause-use_device_addr-directive_name", "omp60-c-clause-use_device_ptr-directive_name", "omp60-c-clause-uses_allocators-directive_name", "omp60-c-directive-target_loop"]
+  - file: gcc/gcc-omp60-unimplemented-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp60-clause-aligned-directive_name", "omp60-clause-allocate-directive_name", "omp60-clause-atomic_default_mem_order-directive_name", "omp60-clause-bind-directive_name", "omp60-clause-collapse-directive_name", "omp60-clause-default-aggregate", "omp60-clause-default-all", "omp60-clause-default-allocatable", "omp60-clause-default-directive_name", "omp60-clause-default-pointer", "omp60-clause-default-scalar", "omp60-clause-defaultmap-directive_name", "omp60-clause-defaultmap-self", "omp60-clause-defaultmap-storage", "omp60-clause-depend-directive_name", "omp60-clause-device-directive_name", "omp60-clause-device_type-directive_name", "omp60-clause-dist_schedule-directive_name", "omp60-clause-dynamic_allocators-directive_name", "omp60-clause-dynamic_allocators-required", "omp60-clause-enter-automap", "omp60-clause-enter-directive_name", "omp60-clause-firstprivate-directive_name", "omp60-clause-firstprivate-saved", "omp60-clause-from-directive_name", "omp60-clause-has_device_addr-directive_name", "omp60-clause-in_reduction-directive_name", "omp60-clause-indirect-directive_name", "omp60-clause-induction", "omp60-clause-induction-directive_name", "omp60-clause-induction-plus", "omp60-clause-induction-relaxed", "omp60-clause-induction-step", "omp60-clause-induction-strict", "omp60-clause-induction-times", "omp60-clause-is_device_ptr-directive_name", "omp60-clause-lastprivate-directive_name", "omp60-clause-linear-directive_name", "omp60-clause-linear-ref", "omp60-clause-linear-uval", "omp60-clause-link-directive_name", "omp60-clause-local", "omp60-clause-local-directive_name", "omp60-clause-map-directive_name", "omp60-clause-map-ref_ptee", "omp60-clause-map-ref_ptr", "omp60-clause-map-ref_ptr_ptee", "omp60-clause-map-self", "omp60-clause-map-storage", "omp60-clause-message-directive_name", "omp60-clause-nogroup", "omp60-clause-nogroup-directive_name", "omp60-clause-nogroup-do_not_synchronize", "omp60-clause-nontemporal-directive_name", "omp60-clause-nowait-directive_name", "omp60-clause-nowait-do_not_synchronize", "omp60-clause-num_teams-directive_name", "omp60-clause-num_threads-directive_name", "omp60-clause-num_threads-strict", "omp60-clause-order-directive_name", "omp60-clause-ordered-directive_name", "omp60-clause-private-directive_name", "omp60-clause-proc_bind-directive_name", "omp60-clause-reduction-directive_name", "omp60-clause-reduction-original", "omp60-clause-replayable", "omp60-clause-replayable-directive_name", "omp60-clause-replayable-replayable_expression", "omp60-clause-reverse_offload-directive_name", "omp60-clause-reverse_offload-required", "omp60-clause-safelen-directive_name", "omp60-clause-schedule-directive_name", "omp60-clause-self_maps-directive_name", "omp60-clause-self_maps-required", "omp60-clause-severity-directive_name", "omp60-clause-shared-directive_name", "omp60-clause-simdlen-directive_name", "omp60-clause-thread_limit-directive_name", "omp60-clause-to-directive_name", "omp60-clause-transparent", "omp60-clause-transparent-directive_name", "omp60-clause-transparent-impex_type", "omp60-clause-unified_address-directive_name", "omp60-clause-unified_address-required", "omp60-clause-unified_shared_memory-directive_name", "omp60-clause-unified_shared_memory-required", "omp60-clause-use_device_addr-directive_name", "omp60-clause-use_device_ptr-directive_name", "omp60-clause-uses_allocators-directive_name", "omp60-directive-target_loop", "omp60-directive-target_teams_workdistribute", "omp60-directive-teams_workdistribute"]
+  - file: gcc/gcc-c-omp60-undocumented-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp60-c-clause-device_safesync*", "omp60-c-clause-defaultmap-private"]
+  - file: gcc/gcc-omp60-undocumented-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp60-clause-device_safesync*", "omp60-clause-defaultmap-private"]
+  - file: gcc/gcc-c-uses-allocators-traits-unimplemented.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: "sorry, unimplemented: .uses_allocators. clause"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp5?-c-clause-uses_allocators-traits", "omp5?-c-clause-uses_allocators-memspace", "omp60-c-clause-uses_allocators-traits", "omp60-c-clause-uses_allocators-memspace"]
+  - file: gcc/gcc-uses-allocators-traits-unimplemented.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "sorry, unimplemented: .uses_allocators. clause with traits and memory spaces"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp5?-clause-uses_allocators-traits", "omp5?-clause-uses_allocators-memspace", "omp60-clause-uses_allocators-traits", "omp60-clause-uses_allocators-memspace"]
+  - file: gcc/gcc-declare-mapper-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "Unclassifiable OpenMP directive"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp5?-clause-map-mapper", "omp5?-clause-to-mapper", "omp5?-clause-from-mapper", "omp60-clause-map-mapper", "omp60-clause-to-mapper", "omp60-clause-from-mapper", "oop-mapper-*"]
+  - file: gcc/gcc-c-motion-mapper-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: "clause with modifier other than .iterator. or .present."
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp5?-c-clause-to-mapper", "omp5?-c-clause-from-mapper", "omp60-c-clause-to-mapper", "omp60-c-clause-from-mapper"]
+  - file: gcc/gcc-loop-bind-default-none-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "not specified in enclosing"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["omp5?-clause-bind", "omp5?-clause-bind-thread", "omp60-clause-bind", "omp60-clause-bind-thread"]
+  - file: gcc/gcc-acc-init-set-shutdown-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "Unclassifiable OpenACC directive"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-directive-init", "acc34-directive-set", "acc34-directive-shutdown", "acc34-clause-default_async", "acc34-clause-device_num"]
+  - file: gcc/gcc-acc-bind-device-type-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-clause-device_type", "acc34-clause-bind"]
+  - file: gcc/gcc-acc-c-bind-device-type-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: "expected an OpenACC clause before"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-c-clause-device_type", "acc34-c-clause-bind"]
+  - file: gcc/gcc-acc-link-in-routine-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "with .link. clause used in .routine. function"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-clause-link"]
+  - file: gcc/gcc-acc-c-link-in-routine-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: "with .link. clause used in .routine. function"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-c-clause-link"]
+  - file: gcc/gcc-acc-use-device-allocatable-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "ALLOCATABLE object .* in USE_DEVICE clause"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-clause-use_device", "acc34-clause-deviceptr", "acc34-directive-host_data"]
+  - file: gcc/gcc-acc-gang-dim-collapse-force-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-clause-collapse-force", "acc34-clause-gang-dim"]
+  - file: gcc/gcc-acc-c-gang-dim-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["acc34-c-clause-gang-dim", "acc34-c-clause-gang-dim-binop"]
+  # Coverage parity (2026-10-28): GCC 16.2 beyond the catalog (the harvests' dev programs, the stress sweeps, the
+  # application corpus; tools/campaigns/parity.py). Program lists: the gate-confirmed GCC cells of each group.
+  - file: harvest/gcc-c-strided-section-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: "expected .\\]. before .:. token"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["hv-llvm-offloading-strided-update-strided-update-*"]
+  - file: harvest/gcc-c-target-data-two-maps-ice.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: ice
+    message: "internal compiler error: in install_var_field"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["hv-llvm-mapping-map-ordering-tgt-data-alloc-from", "hv-llvm-mapping-map-ordering-tgt-data-alloc-to-from",
+               "hv-llvm-mapping-map-ordering-tgt-exit-data-delete-from", "h2-gomp-ccc-target-map-multi-4"]
+  - file: harvest/gcc-c-target-data-struct-pointer-section-ice.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: ice
+    message: "internal compiler error: Segmentation fault"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["h2-ompex-target-struct-map-4-c"]
+  - file: harvest/gcc-teams-simd-matmul-allocatable-ice.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: ice
+    message: "internal compiler error: in gfc_omp_clause_default_ctor"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["hv-aomp-smoke-fails-flang-324387"]
+  - file: harvest/gcc-c-same-item-two-maps-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: "appears more than once in map clauses"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["hv-llvm-mapping-map-ordering-tgt-alloc-tofrom", "h2-gomp-ccc-target-map-multi-1",
+               "h2-gomp-ccc-target-map-multi-2"]
+  - file: harvest/gcc-same-item-two-maps-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["h2-gomp-f-target-map-multi-1", "h2-gomp-f-target-map-multi-4", "h2-gomp-f-target-map-multi-5",
+               "sections-omp-64-1", "sections-omp-1024-1"]
+  - file: harvest/gcc-acc-declare-create-allocatable-not-mapped.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: run_error
+    message: "is not mapped"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["hk-007", "hk-013", "hk-087"]
+  - file: stress/gcc-declare-target-allocatable-component-ice.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: ice
+    message: "internal compiler error: in lower_omp_target"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["template.declared_alloc-omp-*"]
+  - file: apps/gcc-acc-c-tile-partial-tiles-wrong.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["prk-c-stencil-acc"]
+  - file: apps/gcc-acc-tile-partial-tiles-wrong.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["prk-f-stencil-acc"]
+  - file: fuzz/gcc-declare-reduction-module-not-found.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "DECLARE REDUCTION \\w+ not found"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["n1:121", "n1:22", "n1:234", "n1:31", "n1:312", "n1:362", "n1:371", "n1:41", "n1:428", "n1:430", "n1:511",
+               "n1:748", "n1:804", "n1:809", "n1:813", "n1:832", "n1:841", "n1:939", "n1:944", "n1:987", "s1:1198",
+               "s1:1204", "s1:1205", "s1:1222", "s1:1240", "s1:1261", "s1:1300", "s1:1344", "s1:1362", "s1:1375", "s1:1455",
+               "s1:1556", "s1:1610", "s1:1631", "s1:1723", "s1:1727", "s1:1802", "s1:1849", "s1:1899", "s1:1957", "s1:1992",
+               "s1:2088", "s1:2096", "s1:2158", "s1:2179", "s1:2194", "s1:2213", "s1:234", "s1:2342", "s1:2345", "s1:2373",
+               "s1:2503", "s1:2566", "s1:2613", "s1:2673", "s1:2761", "s1:2770", "s1:2860", "s1:290", "s1:2922", "s1:3073",
+               "s1:3137", "s1:3160", "s1:3212", "s1:3227", "s1:3251", "s1:3258", "s1:328", "s1:3361", "s1:3411", "s1:3450",
+               "s1:3452", "s1:3558", "s1:3571", "s1:3626", "s1:365", "s1:3666", "s1:371", "s1:3752", "s1:3786", "s1:3804",
+               "s1:3907", "s1:3937", "s1:4060", "s1:4077", "s1:41", "s1:428", "s1:4304", "s1:4322", "s1:4364", "s1:4456",
+               "s1:4475", "s1:4564", "s1:4700", "s1:471", "s1:4733", "s1:4753", "s1:481", "s1:4812", "s1:4876", "s1:4932",
+               "s1:5003", "s1:5152", "s1:5261", "s1:5276", "s1:5279", "s1:5354", "s1:5355", "s1:5409", "s1:5526", "s1:5551",
+               "s1:5628", "s1:5657", "s1:5680", "s1:5684", "s1:6089", "s1:6160", "s1:6178", "s1:6218", "s1:6219", "s1:6264",
+               "s1:6355", "s1:6401", "s1:6459", "s1:6486", "s1:6512", "s1:665", "s1:6686", "s1:671", "s1:6723", "s1:6763",
+               "s1:6773", "s1:685", "s1:6875", "s1:6958", "s1:6992", "s1:71", "s1:7167", "s1:7252", "s1:7260", "s1:7262",
+               "s1:7327", "s1:7414", "s1:7548", "s1:7635", "s1:7663", "s1:7689", "s1:7717", "s1:789", "s1:7927", "s1:7977",
+               "s1:7988", "s1:8005", "s1:8038", "s1:809", "s1:8161", "s1:8217", "s1:8221", "s1:8363", "s1:8376", "s1:8464",
+               "s1:8596", "s1:8695", "s1:8703", "s1:8707", "s1:8741", "s1:875", "s1:8757", "s1:885", "s1:8862", "s1:9008",
+               "s1:9071", "s1:9072", "s1:9096", "s1:9110", "s1:9154", "s1:9225", "s1:9262", "s1:9284", "s1:9292", "s1:9298",
+               "s1:9348", "s1:9497", "s1:9554", "s1:9676", "s1:9779", "x0-declare:131", "x0-declare:26", "x0-declare:276",
+               "x0-declare:31"]
+  - file: fuzz/gcc-strided-target-update-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "Array is not contiguous|Stride should not be specified"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["s1:1040", "s1:1692", "s1:1792", "s1:2014", "s1:2084", "s1:2160", "s1:2267", "s1:2617", "s1:2744", "s1:2949",
+               "s1:2970", "s1:3049", "s1:3197", "s1:3219", "s1:3392", "s1:3457", "s1:3503", "s1:3685", "s1:4207", "s1:4477",
+               "s1:4501", "s1:4655", "s1:4680", "s1:4788", "s1:5088", "s1:5371", "s1:5383", "s1:547", "s1:5522", "s1:562",
+               "s1:6125", "s1:6197", "s1:6430", "s1:6554", "s1:6670", "s1:6685", "s1:6831", "s1:6915", "s1:7055", "s1:7099",
+               "s1:7561", "s1:7653", "s1:7683", "s1:7742", "s1:8143", "s1:8838", "s1:8951", "s1:9457", "s1:9698", "s1:988",
+               "s1:9945", "x0-alloc:10", "x0-alloc:115", "x0-alloc:159", "x0-alloc:281", "x0-alloc:286", "x0-alloc:46",
+               "x0-alloc:96"]
+  - file: fuzz/gcc-target-simd-map-nontemporal-rejected.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: rejected
+    message: "present on multiple clauses"
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    expected: "check=pass"
+    programs: ["b0:227", "b0:294", "c1:1350", "c1:1688", "c1:1721", "c1:18", "c1:209", "c1:227", "c1:427", "c1:469",
+               "s1:1336", "s1:1608", "s1:2321", "s1:327", "s1:3745", "s1:4530", "s1:9979", "x0-alloc:191", "x0-declare:70",
+               "x0-multitu:111", "x0-multitu:227", "x0-types:220"]
+
+# fortran-oop: derived types and object-oriented features in device code (data/findings/oop/)
+  - file: oop/cce-select-type-guard-not-taken.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: wrong_answer
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    expected: "r1= 10"
+    programs: ["oop-poly-select-type", "oop-unlimited-classify", "oop-unlimited-select-type"]
+    constructs: ["feature:base.device.derived_scalar", "feature:base.device.routine_call"]
+  - file: oop/cce-polymorphic-dispatch-device-link.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: rejected
+    message: "__GET_TYPE_BOUND_PROC"
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-poly-dispatch", "oop-poly-dispatch-loop", "oop-poly-parent-call", "oop-poly-pointer", "oop-tbp-nested-call"]
+  - file: oop/cce-class-is-device-link.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: rejected
+    message: "_EXTENDS_TYPE_OF"
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-poly-class-is"]
+  - file: oop/cce-udr-derived-type-unsupported.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: rejected
+    message: "Unsupported OpenMP construct Calls -- $udr"
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-dreduce-function", "oop-dreduce-subroutine", "oop-dreduce-operator", "oop-dreduce-default-init", "oop-dreduce-argmax", "oop-dreduce-nested"]
+  - file: oop/cce-pdt-default-mapper-rejected.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: rejected
+    message: "ftn-1853"
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-pdt-len", "oop-pdt-deferred", "oop-pdt-array", "oop-pdt-kindlen"]
+  - file: oop/cce-copy-alloc-component-section-fault.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: crash
+    message: "Memory access fault by GPU|hipErrorIllegalAddress"
+    modes: ["copy"]
+    arch: ["gfx942"]
+    programs: ["oop-section-alloc", "oop-section-nested", "oop-elemsec-alloc-parent"]
+    constructs: ["feature:base.device.alloc_component"]
+  - file: oop/cce-copy-second-member-section-lost.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: wrong_answer
+    modes: ["copy"]
+    arch: ["gfx942"]
+    expected: "r2= 36"
+    programs: ["oop-elemsec-two-members", "oop-elemsec-two-structs"]
+  - file: oop/cce-element-component-map-lost.f90
+    toolchains: ["cce19", "cce20"]
+    lang: f90
+    outcome: wrong_answer
+    modes: ["copy"]
+    arch: ["gfx942"]
+    expected: "r1= 74"
+    programs: ["oop-elemsec-comp-element", "oop-elemsec-comp-section", "oop-elemsec-nested-element"]
+  - file: oop/cce21-element-component-map-lost.f90
+    toolchains: ["cce21", "cce21_4"]
+    lang: f90
+    outcome: wrong_answer
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    expected: "r1= 74"
+    programs: ["oop-elemsec-comp-element", "oop-elemsec-comp-section"]
+  - file: oop/cce-copy-parent-to-component-tofrom-lost.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: wrong_answer
+    modes: ["copy"]
+    arch: ["gfx942"]
+    expected: "r1= 2528"
+    programs: ["oop-alloccomp-parent-and-comp"]
+    constructs: ["feature:base.device.alloc_component_whole"]
+  - file: oop/cce-section-of-element-component-overlap.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: run_error
+    message: "overlaps present region"
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-section-element"]
+    constructs: ["feature:base.device.alloc_component"]
+  - file: oop/cce-final-dealloc-device-abort.f90
+    toolchains: ["cce19", "cce20", "cce21", "cce21_4"]
+    lang: f90
+    outcome: crash
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-assignfinal-final-dealloc"]
+    constructs: ["feature:base.device.allocate_derived"]
+  - file: oop/afar-pdt-length-parameter-not-implemented.f90
+    toolchains: ["afar"]
+    lang: f90
+    outcome: rejected
+    message: "ConvertType.cpp:470: not yet implemented"
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-pdt-len", "oop-pdt-deferred", "oop-pdt-array", "oop-pdt-kindlen"]
+  - file: oop/gcc-vtab-not-marked-for-offload.f90
+    toolchains: ["gcc_g90", "gcc_sm80"]
+    lang: f90
+    outcome: rejected
+    message: "has been referenced in offloaded code but hasn"
+    modes: ["copy"]
+    arch: ["gfx90a", "sm_80"]
+    programs: ["oop-poly-select-type", "oop-poly-class-is", "oop-poly-pointer", "oop-unlimited-select-type", "oop-unlimited-classify"]
+  - file: oop/gcc-polymorphic-dispatch-abort.f90
+    toolchains: ["gcc_g90", "gcc_sm80"]
+    lang: f90
+    outcome: crash
+    modes: ["copy"]
+    arch: ["gfx90a", "sm_80"]
+    programs: ["oop-poly-dispatch", "oop-poly-dispatch-loop", "oop-poly-parent-call", "oop-tbp-nested-call"]
+    constructs: ["feature:base.device.type_bound_pass"]
+  - file: oop/gcc-pdt-length-parameter-abort.f90
+    toolchains: ["gcc_g90", "gcc_sm80"]
+    lang: f90
+    outcome: crash
+    modes: ["copy"]
+    arch: ["gfx90a", "sm_80"]
+    programs: ["oop-pdt-len", "oop-pdt-array", "oop-pdt-kindlen"]
+  - file: oop/gcc-acc-parent-and-member-data-rejected.f90
+    toolchains: ["gcc_g90", "gcc_sm80"]
+    lang: f90
+    outcome: rejected
+    message: "mixed component and non-component accesses"
+    modes: ["copy"]
+    arch: ["gfx90a", "sm_80"]
+    programs: ["oop-acc-deep-data"]
+  - file: oop/afar-final-dealloc-device-link.f90
+    toolchains: ["afar"]
+    lang: f90
+    outcome: rejected
+    message: "flang_rt_verbose_abort"
+    modes: ["unified", "copy"]
+    arch: ["gfx942"]
+    programs: ["oop-assignfinal-final-dealloc"]
+    constructs: ["feature:base.device.allocate_derived"]
+    link_needs_constructs: true
+  - file: oop/nvhpc-copy-alloc-component-illegal-address.f90
+    toolchains: ["nvhpc", "nvhpc269"]
+    lang: f90
+    outcome: run_error
+    message: "CUDA_ERROR_ILLEGAL_ADDRESS"
+    modes: ["copy"]
+    arch: ["sm_80"]
+    programs: ["oop-alloccomp-whole", "oop-alloccomp-array", "oop-alloccomp-enterexit", "oop-alloccomp-scalar", "oop-alloccomp-twolevel", "oop-alloccomp-update", "oop-extends-alloc-parent", "oop-elemsec-alloc-chain", "oop-section-update"]
+    constructs: ["feature:base.device.alloc_component_whole"]
+  - file: oop/nvhpc-copy-pdt-length-parameter-illegal-address.f90
+    toolchains: ["nvhpc", "nvhpc269"]
+    lang: f90
+    outcome: run_error
+    message: "CUDA_ERROR_ILLEGAL_ADDRESS"
+    modes: ["copy"]
+    arch: ["sm_80"]
+    programs: ["oop-pdt-len", "oop-pdt-deferred", "oop-pdt-array", "oop-pdt-kindlen"]
+  - file: oop/nvhpc-type-bound-call-rejected.f90
+    toolchains: ["nvhpc", "nvhpc269"]
+    lang: f90
+    outcome: rejected
+    message: "Call to type-bound procedures are not allowed on device"
+    modes: ["copy", "managed"]
+    arch: ["sm_80"]
+    programs: ["oop-tbp-generic", "oop-tbp-loop", "oop-assignfinal-tbp-assign"]
+  - file: oop/nvhpc-polymorphism-runtime-unsupported.f90
+    toolchains: ["nvhpc", "nvhpc269"]
+    lang: f90
+    outcome: rejected
+    message: "runtime function not supported"
+    modes: ["copy", "managed"]
+    arch: ["sm_80"]
+    programs: ["oop-poly-select-type", "oop-poly-class-is", "oop-unlimited-select-type", "oop-unlimited-classify", "oop-assignfinal-final-local", "oop-assignfinal-final-assign"]
+  - file: oop/nvhpc-polymorphic-dispatch-translate-failure.f90
+    toolchains: ["nvhpc", "nvhpc269"]
+    lang: f90
+    outcome: ice
+    message: "failed to translate accelerator region"
+    modes: ["copy", "managed"]
+    arch: ["sm_80"]
+    programs: ["oop-poly-dispatch", "oop-poly-dispatch-loop", "oop-poly-parent-call"]
+  - file: oop/nvhpc-udr-derived-type-rejected.f90
+    toolchains: ["nvhpc", "nvhpc269"]
+    lang: f90
+    outcome: rejected
+    message: "The reduction intrinsic must be|Reduction variable must be of intrinsic"
+    modes: ["copy", "managed"]
+    arch: ["sm_80"]
+    programs: ["oop-dreduce-function", "oop-dreduce-subroutine", "oop-dreduce-operator", "oop-dreduce-default-init", "oop-dreduce-argmax", "oop-dreduce-nested"]
+  - file: oop/nvhpc-named-mapper-rejected.f90
+    toolchains: ["nvhpc", "nvhpc269"]
+    lang: f90
+    outcome: rejected
+    message: "Unrecognized OpenMP directive - declare"
+    modes: ["copy", "managed"]
+    arch: ["sm_80"]
+    programs: ["oop-mapper-named"]
+  # legality: implementation contract (no OpenMP rule): the OpenMP text says nothing about malloc in a target region,
+  # so this is not a specification violation. Failing mode: unified only (the copy cell failed 1 of 10 harness
+  # repeats and was correct in gate a-d). The student's Fortran program is an observation, data/reports/kbody-observations/
+  - file: malloc/afar-device-malloc-in-kernel-corrupts-records.c
+    toolchains: [afar]
+    lang: c
+    outcome: wrong_answer
+    modes: [unified]
+    arch: [gfx942]
+  - file: fuzz/nvhpc-depend-implicit-map-illegal-address.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: run_error
+    message: "CUDA_ERROR_ILLEGAL_ADDRESS"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-c1-nvhpc-nvhpc269:1014', 'par-c1-nvhpc-nvhpc269:1115', 'par-c1-nvhpc-nvhpc269:1147', 'par-c1-nvhpc-nvhpc269:1274', 'par-c1-nvhpc-nvhpc269:1316', 'par-c1-nvhpc-nvhpc269:1766', 'par-c1-nvhpc-nvhpc269:1878', 'par-c1-nvhpc-nvhpc269:2302', 'par-s1-nvhpc-nvhpc269:1984', 'par-s1-nvhpc-nvhpc269:2459', 'par-s1-nvhpc-nvhpc269:4050']
+  - file: fuzz/nvhpc-num-threads-reduction-identity-lost.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-c1-nvhpc-nvhpc269:2123']
+  - file: fuzz/nvhpc-target-parallel-firstprivate-translate-failure.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: ice
+    message: "Compiler failed to translate OpenMP region"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-c1-nvhpc-nvhpc269:2207']
+  - file: fuzz/nvhpc-target-parallel-single-hang.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: timeout
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-c1-nvhpc-nvhpc269:991', 'par-c1-nvhpc-nvhpc269:1182', 'par-c1-nvhpc-nvhpc269:1443', 'par-c1-nvhpc-nvhpc269:1678', 'par-c1-nvhpc-nvhpc269:1731', 'par-c1-nvhpc-nvhpc269:1762', 'par-c1-nvhpc-nvhpc269:1794', 'par-c1-nvhpc-nvhpc269:1805', 'par-c1-nvhpc-nvhpc269:2030', 'par-c1-nvhpc-nvhpc269:2228']
+  - file: fuzz/nvhpc-distribute-parallel-num-threads-writes-lost.f90
+    toolchains: [nvhpc]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-c1-nvhpc-nvhpc269:1098', 'par-c1-nvhpc-nvhpc269:1733']
+  - file: fuzz/nvhpc-defaultmap-to-scalar-reduction-lost.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+  - file: fuzz/nvhpc-map-always-after-map-to-not-copied-back.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-c1-nvhpc-nvhpc269:2019']
+  - file: fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: run_error
+    message: "CUDA_ERROR_ILLEGAL_ADDRESS"
+    modes: [copy]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:2670', 'par-s1-nvhpc-nvhpc269:4516', 'par-s1-nvhpc-nvhpc269:4913', 'par-s1-nvhpc-nvhpc269:5351', 'par-s1-nvhpc-nvhpc269:5538', 'par-s1-nvhpc-nvhpc269:6329', 'par-s1-nvhpc-nvhpc269:2004']
+  - file: fuzz/nvhpc-end-distribute-simd-rejected.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: rejected
+    message: "Syntax error at or near identifier simd"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:9906', 'par-s1-nvhpc-nvhpc269:8744']
+  - file: fuzz/nvhpc-target-simd-collapse-translate-failure.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: ice
+    message: "Missing branch target block"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:9796']
+  - file: fuzz/nvhpc-defaultmap-firstprivate-lastprivate-ice.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: rejected
+    message: "Internal compiler error. offset should not be overridden"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:9895']
+  - file: fuzz/nvhpc-loop-character-achar-unsupported.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: ice
+    message: "Character local variable unsupported on device"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:2564']
+  - file: fuzz/nvhpc-default-none-reduction-lastprivate-fort1-crash.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: ice
+    message: "fort1 TERMINATED by signal 11"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:8009']
+  - file: fuzz/nvhpc-target-simd-no-end-directive-rejected.f90
+    toolchains: [nvhpc, nvhpc269]
+    lang: f90
+    outcome: rejected
+    message: "Illegal control structure - unterminated TARGET"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:8411']
+  - file: fuzz/nvhpc-assumed-length-character-dummy-map-ice.f90
+    toolchains: [nvhpc]
+    lang: f90
+    outcome: rejected
+    message: "Internal compiler error. size_of: attempt to size assumed size character"
+    modes: [copy, managed]
+    arch: [sm_80]
+    programs: ['par-s1-nvhpc-nvhpc269:8930']
+  - file: nested/afar-cce-c-update-struct-and-member-rejected.c
+    toolchains: [afar, cce19, cce20, cce21, cce21_4]
+    lang: c
+    outcome: rejected
+    message: 'site-nested--afar-cce-c-update-struct-and-member-rejected.c:: error: same pointer dereferenced'
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: [nd-c-omp-update-alias-d2-332dddeb, nd-c-omp-update-alias-d2-684cb0b8, nd-c-omp-update-alias-d2-7e63bd9c, nd-c-omp-update-aliassub-d2-7f474889, nd-c-omp-update-aliassub-d2-94cac870, nd-c-omp-update-aliassub-d2-c7c56309, nd-c-omp-update-chain-d1-7fac5787, nd-c-omp-update-chain-d1-a679e114, nd-c-omp-update-chain-d2-114e1ffc, nd-c-omp-update-chain-d2-1585f8af, nd-c-omp-update-chain-d2-15c71a46, nd-c-omp-update-chain-d2-1f314a7c, nd-c-omp-update-chain-d2-1fcc5e18, nd-c-omp-update-chain-d2-2b8c33ae, nd-c-omp-update-chain-d2-2d0d559e, nd-c-omp-update-chain-d2-44c37206, nd-c-omp-update-chain-d2-60aec85d, nd-c-omp-update-chain-d2-61da37e6, nd-c-omp-update-chain-d2-6af5c7e2, nd-c-omp-update-chain-d2-7f8add9c, nd-c-omp-update-chain-d2-86fbbf97, nd-c-omp-update-chain-d2-a3703a98, nd-c-omp-update-chain-d2-b6fcbb9f, nd-c-omp-update-chain-d2-b7041f75, nd-c-omp-update-chain-d2-bd065bcd, nd-c-omp-update-chain-d2-cca853ce, nd-c-omp-update-chain-d2-db6ed5e2, nd-c-omp-update-chain-d3-05025df3, nd-c-omp-update-chain-d3-0c64953c,
+      nd-c-omp-update-chain-d3-0f5b4780, nd-c-omp-update-chain-d3-1f5ebce9, nd-c-omp-update-chain-d3-2620c220, nd-c-omp-update-chain-d3-2be3a628, nd-c-omp-update-chain-d3-4643770f, nd-c-omp-update-chain-d3-5648fa65, nd-c-omp-update-chain-d3-65936503, nd-c-omp-update-chain-d3-6bc24e3c, nd-c-omp-update-chain-d3-6f0b33d0, nd-c-omp-update-chain-d3-700e7c94, nd-c-omp-update-chain-d3-70128cef, nd-c-omp-update-chain-d3-8b59135d, nd-c-omp-update-chain-d3-8ba10689, nd-c-omp-update-chain-d3-8f2a97eb, nd-c-omp-update-chain-d3-97a31dfc, nd-c-omp-update-chain-d3-a29029aa, nd-c-omp-update-chain-d3-a9134361, nd-c-omp-update-chain-d3-b91a32d4, nd-c-omp-update-chain-d3-c5604bb2, nd-c-omp-update-chain-d4-19f9f60a, nd-c-omp-update-diamond-d3-3f65ce61, nd-c-omp-update-diamond-d3-41a1f708, nd-c-omp-update-diamond-d3-5b90e213, nd-c-omp-update-list-d2-58efae8c, nd-c-omp-update-list-d3-842299a3, nd-c-omp-update-tree-d2-5148e00e, nd-c-omp-update-tree-d2-78bc7f0b, nd-c-omp-update-tree-d2-bf7639b6, nd-c-omp-update-tree-d3-725ebde6,
+      nd-c-omp-update-tree-d3-ca80229f]
+  - file: nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90
+    toolchains: [afar]
+    lang: f90
+    outcome: crash
+    message: 'Warning: Queue error - HSA_STATUS_ERROR_MEMORY_FAULT'
+    modes: [copy]
+    arch: [gfx942]
+    programs: [nd-f-omp-always-chain-d2-0b79aaa6, nd-f-omp-always-chain-d2-5b08a1dd, nd-f-omp-always-chain-d2-75ca3965, nd-f-omp-always-chain-d2-a1106ec3, nd-f-omp-always-chain-d2-af297865, nd-f-omp-always-chain-d2-b1ac0170, nd-f-omp-always-chain-d2-c87159f0, nd-f-omp-always-chain-d2-c931e678, nd-f-omp-always-chain-d3-0a19c378, nd-f-omp-always-chain-d3-23f3159f, nd-f-omp-always-chain-d3-6429d1f2, nd-f-omp-always-chain-d3-a2c50d15, nd-f-omp-always-chain-d3-d619d8f3, nd-f-omp-always-chain-d3-e6c04585, nd-f-omp-always-list-d2-1a3866f8, nd-f-omp-close-chain-d2-23d11b6c, nd-f-omp-close-chain-d2-53ab37a7, nd-f-omp-close-chain-d3-6805e4ee, nd-f-omp-close-chain-d3-7d95925f, nd-f-omp-close-chain-d3-9c214397, nd-f-omp-close-tree-d2-77fe8f90, nd-f-omp-enter-chain-d1-b2c324d9, nd-f-omp-enter-chain-d2-02ac29dd, nd-f-omp-enter-chain-d2-3197d0a8, nd-f-omp-enter-chain-d2-3be528ec, nd-f-omp-enter-chain-d2-446a7bbe, nd-f-omp-enter-chain-d2-6f9da85d, nd-f-omp-enter-chain-d2-a22671ae, nd-f-omp-enter-chain-d2-b1679c00,
+      nd-f-omp-enter-chain-d2-b668ef1a, nd-f-omp-enter-chain-d2-c4de674a, nd-f-omp-enter-chain-d2-c8d85554, nd-f-omp-enter-chain-d2-cee2a3ae, nd-f-omp-enter-chain-d2-cf1e37c5, nd-f-omp-enter-chain-d2-ff520002, nd-f-omp-enter-chain-d3-0b3bdece, nd-f-omp-enter-chain-d3-181eb7ae, nd-f-omp-enter-chain-d3-27fc4e52, nd-f-omp-enter-chain-d3-5f7d1cd9, nd-f-omp-enter-chain-d3-6d18ea3c, nd-f-omp-enter-chain-d3-77e3bd5d, nd-f-omp-enter-chain-d3-8b826b39, nd-f-omp-enter-chain-d3-a54517a7, nd-f-omp-enter-chain-d3-e0125bfa, nd-f-omp-enter-list-d3-9b3ce758, nd-f-omp-enter-list-d4-880965d5, nd-f-omp-enter-tree-d2-15fff1f4, nd-f-omp-enter-tree-d2-c78514c5, nd-f-omp-mapper-chain-d1-0d36f37d, nd-f-omp-mapper-chain-d2-15137215, nd-f-omp-mapper-chain-d2-90256a87, nd-f-omp-mapper-chain-d2-b48755f6, nd-f-omp-mapper-chain-d2-c224f613, nd-f-omp-mapper-chain-d2-c26a1f3c, nd-f-omp-mapper_enter-chain-d2-194e7b57, nd-f-omp-mapper_enter-chain-d2-42baa788, nd-f-omp-mapper_enter-chain-d2-58989314, nd-f-omp-mapper_enter-chain-d2-843af8df,
+      nd-f-omp-mapper_enter-chain-d2-a42fde14, nd-f-omp-mapper_enter-chain-d2-d66c239d, nd-f-omp-one-chain-d2-195ea825, nd-f-omp-one-chain-d2-1a15b55c, nd-f-omp-one-chain-d2-2a889054, nd-f-omp-one-chain-d2-30e18d0f, nd-f-omp-one-chain-d2-db9b2606, nd-f-omp-one-chain-d3-4df89a9f, nd-f-omp-one-chain-d3-7d0cf848, nd-f-omp-one-list-d2-1b67cb71, nd-f-omp-one-tree-d2-fe998394, nd-f-omp-present-chain-d2-6b433240, nd-f-omp-present-chain-d2-8328294e, nd-f-omp-present-chain-d2-98f96e52, nd-f-omp-present-chain-d2-9d7a0b6d, nd-f-omp-present-chain-d2-f3cf6eb5, nd-f-omp-present-chain-d3-04d9e7d3, nd-f-omp-present-chain-d3-512ec550, nd-f-omp-present-chain-d3-c07b93ee, nd-f-omp-present-chain-d3-d110420c, nd-f-omp-present-list-d2-865f5787, nd-f-omp-tdata-chain-d2-3ddce863, nd-f-omp-tdata-chain-d2-d7b601da, nd-f-omp-tdata-chain-d3-2be49672, nd-f-omp-tdata-chain-d3-5a6fdac0, nd-f-omp-tdata-chain-d3-85766a94, nd-f-omp-tdata-chain-d3-88f311be, nd-f-omp-tdata-chain-d3-8af496d0, nd-f-omp-tdata-chain-d3-96349065, nd-f-omp-tdata-list-d2-c3abf961,
+      nd-f-omp-tdata-tree-d2-a44b533c, nd-f-omp-tdata-tree-d2-ba8e4a37, nd-f-omp-tdata_nested-chain-d2-ee52b5c1, nd-f-omp-tdata_nested-chain-d2-f63872c4, nd-f-omp-tdata_nested-chain-d3-1d9ac350, nd-f-omp-tdata_nested-chain-d3-78ee2d27, nd-f-omp-tdata_nested-chain-d3-833d215e, nd-f-omp-tdata_nested-chain-d3-9dd3b6ad, nd-f-omp-tdata_nested-chain-d3-cec76abb, nd-f-omp-tdata_nested-chain-d3-e0671608, nd-f-omp-tdata_nested-chain-d3-e61550e7, nd-f-omp-tdata_nested-chain-d4-355811c0, nd-f-omp-update-chain-d2-018eb6d9, nd-f-omp-update-chain-d2-0545e9b5, nd-f-omp-update-chain-d2-3daf06e5, nd-f-omp-update-chain-d2-75e83840, nd-f-omp-update-chain-d2-9756b365, nd-f-omp-update-chain-d2-b9c06ba7, nd-f-omp-update-chain-d2-d90fc1ec, nd-f-omp-update-chain-d2-eb4cf5ae, nd-f-omp-update-chain-d3-261315ff, nd-f-omp-update-chain-d3-3d5ca029, nd-f-omp-update-chain-d3-5b69f0e6, nd-f-omp-update-chain-d3-64ea229b, nd-f-omp-update-chain-d3-74e122b9, nd-f-omp-update-chain-d3-a40d2cc5, nd-f-omp-update-chain-d3-cf66ca90,
+      nd-f-omp-update-chain-d3-d51553a5, nd-f-omp-update-chain-d3-f84ee81c, nd-f-omp-update-chain-d3-fddf3ef0, nd-f-omp-update-chain-d3-fee48361, nd-f-omp-update-chain-d4-0079ddfd, nd-f-omp-update-tree-d2-9a0f19f5, nd-f-omp-update-tree-d3-7d66722a, nd-f-omp-update-tree-d3-cef9276d]
+  - file: nested/cce-c-struct-and-nested-pointee-sections-ice.c
+    toolchains: [cce19, cce20, cce21, cce21_4]
+    lang: c
+    outcome: ice
+    message: PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace, prepr
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: [nd-c-omp-always-chain-d2-53712162, nd-c-omp-always-chain-d3-71393589, nd-c-omp-close-chain-d3-87bce034, nd-c-omp-one-chain-d3-9f7ac271, nd-c-omp-one-chain-d3-d6c766c9]
+  - file: nested/cce-fortran-nested-allocatable-component-copy-fault.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: crash
+    message: 'crash: SIGABRT; without mandatory: crash: SIGABRT'
+    modes: [copy]
+    arch: [gfx942]
+  - file: nested/gcc-acc-c-parent-and-shared-pointee-one-directive.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: run_error
+    message: 'exit_status: 1'
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [nd-c-acc-enter-alias-d2-7309596a, nd-c-acc-enter-alias-d2-8d638b4c, nd-c-acc-enter-alias-d2-afeabcf3, nd-c-acc-enter-aliassub-d2-0a90f75a, nd-c-acc-enter-aliassub-d2-0ca27fa7, nd-c-acc-enter-aliassub-d2-a27eabb0, nd-c-acc-enter-aliassub-d2-deeda44f, nd-c-acc-enter-aliassub-d2-e893a050, nd-c-acc-enter-diamond-d3-10d00adc, nd-c-acc-enter-diamond-d3-35c7e4c2, nd-c-acc-enter-diamond-d3-5ba7e8ba, nd-c-acc-enter-diamond-d3-699c342b, nd-c-acc-enter-diamond-d3-76ded6c0, nd-c-acc-enter-diamond-d3-ac852196, nd-c-acc-enter-diamond-d3-b4186a11, nd-c-acc-enter-diamond-d3-b5ee2a63]
+  - file: nested/gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: timeout
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [nd-c-acc-enter-chain-d2-a882d869, nd-c-acc-enter-chain-d2-e7da4dab, nd-c-acc-enter-chain-d3-315d10d9, nd-c-acc-enter-chain-d3-358c069c, nd-c-acc-enter-chain-d3-b9bb6619, nd-c-acc-enter-chain-d4-1fa7e914, nd-c-acc-enter-chain-d4-658d9bcd]
+  - file: nested/nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: run_error
+    message: "CUDA_ERROR_ILLEGAL_ADDRESS (pointee listed before its parent)"
+    modes: [copy]
+    arch: [sm_80]
+  - file: nested/cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer.f90
+    toolchains: [cce19, cce21_4]
+    lang: f90
+    outcome: run_error
+    message: "CRAY_ACC_ERROR - unsupported flags for typed transfer"
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: [nd-f-omp-close-chain-d2-23d11b6c, nd-f-omp-enter-chain-d1-21883845, nd-f-omp-enter-chain-d1-64c59390, nd-f-omp-enter-chain-d1-b856f444, nd-f-omp-enter-chain-d2-3197d0a8, nd-f-omp-enter-chain-d2-b668ef1a, nd-f-omp-enter-chain-d3-0b3bdece, nd-f-omp-enter-chain-d3-27fc4e52, nd-f-omp-enter-chain-d3-6d18ea3c, nd-f-omp-enter-chain-d3-a54517a7, nd-f-omp-enter-chain-d3-dc18b074, nd-f-omp-enter-chain-d3-e0125bfa, nd-f-omp-present-chain-d1-e4cdb6d0, nd-f-omp-present-chain-d2-365941e2, nd-f-omp-present-chain-d2-9d7a0b6d, nd-f-omp-present-chain-d3-04d9e7d3, nd-f-omp-present-chain-d3-c07b93ee, nd-f-omp-present-chain-d3-d110420c, nd-f-omp-update-chain-d1-58f7d58c, nd-f-omp-update-chain-d1-f1a9957f, nd-f-omp-update-chain-d2-0545e9b5, nd-f-omp-update-chain-d3-261315ff, nd-f-omp-update-chain-d3-5b69f0e6, nd-f-omp-update-chain-d3-64ea229b, nd-f-omp-update-chain-d3-a40d2cc5, nd-f-omp-update-chain-d3-d51553a5, nd-f-omp-update-chain-d3-fee48361, nd-f-omp-update-chain-d4-0079ddfd]
+  - file: nested/gcc-c-declare-mapper-pointer-member-section-gpu-fault.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: crash
+    message: 'Memory access fault by GPU node-4 (Agent handle: 0x794640) on address 0xbed000. Reason: Unknown.'
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [nd-c-omp-mapper-chain-d1-f314e872, nd-c-omp-mapper-chain-d2-647b801f, nd-c-omp-mapper-chain-d2-6cace278, nd-c-omp-mapper-chain-d2-724db78d, nd-c-omp-mapper-chain-d2-75564642, nd-c-omp-mapper-chain-d2-95162abf, nd-c-omp-mapper-chain-d2-9525642f, nd-c-omp-mapper-chain-d2-aa6b2219, nd-c-omp-mapper-chain-d2-b7881884, nd-c-omp-mapper-chain-d2-dbed9877, nd-c-omp-mapper-chain-d2-e3b718a2, nd-c-omp-mapper-chain-d3-12f05097, nd-c-omp-mapper-chain-d3-1eb36c71, nd-c-omp-mapper-chain-d3-70dd651f, nd-c-omp-mapper-chain-d3-ec8da702, nd-c-omp-mapper-chain-d4-0eb32acd, nd-c-omp-mapper-chain-d4-36e66203, nd-c-omp-mapper_enter-chain-d1-dc9d313d, nd-c-omp-mapper_enter-chain-d2-07229cfd, nd-c-omp-mapper_enter-chain-d2-df4f2688, nd-c-omp-mapper_enter-chain-d3-09a92f8a, nd-c-omp-mapper_enter-chain-d3-7babd15f, nd-c-omp-mapper_enter-chain-d3-ec1b1655]
+  - file: nested/gcc-c-always-on-pointer-member-section-ice.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: ice
+    message: Please submit a full bug report, with preprocessed source (by using -freport-bug).
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [nd-c-omp-always-chain-d2-54e7fc79, nd-c-omp-always-chain-d2-ba438256, nd-c-omp-always-chain-d2-d3bf9d59, nd-c-omp-always-chain-d3-33791e60, nd-c-omp-always-chain-d3-37f3561f, nd-c-omp-always-chain-d3-6f147348, nd-c-omp-always-chain-d3-755bad14, nd-c-omp-always-chain-d3-bdb8bc3d, nd-c-omp-always-chain-d3-dfa07978, nd-c-omp-always-list-d2-f31eac01]
+  - file: nested/nvhpc-c-update-from-structure-overwrites-attached-pointer-segv.c
+    toolchains: [nvhpc, nvhpc269]
+    lang: c
+    outcome: crash
+    message: 'crash: SIGSEGV; without mandatory: crash: SIGSEGV'
+    modes: [copy]
+    arch: [sm_80]
+    programs: [nd-c-omp-enter-alias-d2-0f7b1c8d, nd-c-omp-enter-alias-d2-10f14204, nd-c-omp-enter-aliassub-d2-28acd136, nd-c-omp-enter-aliassub-d2-30b02f09, nd-c-omp-enter-aliassub-d2-3cc740c1, nd-c-omp-enter-aliassub-d2-fd23e3be, nd-c-omp-enter-chain-d1-7ce2e18f, nd-c-omp-enter-chain-d2-35aa80e0, nd-c-omp-enter-chain-d2-99ea7db8, nd-c-omp-enter-chain-d2-fb177d2e, nd-c-omp-enter-chain-d3-41b3b77f, nd-c-omp-enter-chain-d3-5bca046a, nd-c-omp-enter-chain-d3-c1680a02, nd-c-omp-enter-chain-d3-c2ca2645, nd-c-omp-enter-chain-d3-fc976865, nd-c-omp-enter-diamond-d3-07ab92f3, nd-c-omp-enter-diamond-d3-41750fb6, nd-c-omp-enter-diamond-d3-5e5ed99d, nd-c-omp-enter-diamond-d3-d5e537a9, nd-c-omp-enter-diamond-d3-f1a9c3e8, nd-c-omp-enter-list-d3-e11a72cd, nd-c-omp-enter-tree-d3-e0467211, nd-c-omp-update-alias-d2-684cb0b8, nd-c-omp-update-chain-d1-a679e114, nd-c-omp-update-chain-d2-1585f8af, nd-c-omp-update-chain-d2-2b8c33ae, nd-c-omp-update-chain-d2-44c37206, nd-c-omp-update-chain-d2-60aec85d, nd-c-omp-update-chain-d2-a3703a98,
+      nd-c-omp-update-chain-d2-b6fcbb9f, nd-c-omp-update-chain-d2-cca853ce, nd-c-omp-update-chain-d2-db6ed5e2, nd-c-omp-update-chain-d3-5648fa65, nd-c-omp-update-chain-d3-a9134361, nd-c-omp-update-chain-d3-c5604bb2]
+  - file: nested/cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object.f90
+    toolchains: [cce19, cce21_4]
+    lang: f90
+    outcome: run_error
+    message: "CRAY_ACC_ERROR - host object does not appear to have an associated accelerator object"
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: [nd-f-omp-update-chain-d1-222d392b, nd-f-omp-update-chain-d1-eb999367, nd-f-omp-update-chain-d2-018eb6d9, nd-f-omp-update-chain-d2-3daf06e5, nd-f-omp-update-chain-d2-75e83840, nd-f-omp-update-chain-d2-9756b365, nd-f-omp-update-chain-d2-d90fc1ec, nd-f-omp-update-chain-d2-eb4cf5ae, nd-f-omp-update-chain-d3-3d5ca029, nd-f-omp-update-chain-d3-cf66ca90, nd-f-omp-update-chain-d3-f84ee81c, nd-f-omp-update-tree-d3-cef9276d]
+  - file: nested/afar-cce-c-call-result-member-in-target-rejected.c
+    toolchains: [afar, cce19, cce20, cce21, cce21_4]
+    lang: c
+    outcome: rejected
+    message: 'site-nested--afar-cce-c-call-result-member-in-target-rejected.c:: error: expected addressable l'
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: [nd-fnres-c-child-pointer]
+  - file: nested/gcc-fortran-pointer-component-alloc-bounds-lost.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+  - file: nested/gcc-fortran-root-and-element-pointer-components-ice.f90
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: f90
+    outcome: ice
+    message: Please submit a full bug report, with preprocessed source (by using -freport-bug).
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [nd-f-omp-tdata_nested-chain-d3-0fae50d2, nd-f-omp-tdata_nested-chain-d3-b0edb43f]
+  - file: nested/gcc-c-from-struct-and-pointee-section-rejected.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: rejected
+    message: 'site-nested--gcc-c-from-struct-and-pointee-section-rejected.c:: error: ‘#pragma omp target’ wit'
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [nd-c-omp-always-chain-d2-53712162, nd-c-omp-always-chain-d2-a0cb4117, nd-c-omp-always-chain-d3-1e86a491, nd-c-omp-always-chain-d3-5b819c3d, nd-c-omp-one-chain-d2-3557bfd6, nd-c-omp-one-chain-d2-cad870f5, nd-c-omp-present-chain-d2-60119b21, nd-c-omp-present-chain-d3-1435023d, nd-c-omp-present-chain-d4-f8a7e0f5]
+  - file: nested/gcc-acc-c-struct-and-member-array-one-directive.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [nd-c-acc-tdata-alias-d2-20ae973e, nd-c-acc-tdata-alias-d2-23c00982, nd-c-acc-tdata-alias-d2-72a1d7e8, nd-c-acc-tdata-alias-d2-af2ec241, nd-c-acc-tdata-chain-d1-0ed1bf12, nd-c-acc-tdata-chain-d1-9886a523, nd-c-acc-tdata-chain-d2-085c13be, nd-c-acc-tdata-chain-d2-1a584322, nd-c-acc-tdata-chain-d2-25c6c4d8, nd-c-acc-tdata-chain-d2-361ca0f9, nd-c-acc-tdata-chain-d2-36b0e127, nd-c-acc-tdata-chain-d2-43985434, nd-c-acc-tdata-chain-d2-462abe25, nd-c-acc-tdata-chain-d2-5e7728c0, nd-c-acc-tdata-chain-d2-85f2a830, nd-c-acc-tdata-chain-d2-a3760a7a, nd-c-acc-tdata-chain-d2-af1ca1e6, nd-c-acc-tdata-chain-d2-d9e6a839, nd-c-acc-tdata-chain-d2-f585dbe8, nd-c-acc-tdata-chain-d2-f85f821b, nd-c-acc-tdata-chain-d3-474c8b58, nd-c-acc-tdata-chain-d3-475cfe44, nd-c-acc-tdata-chain-d3-4bf0e2c8, nd-c-acc-tdata-chain-d3-5c2aa78e, nd-c-acc-tdata-chain-d3-63c6d8ed, nd-c-acc-tdata-chain-d3-8fa68caf, nd-c-acc-tdata-chain-d3-99924776, nd-c-acc-tdata-chain-d3-9d855631, nd-c-acc-tdata-chain-d3-f891fd7c, nd-c-acc-tdata-diamond-d3-6974fab3,
+      nd-c-acc-tdata-diamond-d3-6fe9454b, nd-c-acc-tdata-diamond-d3-87e0b9a8, nd-c-acc-tdata-list-d2-1ab29ba9, nd-c-acc-tdata-list-d2-cc8507d1, nd-c-acc-tdata-list-d3-367465a3, nd-c-acc-tdata-tree-d2-12d76b63, nd-c-acc-tdata-tree-d2-87d4954e, nd-c-acc-tdata-tree-d2-aedfe6ab, nd-c-acc-tdata-tree-d2-fdcb2b5a, nd-c-acc-tdata-tree-d3-335e85bb, nd-c-acc-tdata-tree-d3-98389330]
+  - file: hecbench/gcc-c-float16-array-in-target-lto-ice.c
+    toolchains: [gcc_g90, gcc_sm80]
+    lang: c
+    outcome: ice
+    message: 'make_ssa_name_fn, at tree-ssanames.cc:355'
+    modes: [copy]
+    arch: [gfx90a, sm_80]
+    programs: [hecbench-f16sp-omp]
+  - file: hecbench/gcc-c-swar-popcount-assembler-error.c
+    toolchains: [gcc_g90]
+    lang: c
+    outcome: ice
+    message: 'too few operands for instruction'
+    modes: [copy]
+    arch: [gfx90a]
+    programs: [hecbench-popcount-omp]

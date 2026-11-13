@@ -1,0 +1,8 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: amdflang -fopenmp --offload-arch=gfx942 -O2 (AFAR 24.3.0) on offload.engine.gen omp52-clause-reduction-task (reduction(task, +: s) on a do in a parallel in target; found by oracle audit)
+# exit status: 1
+==== verbatim output below ====
+Call parameter type does not match function signature!
+  %.taskred.input = alloca [1 x %kmp_taskred_input_t], align 8, addrspace(5)
+ ptr  %.taskred.desc = call ptr @__kmpc_taskred_modifier_init(ptr addrspacecast (ptr addrspace(1) @6 to ptr), i32 %omp_global_thread_num5, i32 1, i32 1, ptr addrspace(5) %.taskred.input)
+error: failed to create the LLVM module

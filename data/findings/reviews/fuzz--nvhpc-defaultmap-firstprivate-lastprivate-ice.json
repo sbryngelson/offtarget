@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/nvhpc-defaultmap-firstprivate-lastprivate-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lp and a are explicitly mapped so defaultmap does not apply to them; j is the predetermined private loop variable; lastprivate(lp) on parallel do gives lp=8 and a is filled without races. Internal compiler error on a conforming program is a bug."
+  },
+  {
+   "run": "run-20261113/batch-64",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "lp and a appear in explicit map clauses, so defaultmap(firstprivate: scalar) does not apply to them. Inside the target region lp is the device copy; lastprivate(lp) on the parallel do assigns the value of the sequentially last iteration (j=8) to it, and tofrom copies it back. No race: each a(j) is distinct. Expected sum 36 and lp 8 are required; the internal compiler error is a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-57",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "a and lp appear in an explicit map clause, so defaultmap(firstprivate: scalar) does not apply to them. parallel do with lastprivate(lp) inside target is conforming; the last iteration assigns lp=8 and the mapped value is copied back at target end. No race: a(j) distinct. A conforming compiler must accept it; the internal compiler error is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-93",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The explicit map(tofrom: lp) takes precedence over defaultmap, so lp is mapped. lp is lastprivate on the parallel do inside the target region, which is allowed; j is the private loop variable and a(j) writes are disjoint. Result a sum 36 and lp 8 is determined, so the internal compiler error is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-46",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "7f793316a51abb3d0e22e09239c33f2d2725f536688e9d277c4014cf205bc7cc",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

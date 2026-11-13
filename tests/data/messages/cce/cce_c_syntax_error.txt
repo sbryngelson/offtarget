@@ -1,0 +1,8 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -fopenmp-version=52 -O2 (CCE 19.0.0, with cce/19.0.0 craype-accel-amd-gfx942 rocm) on offload.engine.c_gen omp52-c-illegal-teams-nesting-001
+# exit status: 1
+==== verbatim output below ====
+omp52-c-illegal-teams-nesting-001.c:31:5: error: region cannot be closely nested inside 'parallel' region; perhaps you forget to enclose 'omp teams' directive into a target region?
+   31 |     #pragma omp teams default(none) shared(a, b, nt, host_flag) num_teams(4)
+      |     ^
+1 error generated.

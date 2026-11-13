@@ -1,0 +1,113 @@
+{
+ "finding": "gcc/gcc-loop-bind-default-none-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "In Fortran the loop iteration variable inside a parallel construct is predetermined private in the innermost such construct enclosing the loop, and for a loop construct it is lastprivate. Predetermined variables are exempt from default(none), so the error that i is not specified is wrong. bind(thread) is valid in parallel; each thread writes its own hit column, only thread 0 writes b and nthr."
+  },
+  {
+   "run": "run-20261113/batch-78",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The iteration variable i of the associated loop of a loop construct is predetermined (lastprivate), so default(none) does not require listing it. tid is private. Writes to hit(i,tid+1) are per-thread columns and b and nthr are written by thread 0 only, so no race. bind(thread) is permitted in a parallel region. The refusal is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-115",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "In Fortran the loop iteration variable i, whose loop is inside the parallel construct, is private in that construct, so default(none) does not require listing it. bind(thread) inside parallel is allowed, writes are disjoint per thread. The compiler error is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-49",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-48",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The loop iteration variable i of a loop construct is predetermined, so default(none) does not require listing it. tid is private; a, b, hit, nthr are shared. With bind(thread) each thread runs all iterations; writes to hit use distinct tid columns, b and nthr are written by thread 0 only. Rejecting i under default(none) is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-11",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b7ffb06c79ceb0df5315792b947e5d417ca931cbab4d4e6b6c00462f3d782d65",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

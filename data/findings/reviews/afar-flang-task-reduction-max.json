@@ -1,0 +1,113 @@
+{
+ "finding": "afar-flang-task-reduction-max.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-09",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "taskgroup accepts task_reduction and target accepts in_reduction; the target region is closely nested in the taskgroup, whose innermost matching item uses the same identifier max for the same list item r. max is a valid reduction identifier for an integer. The base variable of an in_reduction item on target is implicitly mapped tofrom,always. A conforming compiler must accept it."
+  },
+  {
+   "run": "run-20261113/batch-79",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "max is a valid Fortran reduction identifier (intrinsic procedure name list). target accepts in_reduction; the target task participates in the task reduction defined by the enclosing taskgroup task_reduction with the same identifier and matching list item r, and the target region is closely nested in the taskgroup. r is implicitly mapped tofrom,always. No race: the target task is not nowait. A conforming compiler must accept it; the reported 'no symbol max' error is a front-end defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-34",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "max is an implicitly declared Fortran reduction identifier. The target task participates through in_reduction with the same identifier as the enclosing taskgroup task_reduction, and r is implicitly mapped tofrom always. The program is conforming, so rejecting max is a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-84",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "max is a valid Fortran reduction identifier (intrinsic procedure name). task_reduction(max: r) on taskgroup and in_reduction(max: r) on the enclosed target task match on the same list item; r is an integer scalar. The target in_reduction item is implicitly mapped tofrom with always. The program conforms, so a conforming compiler must accept it; the refusal over 'max' is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-27",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "fc2af42ffb8b5c4e315c7f63750ff3d94452894925cd86e782d2159572dd4607",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

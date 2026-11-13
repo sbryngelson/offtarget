@@ -1,0 +1,52 @@
+# The trial's 40 rules, chosen before any pilot run.
+#
+# near: the rules nearest the 13 stress wrong-answer findings (data/findings/stress/, the CIF abort is a
+#       compile failure and is not one of them) and the 40b offload misses whose mechanism is residency or
+#       implicit_dsa (results/lint40/misses.jsonl); `nearest` names them.
+# away: rules no finding or 40b miss of the data environment is about; the stress-arm rate comparison of
+#       the go/no-go is on these 20 only.
+# This file names findings and cases (the rule table does not); the expected values stay the rule's.
+
+near:
+  - {rule: omp-target-scalar-target-attr, nearest: "stress/afar-target-scalar-implicit-firstprivate.f90; stress/nvhpc-target-scalar-implicit-firstprivate.f90"}
+  - {rule: omp-target-scalar-allocatable, nearest: "the same sentence (TARGET, ALLOCATABLE or POINTER) as the TARGET-scalar findings"}
+  - {rule: omp-declare-target-scalar-tofrom, nearest: "stress/nvhpc-declare-target-scalar-write-lost.f90; stress/cce21-declare-target-scalar-map-write-lost.f90"}
+  - {rule: omp-declare-target-no-transfer, nearest: "stress/cce21-declare-target-scalar-map-write-lost.f90 (the infinite reference count of its basis)"}
+  - {rule: omp-declare-target-procedure-global, nearest: "stress/nvhpc-declare-target-scalar-write-lost.f90 (the device copy, reached from a device procedure)"}
+  - {rule: omp-declare-target-link-tofrom, nearest: "40b residency: fresh-096 (AFAR), fresh-099 (CCE), declare target link in copy mode"}
+  - {rule: omp-combined-lastprivate-tpd, nearest: "stress/nvhpc-lastprivate-combined-target-not-mapped.f90; stress/afar-c-lastprivate-combined-target-not-mapped.c"}
+  - {rule: omp-combined-lastprivate-ttd, nearest: "stress/cce-c-distribute-lastprivate-lost.c"}
+  - {rule: omp-combined-lastprivate-ttdpd, nearest: "stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c"}
+  - {rule: omp-combined-lastprivate-ttdpds-collapse, nearest: "stress/cce-lastprivate-num-threads-collapse-simd.f90"}
+  - {rule: omp-combined-first-lastprivate, nearest: "the lastprivate-map findings above, with firstprivate on the same item"}
+  - {rule: omp-combined-reduction-ttdpd, nearest: "stress/cce-teams-reduction-many-teams-wrap.f90 (its map; the trial's n is small)"}
+  - {rule: omp-defaultmap-tofrom-scalar-reduction, nearest: "40b implicit_dsa: fresh-066 (CCE 20), defaultmap(tofrom:scalar) on a reduction variable and the loop bounds"}
+  - {rule: omp-struct-pointer-member-attach, nearest: "40b residency: fresh-094, fresh-095 (CCE, NVHPC), partial struct mapping with pointer attachment"}
+  - {rule: omp-usm-map-optional, nearest: "40b finding_missing/residency: fresh-054 (requires unified_shared_memory)"}
+  - {rule: acc-component-aggregate-copy, nearest: "stress/nvhpc-acc-derived-type-component-not-copied.f90"}
+  - {rule: acc-declare-create-scalar-serial, nearest: "stress/cce-acc-declare-create-scalar-serial-firstprivate.f90"}
+  - {rule: acc-declare-create-scalar-parallel, nearest: "40b finding_missing/implicit_dsa: fresh-083 (CCE), declare create module scalars in a parallel loop"}
+  - {rule: acc-declare-create-allocatable-module, nearest: "40b residency: fresh-089, fresh-090 (CCE), declare create of an allocatable module variable"}
+  - {rule: acc-default-present-scalar-firstprivate, nearest: "40b finding_missing/implicit_dsa: fresh-065 (NVHPC), a scalar under default(present)"}
+
+away:
+  - {rule: omp-target-scalar-firstprivate}
+  - {rule: omp-target-array-tofrom}
+  - {rule: omp-target-array-allocatable}
+  - {rule: omp-target-struct-tofrom}
+  - {rule: omp-target-c-pointer-attach}
+  - {rule: omp-target-module-scalar-firstprivate}
+  - {rule: omp-target-common-array-tofrom}
+  - {rule: omp-target-value-dummy-firstprivate}
+  - {rule: omp-combined-firstprivate-target}
+  - {rule: omp-defaultmap-firstprivate-aggregate}
+  - {rule: omp-defaultmap-present-aggregate}
+  - {rule: omp-target-data-nested-no-transfer}
+  - {rule: omp-enter-data-refcount-two-exits}
+  - {rule: omp-exit-data-delete-zero}
+  - {rule: omp-always-to}
+  - {rule: omp-always-from}
+  - {rule: acc-kernels-scalar-copy}
+  - {rule: acc-reduction-copy}
+  - {rule: acc-enter-exit-dynamic-refcount}
+  - {rule: acc-data-nested-no-transfer}

@@ -1,0 +1,247 @@
+{
+ "finding": "oop/cce-polymorphic-dispatch-device-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-41",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Declare target procedures with polymorphic dummies and a type-bound call are not prohibited, and the mapped objects are non-polymorphic type(sq)/type(rect). Dynamic dispatch needs the host-created type descriptor/vtable to be usable on the device; the specification does not say how polymorphic type information is made available there, so whether a conforming implementation must link this is not stated. Failure is a link-time missing runtime symbol."
+  },
+  {
+   "run": "run-20261113/batch-65",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "Both overriding bindings sq_area and rect_area have declare target, and area_of has declare target, which satisfies the rule on type-bound procedures accessed in a target region. The deferred binding and its abstract interface are not themselves declare target, and the spec says nothing on how dynamic dispatch through class(shape) is carried out on the device. Whether this satisfies the rule is unclear, so acceptance is not clearly required of a conforming compiler."
+  },
+  {
+   "run": "run-20261113b/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Type-bound procedures sq_area and rect_area appear in declare target; area_of dispatches through the deferred binding area of abstract shape, which has no body or declare target (only the abstract interface). Whether the deferred binding counts as accessed type-bound procedure needing declare target is not clear in the text. The variables are non-polymorphic non-allocatable and mappable. Dynamic dispatch on device needs implementation support that the spec only constrains through the declare target rule, so a link failure is arguably permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Type-bound procedures accessed in a target region must appear in declare target. The overriding procedures sq_area, rect_area and area_of have declare target, but the deferred binding area has an abstract interface area_if without it. The specification does not state how dynamic dispatch through the type is provided on the device, so whether a conforming compiler must link this is unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-28",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-107",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "All type-bound procedure implementations reached (sq_area, rect_area, area_of) have declare target. q and rr are non-polymorphic mapped variables. The deferred binding has only an interface, and the spec does not define device-side dynamic dispatch through class(shape) dummies, so whether the link failure is a required-accept case is not settled.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: The accessed binding area is deferred and its abstract interface has no body and no declare target; the overriders have it. The text does not say whether the deferred binding or the overriders count, nor does it define device-side dynamic dispatch. so a link failure is not shown to be a violation.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Reading A's worry fails: the deferred binding has no body to place in a declare target directive; the accessed implementations sq_area and rect_area do appear in declare target, as does area_of, so the mappable-type rule is met. Reading B is right on legality. Nothing in the text says how a polymorphic type descriptor or dynamic dispatch is made available on the device, so whether a conforming implementation must link this is not stated."
+  },
+  {
+   "run": "adj-20261113b/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading A's doubt about the deferred binding fails: the rule is that type-bound procedures accessed in a target region must appear in declare target; the concrete bindings sq_area, rect_area and the caller area_of all do, and the deferred binding has no body. The mapped objects are non-polymorphic. No restriction forbids class dummies or dynamic dispatch in declare target procedures, so the link failure on a runtime symbol is an implementation defect. Moderate doubt since the specification does not describe polymorphic dispatch support."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading A overstates legality: the only relevant rule is that all type-bound procedures accessed in a target region must appear in a declare target directive. The accessed binding area is deferred and its abstract interface has no body and no declare target; the overriders have it. The text does not say whether the deferred binding or the overriders count, nor does it define device-side dynamic dispatch. Reading B is right that this is unsettled; so a link failure is not shown to be a violation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-14",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree. The concrete bindings sq_area, rect_area and area_of carry declare target, but the deferred binding has only an abstract interface that cannot. The specification says nothing on device-side dynamic dispatch (type descriptors or binding tables) for class dummies, so neither legality nor a requirement to link can be established from the text.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-38",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

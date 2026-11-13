@@ -1,0 +1,6 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.gen omp50-clause-default-shared (OpenMP/OpenACC version 50), compile sweep
+# exit status: 2
+==== verbatim output below ====
+NVFORTRAN-F-1196-OpenMP - omp task is not supported in GPU region (<tmpdir>/p.f90: 35)
+NVFORTRAN/x86-64 Linux 25.11-0: compilation aborted

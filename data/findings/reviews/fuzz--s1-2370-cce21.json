@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/s1-2370-cce21.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-35",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "On the inner parallel do, i is not an iteration variable of the associated loop (j is), so it is not predetermined there; default(none) needs it listed, and firstprivate(i) lists it. j is predetermined private, a is listed shared, n and m are named constants. Iterations write distinct elements of a. The refusal claims i lacks an explicit data scope, which contradicts the clause on the same directive."
+  },
+  {
+   "run": "run-20261113/batch-63",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "i is the distribute loop iteration variable, private in the teams distribute region. The nested parallel do does not associate i's loop with it, so i has no predetermined attribute there and may be listed in firstprivate, satisfying default(none). j is the associated loop variable of parallel do (private) and is also private on the outer construct. Each iteration writes distinct elements, so there is no race."
+  },
+  {
+   "run": "run-v2-20261113/batch-46",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "i is the distribute loop iteration variable (predetermined private on the enclosing construct) and is listed in firstprivate on the nested parallel do, which satisfies default(none). j is the parallel do loop variable (predetermined private) and also private on teams. a is listed shared. Each (i,j) element is written once, so no race. The diagnostic that I lacks an explicit data scope is wrong since firstprivate(i) lists it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-36",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-62",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "i is the associated loop variable of the teams distribute loop, not of the inner parallel do, so it is not predetermined there. It is listed explicitly in firstprivate, so default(none) is satisfied. j is the parallel do loop variable and is private. a is shared. Iterations write distinct elements, so there is no race. The error is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-32",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "e5f4cb848cd265b49193b04eb32bf651624511ab1fb95a5a0068f24f8bc23f26",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

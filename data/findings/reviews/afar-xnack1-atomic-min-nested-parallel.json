@@ -1,0 +1,113 @@
+{
+ "finding": "afar-xnack1-atomic-min-nested-parallel.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-36",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "atomic update with r = min(r, expr) is a permitted Fortran form and expr does not reference r. Each (i,j) writes a distinct o1 element, so no race; the allocatable o1 is implicitly mapped tofrom (non-scalar), r is mapped tofrom. A parallel region nested in distribute is allowed. Result r=0 (i=24, mod=0), s=0 is determined. The GPU memory fault is a compiler or runtime defect."
+  },
+  {
+   "run": "run-20261113/batch-84",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Atomic update with MIN of a 32-bit aligned integer is allowed and its binding thread set is all threads on the device, so atomicity across teams holds. o1(i,j) writes are distinct per (i,j); the allocatable array is implicitly mapped tofrom. Expected r=0 (i=24 gives mod 0), s=0. A GPU memory fault is a compiler/runtime bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-26",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The atomic update r = min(r, expr) is a permitted Fortran form (intrinsic MIN). r is a 4-byte aligned integer, so the binding thread set of the atomic region is all threads on the device, and atomic regions exclude each other across teams. o1 is an allocatable array implicitly mapped; each element is written by one iteration only, so there is no race. The final value is r=0 (mod(24,24)) and sum(o1)=0. A GPU memory fault is a compiler/runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-36",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-66",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o1 is a non-scalar and is implicitly mapped tofrom; r is mapped explicitly. Each o1(i,j) is written by exactly one iteration, so no race. r is updated only atomically, in the form x = MIN(x, expr) with expr not referencing r, which is allowed. Result r=0 s=0 is well defined. The memory fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-12",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d431fed7d42527052e21681d1675b2db5ba70f89b5ee4187f18ebe367c25f130",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

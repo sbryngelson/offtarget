@@ -1,0 +1,191 @@
+{
+ "finding": "nested/cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-33",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "r is mapped by enter data alloc, referenced in the target region where it is already present, and copied back by exit data from. The pointer component nx is null and never referenced; the allocatable component of n1 is unreachable. No race: one target thread. Expected sum 500..507 = 4028 and s=900 follow. The run-time error in compiler A is a defect."
+  },
+  {
+   "run": "run-20261113/batch-45",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r is mapped with alloc on enter data, modified in a target region where it is present, and copied back with from at exit data. Pointer component nx is null and never dereferenced; its (uninitialized) device value copied back is never used. The allocatable component of n1 is never touched. Expected ha=4028, hs=900. The run-time 'unsupported flags for typed transfer' error is a compiler/runtime defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-108",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program maps a derived-type variable that has an unallocated allocatable component and a null pointer component with enter data alloc, an implicit map in the target, and exit data from. Section 5.8.3 has no restriction against mapping structures with such components, and 5.2 added support for them. The runtime error of compiler A is therefore not excused by a rule, but the spec does not spell out the exact semantics of unallocated components, so a required result is not certain.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-65",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Mapping a derived-type variable with an unallocated allocatable component and null pointer component is permitted; the program only touches r%s and r%a. enter data alloc then exit data from gives the expected values. Nothing makes the run-time failure permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-02",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "39856d719a9c90b647ea09687862a6bfadaa99adbdf7ac748de19f5fe919ba23",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The program touches only r%s and r%a. Structure mapping with an unallocated allocatable component and a null pointer component is permitted: the spec treats pointer components as undefined association and allocatable components by allocation status, with no restriction against such a component. The enter data alloc, target and exit data from sequence is well defined and yields 4028 and 900. the runtime error is a compiler defect.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program touches only r%s and r%a. Structure mapping with an unallocated allocatable component and a null pointer component is permitted: the spec treats pointer components as undefined association and allocatable components by allocation status, with no restriction against such a component. The enter data alloc, target and exit data from sequence is well defined and yields 4028 and 900. Reading B is right; the runtime error is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-09",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-10",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Mapping a derived-type variable with an unallocated allocatable component and a null pointer component is allowed; only r%s and r%a are touched. enter data alloc, implicit present mapping in the target, then exit data from returns the device values 500..507 and 900. Reading A's doubt about unallocated components does not apply because the components are never referenced. The Cray runtime error is not permitted by any rule.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-58",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

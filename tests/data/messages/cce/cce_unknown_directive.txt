@@ -1,0 +1,13 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-17.
+# source: ftn -fopenmp -O2 after module load cce/19.0.0 craype-accel-amd-gfx942 rocm (CCE 19.0.0, rocm 6.4.3) on a hand-written probe with '!$omp frobnicate'
+# exit status: 1
+==== verbatim output below ====
+
+  !$omp frobnicate
+        ^          
+ftn-1990 ftn: ERROR P, File = unknown_directive.f90, Line = 5, Column = 9 
+  This is an invalid OpenMP directive or an invalid clause to the specified directive.
+
+Cray Fortran : 11 source lines
+Cray Fortran : 1 errors, 0 warnings, 0 other messages, 0 ansi
+Cray Fortran : "explain ftn-message number" gives more information about each message.

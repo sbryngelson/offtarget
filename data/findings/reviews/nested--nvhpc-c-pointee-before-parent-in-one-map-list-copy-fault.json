@@ -1,0 +1,204 @@
+{
+ "finding": "nested/nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-37",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r[0:1] and r->nx[0:1] are separate, non-overlapping storage (the pointee s1 is not part of *r). Base pointer r->nx has its corresponding pointer created by the r[0:1] mapping on the same construct, so it is assigned a device address and becomes an attached pointer. The device then reads r->nx->a validly; tot=10+1628=1638. Pointer not modified. Some ambiguity about attachment ordering within one construct, hence moderate confidence."
+  },
+  {
+   "run": "run-20261113/batch-56",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "r is a scalar pointer that is the base pointer of mapped list items, so it is firstprivate. r[0:1] maps the struct and r->nx[0:1] maps the pointee; r->nx has base pointer r->nx whose storage is created in the same construct, so on entry the corresponding pointer is attached to the corresponding list item. Accessing r->v and r->nx->a on the device is then valid. No restriction is violated since the two list items do not share original storage."
+  },
+  {
+   "run": "run-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Standard deep-copy pattern: r[0:1] maps the struct and r->nx[0:1] maps the pointee with base pointer r->nx, whose storage is in the new list item r[0:1]. On entry both are created, so the corresponding pointer r->nx is assigned the device address and becomes attached. The two list items do not share storage, no race, tot=10+1628=1638. The device kernel must therefore see a valid r->nx; the illegal address is a compiler or runtime bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-42",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program maps r->nx[0:1] before r[0:1], so the attachment of r->nx depends on the mapping of the enclosing struct in the same construct. OpenMP 6.0 requires attachment after all storage blocks are mapped, so tot=1638 is required there. The 5.2 text only attaches if a corresponding pointer exists on entry to the region, so under 5.2 the device r->nx may keep the host address and the illegal address is arguably permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-59",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-95",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r->nx[0:1] is mapped before r[0:1] on the same construct. The attached-pointer rule applies when a corresponding pointer for the base pointer r->nx exists upon entry to the region. Here r->nx lives in r[0:1], which is created by this same construct, so the rule does not clearly guarantee attachment. The device r->nx may hold the host address, so acceptance is not clearly required and the observed illegal address is not clearly a bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-55",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "4bf96f45458e819c9e1b33ed210c0903dfb76ca4a12eb1eed0da2e0f63c4ef94",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent reading finds the result not required: r->nx[0:1] is mapped before r[0:1] on the same construct. The attached-pointer rule applies when a corresponding pointer for the base pointer r->nx exists upon entry to the region. Here r->nx lives in r[0:1], which is created by this same construct, so the rule does not clearly guarantee attachment. The device r->nx may hold the host address, so acceptance is not clearly required and the observed illegal address is not clearly a bug.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B is closer. OpenMP 6.0 performs attachment when a corresponding pointer exists after all mappable storage blocks are mapped, so r->nx is attached whatever the clause order and tot=1638 is required. OpenMP 5.2 requires a corresponding pointer to exist upon entry to the region. Here r[0:1], which holds r->nx, is created by the same construct, so 5.2 does not clearly require attachment. Reading A's doubt about legality has no basis: no restriction is violated.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program has no restriction violation: both r->nx[0:1] and r[0:1] are mapped on the construct and the pointers are not modified. Reading A is wrong to doubt legality. Whether the device r->nx is attached to the device copy of nx depends on the version. OpenMP 6.0 performs attachment once all mappable storage blocks are mapped, so the order of the two map clauses is irrelevant and tot=1638 is required. The 5.2 text conditions attachment on a corresponding pointer existing upon entry to the region, and r->nx is created by this same construct, so 5.2 does not clearly require it. The case names both versions, so acceptance is required only under 6.0.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

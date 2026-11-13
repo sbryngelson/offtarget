@@ -1,0 +1,19 @@
+# Verbatim compile output captured on tuolumne2151, 2026-10-18.
+# source: offload.engine.harness.compile_script(cce19 with model acc: ftn -h acc -O2) on offload.engine.gen acc34-clause-self (self without a condition on a serial construct; )
+# exit status: 1
+==== verbatim output below ====
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) cray-mpich/9.0.1
+
+The following have been reloaded with a version change:
+  1) cce/20.0.0 => cce/19.0.0     2) cray-libsci/25.09.0 => cray-libsci/25.03.0
+
+
+
+ftn-1193 ftn: ERROR GEN_PROG, File = ../../acc34-clause-self.f90, Line = 34, Column = 21 
+  The "SELF" clause must be followed by a (list).  The compiler was expecting a '(' at this location.
+
+Cray Fortran : 40 source lines
+Cray Fortran : 1 errors, 0 warnings, 0 other messages, 0 ansi
+Cray Fortran : "explain ftn-message number" gives more information about each message.

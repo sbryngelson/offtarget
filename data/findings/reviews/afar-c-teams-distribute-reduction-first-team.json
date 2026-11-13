@@ -1,0 +1,130 @@
+{
+ "finding": "afar-c-teams-distribute-reduction-first-team.c",
+ "readers": [
+  {
+   "run": "run-20261112/batch-14",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Combined target teams distribute: the reduction clause applies to teams (distribute takes none, clause goes to the leaf that accepts it). Each team has a private l; after the region the original is combined, giving 40*sum(1..64)=83200. No race. l=40 shows only one team's partial sum was kept."
+  },
+  {
+   "run": "run-20261112/batch-28",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "reduction on target teams distribute applies to teams (distribute accepts no reduction clause in 5.2). Each team has a private l, combined with + after the region; l is mapped tofrom. No race. Result is 40*64*65/2=83200."
+  },
+  {
+   "run": "run-v2-20261113/batch-30",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "reduction(+: l) on the combined target teams distribute applies to the teams leaf (distribute does not accept reduction), so each team's private copy is combined into the original l at the end of the region. l is mapped tofrom and each team updates only its private copy, so there is no race. Sum of 40*i for i=1..64 is 83200, which the specification requires. Observed 40 (one team's partial) is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-28",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-86",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The reduction clause of the combined target teams distribute goes to teams, which accepts it, not to distribute. Each team reduces into a private copy and the combiner then sums the copies into l. There is no race, and the sum is 83200 for any number of teams.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "3ccce67c0ab46698eb70294e4b375da64177100e5f421c7240e64ce6354a6685",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

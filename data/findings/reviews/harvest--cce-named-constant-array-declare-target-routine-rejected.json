@@ -1,0 +1,113 @@
+{
+ "finding": "harvest/cce-named-constant-array-declare-target-routine-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-16",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "c is a named constant (PARAMETER), which has no storage and needs no declare target or mapping. The declare target subroutine pick is legal and called from the target region, so the program must compile and run."
+  },
+  {
+   "run": "run-20261113/batch-58",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "c is a Fortran named constant (PARAMETER), not a variable. It needs no declare target and no mapping; it is a compile-time value usable in the device procedure and on the host. pick is declared target, the call and intent(out) element passing are valid, the loop has no races. A compiler reporting 'Global in accelerator routine without declare' for a named constant rejects a conforming program."
+  },
+  {
+   "run": "run-v2-20261113/batch-50",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "c is a Fortran named constant (parameter), not a variable with static storage, so no declare target is needed for its use in the device routine. The spec only requires a static-storage variable to be mapped; a named constant has no storage to map. A conforming compiler must accept and compile the program and give check=pass; the refusal is a compiler limitation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-52",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-98",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "c is a Fortran named constant (PARAMETER), not a variable with storage, so it needs no declare target. The routine pick is declared target and the call is in a target region. A conforming compiler must compile it and produce check=pass; the refusal about a global without declare is a compiler limitation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-40",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "adcb3b9886d184de7c05ab04b4cf4fde414b3747f52543c71e7573f712dbd878",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

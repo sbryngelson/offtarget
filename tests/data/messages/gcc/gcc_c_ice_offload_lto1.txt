@@ -1,0 +1,39 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (wingtip, NVIDIA A100), 2026-10-28.
+# source: GCC 16.2.0 gcc -fopenmp -foffload=nvptx-none -foffload-options=nvptx-none=-march=sm_80 -foffload-options=nvptx-none=-latomic (gcc_sm80) -O2 on the harvested dev program hv-llvm-offloading-xteam-fp16-reduction-v2 (results/harvest/src; coverage parity, tools/campaigns/parity.py)
+# exit status: 1
+==== verbatim output below ====
+lto1: internal compiler error: Segmentation fault
+0x17b7f6b internal_error(char const*, ...)
+	<site>/gcc-build/gcc-16.2.0/gcc/diagnostic-global-context.cc:787
+0xc4c583 crash_signal
+	<site>/gcc-build/gcc-16.2.0/gcc/toplev.cc:325
+0x70d15d04532f ???
+	./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c:0
+0x71d35c mentions_vars_p_type
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:723
+0x71d35c mentions_vars_p
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:863
+0x71d35c process_new_tree
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:1874
+0x71df74 lto_read_decls
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:1963
+0x71df74 lto_file_finalize
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:2310
+0x71df74 lto_create_files_from_ids
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:2320
+0x71df74 lto_file_read
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:2375
+0x71df74 read_cgraph_and_symbols(unsigned int, char const**)
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto-common.cc:2829
+0x704e96 lto_main()
+	<site>/gcc-build/gcc-16.2.0/gcc/lto/lto.cc:663
+<site>/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0/accel/nvptx-none/lto1 -quiet -dumpbase ./a.xnvptx-none.mkoffload -m64 -mgomp -mfake-exceptions -misa=sm_80 -O2 -fno-openacc -fno-pie -fcf-protection=none -foffload-abi=lp64 -foffload-abi-host-opts=-m64 -fopenmp @/tmp/ccN2G7eO -o /tmp/ccYbH9aC.s
+Please submit a full bug report, with preprocessed source (by using -freport-bug).
+Please include the complete backtrace with any bug report.
+See <https://gcc.gnu.org/bugs/> for instructions.
+nvptx mkoffload: fatal error: <site>/gcc-16.2/bin/x86_64-pc-linux-gnu-accel-nvptx-none-gcc returned 1 exit status
+compilation terminated.
+lto-wrapper: fatal error: <site>/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0//accel/nvptx-none/mkoffload returned 1 exit status
+compilation terminated.
+/usr/bin/ld: error: lto-wrapper failed
+collect2: error: ld returned 1 exit status

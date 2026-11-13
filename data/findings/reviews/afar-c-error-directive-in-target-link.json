@@ -1,0 +1,217 @@
+{
+ "finding": "afar-c-error-directive-in-target-link.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The error directive with at(compilation) is pure and the spec permits it; severity(warning) requires only that an implementation-defined message is displayed, with no abort. The observed output is exactly such a warning. Whether the compile was then refused is not shown, so a required-result failure is not established."
+  },
+  {
+   "run": "run-20261113/batch-55",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "An error directive with at(compilation) severity(warning) is a utility directive allowed in a target region. The specification requires only that an implementation-defined message be displayed and nothing abortive happens for warning severity. The observed output is that warning, which is the specified action, so no compiler error is evident."
+  },
+  {
+   "run": "run-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The error directive with at(compilation) and severity(warning) is a utility directive; the spec only requires an implementation-defined message to be displayed and compilation aborts only for fatal. The observed output is exactly a warning with a successful compile, which is the specified error action, so no failure occurred. Nothing restricts the directive inside a target region.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-83",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The error directive with at(compilation) and severity(warning) must display an implementation-defined message at compile time; compilation continues for a warning. The observed output is exactly such a warning, so the compiler did what the specification requires. No restriction forbids the directive in a target region. No refusal occurred.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "a6505cb66ed3e3210a0014eba0decf3f40be152d7f18ee783ed422ee42a56803",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: Both readings hold. The error directive with at(compilation) and severity(warning) displays an implementation-defined message; only fatal aborts compilation. The observed output is a warning, which is the specified action, and nothing restricts the directive inside a target region (it is pure when at is compilation). The observed result is permitted.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The error directive with at(compilation) is pure, so it is allowed in the target region. With severity(warning) the implementation takes no action besides displaying the message, so compilation must continue. The observed output is a warning, and the failure kind is a refusal; a conforming compiler must accept and compile. Reading B's no fails because a refusal contradicts the warning semantics; Reading A's doubt is only about the evidence, not the spec."
+  },
+  {
+   "run": "adj-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The error directive is a pure utility directive when at(compilation). With severity(warning) the action only displays an implementation-defined message and is not abortive. The observed output is exactly that warning; no refusal or wrong result is shown, so there is no required-result failure. Reading B is right; Reading A is right that legality holds."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-06",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings hold. The error directive with at(compilation) and severity(warning) displays an implementation-defined message; only fatal aborts compilation. The observed output is a warning, which is the specified action, and nothing restricts the directive inside a target region (it is pure when at is compilation). The observed result is permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-14",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings hold. The error directive with severity(warning) only displays a message and takes no further action, so the observed warning is the specified behaviour. Nothing in the text bars a pure at(compilation) utility directive inside a target region, and the output shows no refusal, so no compiler error against a requirement is shown.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

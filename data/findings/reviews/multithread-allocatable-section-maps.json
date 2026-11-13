@@ -1,0 +1,191 @@
+{
+ "finding": "multithread-allocatable-section-maps.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each of two threads encounters a target construct mapping disjoint array sections of the allocatable arrays a and b; the sections do not overlap, the arrays are not reallocated while mapped, and lo/hi are private. The shared i is only read for implicit firstprivate and is not written on the host inside the region. No data race; both halves of b must be computed, so bad=32 is a compiler error."
+  },
+  {
+   "run": "run-20261112/batch-27",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Each of the two threads encounters its own target construct mapping a disjoint section of a and b; lo and hi are private, i is private (loop iteration variable inside parallel, firstprivate in target). No race, no overlap of mapped sections, and the allocatable is not modified in the region. Each section must be mapped to/from the device, so all 64 results must be correct; bad=32 means one thread's data was lost, a compiler bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Two threads each execute a target region mapping disjoint sections of the allocatable arrays a and b. The loop variable i of the sequential loop inside parallel is private, and lo and hi are private. No race exists and no mapping rule is broken, so b must be fully computed and bad must be 0.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-44",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-106",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The two threads map disjoint sections a(1:32) and a(33:64) of the same allocatable array on one device, so there is no overlap and no race on b. But both sections derive from the same allocatable variable, whose descriptor is shared on the device. The target restrictions leave behavior unspecified when the variable is modified in the region, and the spec does not say how concurrent attachment of one descriptor to two different sections behaves. Whether a conforming implementation must copy back both halves is not settled by the text.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "0eb4d743bab627b467a9ca784e35a09915a13fd0a8a3613ca120bfef2680e06c",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The two host threads map disjoint sections a(lo:hi) and b(lo:hi), and the target region references only elements inside the mapped sections. The only stated restriction (whole-array reference to a partly mapped array) is not triggered, and the variable is not allocated, deallocated or reshaped meanwhile. i, lo and hi are private.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B's doubt fails. The two host threads map disjoint sections a(lo:hi) and b(lo:hi), and the target region references only elements inside the mapped sections. The only stated restriction (whole-array reference to a partly mapped array) is not triggered, and the variable is not allocated, deallocated or reshaped meanwhile. i, lo and hi are private. Reading A is right: the program is conforming and bad=0 is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-13",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Each thread runs its own target construct with a disjoint array section of a and b, so the sections do not overlap. The allocatable arrays are not allocated, deallocated, reshaped or modified in the regions, so the allocatable restrictions are not triggered. lo and hi are private, and i is only read on the host (it is a private copy in each target region). No race exists. Reading B cites no passage making concurrent mapping of different sections of one allocatable unspecified. Each half of b must be copied back, so bad=0.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,179 @@
+HPE Cray Compiling Environment (CCE) 19.0.0
+===========================================
+
+
+Purpose:
+--------
+CCE 19.0.0 provides Fortran, C, and C++ compilers for
+HPE Cray supercomputer and HPE Apollo 2000 Gen10Plus systems.
+
+
+Key Changes and Support with CCE 19.0.0:
+----------------------------------------
+
+CCE 19.0.0:
+-----------
+ - LLVM 19 base
+ - CCE now links against its own build of ROCm Device Libraries
+   for HIP and OpenMP offload code when targeting AMD GPUs, rather
+   than linking against ROCm Device Libraries from an external
+   ROCm install. This can be overridden with
+   the "--rocm-device-lib-path" flag.
+ - Native CUDA or HIP device functions can be called from OpenMP
+   offload regions.  This requires explicitly passing the CUDA or HIP
+   device object files to the OpenMP device linker using the device
+   linker pass-through compiler flags, "-Wc" for Fortran and
+   "-Xoffload-linker" for C/C++.
+ - CCE Fortran will only pattern match to Cray Libsci calls if a
+   cray-libsci module is loaded or the CCE Fortran driver auto detects
+   a compatible Cray Libsci installation.
+ - Added the following OpenACC features:
+   - Update directive processed in order they appear
+   - Enforce restrictions on variables allowed in the deviceptr clause
+   - Support two reference counters
+   - Support radeon device type
+   - Support init, shutdown, and set directives
+   - Support acc_get_default_async and acc_set_default_async routines
+   - Support auto loop clause
+   - Migrate Fortran openacc_lib module into libmodules
+ - Added the following OpenMP 5.1/5.2 features
+   - Dispatch support
+   - Support 'omp_set_num_teams', 'omp_get_max_teams', 'omp_set_teams_thread_limit', 'omp_get_teams_thread_limit' routines
+   - Support 'indirect' clause on declare target directive
+   - Change behavior of order(concurrent) related to reproducibility
+   - 'destroy' clause on depobj construct now accepts an argument
+   - Support 'omp_aligned_alloc', 'omp_calloc', 'omp_aligned_calloc', 'omp_realloc' MM routines
+   - Support 'omp_all_memory' keyword in 'depend' clause
+   - Support 'OMP_NUM_TEAMS' and 'OMP_TEAMS_THREAD_LIMIT' variables
+   - Support 'target_device' selector set
+   - Support iterators in 'map' clause and motion clauses
+   - Handle DV-based objects in has_device_addr/use_device_addr clauses
+   - Allow indirect calls to device procedures
+   - Support OpenMP indirect clause for derived type without explicit mapper
+   - Support 'assumes', 'begin assumes', and 'assume' directives
+   - Support 'target_device' selector set
+   - Support 'unconstrained' and 'reproducible' modifiers in 'order' clause
+   - Support 'omp_all_memory' keyword in 'depend' clause
+   - Support 'dispatch' construct and 'adjust_args', 'append_args' clauses for 'declare variant'
+   - Support 'begin declare variant' directive
+   - Support indirect function calls in mapped structs
+   - Distinguish "pointee" vs "pointer" for DV-based list items
+   - Support iterators in motion clauses
+   - Automatically translate/attach C++ vtable pointers when mapping C++ objects
+   - Explicit indirect function pointer mapping
+   - Support virtual function calls for mapped class objects on device
+   - Support 'indirect' clause on declare target directive
+   - Register C++ vtable with OpenMP runtime to support virtual calls on GPU
+   - Support 'omp_all_memory' keyword in 'depend' clause
+ - Added the following Fortran 2023 features
+   - Allow an object with a coarray ultimate component to be array or allocatable
+   - Coarray put with notify
+   - RANK clause
+   - Use integer arrays to specify subscripts and section subscripts
+   - Reduction Specifier for DO CONCURRENT to Support Intrinsic Functions
+   - Error conditions in collectives
+ - Transitioned to LLVM provided PTX Generation
+ - GNU OpenMP Interoperability
+ - Optimized AMD Turin Support
+ - Initial support for Intel Emerald Rapids
+ - RHEL 9.5 x86_64 support
+ - RHEL 9.5 aarch64 support
+ - ROCm 6.3
+ - NVIDIA SDK 24.11
+ - Enhanced DWARF Support
+
+
+User and Application Impact:
+----------------------------
+
+CCE 19.0.0:
+-----------
+
+
+Issues or Bugs Resolved:
+------------------------
+CCE 19.0.0:
+-----------
+CAST-32956    CCE 15.0.1 compiler front end failure with omp directive in _Pragma call
+CAST-33717    Fortran OpenACC declare create for nested derived types broken
+CAST-33778    Reading derived datatypes from namelist
+CAST-35035    undefined reference to acc_present_dump()
+CAST-35127    Valid coarray code rejected by crayftn
+CAST-35143    crayftn Call Type-Bound Procedure on Associate Name
+CAST-33194    Cray Fortran compiler mishandling !$omp declare target device_type(any)
+CAST-35381    Spurious ftn-7310 warning when building with -fsanitize=address
+CAST-35419    CCE/16 compiler bug when deallocation of array of derived types
+CAST-35435    Fortran CCE 17.0.0 internal compiler error backtrace at omp reduction inscan offload
+CAST-35535    crayftn runtime error with user defined operator on associate name
+CAST-35586    Cray Fortran compiler bug on perlmutter
+CAST-35601    Crayftn issue with select type construct with pointer assignment expression
+CAST-35615    Crayftn issue with allocatable character in derived typed used as a mold
+CAST-35757    Unexpected behavior with fortran CCE 16
+CAST-36276    ftn generates poor performing code for openmp target when if clause is present
+CAST-36578    CCE OpenACC doesn't respect `acc declare create` statements when an abstract interface is in the same compilation unit
+CAST-36609    CCE 18 - ftn-7066 Unsupported accelerator code error: Global in accelerator routine without declare
+CAST-36653    CCE 18 - A source file involving submodules and contained subroutines crashes during compile
+CAST-36712    RAJA OpenMP Unit atomic test regressions with CCE-18.0.0
+CAST-37574    Macro in CCE ISO_Fortran_binding.h with common name (MAXDIM) causes name collisions and compilation issues.
+ 
+
+
+
+Product and OS Dependencies:
+----------------------------
+This CCE release is supported on
+- HPE Cray supercomputer systems running CSM with COS 2.5.X (SLES15 SP4) or COS 23.11 (SLES15 SP5)
+- HPE Cray supercomputer systems running HPCM with COS 2.5.X (SLES15 SP4) or COS 23.11 (SLES15 SP5)
+- HPE Cray supercomputer systems running HPCM with RHEL 8.10
+- HPE Apollo 2000 Gen10Plus systems running RHEL 8.9
+- AMD GPU offloading support requires at least ROCm 6.0 and is tested up to ROCm 6.3
+
+
+
+
+Notes and Limitations:
+----------------------
+Upcoming change in the 20.0.0 release :  Due to necessary changes to the Fortran compiler,
+the 20.0.0 Fortran release will not support any modules built with previous versions of the compiler.
+Any Fortran codes containing modules, submodules or the use statement will need to be compiled with
+a 20.0.0 compiler.  Best practice will be to build everything Fortran with a 20.0.0 compiler.
+
+
+Documentation:
+--------------
+- S-5212 Cray Compiling Environment Release Overview (19.0)
+- S-3901 Cray Fortran Reference Manual
+- S-2179 Cray C and C++ Quick Reference
+- Basic man pages: crayftn(1), craycc(1), crayCC(1), intro_openmp(7), intro_openacc(7)
+- Please see https://clang.llvm.org/docs/UsersManual.html or use the -help command line option for 
+  more information on using Clang
+
+
+Modulefile:
+-----------
+The following will load the modules necessary to use CCE:
+module load PrgEnv-cray
+
+The following will switch to x.y.z version of CCE:
+module swap cce cce/x.y.z
+
+
+Installation instructions:
+--------------------------
+rpm -ivh cce-19.0.0-202502072250.cc4d36e4ff337-0.el8.x86_64.rpm.x86_64.rpm
+
+The following script will set CCE version 19.0.0 default:
+/opt/cray/pe/admin-pe/set_default_files/set_default_cce_19.0.0
+
+
+License:
+--------
+Except for the third party components and software licensed by HPE through
+proprietary agreements, components, files or programs contained within this
+package or product are Copyright -2025 Hewlett Packard Enterprise Development LP.
+
+
+Attribution notices for open source licensed software for this 
+package are detailed in the file:
+
+/opt/cray/pe/cce/19.0.0/ATTRIBUTIONS_19.0.txt

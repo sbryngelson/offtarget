@@ -1,0 +1,35 @@
+# Verbatim compiler output (stdout and stderr merged) captured on tioga (Tioga compute node, AMD MI250X), 2026-10-27.
+# source: GCC 16.2.0 gfortran -fopenmp -foffload=amdgcn-amdhsa -foffload-options=amdgcn-amdhsa=-march=gfx90a (gcc_g90) -O2 on offload.engine.gen omp50-illegal-assoc-loop-001 (illegal; the compile-only sweep, tools/campaigns/gcc_compile_sweep.py)
+# exit status: 1
+==== verbatim output below ====
+<tmpdir>/p.f90:34:15:
+
+   34 |     b = 2*a + 1
+      |               1
+Error: Unexpected assignment statement at (1)
+<tmpdir>/p.f90:35:18:
+
+   35 |   !$omp end target
+      |                  1
+Error: Unexpected !$OMP END TARGET statement at (1)
+<tmpdir>/p.f90:36:52:
+
+   36 |   ok = all(b == ref) .and. (nref == 1 .or. nthr > 1)
+      |                                                    1
+Error: Unexpected assignment statement at (1)
+<tmpdir>/p.f90:37:92:
+
+   37 |   print '(a,i0,a,a)', 'RESULT ran_on_host=', host_flag, ' check=', merge('pass', 'fail', ok)
+      |                                                                                            1
+Error: Unexpected WRITE statement at (1)
+<tmpdir>/p.f90:38:18:
+
+   38 |   deallocate(a, b)
+      |                  1
+Error: Unexpected DEALLOCATE statement at (1)
+<tmpdir>/p.f90:39:4:
+
+   39 | end program gen_prog
+      |    1
+Error: Unexpected END statement at (1)
+f951: Error: Unexpected end of file in ‘<tmpdir>/p.f90’

@@ -1,0 +1,113 @@
+{
+ "finding": "cce21-in-reduction-taskwait-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-34",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "taskgroup task_reduction(.and.: ls) with an in_reduction(.and.: ls) on a closely nested target is permitted; ls is treated as mapped tofrom,always, and the loop on the device is sequential so there is no race. a(17)=17 makes ls false and lsref false, so the check is deterministic. A link error for a runtime taskwait symbol is a compiler or runtime defect, not a spec allowance."
+  },
+  {
+   "run": "run-20261113/batch-51",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "Fortran logical .and. is a valid reduction identifier. taskgroup task_reduction with a target task using in_reduction on the same list item matches the restriction; the target task is an explicit task, so in_reduction is permitted. The scalar is implicitly mapped tofrom. Must compile and link; missing runtime symbol is a compiler/library defect."
+  },
+  {
+   "run": "run-v2-20261113/batch-39",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "taskgroup task_reduction(.and.: ls) with a target construct carrying in_reduction(.and.: ls) over a logical scalar is permitted. ls is mapped tofrom with always, and the target task participates in the reduction. The program has no race and gives a defined result. The link failure from a missing runtime symbol is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-17",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-87",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "taskgroup with task_reduction(.and.: ls) encloses a target task with in_reduction(.and.: ls) using the same identifier, satisfying the matching rule. ls is implicitly mapped tofrom,always. The .and. reduction on a logical is valid in Fortran. A conforming implementation must compile and link; the undefined runtime symbol is an implementation defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "0616c733e1183f4e9e57172ab67e62d3ce81bec2c87f71b9797c4300f29f321f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

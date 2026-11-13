@@ -1,0 +1,113 @@
+{
+ "finding": "cce21-alloc-2e32-sum-wrong.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "All 2^32 iterations use integer(8); no overflow (i*642 < 2^43). Reduction on s is well defined and the sum is order independent. Independently computed sum (period 1009) is 2164663527981, matching the expected value; the observed value is lower, so iterations were lost. The only escape is device memory exhaustion for the 32 GB array, which would be a resource limit, not a spec allowance."
+  },
+  {
+   "run": "run-20261112/batch-21",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Loops are conforming with trip count 2^32; no race, reduction on s is well defined, i*642 and the sum fit in integer(8), and the expected value is deterministic. The observed sum is smaller (lost iterations, likely a 32-bit trip count), a compiler bug. Only a device memory limit (32 GiB array) could excuse failure, but other compilers run it."
+  },
+  {
+   "run": "run-v2-20261113/batch-111",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "big is allocated with map(alloc) and is present for both target regions. The first loop writes distinct elements. The second uses reduction(+: s) on the combined target construct, which implies a tofrom map of s. The expected sum is the exact value of the loop (2164663527981, computed independently), so the observed smaller sum is a compiler or runtime error. Device memory size is a resource limit, not a wrong answer.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-63",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-41",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The loop variable i is integer(8), so the iteration count of 2**32 fits in the type of var and no unspecified behavior arises. The sum stays below 2**63. big is mapped with alloc and kept on the device across the two target regions. The reduction(+: s) on the combined construct is conforming. All iterations must run, so the sum is fixed; the lower observed value shows lost iterations. Device memory capacity is a resource limit, but the other compilers ran it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "2b8290450842b4b0eb4dd1953b0a8fb06dfc3f49bdeb4aecf3be8f65745cb102",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -1,0 +1,9 @@
+# What a scorer of data/bench/hecbench-holdout reads beside the seal: the sealed cases that must not be
+# scored because their code or outcome can be read outside the seal. Cases are named by the SHA-256
+# of the benchmark's directory name (data/bench/hecbench/split.yaml holdout_sha256). The sealed files are
+# not changed; this file is outside the seal.
+#
+# A benchmark here would be one whose outcome a dev document or a tracked file shows. None is yet.
+sealed_cases: 174
+unexposed_cases: 174
+excluded: []

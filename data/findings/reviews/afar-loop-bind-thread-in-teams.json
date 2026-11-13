@@ -1,0 +1,191 @@
+{
+ "finding": "afar-loop-bind-thread-in-teams.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-25",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "bind(thread) is an allowed binding keyword; the only restriction concerns bind(teams). The implicit-teams rule applies only when bind is not specified. The refusal is therefore wrong."
+  },
+  {
+   "run": "run-20261113/batch-50",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "loop bind(thread) inside teams is allowed. The bind restrictions apply only when teams is specified as binding. With thread binding the binding region is not defined and the binding thread set is the encountering thread. No rule requires bind(teams) when the loop is closely nested in teams if a bind clause is present; the default applies only if bind is absent. The compiler's diagnostic is wrong. Acceptance is required. The printed tot depends on how many teams are created (num_teams is an upper bound) but compilation acceptance is required."
+  },
+  {
+   "run": "run-v2-20261113/batch-111",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 allows bind(thread) on a loop inside teams, so the refusal rests on a stale rule. But with bind(thread) the loop iterations may execute in any order, including concurrently, and mine = mine + 1 updates one shared variable in every iteration with no reduction. That is a data race, so the program is non-conforming and imposes no requirement.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-16",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "bind(thread) is allowed in 5.2 inside teams, so the refusal is questionable. But the loop construct lets iterations run concurrently, and each iteration does an unsynchronized read-modify-write of the same variable mine (no reduction clause). That is a data race, so the program is non-conforming and no outcome is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-08",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ae8f2cfe4e144e5927780c134346987555fe48ab12c6682bbf03e5c117bdedb5",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the program not legal: Both readings are right that bind(thread) is allowed inside teams in 5.2, so the compiler's stated reason is stale. But the loop construct asserts its iterations may execute in any order, including concurrently, and every iteration does mine = mine + 1 on one variable with no reduction. That loop-carried dependence is a data race, so the program is non-conforming and no result is required.",
+ "adjudicators": [
+  {
+   "run": "adj-v2-20261113/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings are right that bind(thread) is allowed inside teams in 5.2, so the compiler's stated reason is stale. But the loop construct asserts its iterations may execute in any order, including concurrently, and every iteration does mine = mine + 1 on one variable with no reduction. That loop-carried dependence is a data race, so the program is non-conforming and no result is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-67",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113/batch-14",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both readings agree bind(thread) is permitted inside teams in 5.2, so the compiler's stated reason is stale. The loop construct asserts its iterations may execute in any order, including concurrently, and every iteration updates the same variable mine without a reduction clause. That is a data race, so the program is non-conforming and no acceptance or result is required. Some doubt remains because with bind(thread) a single thread runs the loop, but concurrency (simd-like) is still permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-43",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

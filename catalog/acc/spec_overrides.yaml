@@ -1,0 +1,72 @@
+# Where the OpenACC 3.4 spec overrides the TableGen skeleton (skeleton.yaml,
+# built from data/index/seed/acc.json by offload/engine/skeleton.py).
+#
+# Same format as catalog/omp/spec_overrides.yaml (read by
+# offload/engine/catalog.py), plus:
+# skeleton_clauses: clauses the spec has and TableGen lacks, added to the
+#   skeleton's clause list (spellings default to the name) before the
+#   clause_rules apply. Each cites the spec.
+# Every entry is `status: provisional` until the project owner reviews it.
+
+skeleton_clauses:
+  update:
+    # "!$acc atomic [update] [ if( condition ) ]": ACC.td has read, write
+    # and capture clauses but no update clause
+    citation: "OpenACC 3.4 §2.12, p.77"
+    status: provisional
+
+clause_rules:
+  # the atomic-clause (read, write, update, capture: 3.4 §2.12, p.77);
+  # ACC.td allows only if on atomic. At most one atomic-clause: rule
+  # atomic-clause-001 (catalog/acc/rules.yaml)
+  - directive: atomic
+    clause: read
+    add: true
+    once: true
+    since: 34
+    citation: "OpenACC 3.4 §2.12, p.77"
+    status: provisional
+  - directive: atomic
+    clause: write
+    add: true
+    once: true
+    since: 34
+    citation: "OpenACC 3.4 §2.12, p.77"
+    status: provisional
+  - directive: atomic
+    clause: update
+    add: true
+    once: true
+    since: 34
+    citation: "OpenACC 3.4 §2.12, p.77"
+    status: provisional
+  - directive: atomic
+    clause: capture
+    add: true
+    once: true
+    since: 34
+    citation: "OpenACC 3.4 §2.12, p.77"
+    status: provisional
+  # shortloop is not an OpenACC 3.4 clause: the loop clause list (3.4 §2.9,
+  # p.64) and the combined constructs (§2.11, p.75) do not have it (an
+  # extension in ACC.td)
+  - directive: loop
+    clause: shortloop
+    remove: true
+    citation: "OpenACC 3.4 §2.9, p.64"
+    status: provisional
+  - directive: parallel loop
+    clause: shortloop
+    remove: true
+    citation: "OpenACC 3.4 §2.11, p.75"
+    status: provisional
+  - directive: kernels loop
+    clause: shortloop
+    remove: true
+    citation: "OpenACC 3.4 §2.11, p.75"
+    status: provisional
+  - directive: serial loop
+    clause: shortloop
+    remove: true
+    citation: "OpenACC 3.4 §2.11, p.75"
+    status: provisional

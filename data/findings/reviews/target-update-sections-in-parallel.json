@@ -1,0 +1,113 @@
+{
+ "finding": "target-update-sections-in-parallel.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "b is mapped by target enter data, then set on the device. Four threads each execute target update from on a disjoint section b(lo:hi) of the present allocatable; host writes by different threads touch disjoint elements, so there is no race. lo and hi are private. After the exit data release the host holds the values updated by the four updates. The update from copies the device values to the host, so bad=0 is required."
+  },
+  {
+   "run": "run-20261112/batch-18",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "b is mapped by enter data; the target region writes it on the device. The four threads update disjoint sections b(lo:hi) of the mapped array, so there is no race, and the host then holds all values. bad must be 0."
+  },
+  {
+   "run": "run-v2-20261113/batch-41",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "b is mapped by enter data, the target region fills it on the device, and four threads each issue target update from on disjoint sections b(lo:hi) with private lo and hi. The sections do not overlap, so no data race arises on the assigned list items. Each update must copy its section to the host, so after the loop the host b holds 2*i+1 and bad is 0. A result of bad=64 means the updates did not copy.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-71",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "b is mapped by target enter data, the target region sets b(i)=2*i+1 on the device, and four threads each issue target update from on disjoint sections b(lo:hi). Host sections do not overlap, so there is no race. lo, hi and c are private. After the updates the host b holds all device values, so bad=0 is required. Observed bad=64 means the updates were lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9916af5076dd6d5190e657ea3fefeb8574b80403c5652811d087f1062b22b096",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

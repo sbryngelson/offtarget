@@ -1,0 +1,6 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: amdflang -fopenmp --offload-arch=gfx942 -O2 (AFAR 24.3.0) on offload.engine.fuzz seed 1422 (fuzz-1; a target region whose FIR lowering fails verification; found by campaign)
+# exit status: 1
+==== verbatim output below ====
+error: loc("<tmpdir>/fuzz-1422.f90":55:9): 'omp.target' op SPMD kernel must capture an 'omp.loop_nest' operation
+error: verification of lowering to FIR failed

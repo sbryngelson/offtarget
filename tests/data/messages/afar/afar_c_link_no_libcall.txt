@@ -1,0 +1,10 @@
+# Verbatim compiler/shell output captured on tuolumne1028, 2026-10-24.
+# source: amdclang -fopenmp --offload-arch=gfx942 -fopenmp-version=52 -O2 (AFAR 24.3.0) on offload.engine.widen omp52-c-w-long-double
+# exit status: 1
+==== verbatim output below ====
+ld.lld: error: no libcall available for sint_to_fp
+ld.lld: error: no libcall available for fadd
+ld.lld: error: no libcall available for fadd
+clang: error: ld.lld command failed with exit code 1 (use -v to see invocation)
+<site>/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c/lib/llvm/bin/clang-linker-wrapper: error: 'clang' failed
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

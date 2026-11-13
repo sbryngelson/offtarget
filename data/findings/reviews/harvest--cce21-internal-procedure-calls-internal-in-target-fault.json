@@ -1,0 +1,158 @@
+{
+ "finding": "harvest/cce21-internal-procedure-calls-internal-in-target-fault.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-23",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Internal procedures wrap and add42 are called in a target region and carry no declare target directive. OpenMP 5.2 implicit declare target rules (Section 7.8) apply only to procedures referenced from procedures already listed in a declare target directive, so acceptance of a bare call in a target region is not clearly stated. No host-associated variable is referenced, so the unspecified-behavior rule for internal procedures does not apply. Dummy y is modified through the actual argument a, which is mapped tofrom, so the expected values are consistent if the call is allowed."
+  },
+  {
+   "run": "run-20261113/batch-62",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 3,
+    "not_found": 0
+   },
+   "reasoning": "wrap is referenced in the target region, so it is implicitly declare target. add42 is referenced from wrap and becomes declare target through the transitive rule. Neither internal procedure references host-associated variables, so the unspecified-behavior sentence for host-associated references does not apply. a is mapped tofrom, so y = y + 5 gives a = 6 7 and the result is 43 44. No race. The expected output is required."
+  },
+  {
+   "run": "run-v2-20261113/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 2,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "wrap is referenced in the target region, so it is treated as if named in an enter clause of declare target; add42, referenced from wrap, is likewise implicitly declare target. The unspecified-behavior rule covers references to host-associated variables of an internal procedure; wrap and add42 reference no host-associated variable (only dummies and a host-associated procedure). a and r are mapped tofrom. The expected r=43 44, a=6 7 is required; the device fault is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-28",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-77",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "wrap is an internal procedure referenced in the target region, so it is implicitly treated as declared target; add42, referenced from it, is too. Neither references host-associated variables, so the unspecified-behavior rule for internal procedures does not apply. a and r are mapped tofrom, dev from. Expected output follows deterministically (a becomes 6 7, r 43 44). A device run-time fault is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-40",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "6e4420b0f80802a55567852647fdb915704ec036e79928179c1c3274990303a4",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-05",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 3,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails: a procedure referenced in a target construct is treated as if named in an enter clause on declare target, and a procedure referenced from such a procedure is likewise treated. wrap and add42 are internal procedures with no host-associated variable references, so the unspecified-behavior sentence does not apply. a is mapped tofrom, giving r=43 44, a=6 7."
+  },
+  {
+   "run": "adj-20261113/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading B fails: a procedure referenced in a target construct is treated as declare target, and add42, referenced in wrap, is covered by the transitive rule. No host-associated variables are referenced, so the internal-procedure unspecified-behavior sentence does not apply. a is mapped tofrom; values are 43 44 and 6 7. Reading A is right."
+  }
+ ]
+}

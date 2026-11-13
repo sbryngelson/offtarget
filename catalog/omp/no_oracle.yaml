@@ -1,0 +1,373 @@
+# Spec basis of the programs that have no separating oracle.
+#
+# A program whose atom no single run can separate from its absence carries
+# one of three evidence categories (offload.engine.gen.NO_ORACLE), each with the
+# spec sentence that makes it so:
+#   hint_only               the spec lets an implementation ignore the form
+#                           (a hint, an assertion the program makes, or a
+#                           bound that one-at-a-time execution meets): the
+#                           report reads "accepted; conforms vacuously"
+#   implementation_defined  the spec leaves the behaviour to the
+#                           implementation: "implementation-defined"
+#   equivalent_default      the form is, by the spec, the behaviour without
+#                           it: "equivalent to the default (no separable
+#                           effect)"
+# Atoms whose behaviour the spec fixes but whose program has no check for
+# it are evidence "unverified" instead (offload.engine.gen.UNVERIFIED), never
+# one of these.
+#
+# Read by offload/engine/gen.py (no_oracle_bases). Each basis id names, per
+# version, a list of citations; the first is the sentence the header line
+# `! basis:` and the support table quote, any others add context. Every
+# `quote` is checked (tests/engine/test_gen.py) to occur verbatim (whitespace
+# aside) in the cited section of results/spec_cache/openmp-<ver>.txt, and
+# the page to lie in that section. `status: provisional` until the maintainer
+# reviews it.
+#
+# bases.<id>:
+#   status   provisional
+#   <ver>:   [{cite: "OpenMP <ver> §<sec>, p.<n>", quote: "<sentence>"}, ...]
+
+bases:
+  # --- hint_only -------------------------------------------------------------
+  simd_concurrency:          # safelen: an upper bound on concurrency
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.3.1, p.112"
+        quote: "The number of iterations that are executed concurrently at any given time is implementation defined."
+      - cite: "OpenMP 5.0 §2.9.3.1, p.112"
+        quote: "The safelen clause specifies that no two concurrent iterations within a SIMD chunk can have a distance in the logical iteration space that is greater than or equal to the value given in the clause."
+    52:
+      - cite: "OpenMP 5.2 §10.4, p.235"
+        quote: "The number of iterations that are executed concurrently at any given time is implementation defined."
+      - cite: "OpenMP 5.2 §10.4.2, p.237"
+        quote: "The safelen clause specifies that no two concurrent iterations within a SIMD chunk can have a distance in the logical iteration space that is greater than or equal to the value given in the clause."
+    60:
+      - cite: "OpenMP 6.0 §12.4, p.399"
+        quote: "The number of collapsed iterations that are executed concurrently at any given time is implementation defined."
+      - cite: "OpenMP 6.0 §12.4.2, p.401"
+        quote: "The safelen clause specifies that no two concurrent logical iterations within a SIMD chunk can have a distance in the collapsed iteration space that is greater than or equal to the length argument."
+  simdlen_hint:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.3.1, p.112"
+        quote: "The simdlen clause specifies the preferred number of iterations to be executed concurrently unless an if clause is present and evaluates to false, in which case the preferred number of iterations to be executed concurrently is one."
+    52:
+      - cite: "OpenMP 5.2 §10.4.3, p.237"
+        quote: "When the simdlen clause appears on a simd construct, length is treated as a hint that specifies the preferred number of iterations to be executed concurrently."
+    60:
+      - cite: "OpenMP 6.0 §12.4.3, p.401"
+        quote: "When the simdlen clause appears on a simd construct, length is treated as a hint that specifies the preferred number of collapsed iterations to be executed concurrently."
+  nontemporal_locality:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.3.1, p.113"
+        quote: "The nontemporal clause specifies that accesses to the storage locations to which the list items refer have low temporal locality across the iterations in which those storage locations are accessed."
+    52:
+      - cite: "OpenMP 5.2 §10.4.1, p.236"
+        quote: "The nontemporal clause specifies that accesses to the storage locations to which the list items refer have low temporal locality across the iterations in which those storage locations are accessed."
+    60:
+      - cite: "OpenMP 6.0 §12.4.1, p.400"
+        quote: "The nontemporal clause specifies that accesses to the storage locations to which the list items refer have low temporal locality across the logical iterations in which those storage locations are accessed."
+  aligned_assertion:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.3.1, p.112"
+        quote: "The aligned clause declares that the location of each list item is aligned to the number of bytes expressed in the optional parameter of the aligned clause."
+    52:
+      - cite: "OpenMP 5.2 §5.11, p.169"
+        quote: "The alignment modifier specifies the alignment that the program ensures related to the list items."
+    60:
+      - cite: "OpenMP 6.0 §7.12, p.300"
+        quote: "The alignment modifier specifies the alignment that the program ensures related to the list items."
+  close_hint:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.19.7.1, p.321"
+        quote: "The close map-type-modifier is a hint to the runtime to allocate memory close to the target device."
+    52:
+      - cite: "OpenMP 5.2 §5.8.3, p.155"
+        quote: "The close map-type-modifier is a hint to the runtime to allocate memory close to the target device."
+    60:
+      - cite: "OpenMP 6.0 §7.9.6, p.285"
+        quote: "The close-modifier is a hint that the corresponding storage should be close to the target device."
+
+  # --- implementation_defined ------------------------------------------------
+  proc_bind_bind_var:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.5.5, p.73"
+        quote: "If bind-var is not set to false then the proc_bind clause overrides the value of the first element of the bind-var ICV; otherwise, the proc_bind clause has no effect."
+      - cite: "OpenMP 5.0 §2.5.2, p.66"
+        quote: "bind-var OMP_PROC_BIND Implementation defined"
+    52:
+      - cite: "OpenMP 5.2 §2.5, p.46"
+        quote: "If bind-var is not set to false then the proc_bind clause overrides the value of the first element of the bind-var ICV; otherwise, the proc_bind clause has no effect."
+      - cite: "OpenMP 5.2 §2.2, p.40"
+        quote: "bind-var OMP_PROC_BIND Implementation defined"
+    60:
+      - cite: "OpenMP 6.0 §3.5, p.126"
+        quote: "If bind-var is not set to false then the proc_bind clause overrides the value of the first element of the bind-var ICV; otherwise, the proc_bind clause has no effect."
+      - cite: "OpenMP 6.0 §3.2, p.118"
+        quote: "bind-var OMP_PROC_BIND implementation defined"
+  order_concurrent:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.2, p.104"
+        quote: "If an order(concurrent) clause is present, then after assigning the iterations of the associated loops to their respective threads, as specified in Table 2.5, the iterations may be executed in any order, including concurrently."
+    52:
+      - cite: "OpenMP 5.2 §10.3, p.233"
+        quote: "If ordering is concurrent, the logical iterations of the associated loops may execute in any order, including concurrently."
+    60:
+      - cite: "OpenMP 6.0 §12.3, p.397"
+        quote: "If ordering is concurrent, different collapsed iterations may execute in any order, including in parallel, as if by the binding thread set of the region."
+  target_nowait:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.12.5, p.172"
+        quote: "If the nowait clause is present, execution of the target task may be deferred. If the nowait clause is not present, the target task is an included task."
+    52:
+      - cite: "OpenMP 5.2 §13.8, p.284"
+        quote: "If the nowait clause is present, execution of the target task may be deferred. If the nowait clause is not present, the target task is an included task."
+    60:
+      - cite: "OpenMP 6.0 §15.8, p.461"
+        quote: "If the nowait clause is present, execution of the target tasks may be deferred."
+  num_teams_bounds:
+    status: provisional
+    52:
+      - cite: "OpenMP 5.2 §10.2.1, p.233"
+        quote: "The number of teams created is implementation defined, but it will be greater than or equal to the lower bound and less than or equal to the upper bound."
+    60:
+      - cite: "OpenMP 6.0 §12.2.1, p.397"
+        quote: "The number of teams formed is implementation defined, but it will be greater than or equal to the lower bound and less than or equal to the upper bound."
+  schedule_auto:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.2, p.105"
+        quote: "When kind is auto, the decision regarding scheduling is delegated to the compiler and/or runtime system."
+    52:
+      - cite: "OpenMP 5.2 §11.5.3, p.253"
+        quote: "If the kind argument is auto, the decision regarding scheduling is implementation defined."
+    60:
+      - cite: "OpenMP 6.0 §13.6.3, p.419"
+        quote: "If the kind argument is auto, the decision regarding scheduling is implementation defined."
+  schedule_simd_width:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.2, p.106"
+        quote: "where simd_width is an implementation-defined value."
+    52:
+      - cite: "OpenMP 5.2 §11.5.3, p.253"
+        quote: "is the chunk_size for all chunks except the first and last chunks, where simd_width is an implementation-defined value."
+    60:
+      - cite: "OpenMP 6.0 §13.6.3, p.419"
+        quote: "is the chunk_size for all chunks except the first and last chunks, where simd_width is an implementation defined value."
+  schedule_nonmonotonic_order:   # monotonic: dynamic against its default
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.2, p.106"
+        quote: "When the nonmonotonic modifier is specified then chunks are assigned to threads in any order and the behavior of an application that depends on any execution order of the chunks is unspecified."
+      - cite: "OpenMP 5.0 §2.9.2, p.106"
+        quote: "When the monotonic modifier is specified then each thread executes the chunks that it is assigned in increasing logical iteration order."
+    52:
+      - cite: "OpenMP 5.2 §11.5.3, p.254"
+        quote: "When the nonmonotonic ordering-modifier is specified then chunks may be assigned to threads in any order and the behavior of an application that depends on any execution order of the chunks is unspecified."
+      - cite: "OpenMP 5.2 §11.5.3, p.254"
+        quote: "If the monotonic ordering-modifier is specified then each thread executes the chunks that it is assigned in increasing logical iteration order."
+    60:
+      - cite: "OpenMP 6.0 §13.6.3, p.419"
+        quote: "When the nonmonotonic ordering-modifier is specified then chunks may be assigned to threads in any order and the behavior of an application that depends on any execution order of the chunks is unspecified."
+      - cite: "OpenMP 6.0 §13.6.3, p.419"
+        quote: "If the monotonic ordering-modifier is specified then each thread executes the chunks that it is assigned in increasing collapsed iteration order."
+
+  dist_schedule_default:   # Dist_schedule(static) without a chunk size
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.4.1, p.122"
+        quote: "When no dist_schedule clause is specified, the schedule is implementation defined."
+      - cite: "OpenMP 5.0 §2.9.4.1, p.122"
+        quote: "When no chunk_size is specified, the iteration space is divided into chunks that are approximately equal in size, and at most one chunk is distributed to each initial team of the league."
+    52:
+      - cite: "OpenMP 5.2 §11.6, p.254"
+        quote: "If the dist_schedule clause is not specified, the schedule is implementation defined."
+      - cite: "OpenMP 5.2 §11.6.1, p.256"
+        quote: "if chunk_size is not specified, the iteration space is divided into chunks that are approximately equal in size, and at most one chunk is distributed to each initial team of the league."
+    60:
+      - cite: "OpenMP 6.0 §13.7, p.420"
+        quote: "If the dist_schedule clause is not specified, the loop schedule is implementation defined."
+      - cite: "OpenMP 6.0 §13.7.1, p.422"
+        quote: "approximately equal in size, and at most one chunk is distributed to each initial team of the league."
+  schedule_default:   # Schedule(static) without a chunk size
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.5.1, p.64"
+        quote: "def-sched-var - controls the implementation defined default scheduling of worksharing-loop regions."
+      - cite: "OpenMP 5.0 §2.9.2, p.105"
+        quote: "One compliant implementation of the static schedule (with no specified chunk_size) would behave as though chunk_size had been specified with value q. Another compliant implementation would assign q iterations to the first p − r threads, and q − 1 iterations to the remaining r threads."
+    52:
+      - cite: "OpenMP 5.2 §11.5, p.248"
+        quote: "If the schedule clause is not specified then the schedule is implementation defined."
+      - cite: "OpenMP 5.2 §11.5.3, p.253"
+        quote: "One compliant implementation of the static schedule (with no specified chunk_size) would behave as though chunk_size had been specified with value q. Another compliant implementation would assign q iterations to the first p − r threads, and q − 1 iterations to the remaining r threads."
+    60:
+      - cite: "OpenMP 6.0 §13.6.3, p.419"
+        quote: "If the schedule clause is not specified on a worksharing-loop construct then the effect is as if the schedule clause was specified with auto as its kind argument."
+      - cite: "OpenMP 6.0 §13.6.3, p.419"
+        quote: "If the kind argument is auto, the decision regarding scheduling is implementation defined."
+
+  # --- equivalent_default ----------------------------------------------------
+  schedule_default_modifier:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.2, p.103"
+        quote: "Otherwise, unless the monotonic modifier is specified, the effect is as if the nonmonotonic modifier is specified."
+      - cite: "OpenMP 5.0 §2.9.2, p.103"
+        quote: "If the static schedule kind is specified or if the ordered clause is specified, and if the nonmonotonic modifier is not specified, the effect is as if the monotonic modifier is specified."
+    52:
+      - cite: "OpenMP 5.2 §11.5.3, p.254"
+        quote: "If an ordering-modifier is not specified, the effect is as if the monotonic modifier is specified if the kind argument is static or an ordered clause is specified on the construct; otherwise, the effect is as if the nonmonotonic modifier is specified."
+    60:
+      - cite: "OpenMP 6.0 §13.6.3, p.419"
+        quote: "If an ordering-modifier is not specified, the effect is as if the monotonic ordering-modifier is specified if the kind argument is static or an ordered clause is specified on the construct; otherwise, the effect is as if the nonmonotonic ordering-modifier is specified."
+  reduction_default_modifier:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.19.5.4, p.300"
+        quote: "If reduction-modifier is not present or the default reduction-modifier is present, the behavior is as follows."
+    52:
+      - cite: "OpenMP 5.2 §5.5.8, p.134"
+        quote: "If reduction-modifier is not present or the default reduction-modifier is present, the behavior is as follows."
+    60:
+      - cite: "OpenMP 6.0 §7.6.10, p.253"
+        quote: "If reduction-modifier is not present or the default reduction-modifier is present, the behavior is as follows."
+  linear_modifier_val:
+    status: provisional
+    52:
+      - cite: "OpenMP 5.2 §5.4.6, p.118"
+        quote: "A linear-modifier may be specified as ref or uval only on a declare simd directive."
+    60:
+      - cite: "OpenMP 6.0 §7.5.6, p.233"
+        quote: "A linear-modifier may be specified as ref or uval only for linear clauses on declare_simd directives."
+  defaultmap_default:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.19.7.2, p.325"
+        quote: "If implicit-behavior is default, then the clause has no effect for the variables in the category specified by variable-category."
+    52:
+      - cite: "OpenMP 5.2 §5.8.7, p.162"
+        quote: "If implicit-behavior is default then the clause has no effect."
+    60:
+      - cite: "OpenMP 6.0 §7.9.9, p.292"
+        quote: "If implicit-behavior is default then the clause has no effect."
+  device_num_default:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.12.5, p.172"
+        quote: "If device-modifier does not appear in the clause, the behavior of the clause is as if device-modifier is device_num."
+    52:
+      - cite: "OpenMP 5.2 §13.2, p.276"
+        quote: "If device-modifier does not appear in the clause, the behavior of the clause is as if device-modifier is device_num."
+    60:
+      - cite: "OpenMP 6.0 §15.2, p.451"
+        quote: "If device-modifier does not appear in the clause, the behavior of the clause is as if device-modifier is device_num."
+  memspace_default:
+    status: provisional
+    52:
+      - cite: "OpenMP 5.2 §6.8, p.182"
+        quote: "If mem-space is not specified, the effect is as if memspace-handle is specified as omp_default_mem_space."
+    60:
+      - cite: "OpenMP 6.0 §8.8, p.316"
+        quote: "If mem-space is not specified or omp_null_mem_space is specified, the effect is as if memspace-handle is specified as omp_default_mem_space."
+  ordered_n_default:
+    status: provisional
+    50:
+      - cite: "OpenMP 5.0 §2.9.2, p.104"
+        quote: "The parameter of the ordered clause does not affect how the logical iteration space is then divided."
+      - cite: "OpenMP 5.0 §2.9.2, p.104"
+        quote: "If an ordered clause with the parameter is specified for the worksharing-loop construct, then those associated loops form a doacross loop nest."
+    52:
+      - cite: "OpenMP 5.2 §4.4.4, p.94"
+        quote: "If n is not specified then the behavior is as if n is specified with the same value as is specified for the collapse clause on the construct."
+    60:
+      - cite: "OpenMP 6.0 §6.4.6, p.206"
+        quote: "If n is not specified then the behavior is as if n is specified with the same value as is specified for the collapse clause on the construct."
+  order_unconstrained_reproducible:
+    status: provisional
+    52:
+      - cite: "OpenMP 5.2 §11.5, p.248"
+        quote: "The schedule clause is specified with static as the kind argument but not the simd ordering-modifier and the order clause is not specified with the unconstrained order-modifier."
+      - cite: "OpenMP 5.2 §10.3, p.234"
+        quote: "If order-modifier is reproducible, the loop schedule for the construct on which the clause appears is reproducible, whereas if order-modifier is unconstrained, the loop schedule is not reproducible."
+    60:
+      - cite: "OpenMP 6.0 §13.6, p.414"
+        quote: "The schedule clause is specified with static as the kind argument but not with the simd ordering-modifier and the order clause is not specified with the unconstrained order-modifier."
+      - cite: "OpenMP 6.0 §12.3, p.398"
+        quote: "If order-modifier is reproducible, the loop schedule for the construct on which the clause appears is reproducible, whereas if order-modifier is unconstrained, the loop schedule is not reproducible."
+  default_category_all:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §7.5.1, p.223"
+        quote: "If no variable-category is specified in the clause then the effect is as if all was specified for the variable-category."
+  ref_ptr_ptee_default:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §7.9.6, p.282"
+        quote: "Unless otherwise specified, if a list item is a referencing variable then the effect of the map clause is applied to its referring pointer and, if a referenced pointee exists, its referenced pointee."
+  nowait_true_default:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §17.6, p.481"
+        quote: "If do_not_synchronize is not specified, the effect is as if do_not_synchronize evaluates to true."
+  replayable_true_default:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §14.6, p.441"
+        quote: "If replayable-expression is not specified, the effect is as if replayable-expression evaluates to true."
+  # directive-name modifiers (6.0 only)
+  dnm_own_directive:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §5.4, p.174"
+        quote: "If no directive-name-modifier is specified then the effect is as if a directive-name-modifier was specified with the directive name of the directive on which the clause appears."
+  dnm_single_leaf:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §19.2, p.528"
+        quote: "Some clauses are permitted only on a single leaf construct of the compound construct, in which case the effect is as if the clause is applied to that specific construct."
+  dnm_innermost_leaf:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §19.2, p.528"
+        quote: "Unless otherwise specified, the effect of any clause with the innermost-leaf property on a compound construct is as if it is applied only to the innermost leaf construct that permits it."
+  dnm_all_privatizing:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §19.2, p.528"
+        quote: "The effect of any clause with the all-privatizing property on a compound directive is as if it is applied to all leaf constructs that permit the clause and to which a data-sharing attribute clause that may create a private copy of the same list item is applied."
+  dnm_firstprivate:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §19.2, p.528"
+        quote: "To a worksharing construct that accepts the clause if one is among the constituent constructs;"
+  dnm_reduction:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §19.2, p.529"
+        quote: "For the parallel and teams constructs above, the effect of the reduction clause instead is as if each list item or, for any list item that is an array item, its corresponding base array or corresponding base pointer appears in a shared clause for the construct."
+  dnm_thread_limit:
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §12.2, p.394"
+        quote: "If a thread_limit clause is not present on the teams construct, but the construct is closely nested inside a target construct on which the thread_limit clause is specified, the behavior is as if that thread_limit clause is also specified for the teams construct."
+
+  # --- C programs whose port showed the oracle does not separate ---
+  default_parallel_shared:   # default(shared: <category>) on parallel
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §7.1.1, p.213"
+        quote: "In a parallel construct, if no default clause is present, these variables are shared."
+  reduction_original_default:  # original(shared) of a shared item
+    status: provisional
+    60:
+      - cite: "OpenMP 6.0 §7.6.10, p.252"
+        quote: "If the sharing argument is specified as default, original list items are assumed to be shared in the enclosing context unless determined not to be shared according to the rules specified in Section 7.1."

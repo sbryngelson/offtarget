@@ -1,0 +1,236 @@
+{
+ "finding": "gcc/gcc-c-target-in-task-mandatory-device-not-found.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-12",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program is conforming: the task is complete at taskwait, arrays are mapped, and no data race exists. The failing run reports OMP_TARGET_OFFLOAD=MANDATORY with no device available. In that situation the specification makes the device construct behave as if omp_invalid_device was used, which gives runtime error termination. The error is therefore permitted by the specification and depends on the environment, not on the program."
+  },
+  {
+   "run": "run-20261113/batch-43",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program is conforming: a target construct inside an explicit task followed by taskwait. The failure is caused by OMP_TARGET_OFFLOAD=mandatory being set with no device available, an environment condition, not a defect of the program or compiler."
+  },
+  {
+   "run": "run-v2-20261113/batch-38",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming: the task and the target region only share a, b, host_flag, and taskwait orders the reads. The observed failure comes from OMP_TARGET_OFFLOAD=MANDATORY with no device available, which the specification treats as using an unavailable device (as if omp_invalid_device), so the abort is permitted and not a violation of a required result.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-43",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-64",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "missed",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming: a target region inside an explicit task, with host_flag mapped tofrom and a taskwait before the results are read. The failure is the runtime message that OMP_TARGET_OFFLOAD is mandatory and no device was found. With mandatory offload and no non-host device, the spec treats the device as omp_invalid_device, so the target construct is not required to run. The failing run lacks a device, so the observed error is permitted."
+  },
+  {
+   "run": "run-v2-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming. A target inside an explicit task with shared arrays is valid, and the taskwait orders it before the check. The observed failure comes from OMP_TARGET_OFFLOAD=mandatory with no device found. The spec allows a mandatory-mode error when the device is unavailable, so the observed result may be a setup issue of that compiler or run, not a spec violation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f36cec15c51244ce0b789708876372d49a9f8d37d7f7a7e33be7b7c619bf8b0d",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent adjudicating reading finds the result not required: The task, target region and taskwait are conforming. The failure message shows OMP_TARGET_OFFLOAD=mandatory with no usable device; section 21.2.8 says a device construct using an unavailable device behaves as if omp_invalid_device were used, so aborting is permitted.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings are right. The program is conforming (task completed at taskwait, arrays mapped). With OMP_TARGET_OFFLOAD=mandatory and no usable device, the specification defines the device construct as using omp_invalid_device, which leads to error termination; the observed error is permitted and caused by the environment."
+  },
+  {
+   "run": "adj-20261113/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program is conforming (task with target, taskwait, mapped arrays). The failure is an environment condition: OMP_TARGET_OFFLOAD=mandatory with zero non-host devices makes device constructs behave as if omp_invalid_device was used, so run-time termination is permitted. Both readings reach this; Reading B's citation is correct, Reading A cites no passage."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The task, target region and taskwait are conforming. The failure message shows OMP_TARGET_OFFLOAD=mandatory with no usable device; section 21.2.8 says a device construct using an unavailable device behaves as if omp_invalid_device were used, so aborting is permitted. Reading A is right; Reading B's uncertain is unnecessary.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program is conforming: target inside an explicit task with taskwait is valid. The observed error comes from OMP_TARGET_OFFLOAD=mandatory with no device, which the specification defines as behaving as if omp_invalid_device was used, so the failure is permitted. Reading A is right; Reading B's uncertain is unnecessary.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-15",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

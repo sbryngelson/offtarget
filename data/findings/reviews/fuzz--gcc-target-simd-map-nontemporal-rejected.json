@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/gcc-target-simd-map-nontemporal-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-06",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The spec states that nontemporal list items may also appear in data-environment attribute clauses, and map is such a clause. No restriction forbids a list item in both map and nontemporal on target simd. The loop writes distinct elements, so check=pass is required, and the gfortran 'multiple clauses' error is a compiler bug."
+  },
+  {
+   "run": "run-20261113/batch-68",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "nontemporal applies to the simd leaf and map to the target leaf of target simd; map is not a data-sharing clause, and the spec allows nontemporal list items to also appear in data-environment attribute clauses. No restriction forbids o on both. The gfortran error about multiple clauses is wrong."
+  },
+  {
+   "run": "run-v2-20261113/batch-111",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "nontemporal is allowed on simd, and target simd accepts target and simd clauses. The spec says nontemporal list items may also appear in data-environment attribute clauses, and the only multiple-clause restriction is for data-sharing clauses. map is not a data-sharing clause, so map(tofrom: o) with nontemporal(o) is conforming and the 'multiple clauses' refusal is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-44",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-12",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The nontemporal clause is permitted on simd, hence on target simd, and the spec states its list items may also appear in other clauses. A map clause on the target leaf and nontemporal on the simd leaf are different leaf constructs, with no restriction against a variable on both. The program has no race. Refusing it as a symbol on multiple clauses is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d604402bd16544dd8f380bccb2ac5cb25d231713ebe9c44335bbd57b5421f13d",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

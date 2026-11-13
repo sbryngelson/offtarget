@@ -1,0 +1,10 @@
+# Verbatim compiler output stored by the fuzz campaign n0x0-nvhpc (results/fuzz/n0x0-nvhpc/programs.jsonl, seed 258, nvhpc), wingtip, 2026-10-24/25. The <tmpdir> path is the campaign's scrub of the build directory.
+# source: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on the fuzz program of seed 258
+# exit status: 2
+# (review M1): a front end killed by signal 9 (the OOM killer or an external kill) is the environment, not an ICE
+==== verbatim output below ====
+NVFORTRAN-W-0287-Unrecognized OpenMP directive - masked (<tmpdir>/fuzz-258.f90: 60)
+NVFORTRAN-W-0287-Unrecognized OpenMP directive - end  (<tmpdir>/fuzz-258.f90: 62)
+NVFORTRAN-S-0533-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<tmpdir>/fuzz-258.f90: 45)
+NVFORTRAN-S-1224-LOOP construct may not contain calls to the OpenMP Runtime API - . (<tmpdir>/fuzz-258.f90: 61)
+nvfortran-Fatal-/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/tools/fort1 TERMINATED by signal 9

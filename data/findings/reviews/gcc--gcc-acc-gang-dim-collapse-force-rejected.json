@@ -1,0 +1,113 @@
+{
+ "finding": "gcc/gcc-acc-gang-dim-collapse-force-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "collapse([force:] n) is valid OpenACC 3.4 syntax on a combined parallel loop. The two loops are tightly nested with no intervening code. Only iteration (1,1) writes host_flag, so there is no race. The compiler's rejection of the force modifier is a defect."
+  },
+  {
+   "run": "run-20261113/batch-54",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "collapse([force:] n) is part of the OpenACC 3.4 loop clause grammar. The two loops are tightly nested so the clause is valid with or without force. Only iteration (1,1) writes host_flag, so no race; b elements are distinct. A conforming 3.4 compiler must accept collapse(force:2); the refusal is an error."
+  },
+  {
+   "run": "run-v2-20261113/batch-43",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenACC 3.4 defines collapse([force:] n). The nest has exactly one inner loop; the if statement is in the innermost body, not intervening code. Only iteration (1,1) writes host_flag, so no race. A conforming compiler must accept collapse(force: 2); the diagnostic is a front-end defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-48",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-88",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "collapse(force: 2) is the OpenACC 3.4 syntax collapse([force:] n). The two loops are tightly nested anyway. Only one iteration writes host_flag, so there is no race. A conforming compiler must accept the clause.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-20",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ad866d731f537e796ce97fe72675416cf133ebfc91e158a796ceaaf01410c827",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

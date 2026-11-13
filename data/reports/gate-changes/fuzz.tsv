@@ -1,0 +1,329 @@
+cell	signature	old_outcome	verdict	inherited	new_outcome	condition	decision	counts
+fuzz|b0:13|cce19|1	cce19|wrong_answer|b0:13|checksum=1483376103	wrong_answer|checksum=1483376103	nondeterministic	no				no
+fuzz|b0:13|cce20|1	cce20|wrong_answer|b0:13|checksum=359731438	wrong_answer|checksum=359731438	nondeterministic	no				no
+fuzz|b0:163|cce20|1	cce20|wrong_answer|b0:163|checksum=984382261	wrong_answer|checksum=984382261	nondeterministic	no				no
+fuzz|b0:234|cce19|1	cce19|wrong_answer|b0:234|checksum=770242366	wrong_answer|checksum=770242366	nondeterministic	no				no
+fuzz|b0:60|cce19|1	cce19|wrong_answer|b0:60|checksum=1998632822	wrong_answer|checksum=1998632822	nondeterministic	no				no
+fuzz|b0:60|cce21|1	cce21|wrong_answer|b0:60|checksum=1665783220	wrong_answer|checksum=1665783220	nondeterministic	no				no
+fuzz|b1:111|afar|1	afar|wrong_answer|b1:111|checksum=499718611	wrong_answer|checksum=499718611	nondeterministic	no	c:crash b:crash a:crash d:crash c:crash		environment_defect	yes
+fuzz|b1:163|cce20|1	cce20|wrong_answer|b1:163|checksum=72270292	wrong_answer|checksum=72270292	nondeterministic	no				no
+fuzz|b1:70|cce19|1	cce19|wrong_answer|b1:70|checksum=1853134060	wrong_answer|checksum=1853134060	nondeterministic	no				no
+fuzz|b1:70|cce21|1	cce21|wrong_answer|b1:70|checksum=379828881	wrong_answer|checksum=379828881	nondeterministic	no				no
+fuzz|b2:104|cce20|1	cce20|wrong_answer|b2:104|checksum=216725149	wrong_answer|checksum=216725149	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|b2:121|afar|1	afar|crash|b2:121|SIGABRT	crash|SIGABRT	not_reproduced	no	b:correct_on_device a:correct_on_device d:correct_on_device c:correct_on_device c:correct_on_device		undecided	no
+fuzz|b2:157|cce19|1	cce19|wrong_answer|b2:157|checksum=711869864	wrong_answer|checksum=711869864	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|b2:231|afar|1	afar|run_error|b2:231|mandatory_failed_device_pass_without: crash: SIGABRT	run_error|mandatory_failed_device_pass_without: crash: SIGABRT	nondeterministic	no	c:wrong_answer b:run_error a:wrong_answer d:wrong_answer c:crash		environment_defect	yes
+fuzz|b2:286|cce19|1	cce19|wrong_answer|b2:286|checksum=2020901877	wrong_answer|checksum=2020901877	nondeterministic	no				no
+fuzz|b2:286|cce20|1	cce20|wrong_answer|b2:286|checksum=467941113	wrong_answer|checksum=467941113	nondeterministic	no				no
+fuzz|b3:106|cce19|1	cce19|wrong_answer|b3:106|checksum=1010104773	wrong_answer|checksum=1010104773	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		environment_defect	yes
+fuzz|b3:142|afar|1	afar|crash|b3:142|SIGABRT	crash|SIGABRT	not_reproduced	no	b:correct_on_device a:correct_on_device d:correct_on_device c:correct_on_device c:correct_on_device		undecided	no
+fuzz|b3:210|cce20|1	cce20|wrong_answer|b3:210|checksum=1079831101	wrong_answer|checksum=1079831101	nondeterministic	no				no
+fuzz|b3:210|cce21|1	cce21|wrong_answer|b3:210|checksum=1617653027	wrong_answer|checksum=1617653027	nondeterministic	no				no
+fuzz|b3:99|cce19|1	cce19|wrong_answer|b3:99|checksum=313523805	wrong_answer|checksum=313523805	nondeterministic	no				no
+fuzz|b3:99|cce21|1	cce21|wrong_answer|b3:99|checksum=313523805	wrong_answer|checksum=313523805	nondeterministic	no				no
+fuzz|b4:209|afar|1	afar|wrong_answer|b4:209|checksum=27423373	wrong_answer|checksum=27423373	nondeterministic	no	b:correct_on_device a:correct_on_device d:correct_on_device c:correct_on_device c:correct_on_device		undecided	no
+fuzz|b4:210|cce20|1	cce20|wrong_answer|b4:210|checksum=1286882937	wrong_answer|checksum=1286882937	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|b4:210|cce21|1	cce21|wrong_answer|b4:210|checksum=639815532	wrong_answer|checksum=639815532	nondeterministic	no				no
+fuzz|b4:227|cce21|1	cce21|wrong_answer|b4:227|checksum=2034960345	wrong_answer|checksum=2034960345	nondeterministic	no				no
+fuzz|b4:231|afar|1	afar|crash|b4:231|SIGABRT	crash|SIGABRT	nondeterministic	no	b:run_error a:run_error d:run_error c:crash c:crash		environment_defect	yes
+fuzz|b4:253|cce19|1	cce19|wrong_answer|b4:253|checksum=1692818264	wrong_answer|checksum=1692818264	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|b4:253|cce20|1	cce20|wrong_answer|b4:253|checksum=1212444719	wrong_answer|checksum=1212444719	nondeterministic	no				no
+fuzz|b4:253|cce21|1	cce21|wrong_answer|b4:253|checksum=260425527	wrong_answer|checksum=260425527	nondeterministic	no				no
+fuzz|b5:157|cce19|1	cce19|wrong_answer|b5:157|checksum=812384095	wrong_answer|checksum=812384095	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|b5:163|cce20|1	cce20|wrong_answer|b5:163|checksum=1381639600	wrong_answer|checksum=1381639600	nondeterministic	no				no
+fuzz|b5:234|cce19|1	cce19|wrong_answer|b5:234|checksum=1424745358	wrong_answer|checksum=1424745358	nondeterministic	no				no
+fuzz|c1:1066|afar|1	afar|wrong_answer|c1:1066|checksum=446962081	wrong_answer|checksum=446962081	nondeterministic	no	b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|c1:1079|cce19|1	cce19|wrong_answer|c1:1079|checksum=616144878	wrong_answer|checksum=616144878	nondeterministic	no				no
+fuzz|c1:1079|cce21|1	cce21|wrong_answer|c1:1079|checksum=1283672735	wrong_answer|checksum=1283672735	nondeterministic	no				no
+fuzz|c1:1137|cce19|1	cce19|wrong_answer|c1:1137|checksum=835298145	wrong_answer|checksum=835298145	nondeterministic	no				no
+fuzz|c1:1189|cce19|1	cce19|wrong_answer|c1:1189|checksum=1596950006	wrong_answer|checksum=1596950006	nondeterministic	no				no
+fuzz|c1:1189|cce20|1	cce20|wrong_answer|c1:1189|checksum=1596950006	wrong_answer|checksum=1596950006	nondeterministic	no				no
+fuzz|c1:1189|cce21|1	cce21|wrong_answer|c1:1189|checksum=1596950006	wrong_answer|checksum=1596950006	nondeterministic	no				no
+fuzz|c1:1252|cce19|1	cce19|wrong_answer|c1:1252|checksum=1147019088	wrong_answer|checksum=1147019088	nondeterministic	no				no
+fuzz|c1:1252|cce20|1	cce20|wrong_answer|c1:1252|checksum=2020794537	wrong_answer|checksum=2020794537	nondeterministic	no				no
+fuzz|c1:1267|cce19|1	cce19|wrong_answer|c1:1267|checksum=694911187	wrong_answer|checksum=694911187	nondeterministic	no				no
+fuzz|c1:1267|cce20|1	cce20|wrong_answer|c1:1267|checksum=1186694974	wrong_answer|checksum=1186694974	nondeterministic	no				no
+fuzz|c1:1292|cce19|1	cce19|wrong_answer|c1:1292|checksum=1547337018	wrong_answer|checksum=1547337018	nondeterministic	no				no
+fuzz|c1:1292|cce20|1	cce20|wrong_answer|c1:1292|checksum=865337229	wrong_answer|checksum=865337229	nondeterministic	no				no
+fuzz|c1:1316|cce19|1	cce19|wrong_answer|c1:1316|checksum=1952905437	wrong_answer|checksum=1952905437	nondeterministic	no				no
+fuzz|c1:13|cce19|1	cce19|wrong_answer|c1:13|checksum=123275629	wrong_answer|checksum=123275629	nondeterministic	no				no
+fuzz|c1:13|cce20|1	cce20|wrong_answer|c1:13|checksum=359731438	wrong_answer|checksum=359731438	nondeterministic	no				no
+fuzz|c1:1505|cce19|1	cce19|crash|c1:1505|SIGSEGV	crash|SIGSEGV	nondeterministic	no	c:crash b:crash a:crash d:crash c:crash		environment_defect	yes
+fuzz|c1:1505|cce20|1	cce20|crash|c1:1505|SIGABRT	crash|SIGABRT	nondeterministic	no	b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer c:wrong_answer		environment_defect	yes
+fuzz|c1:1522|cce21|1	cce21|wrong_answer|c1:1522|checksum=43500501	wrong_answer|checksum=43500501	nondeterministic	no				no
+fuzz|c1:163|cce20|1	cce20|wrong_answer|c1:163|checksum=984382261	wrong_answer|checksum=984382261	nondeterministic	no				no
+fuzz|c1:1749|cce19|1	cce19|wrong_answer|c1:1749|checksum=1730271492	wrong_answer|checksum=1730271492	nondeterministic	no				no
+fuzz|c1:1750|cce19|1	cce19|wrong_answer|c1:1750|checksum=28123268	wrong_answer|checksum=28123268	nondeterministic	no				no
+fuzz|c1:1904|cce19|1	cce19|wrong_answer|c1:1904|checksum=1683782728	wrong_answer|checksum=1683782728	nondeterministic	no				no
+fuzz|c1:2233|cce19|1	cce19|wrong_answer|c1:2233|checksum=878723410	wrong_answer|checksum=878723410	nondeterministic	no				no
+fuzz|c1:2233|cce21|1	cce21|wrong_answer|c1:2233|checksum=2112960953	wrong_answer|checksum=2112960953	nondeterministic	no				no
+fuzz|c1:2271|cce19|1	cce19|wrong_answer|c1:2271|checksum=701023322	wrong_answer|checksum=701023322	nondeterministic	no				no
+fuzz|c1:2336|cce19|1	cce19|wrong_answer|c1:2336|checksum=2122818007	wrong_answer|checksum=2122818007	nondeterministic	no				no
+fuzz|c1:393|cce19|1	cce19|wrong_answer|c1:393|checksum=846675790	wrong_answer|checksum=846675790	nondeterministic	no				no
+fuzz|c1:393|cce21|1	cce21|wrong_answer|c1:393|checksum=846675790	wrong_answer|checksum=846675790	nondeterministic	no				no
+fuzz|c1:407|cce19|1	cce19|wrong_answer|c1:407|checksum=371472292	wrong_answer|checksum=371472292	nondeterministic	no				no
+fuzz|c1:407|cce20|1	cce20|wrong_answer|c1:407|checksum=1651237534	wrong_answer|checksum=1651237534	nondeterministic	no				no
+fuzz|c1:407|cce21|1	cce21|wrong_answer|c1:407|checksum=1651237534	wrong_answer|checksum=1651237534	nondeterministic	no				no
+fuzz|c1:415|cce19|1	cce19|wrong_answer|c1:415|checksum=657709255	wrong_answer|checksum=657709255	nondeterministic	no				no
+fuzz|c1:467|cce19|1	cce19|wrong_answer|c1:467|checksum=2135675957	wrong_answer|checksum=2135675957	nondeterministic	no				no
+fuzz|c1:599|afar|1	afar|wrong_answer|c1:599|checksum=1220799746	wrong_answer|checksum=1220799746	nondeterministic	no				no
+fuzz|c1:60|cce19|1	cce19|wrong_answer|c1:60|checksum=1566900327	wrong_answer|checksum=1566900327	nondeterministic	no				no
+fuzz|c1:60|cce21|1	cce21|wrong_answer|c1:60|checksum=1808451939	wrong_answer|checksum=1808451939	nondeterministic	no				no
+fuzz|c1:651|cce19|1	cce19|wrong_answer|c1:651|checksum=1346441447	wrong_answer|checksum=1346441447	nondeterministic	no				no
+fuzz|c1:726|afar|1	afar|wrong_answer|c1:726|checksum=1183727319	wrong_answer|checksum=1183727319	nondeterministic	no				no
+fuzz|c1:819|cce19|1	cce19|wrong_answer|c1:819|checksum=135219162	wrong_answer|checksum=135219162	nondeterministic	no				no
+fuzz|c1:819|cce20|1	cce20|wrong_answer|c1:819|checksum=1949359428	wrong_answer|checksum=1949359428	nondeterministic	no				no
+fuzz|c1:819|cce21|1	cce21|wrong_answer|c1:819|checksum=1949359428	wrong_answer|checksum=1949359428	nondeterministic	no				no
+fuzz|c1:909|cce19|1	cce19|wrong_answer|c1:909|checksum=1246508091	wrong_answer|checksum=1246508091	nondeterministic	no				no
+fuzz|c1:925|cce19|1	cce19|wrong_answer|c1:925|checksum=893603392	wrong_answer|checksum=893603392	nondeterministic	no				no
+fuzz|c1:992|cce19|1	cce19|wrong_answer|c1:992|checksum=1886174243	wrong_answer|checksum=1886174243	nondeterministic	no				no
+fuzz|c1:992|cce20|1	cce20|wrong_answer|c1:992|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+fuzz|c1:992|cce21|1	cce21|wrong_answer|c1:992|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+fuzz|n0x0-amd:13|cce19|0	cce19|wrong_answer|n0x0-amd:13|checksum=279056129	wrong_answer|checksum=279056129	nondeterministic	no				no
+fuzz|n0x0-amd:13|cce20|0	cce20|wrong_answer|n0x0-amd:13|checksum=222544481	wrong_answer|checksum=222544481	nondeterministic	no				no
+fuzz|n0x0-amd:13|cce21|0	cce21|wrong_answer|n0x0-amd:13|checksum=643921491	wrong_answer|checksum=643921491	nondeterministic	no				no
+fuzz|n0x0-amd:163|cce19|0	cce19|wrong_answer|n0x0-amd:163|checksum=1807014051	wrong_answer|checksum=1807014051	nondeterministic	no				no
+fuzz|n0x0-amd:163|cce20|0	cce20|wrong_answer|n0x0-amd:163|checksum=1546167020	wrong_answer|checksum=1546167020	nondeterministic	no				no
+fuzz|n0x0-amd:241|cce19|0	cce19|wrong_answer|n0x0-amd:241|checksum=674945519	wrong_answer|checksum=674945519	nondeterministic	no				no
+fuzz|n0x0-amd:393|cce19|0	cce19|wrong_answer|n0x0-amd:393|checksum=846675790	wrong_answer|checksum=846675790	nondeterministic	no				no
+fuzz|n0x0-amd:407|cce19|0	cce19|wrong_answer|n0x0-amd:407|checksum=1134950331	wrong_answer|checksum=1134950331	nondeterministic	no				no
+fuzz|n0x0-amd:407|cce20|0	cce20|wrong_answer|n0x0-amd:407|checksum=1684897878	wrong_answer|checksum=1684897878	nondeterministic	no				no
+fuzz|n0x0-amd:407|cce21|0	cce21|wrong_answer|n0x0-amd:407|checksum=1684897878	wrong_answer|checksum=1684897878	nondeterministic	no				no
+fuzz|n0x0-amd:415|cce19|0	cce19|wrong_answer|n0x0-amd:415|checksum=1287247469	wrong_answer|checksum=1287247469	nondeterministic	no				no
+fuzz|n0x0-amd:415|cce20|0	cce20|wrong_answer|n0x0-amd:415|checksum=269115161	wrong_answer|checksum=269115161	nondeterministic	no				no
+fuzz|n0x0-amd:467|cce19|0	cce19|wrong_answer|n0x0-amd:467|checksum=1360452543	wrong_answer|checksum=1360452543	nondeterministic	no				no
+fuzz|n0x0-amd:60|cce19|0	cce19|wrong_answer|n0x0-amd:60|checksum=950737074	wrong_answer|checksum=950737074	nondeterministic	no				no
+fuzz|n0x0-amd:651|cce19|0	cce19|wrong_answer|n0x0-amd:651|checksum=901868901	wrong_answer|checksum=901868901	nondeterministic	no				no
+fuzz|n0x0-amd:909|cce19|0	cce19|wrong_answer|n0x0-amd:909|checksum=1045203083	wrong_answer|checksum=1045203083	nondeterministic	no				no
+fuzz|n0x0-amd:925|cce19|0	cce19|wrong_answer|n0x0-amd:925|checksum=223318447	wrong_answer|checksum=223318447	nondeterministic	no				no
+fuzz|n0x0-amd:992|cce19|0	cce19|wrong_answer|n0x0-amd:992|checksum=786937634	wrong_answer|checksum=786937634	nondeterministic	no				no
+fuzz|n0x0-amd:992|cce20|0	cce20|wrong_answer|n0x0-amd:992|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+fuzz|n0x0-nvhpc269:210|nvhpc269|0	nvhpc269|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0-nvhpc269:258|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	not_a_failure	no	classifier: harness_error|harness_error			no
+fuzz|n0x0-nvhpc269:343|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0-nvhpc269:372|nvhpc269|0	nvhpc269|timeout|n0x0-nvhpc269:372|timeout	timeout|timeout	nondeterministic	no				no
+fuzz|n0x0-nvhpc269:848|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0-nvhpc:210|nvhpc|0	nvhpc|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0-nvhpc:258|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	not_a_failure	no	classifier: harness_error|harness_error			no
+fuzz|n0x0-nvhpc:343|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0-nvhpc:848|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0:13|cce19|0	cce19|wrong_answer|n0:13|checksum=279056129	wrong_answer|checksum=279056129	nondeterministic	no	b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|n0x0:13|cce20|0	cce20|wrong_answer|n0:13|checksum=222544481	wrong_answer|checksum=222544481	nondeterministic	no				no
+fuzz|n0x0:13|cce21|0	cce21|wrong_answer|n0:13|checksum=643921491	wrong_answer|checksum=643921491	nondeterministic	no				no
+fuzz|n0x0:163|cce19|0	cce19|wrong_answer|n0:163|checksum=1807014051	wrong_answer|checksum=1807014051	nondeterministic	no				no
+fuzz|n0x0:163|cce20|0	cce20|wrong_answer|n0:163|checksum=1546167020	wrong_answer|checksum=1546167020	nondeterministic	no				no
+fuzz|n0x0:210|nvhpc269|0	nvhpc269|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0:210|nvhpc|0	nvhpc|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0:241|cce19|0	cce19|wrong_answer|n0:241|checksum=674945519	wrong_answer|checksum=674945519	nondeterministic	no				no
+fuzz|n0x0:258|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	not_a_failure	no	classifier: harness_error|harness_error			no
+fuzz|n0x0:258|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	not_a_failure	no	classifier: harness_error|harness_error			no
+fuzz|n0x0:343|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0:343|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0:372|nvhpc269|0	nvhpc269|timeout|n0:372|timeout	timeout|timeout	nondeterministic	no				no
+fuzz|n0x0:393|cce19|0	cce19|wrong_answer|n0:393|checksum=846675790	wrong_answer|checksum=846675790	nondeterministic	no				no
+fuzz|n0x0:407|cce19|0	cce19|wrong_answer|n0:407|checksum=1134950331	wrong_answer|checksum=1134950331	nondeterministic	no				no
+fuzz|n0x0:407|cce20|0	cce20|wrong_answer|n0:407|checksum=1684897878	wrong_answer|checksum=1684897878	nondeterministic	no				no
+fuzz|n0x0:407|cce21|0	cce21|wrong_answer|n0:407|checksum=1684897878	wrong_answer|checksum=1684897878	nondeterministic	no				no
+fuzz|n0x0:415|cce19|0	cce19|wrong_answer|n0:415|checksum=1287247469	wrong_answer|checksum=1287247469	nondeterministic	no				no
+fuzz|n0x0:415|cce20|0	cce20|wrong_answer|n0:415|checksum=269115161	wrong_answer|checksum=269115161	nondeterministic	no				no
+fuzz|n0x0:467|cce19|0	cce19|wrong_answer|n0:467|checksum=1360452543	wrong_answer|checksum=1360452543	nondeterministic	no				no
+fuzz|n0x0:60|cce19|0	cce19|wrong_answer|n0:60|checksum=950737074	wrong_answer|checksum=950737074	nondeterministic	no				no
+fuzz|n0x0:651|cce19|0	cce19|wrong_answer|n0:651|checksum=901868901	wrong_answer|checksum=901868901	nondeterministic	no				no
+fuzz|n0x0:848|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0:848|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - masked (<path> N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n0x0:909|cce19|0	cce19|wrong_answer|n0:909|checksum=1045203083	wrong_answer|checksum=1045203083	nondeterministic	no				no
+fuzz|n0x0:925|cce19|0	cce19|wrong_answer|n0:925|checksum=223318447	wrong_answer|checksum=223318447	nondeterministic	no				no
+fuzz|n0x0:992|cce19|0	cce19|wrong_answer|n0:992|checksum=786937634	wrong_answer|checksum=786937634	nondeterministic	no				no
+fuzz|n0x0:992|cce20|0	cce20|wrong_answer|n0:992|checksum=190796792	wrong_answer|checksum=190796792	nondeterministic	no				no
+fuzz|n1x0-amd:144|cce19|0	cce19|wrong_answer|n1x0-amd:144|checksum=366675347	wrong_answer|checksum=366675347	nondeterministic	no				no
+fuzz|n1x0-amd:188|cce20|0	cce20|wrong_answer|n1x0-amd:188|checksum=57130983	wrong_answer|checksum=57130983	nondeterministic	no				no
+fuzz|n1x0-amd:188|cce21|0	cce21|wrong_answer|n1x0-amd:188|checksum=708190614	wrong_answer|checksum=708190614	nondeterministic	no				no
+fuzz|n1x0-amd:220|cce20|0	cce20|wrong_answer|n1x0-amd:220|checksum=1282544995	wrong_answer|checksum=1282544995	nondeterministic	no				no
+fuzz|n1x0-amd:220|cce21|0	cce21|wrong_answer|n1x0-amd:220|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+fuzz|n1x0-amd:225|cce19|0	cce19|wrong_answer|n1x0-amd:225|checksum=341774218	wrong_answer|checksum=341774218	nondeterministic	no				no
+fuzz|n1x0-amd:225|cce20|0	cce20|wrong_answer|n1x0-amd:225|checksum=394377840	wrong_answer|checksum=394377840	nondeterministic	no				no
+fuzz|n1x0-amd:63|cce20|0	cce20|wrong_answer|n1x0-amd:63|checksum=1571965645	wrong_answer|checksum=1571965645	nondeterministic	no				no
+fuzz|n1x0-amd:63|cce21|0	cce21|wrong_answer|n1x0-amd:63|checksum=1860519903	wrong_answer|checksum=1860519903	nondeterministic	no				no
+fuzz|n1x0-amd:821|cce20|0	cce20|wrong_answer|n1x0-amd:821|checksum=606361513	wrong_answer|checksum=606361513	nondeterministic	no				no
+fuzz|n1x0-amd:821|cce21|0	cce21|wrong_answer|n1x0-amd:821|checksum=617434336	wrong_answer|checksum=617434336	nondeterministic	no				no
+fuzz|n1x0-amd:900|cce19|0	cce19|wrong_answer|n1x0-amd:900|checksum=1202870376	wrong_answer|checksum=1202870376	nondeterministic	no				no
+fuzz|n1x0-amd:983|cce19|0	cce19|wrong_answer|n1x0-amd:983|checksum=1027631008	wrong_answer|checksum=1027631008	nondeterministic	no				no
+fuzz|n1x0-amd:983|cce20|0	cce20|wrong_answer|n1x0-amd:983|checksum=2003971403	wrong_answer|checksum=2003971403	nondeterministic	no				no
+fuzz|n1x0-nvhpc269:10|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compil	rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compiler. (fuzz	confirmed	no	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; b:ice a:ice d:ice c:ice c:ice			yes
+fuzz|n1x0-nvhpc269:579|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 1 rerun row(s) of its signature			yes
+fuzz|n1x0-nvhpc269:58|nvhpc269|0	nvhpc269|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	nondeterministic	no	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; b:ice a:ice d:rejected c:ice c:ice		nondeterministic_defect	yes
+fuzz|n1x0-nvhpc269:67|nvhpc269|0	nvhpc269|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	nondeterministic	yes	inherited from 2 rerun row(s) of its signature			no
+fuzz|n1x0-nvhpc:10|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compiler.	rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compiler. (fuzz	confirmed	no	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; b:ice a:ice d:ice c:ice c:ice			yes
+fuzz|n1x0-nvhpc:579|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n1x0-nvhpc:58|nvhpc|0	nvhpc|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	confirmed	no	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; b:ice a:ice d:ice c:ice c:ice			yes
+fuzz|n1x0:10|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compil	rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compiler. (fuzz	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 1 rerun row(s) of its signature			yes
+fuzz|n1x0:10|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compiler.	rejected|not_implemented: NVFORTRAN-W-N-OpenMP feature, SIMDLEN, not yet implemented in this version the compiler. (fuzz	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n1x0:144|cce19|0	cce19|wrong_answer|n1:144|checksum=366675347	wrong_answer|checksum=366675347	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|n1x0:188|cce20|0	cce20|wrong_answer|n1:188|checksum=57130983	wrong_answer|checksum=57130983	nondeterministic	no				no
+fuzz|n1x0:188|cce21|0	cce21|wrong_answer|n1:188|checksum=708190614	wrong_answer|checksum=708190614	nondeterministic	no				no
+fuzz|n1x0:220|cce20|0	cce20|wrong_answer|n1:220|checksum=1282544995	wrong_answer|checksum=1282544995	nondeterministic	no				no
+fuzz|n1x0:220|cce21|0	cce21|wrong_answer|n1:220|checksum=2088072533	wrong_answer|checksum=2088072533	nondeterministic	no				no
+fuzz|n1x0:225|cce19|0	cce19|wrong_answer|n1:225|checksum=341774218	wrong_answer|checksum=341774218	nondeterministic	no				no
+fuzz|n1x0:225|cce20|0	cce20|wrong_answer|n1:225|checksum=394377840	wrong_answer|checksum=394377840	nondeterministic	no				no
+fuzz|n1x0:288|nvhpc269|0	nvhpc269|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	nondeterministic	yes	inherited from 2 rerun row(s) of its signature			no
+fuzz|n1x0:579|nvhpc269|0	nvhpc269|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 1 rerun row(s) of its signature			yes
+fuzz|n1x0:579|nvhpc|0	nvhpc|rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	rejected|not_implemented: NVFORTRAN-W-N-Unrecognized OpenMP directive - declare (fuzz_dmod.fN: N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n1x0:58|nvhpc269|0	nvhpc269|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	nondeterministic	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			no
+fuzz|n1x0:58|nvhpc|0	nvhpc|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	confirmed	yes	classifier: ice|ice: nvfortran-Fatal-<path> TERMINATED by signal N; inherited from 2 rerun row(s) of its signature			yes
+fuzz|n1x0:63|cce20|0	cce20|wrong_answer|n1:63|checksum=1571965645	wrong_answer|checksum=1571965645	nondeterministic	no				no
+fuzz|n1x0:63|cce21|0	cce21|wrong_answer|n1:63|checksum=1860519903	wrong_answer|checksum=1860519903	nondeterministic	no				no
+fuzz|n1x0:67|nvhpc269|0	nvhpc269|rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	rejected|diagnostic: NVFORTRAN-S-N-Clause 'THREAD_LIMIT' not allowed in OMP TARGET PARALLEL (fuzz_prog.fN: N)	nondeterministic	yes	inherited from 2 rerun row(s) of its signature			no
+fuzz|n1x0:821|cce20|0	cce20|wrong_answer|n1:821|checksum=606361513	wrong_answer|checksum=606361513	nondeterministic	no				no
+fuzz|n1x0:821|cce21|0	cce21|wrong_answer|n1:821|checksum=617434336	wrong_answer|checksum=617434336	nondeterministic	no				no
+fuzz|n1x0:900|cce19|0	cce19|wrong_answer|n1:900|checksum=1202870376	wrong_answer|checksum=1202870376	nondeterministic	no				no
+fuzz|n1x0:983|cce19|0	cce19|wrong_answer|n1:983|checksum=1027631008	wrong_answer|checksum=1027631008	nondeterministic	no				no
+fuzz|n1x0:983|cce20|0	cce20|wrong_answer|n1:983|checksum=2003971403	wrong_answer|checksum=2003971403	nondeterministic	no				no
+fuzz|s1:1001|cce20|1	cce20|wrong_answer|s1:1001|checksum=1883705056	wrong_answer|checksum=1883705056	environment	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer	node: the failure on ['tuolumne1027'], not on ['tuolumne1020']		no
+fuzz|s1:1008|afar|1	afar|wrong_answer|s1:1008|checksum=199187578	wrong_answer|checksum=199187578	nondeterministic	no	b:wrong_answer a:crash d:wrong_answer c:run_error c:crash		environment_defect	yes
+fuzz|s1:1012|cce19|1	cce19|wrong_answer|s1:1012|checksum=1742210953	wrong_answer|checksum=1742210953	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|s1:1012|cce20|1	cce20|wrong_answer|s1:1012|checksum=352008444	wrong_answer|checksum=352008444	nondeterministic	no				no
+fuzz|s1:1012|cce21|1	cce21|wrong_answer|s1:1012|checksum=1294221076	wrong_answer|checksum=1294221076	nondeterministic	no				no
+fuzz|s1:1196|cce21|1	cce21|ice|ICE "unexpected type in TYPE_DEREF" @ v_expr_fort.c:551	ice|ICE "unexpected type in TYPE_DEREF" @ v_expr_fort.c:551	confirmed	no	c:ice b:ice a:ice d:ice c:ice		environment_defect	yes
+fuzz|s1:1221|cce21|1	cce21|wrong_answer|s1:1221|checksum=81579022	wrong_answer|checksum=81579022	nondeterministic	no				no
+fuzz|s1:144|cce19|1	cce19|wrong_answer|s1:144|checksum=1791666857	wrong_answer|checksum=1791666857	nondeterministic	no				no
+fuzz|s1:1454|cce20|1	cce20|wrong_answer|s1:1454|checksum=1958538084	wrong_answer|checksum=1958538084	nondeterministic	no				no
+fuzz|s1:1514|cce19|1	cce19|wrong_answer|s1:1514|checksum=1425165606	wrong_answer|checksum=1425165606	nondeterministic	no				no
+fuzz|s1:1514|cce20|1	cce20|wrong_answer|s1:1514|checksum=737119431	wrong_answer|checksum=737119431	nondeterministic	no				no
+fuzz|s1:1661|cce19|1	cce19|wrong_answer|s1:1661|checksum=291883751	wrong_answer|checksum=291883751	nondeterministic	no				no
+fuzz|s1:188|cce20|1	cce20|wrong_answer|s1:188|checksum=1256823887	wrong_answer|checksum=1256823887	nondeterministic	no				no
+fuzz|s1:188|cce21|1	cce21|wrong_answer|s1:188|checksum=659614430	wrong_answer|checksum=659614430	nondeterministic	no				no
+fuzz|s1:2064|cce21|1	cce21|wrong_answer|s1:2064|checksum=1538520985	wrong_answer|checksum=1538520985	nondeterministic	no				no
+fuzz|s1:2077|cce19|1	cce19|wrong_answer|s1:2077|checksum=1181905977	wrong_answer|checksum=1181905977	nondeterministic	no				no
+fuzz|s1:2211|cce19|1	cce19|wrong_answer|s1:2211|checksum=1154857351	wrong_answer|checksum=1154857351	nondeterministic	no				no
+fuzz|s1:2211|cce20|1	cce20|wrong_answer|s1:2211|checksum=609766650	wrong_answer|checksum=609766650	nondeterministic	no				no
+fuzz|s1:2211|cce21|1	cce21|wrong_answer|s1:2211|checksum=1948831824	wrong_answer|checksum=1948831824	nondeterministic	no				no
+fuzz|s1:2281|cce19|1	cce19|wrong_answer|s1:2281|checksum=1013826600	wrong_answer|checksum=1013826600	nondeterministic	no				no
+fuzz|s1:2380|afar|1	afar|wrong_answer|s1:2380|checksum=698868371	wrong_answer|checksum=698868371	nondeterministic	no				no
+fuzz|s1:2538|cce19|1	cce19|wrong_answer|s1:2538|checksum=487132559	wrong_answer|checksum=487132559	nondeterministic	no				no
+fuzz|s1:2538|cce20|1	cce20|wrong_answer|s1:2538|checksum=1597956430	wrong_answer|checksum=1597956430	nondeterministic	no				no
+fuzz|s1:2550|afar|1	afar|crash|s1:2550|SIGABRT	crash|SIGABRT	nondeterministic	no				no
+fuzz|s1:2735|cce19|1	cce19|wrong_answer|s1:2735|checksum=653967	wrong_answer|checksum=653967	nondeterministic	no				no
+fuzz|s1:2909|cce19|1	cce19|wrong_answer|s1:2909|checksum=226645899	wrong_answer|checksum=226645899	nondeterministic	no				no
+fuzz|s1:2909|cce20|1	cce20|wrong_answer|s1:2909|checksum=46690446	wrong_answer|checksum=46690446	nondeterministic	no				no
+fuzz|s1:2909|cce21|1	cce21|wrong_answer|s1:2909|checksum=46690446	wrong_answer|checksum=46690446	nondeterministic	no				no
+fuzz|s1:3045|cce19|1	cce19|wrong_answer|s1:3045|checksum=1337010785	wrong_answer|checksum=1337010785	nondeterministic	no				no
+fuzz|s1:3045|cce20|1	cce20|wrong_answer|s1:3045|checksum=1090161032	wrong_answer|checksum=1090161032	nondeterministic	no				no
+fuzz|s1:3067|cce20|1	cce20|ice|ICE "unexpected type in TYPE_DEREF" @ v_expr_fort.c:551	ice|ICE "unexpected type in TYPE_DEREF" @ v_expr_fort.c:551	confirmed	no	c:ice b:ice a:ice d:ice c:ice		environment_defect	yes
+fuzz|s1:3272|cce19|1	cce19|wrong_answer|s1:3272|checksum=1415285577	wrong_answer|checksum=1415285577	nondeterministic	no				no
+fuzz|s1:3272|cce20|1	cce20|wrong_answer|s1:3272|checksum=335178592	wrong_answer|checksum=335178592	nondeterministic	no				no
+fuzz|s1:3352|cce19|1	cce19|wrong_answer|s1:3352|checksum=26124703	wrong_answer|checksum=26124703	nondeterministic	no				no
+fuzz|s1:3625|cce20|1	cce20|wrong_answer|s1:3625|checksum=1214935034	wrong_answer|checksum=1214935034	nondeterministic	no				no
+fuzz|s1:3667|cce19|1	cce19|wrong_answer|s1:3667|checksum=1071108095	wrong_answer|checksum=1071108095	nondeterministic	no				no
+fuzz|s1:4045|cce19|1	cce19|wrong_answer|s1:4045|checksum=807900166	wrong_answer|checksum=807900166	nondeterministic	no				no
+fuzz|s1:4206|cce19|1	cce19|wrong_answer|s1:4206|checksum=1193605179	wrong_answer|checksum=1193605179	nondeterministic	no				no
+fuzz|s1:4206|cce20|1	cce20|wrong_answer|s1:4206|checksum=1605669405	wrong_answer|checksum=1605669405	nondeterministic	no				no
+fuzz|s1:4206|cce21|1	cce21|wrong_answer|s1:4206|checksum=1088341034	wrong_answer|checksum=1088341034	nondeterministic	no				no
+fuzz|s1:4394|cce19|1	cce19|wrong_answer|s1:4394|checksum=837924112	wrong_answer|checksum=837924112	nondeterministic	no				no
+fuzz|s1:4607|afar|1	afar|wrong_answer|s1:4607|checksum=1366710858	wrong_answer|checksum=1366710858	nondeterministic	no				no
+fuzz|s1:5150|cce19|1	cce19|wrong_answer|s1:5150|checksum=2034060540	wrong_answer|checksum=2034060540	nondeterministic	no				no
+fuzz|s1:5150|cce20|1	cce20|wrong_answer|s1:5150|checksum=1894122596	wrong_answer|checksum=1894122596	nondeterministic	no				no
+fuzz|s1:5150|cce21|1	cce21|wrong_answer|s1:5150|checksum=1547115686	wrong_answer|checksum=1547115686	nondeterministic	no				no
+fuzz|s1:517|cce19|1	cce19|wrong_answer|s1:517|checksum=2004564217	wrong_answer|checksum=2004564217	nondeterministic	no				no
+fuzz|s1:5212|cce20|1	cce20|wrong_answer|s1:5212|checksum=1568596405	wrong_answer|checksum=1568596405	nondeterministic	no				no
+fuzz|s1:5257|cce19|1	cce19|wrong_answer|s1:5257|checksum=2017427102	wrong_answer|checksum=2017427102	nondeterministic	no				no
+fuzz|s1:5292|cce20|1	cce20|wrong_answer|s1:5292|checksum=161452055	wrong_answer|checksum=161452055	nondeterministic	no				no
+fuzz|s1:5481|cce20|1	cce20|wrong_answer|s1:5481|checksum=1121459520	wrong_answer|checksum=1121459520	nondeterministic	no				no
+fuzz|s1:5723|cce19|1	cce19|wrong_answer|s1:5723|checksum=157974024	wrong_answer|checksum=157974024	nondeterministic	no				no
+fuzz|s1:5723|cce20|1	cce20|wrong_answer|s1:5723|checksum=755921984	wrong_answer|checksum=755921984	nondeterministic	no				no
+fuzz|s1:5921|cce19|1	cce19|wrong_answer|s1:5921|checksum=940986402	wrong_answer|checksum=940986402	nondeterministic	no				no
+fuzz|s1:6086|cce19|1	cce19|wrong_answer|s1:6086|checksum=1834257891	wrong_answer|checksum=1834257891	nondeterministic	no				no
+fuzz|s1:6227|afar|1	afar|wrong_answer|s1:6227|checksum=356342876	wrong_answer|checksum=356342876	nondeterministic	no				no
+fuzz|s1:63|cce20|1	cce20|wrong_answer|s1:63|checksum=1979375133	wrong_answer|checksum=1979375133	nondeterministic	no				no
+fuzz|s1:63|cce21|1	cce21|wrong_answer|s1:63|checksum=196876235	wrong_answer|checksum=196876235	nondeterministic	no				no
+fuzz|s1:6567|cce19|1	cce19|wrong_answer|s1:6567|checksum=791866727	wrong_answer|checksum=791866727	nondeterministic	no				no
+fuzz|s1:6704|cce21|1	cce21|wrong_answer|s1:6704|checksum=1309043318	wrong_answer|checksum=1309043318	nondeterministic	no				no
+fuzz|s1:6899|cce21|1	cce21|wrong_answer|s1:6899|checksum=2099731709	wrong_answer|checksum=2099731709	nondeterministic	no				no
+fuzz|s1:6910|afar|1	afar|wrong_answer|s1:6910|checksum=1260933521	wrong_answer|checksum=1260933521	nondeterministic	no				no
+fuzz|s1:7270|afar|1	afar|crash|s1:7270|SIGABRT	crash|SIGABRT	nondeterministic	no				no
+fuzz|s1:7395|cce21|1	cce21|wrong_answer|s1:7395|checksum=1924325984	wrong_answer|checksum=1924325984	nondeterministic	no				no
+fuzz|s1:7454|cce21|1	cce21|wrong_answer|s1:7454|checksum=1911349146	wrong_answer|checksum=1911349146	nondeterministic	no				no
+fuzz|s1:7465|cce19|1	cce19|wrong_answer|s1:7465|checksum=787534853	wrong_answer|checksum=787534853	nondeterministic	no				no
+fuzz|s1:7465|cce20|1	cce20|wrong_answer|s1:7465|checksum=314819553	wrong_answer|checksum=314819553	nondeterministic	no				no
+fuzz|s1:7465|cce21|1	cce21|wrong_answer|s1:7465|checksum=1080617473	wrong_answer|checksum=1080617473	nondeterministic	no				no
+fuzz|s1:7564|cce21|1	cce21|wrong_answer|s1:7564|checksum=1747478476	wrong_answer|checksum=1747478476	nondeterministic	no				no
+fuzz|s1:7568|cce19|1	cce19|wrong_answer|s1:7568|checksum=1474839417	wrong_answer|checksum=1474839417	nondeterministic	no				no
+fuzz|s1:7568|cce20|1	cce20|wrong_answer|s1:7568|checksum=830318646	wrong_answer|checksum=830318646	nondeterministic	no				no
+fuzz|s1:7659|cce21|1	cce21|wrong_answer|s1:7659|checksum=263943620	wrong_answer|checksum=263943620	nondeterministic	no				no
+fuzz|s1:7732|cce21|1	cce21|wrong_answer|s1:7732|checksum=1562066519	wrong_answer|checksum=1562066519	nondeterministic	no				no
+fuzz|s1:7737|cce20|1	cce20|wrong_answer|s1:7737|checksum=1669595179	wrong_answer|checksum=1669595179	nondeterministic	no				no
+fuzz|s1:8133|cce21|1	cce21|wrong_answer|s1:8133|checksum=240455085	wrong_answer|checksum=240455085	nondeterministic	no				no
+fuzz|s1:821|cce21|1	cce21|wrong_answer|s1:821|checksum=606361513	wrong_answer|checksum=606361513	nondeterministic	no				no
+fuzz|s1:8424|cce21|1	cce21|wrong_answer|s1:8424|checksum=887640854	wrong_answer|checksum=887640854	nondeterministic	no				no
+fuzz|s1:8632|cce20|1	cce20|wrong_answer|s1:8632|checksum=993376813	wrong_answer|checksum=993376813	nondeterministic	no				no
+fuzz|s1:8781|cce20|1	cce20|wrong_answer|s1:8781|checksum=108778719	wrong_answer|checksum=108778719	nondeterministic	no				no
+fuzz|s1:8781|cce21|1	cce21|wrong_answer|s1:8781|checksum=108778719	wrong_answer|checksum=108778719	nondeterministic	no				no
+fuzz|s1:8867|cce19|1	cce19|wrong_answer|s1:8867|checksum=751322859	wrong_answer|checksum=751322859	nondeterministic	no				no
+fuzz|s1:9174|cce19|1	cce19|wrong_answer|s1:9174|checksum=690572658	wrong_answer|checksum=690572658	nondeterministic	no				no
+fuzz|s1:9206|cce19|1	cce19|wrong_answer|s1:9206|checksum=61091450	wrong_answer|checksum=61091450	nondeterministic	no				no
+fuzz|s1:9206|cce20|1	cce20|wrong_answer|s1:9206|checksum=241292496	wrong_answer|checksum=241292496	nondeterministic	no				no
+fuzz|s1:9206|cce21|1	cce21|wrong_answer|s1:9206|checksum=648042880	wrong_answer|checksum=648042880	nondeterministic	no				no
+fuzz|s1:9402|cce20|1	cce20|wrong_answer|s1:9402|checksum=1544405095	wrong_answer|checksum=1544405095	nondeterministic	no				no
+fuzz|s1:9402|cce21|1	cce21|wrong_answer|s1:9402|checksum=695101947	wrong_answer|checksum=695101947	nondeterministic	no				no
+fuzz|s1:9446|cce21|1	cce21|wrong_answer|s1:9446|checksum=125693050	wrong_answer|checksum=125693050	nondeterministic	no				no
+fuzz|s1:9563|cce21|1	cce21|wrong_answer|s1:9563|checksum=1082119213	wrong_answer|checksum=1082119213	nondeterministic	no				no
+fuzz|s1:9802|cce20|1	cce20|wrong_answer|s1:9802|checksum=441244181	wrong_answer|checksum=441244181	nondeterministic	no				no
+fuzz|s1:9802|cce21|1	cce21|wrong_answer|s1:9802|checksum=636009882	wrong_answer|checksum=636009882	nondeterministic	no				no
+fuzz|s1:983|cce19|1	cce19|wrong_answer|s1:983|checksum=108758970	wrong_answer|checksum=108758970	nondeterministic	no				no
+fuzz|s1:983|cce20|1	cce20|wrong_answer|s1:983|checksum=1706580862	wrong_answer|checksum=1706580862	nondeterministic	no				no
+fuzz|s1x0:1012|cce19|0	cce19|wrong_answer|s1:1012|checksum=2051502196	wrong_answer|checksum=2051502196	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|s1x0:1012|cce20|0	cce20|wrong_answer|s1:1012|checksum=1409803271	wrong_answer|checksum=1409803271	nondeterministic	no				no
+fuzz|s1x0:1012|cce21|0	cce21|wrong_answer|s1:1012|checksum=799998321	wrong_answer|checksum=799998321	nondeterministic	no				no
+fuzz|s1x0:1127|cce19|0	cce19|crash|s1:1127|SIGABRT	crash|SIGABRT	nondeterministic	no	c:crash b:crash a:crash d:crash c:crash		ours	yes
+fuzz|s1x0:1221|cce21|0	cce21|wrong_answer|s1:1221|checksum=856033308	wrong_answer|checksum=856033308	nondeterministic	no				no
+fuzz|s1x0:144|cce19|0	cce19|wrong_answer|s1:144|checksum=2068339343	wrong_answer|checksum=2068339343	nondeterministic	no				no
+fuzz|s1x0:1454|cce19|0	cce19|wrong_answer|s1:1454|checksum=242967619	wrong_answer|checksum=242967619	nondeterministic	no				no
+fuzz|s1x0:1514|cce19|0	cce19|wrong_answer|s1:1514|checksum=1294192707	wrong_answer|checksum=1294192707	nondeterministic	no				no
+fuzz|s1x0:1514|cce20|0	cce20|wrong_answer|s1:1514|checksum=737119431	wrong_answer|checksum=737119431	nondeterministic	no				no
+fuzz|s1x0:1514|cce21|0	cce21|wrong_answer|s1:1514|checksum=1827705983	wrong_answer|checksum=1827705983	nondeterministic	no				no
+fuzz|s1x0:1681|cce19|0	cce19|wrong_answer|s1:1681|checksum=2128021331	wrong_answer|checksum=2128021331	nondeterministic	no				no
+fuzz|s1x0:188|cce20|0	cce20|wrong_answer|s1:188|checksum=1810731150	wrong_answer|checksum=1810731150	nondeterministic	no				no
+fuzz|s1x0:188|cce21|0	cce21|wrong_answer|s1:188|checksum=611038246	wrong_answer|checksum=611038246	nondeterministic	no				no
+fuzz|s1x0:2064|cce21|0	cce21|wrong_answer|s1:2064|checksum=846533141	wrong_answer|checksum=846533141	nondeterministic	no				no
+fuzz|s1x0:220|cce20|0	cce20|wrong_answer|s1:220|checksum=1282544995	wrong_answer|checksum=1282544995	nondeterministic	no				no
+fuzz|s1x0:220|cce21|0	cce21|wrong_answer|s1:220|checksum=1282544995	wrong_answer|checksum=1282544995	nondeterministic	no				no
+fuzz|s1x0:2211|cce19|0	cce19|wrong_answer|s1:2211|checksum=891823951	wrong_answer|checksum=891823951	nondeterministic	no				no
+fuzz|s1x0:2211|cce20|0	cce20|wrong_answer|s1:2211|checksum=1791657940	wrong_answer|checksum=1791657940	nondeterministic	no				no
+fuzz|s1x0:2211|cce21|0	cce21|wrong_answer|s1:2211|checksum=2021517811	wrong_answer|checksum=2021517811	nondeterministic	no				no
+fuzz|s1x0:225|cce21|0	cce21|wrong_answer|s1:225|checksum=394377840	wrong_answer|checksum=394377840	nondeterministic	no				no
+fuzz|s1x0:2281|cce19|0	cce19|wrong_answer|s1:2281|checksum=1399470967	wrong_answer|checksum=1399470967	nondeterministic	no				no
+fuzz|s1x0:517|cce19|0	cce19|wrong_answer|s1:517|checksum=1897849080	wrong_answer|checksum=1897849080	nondeterministic	no				no
+fuzz|s1x0:63|cce20|0	cce20|wrong_answer|s1:63|checksum=1987794174	wrong_answer|checksum=1987794174	nondeterministic	no				no
+fuzz|s1x0:63|cce21|0	cce21|wrong_answer|s1:63|checksum=1300249469	wrong_answer|checksum=1300249469	nondeterministic	no				no
+fuzz|s1x0:821|cce21|0	cce21|wrong_answer|s1:821|checksum=77795223	wrong_answer|checksum=77795223	nondeterministic	no				no
+fuzz|s1x0:983|cce19|0	cce19|wrong_answer|s1:983|checksum=1738525683	wrong_answer|checksum=1738525683	nondeterministic	no				no
+fuzz|x0-alloc:106|cce19|0	cce19|wrong_answer|x0-alloc:106|checksum=206521495	wrong_answer|checksum=206521495	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|x0-alloc:197|cce20|0	cce20|crash|x0-alloc:197|SIGABRT	crash|SIGABRT	nondeterministic	no	c:crash b:crash a:crash d:crash c:crash		ours	yes
+fuzz|x0-alloc:210|cce20|0	cce20|wrong_answer|x0-alloc:210|checksum=747993909	wrong_answer|checksum=747993909	nondeterministic	no				no
+fuzz|x0-alloc:210|cce21|0	cce21|wrong_answer|x0-alloc:210|checksum=2021130013	wrong_answer|checksum=2021130013	nondeterministic	no				no
+fuzz|x0-alloc:99|cce19|0	cce19|wrong_answer|x0-alloc:99|checksum=433347957	wrong_answer|checksum=433347957	nondeterministic	no				no
+fuzz|x0-alloc:99|cce20|0	cce20|wrong_answer|x0-alloc:99|checksum=313523805	wrong_answer|checksum=313523805	nondeterministic	no				no
+fuzz|x0-alloc:99|cce21|0	cce21|wrong_answer|x0-alloc:99|checksum=859174522	wrong_answer|checksum=859174522	nondeterministic	no				no
+fuzz|x0-declare:210|cce20|0	cce20|wrong_answer|x0-declare:210|checksum=2025399268	wrong_answer|checksum=2025399268	nondeterministic	no				no
+fuzz|x0-declare:210|cce21|0	cce21|wrong_answer|x0-declare:210|checksum=94175789	wrong_answer|checksum=94175789	nondeterministic	no				no
+fuzz|x0-declare:227|cce21|0	cce21|wrong_answer|x0-declare:227|checksum=181036412	wrong_answer|checksum=181036412	nondeterministic	no				no
+fuzz|x0-declare:253|cce19|0	cce19|wrong_answer|x0-declare:253|checksum=2013067294	wrong_answer|checksum=2013067294	nondeterministic	no	b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|x0-declare:253|cce20|0	cce20|wrong_answer|x0-declare:253|checksum=1883664293	wrong_answer|checksum=1883664293	nondeterministic	no				no
+fuzz|x0-declare:253|cce21|0	cce21|wrong_answer|x0-declare:253|checksum=685988903	wrong_answer|checksum=685988903	nondeterministic	no				no
+fuzz|x0-declare:99|cce20|0	cce20|wrong_answer|x0-declare:99|checksum=1540200408	wrong_answer|checksum=1540200408	nondeterministic	no				no
+fuzz|x0-derived:104|cce20|0	cce20|wrong_answer|x0-derived:104|checksum=216725149	wrong_answer|checksum=216725149	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|x0-derived:157|cce19|0	cce19|wrong_answer|x0-derived:157|checksum=232785479	wrong_answer|checksum=232785479	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|x0-derived:157|cce20|0	cce20|wrong_answer|x0-derived:157|checksum=1445342274	wrong_answer|checksum=1445342274	nondeterministic	no				no
+fuzz|x0-derived:157|cce21|0	cce21|wrong_answer|x0-derived:157|checksum=1445342274	wrong_answer|checksum=1445342274	nondeterministic	no				no
+fuzz|x0-derived:286|cce19|0	cce19|wrong_answer|x0-derived:286|checksum=122550033	wrong_answer|checksum=122550033	nondeterministic	no				no
+fuzz|x0-derived:286|cce20|0	cce20|wrong_answer|x0-derived:286|checksum=467941113	wrong_answer|checksum=467941113	nondeterministic	no				no
+fuzz|x0-derived:68|afar|0	afar|wrong_answer|x0-derived:68|checksum=87162843	wrong_answer|checksum=87162843	nondeterministic	no				no
+fuzz|x0-multitu:157|cce19|0	cce19|wrong_answer|x0-multitu:157|checksum=833139913	wrong_answer|checksum=833139913	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|x0-multitu:157|cce20|0	cce20|wrong_answer|x0-multitu:157|checksum=961062905	wrong_answer|checksum=961062905	environment	no	b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer c:wrong_answer	node: the failure on ['tuolumne1019'], not on ['tuolumne1021']		no
+fuzz|x0-multitu:163|cce20|0	cce20|wrong_answer|x0-multitu:163|checksum=1381639600	wrong_answer|checksum=1381639600	nondeterministic	no				no
+fuzz|x0-multitu:234|cce19|0	cce19|wrong_answer|x0-multitu:234|checksum=2028989511	wrong_answer|checksum=2028989511	nondeterministic	no				no
+fuzz|x0-multitu:82|afar|0	afar|wrong_answer|x0-multitu:82|checksum=1225805058	wrong_answer|checksum=1225805058	nondeterministic	no				no
+fuzz|x0-types:163|cce20|0	cce20|wrong_answer|x0-types:163|checksum=1600661976	wrong_answer|checksum=1600661976	nondeterministic	no	c:wrong_answer b:wrong_answer a:wrong_answer d:wrong_answer c:wrong_answer		nondeterministic_defect	yes
+fuzz|x0-types:163|cce21|0	cce21|wrong_answer|x0-types:163|checksum=1600661976	wrong_answer|checksum=1600661976	nondeterministic	no				no
+fuzz|x0-types:70|cce19|0	cce19|wrong_answer|x0-types:70|checksum=1723870762	wrong_answer|checksum=1723870762	nondeterministic	no				no
+fuzz|x0-types:70|cce20|0	cce20|wrong_answer|x0-types:70|checksum=1853134060	wrong_answer|checksum=1853134060	nondeterministic	no				no
+fuzz|x0-types:70|cce21|0	cce21|wrong_answer|x0-types:70|checksum=304272451	wrong_answer|checksum=304272451	nondeterministic	no				no

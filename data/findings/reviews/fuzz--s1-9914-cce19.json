@@ -1,0 +1,141 @@
+{
+ "finding": "fuzz/s1-9914-cce19.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-17",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The submodule procedure is defined with a full function-stmt, so its dummy argument x must be declared in the body. With implicit none and no declaration of x, the program violates the Fortran base-language rules (characteristics must match the interface body). The OpenMP parts are fine, but the program is non-conforming, so acceptance is not required."
+  },
+  {
+   "run": "run-20261113/batch-75",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "declare target with the deprecated but still valid to clause on a module variable; empty target regions with thread_limit and with depend(out) on an array section of a Fortran variable are allowed (target task is an included task). The submodule is ordinary Fortran. A conforming compiler must compile it; a hang is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "declare target with a to clause is deprecated in 5.2 but allowed, and go2 is a module variable. thread_limit and depend are both permitted clauses of target; without nowait the target task is an included task. The empty target regions and the submodule are ordinary conforming code; gs1 is never referenced. A hang during compilation is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-42",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-108",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "declare target with the to clause is deprecated in 5.2 but still allowed, thread_limit is permitted on target, and depend with an array section is permitted on target. The Fortran submodule and module function are valid, and the function is never called. A conforming compiler must accept and compile the program, so a hang is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-35",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "5135102ff17f69a49da3d41b9af6a41cdfb6ae5fe6c57452ce43511295f9dbff",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The OpenMP content is fine, as Reading A says, but the base-language program is not. gs1 in the submodule is defined with a full function-stmt (MODULE prefix plus dummy argument list). Under Fortran 2008/2018 (separate module procedures, 12.6.2.5 / 15.6.2.5) such a definition is an ordinary procedure body whose dummy argument x must be declared in it, and implicit none forbids leaving x undeclared; only the abbreviated MODULE PROCEDURE form inherits the interface. Reading B is correct, so acceptance is not required and the hang is not shown to be a violation."
+  },
+  {
+   "run": "adj-20261113/batch-10",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Reading A fails: the OpenMP parts are fine, but the submodule defines gs1 with a full function-stmt, so the dummy argument x must be declared in the function body. With implicit none and no declaration of x (nor a module procedure statement form), the Fortran program violates the base-language rules. A non-conforming program need not be accepted, so the hang is not a required-result failure. Reading B is right."
+  }
+ ]
+}

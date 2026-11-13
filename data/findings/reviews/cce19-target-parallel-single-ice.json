@@ -1,0 +1,113 @@
+{
+ "finding": "cce19-target-parallel-single-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-27",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "target parallel with a single construct inside is a conforming structure; b is written by one thread, a is read only, no race. A compiler must accept it; the crash is a compiler defect."
+  },
+  {
+   "run": "run-20261113/batch-60",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "single inside target parallel is allowed. The loop variable i is a loop iteration variable inside a parallel construct and therefore private. Only one thread writes b, so there is no race. The compiler crash 'unhandled construct type' is not permitted."
+  },
+  {
+   "run": "run-v2-20261113/batch-24",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target parallel with an inner single is a valid combination. Arrays a and b are explicitly mapped, the single region executes the loop on one thread, and the loop variable is private to the parallel construct, so there is no race. The program conforms and a compiler must compile it. The internal compiler error on the construct is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-79",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "target parallel with map of allocated arrays and a single construct is conforming. The sequential loop variable i is private in the innermost enclosing parallel construct, and single executes the loop once, so there is no race. A conforming compiler must compile it; the crash is a compiler defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-36",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "c0bba1f9b150b4b27b1c6237f4a11cb11ab693d590686efd9dcfaddb564ec556",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

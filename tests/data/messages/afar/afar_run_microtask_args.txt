@@ -1,0 +1,9 @@
+# Verbatim run output stored by the stress campaign s1-c (results/stress/s1-c/rows.jsonl, reduction-c-64-1 afar mode 0 O2), Tuolumne, 2026-10 (the last lines; the message repeats once per thread).
+# source: amdclang -fopenmp --offload-arch=gfx942 -O2 (AFAR) on offload.engine.stress_c reduction axis, size 64, seed 1
+# exit status: killed at the run limit
+# The device runtime reports a capacity limit
+==== verbatim output below ====
+Too many arguments in kmp_invoke_microtask, aborting execution.
+Too many arguments in kmp_invoke_microtask, aborting execution.
+
+Warning: Queue error: HSA_STATUS_ERROR_EXCEPTION: An HSAIL operation resulted in a hardware exception.

@@ -1,0 +1,217 @@
+{
+ "finding": "nested/gcc-fortran-root-and-element-pointer-components-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-24",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Maps r (with allocatable component nx and pointer a), then component list items through an element of the allocatable array (r%nx(1)%a). Spec 5.2 does not clearly define mapping of a subobject reached through a subscripted allocatable component whose own storage is not mapped; the restriction on structure elements and presence is hard to satisfy here. Legality and any required acceptance are not settled by the text."
+  },
+  {
+   "run": "run-20261113/batch-68",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "The program maps r (with an allocatable component nx and pointer components) then maps r%a and r%nx(i)%a, elements of structure elements reached through an array element of an allocatable component. The specification does not clearly state that the allocated storage of nx is mapped by map(to: r), nor that r%nx(1)%a is a permitted list item, so the restrictions on structure elements cannot be settled. If legal, an internal compiler error is a bug."
+  },
+  {
+   "run": "run-v2-20261113/batch-32",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program maps r (with an allocatable component nx and pointer components) and then maps pointer components and elements of the allocatable component nx in a second enter data. Whether the first map of r also maps the data of the allocatable nx, and whether the element-of-allocatable-component list items r%nx(1)%a are valid and attach correctly, depends on the default mapper rules for allocatable components, which are not clearly stated here. Also tot is mapped tofrom before being defined. An internal compiler error is never desirable, but conformance is unclear.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-24",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-68",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is mapped by the default mapper. Then r%a, r%nx(1)%a and r%nx(2)%a are mapped explicitly as pointer array list items whose containing structure is already present, which satisfies the structure-element rule. They do not share storage with each other. Nothing in the spec forbids these list items, so a conforming compiler must compile the program. An internal compiler error is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-50",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "51665b21e160e5fccdda89f349a333a678e058d04ead8df522653e372f2e3d08",
+ "instructions": "v2",
+ "verdict": "unconfirmed",
+ "why": "Independent readings are uncertain: Whether map(to: r) maps the allocated allocatable component nx and its elements, so that the later maps of r%nx(1)%a and r%nx(2)%a attach correctly, is not settled by the text; the allocatable-component rule only says the map may treat allocation status as unallocated. An ICE is undesirable but a required result cannot be established.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-02",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings find no violated rule, only a lack of explicit text. map(to: r) uses the predefined default mapper, which covers the allocated component nx. The later maps of r%a and r%nx(i)%a are scalar-subscripted structure components with distinct storage; none of the map restrictions is violated, and the restriction on elements of a structure is met since r is already present. Mapping a pointer component with an associated target attaches the pointer. The program is conforming, so the internal compiler error is a compiler bug, as E, F, G and H show."
+  },
+  {
+   "run": "adj-20261113/batch-11",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "Both readings are right that the text is unsettled. The map clause allows structure elements as list items, but r%nx(1)%a is a component of an array element of an allocatable component, and the general rule says a variable that is part of another variable (array element or structure element) cannot be a list item unless otherwise specified. Nothing says clearly that this form is allowed or forbidden, so neither legality nor required acceptance can be established."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-05",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B overstates. Whether map(to: r) maps the allocated allocatable component nx and its elements, so that the later maps of r%nx(1)%a and r%nx(2)%a attach correctly, is not settled by the text; the allocatable-component rule only says the map may treat allocation status as unallocated. Reading A is right that conformance is unclear, though its tot remark does not matter. An ICE is undesirable but a required result cannot be established.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-45",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Reading B overstates. map(to: r) is followed by map of r%a and r%nx(i)%a, which are elements of a structure already mapped. The structure-element restriction requires a corresponding list item to be present when a different element is already present, and the text does not say whether the allocatable component nx and its elements are present after map(to: r). Reading A is right that legality is unclear. An ICE is undesirable but not shown required to be avoided.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-61",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,154 @@
+# The canaries every campaign runs (offload.engine.canary), five per
+# toolchain: a program that must pass, a known ICE, a known wrong answer, a
+# deliberately racy program the pre-run check must refuse (never compiled),
+# and a program that never ends, which the run timeout must end. A canary
+# whose outcome differs from this file stops the campaign's report
+# (offload.engine.canary.require_unchanged). The outcomes were measured on every
+# toolchain and memory mode (tools/campaigns/gate.py canaries), and each known bug has a finding:
+#   linear: catalog omp52-clause-linear: AFAR flang crashes
+#     (data/findings/catalog/afar-flang-linear-parallel-ice.f90), CCE's
+#     "ACC - barrier/reset/protected last private" ICE
+#     (data/findings/catalog/cce-linear-lastprivate-ice.f90);
+#   if: catalog omp52-clause-if: NVHPC's NVVM ICE
+#     (data/findings/nvhpc-parallel-if-in-target-nvvm-ice.f90);
+#   schedule-static: catalog omp52-clause-schedule-static: wrong on AFAR and
+#     CCE (data/findings/fortran-schedule-static-in-target.f90);
+#   defaultmap-firstprivate: catalog omp52-clause-defaultmap-firstprivate:
+#     wrong on NVHPC (data/findings/nvhpc-defaultmap-firstprivate-explicit-map.f90).
+#   GCC 16.2 (gcc on MI300A, its twins and gcc_sm80): no compile of the catalog ICEs on either
+#     target (the compile-only sweep, results/gcc/<tc>/sweep.*.jsonl), so
+#     its "ice" canary is a known not-implemented rejection:
+#     omp50-clause-uses_allocators-traits ("sorry, unimplemented:
+#     'uses_allocators' clause with traits and memory spaces"); its wrong
+#     answer is omp52-clause-defaultmap-pointer (check=fail on both GPUs,
+#     every repeat; the gcc smoke subset, results/gcc/<tc>/subset.f90.x0.jsonl).
+#   CCE 21.0.4 (cce21_4, a regression toolchain: no machine column, run by
+#     tools/campaigns/harvest.py for harvest2): the same five canaries as CCE 21.0.3,
+#     measured on Tuolumne in both memory modes
+# (results/gate/canaries/tuolumne.cce21_4.jsonl).
+#   GCC on the MI300A (gcc, both memory modes), the MI300X and the MI350X (gcc_mi300x,
+#     gcc_mi350x): the five canaries of gcc_g90, measured with every catalog set
+#     (results/gcc/gcc/matrix.*.canaries.jsonl, results/*.gcc-mi3?0x.xnack0.canaries.jsonl).
+#   AFAR on MI300X and MI350X (afar_mi300x, afar_mi350x): the five canaries of AFAR,
+#     measured in copy mode (results/matrix.<machine>.xnack0.canaries.jsonl).
+# `reason`: a prefix (or a part) the row's reason must have.
+version: 1
+programs:
+  pass: {catalog: omp52-clause-firstprivate}
+  linear: {catalog: omp52-clause-linear}
+  if: {catalog: omp52-clause-if}
+  schedule-static: {catalog: omp52-clause-schedule-static}
+  defaultmap-firstprivate: {catalog: omp52-clause-defaultmap-firstprivate}
+  uses-allocators-traits: {catalog: omp50-clause-uses_allocators-traits}
+  defaultmap-pointer: {catalog: omp52-clause-defaultmap-pointer}
+  racy: {file: catalog/canaries/racy.f90}
+  hang: {file: catalog/canaries/hang.f90}
+toolchains:
+  afar:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  cce19:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  cce20:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  cce21:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  cce21_4:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  afar_g90:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  afar_mi300x:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  afar_mi350x:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  cce19_g90:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  cce20_g90:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  cce21_g90:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: linear, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  nvhpc:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: if, outcome: rejected, reason: "ice:"}
+    wrong: {program: defaultmap-firstprivate, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  nvhpc269:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: if, outcome: rejected, reason: "ice:"}
+    wrong: {program: defaultmap-firstprivate, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  gcc:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: uses-allocators-traits, outcome: rejected, reason: "not_implemented:"}
+    wrong: {program: defaultmap-pointer, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  gcc_g90:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: uses-allocators-traits, outcome: rejected, reason: "not_implemented:"}
+    wrong: {program: defaultmap-pointer, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  gcc_mi300x:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: uses-allocators-traits, outcome: rejected, reason: "not_implemented:"}
+    wrong: {program: defaultmap-pointer, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  gcc_mi350x:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: uses-allocators-traits, outcome: rejected, reason: "not_implemented:"}
+    wrong: {program: defaultmap-pointer, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  gcc_sm80:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: uses-allocators-traits, outcome: rejected, reason: "not_implemented:"}
+    wrong: {program: defaultmap-pointer, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}

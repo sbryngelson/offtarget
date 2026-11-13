@@ -1,0 +1,11 @@
+# Files an installed offload carries, beside the site data generated at build time.
+# Paths are relative to the repository root; a trailing /** means the whole directory.
+# Checked against what `offload can-use` and `offload issues` open by tests/test_bundle.py.
+catalog/acc/*.yaml
+catalog/omp/*.yaml
+catalog/later_forms.yaml
+catalog/machines.yaml
+catalog/toolchains.yaml
+catalog/vendor_claims_generic.yaml
+data/findings/**
+data/vendor/checks/build.py

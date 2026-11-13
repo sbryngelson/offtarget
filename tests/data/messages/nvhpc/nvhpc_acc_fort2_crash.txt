@@ -1,0 +1,7 @@
+# Verbatim compiler output stored by the catalog matrix (results/acc_matrix.jsonl, row acc34-clause-gang nvhpc xnack=0), wingtip, 2026-10-24/25.
+# source: nvfortran -acc=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.acc_gen acc34-clause-gang (an OpenACC atomic update b(i) = b(i) + 2*a(i) + 1 in a gang loop; data/findings/nvhpc-acc-atomic-update-sum-fort2-crash.f90). The <tmpdir> path is the harness's scrub of the build directory.
+# exit status: 2
+# A diagnostic followed by the front end's crash (fort2 TERMINATED by signal 11) is an ICE (the worst message decides)
+==== verbatim output below ====
+NVFORTRAN-S-0155-Invalid atomic update expression  (<tmpdir>/acc34-clause-gang.f90: 33)
+nvfortran-Fatal-/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/tools/fort2 TERMINATED by signal 11

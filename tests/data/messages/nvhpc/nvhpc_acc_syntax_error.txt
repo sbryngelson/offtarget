@@ -1,0 +1,6 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvfortran -acc=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.gen acc34-clause-wait-devnum (OpenMP/OpenACC version 34), compile sweep
+# exit status: 2
+==== verbatim output below ====
+NVFORTRAN-S-0034-Syntax error at or near : (<tmpdir>/p.f90: 42)
+  0 inform,   0 warnings,   1 severes, 0 fatal for gen_prog

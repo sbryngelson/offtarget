@@ -1,0 +1,217 @@
+{
+ "finding": "catalog/cce20-c-defaultmap-private-storage-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-32",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "private is listed as an implicit-behavior keyword in the 6.0 defaultmap table, but the semantics paragraph defines map-types, firstprivate, present, self and none only, not private. Behavior is unspecified, so acceptance with the expected values is not clearly required; a compiler predating 6.0 may reject it."
+  },
+  {
+   "run": "run-20261113/batch-75",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 6.0 lists private as an implicit-behavior argument of defaultmap (no variable-category given means all). Arrays a, b and host_flag are explicitly mapped; c and w are implicitly private, so w stays 0 on the host and b is computed from c=1. No race. The clause is valid in 6.0, so a conforming 6.0 compiler must accept it. The semantics of private are only implied by the defaultmap rules, a minor ambiguity."
+  },
+  {
+   "run": "run-v2-20261113/batch-09",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 6.0 lists private as an implicit-behavior of defaultmap with no variable-category (all). c and w become private in the target region, w written before read, so host w stays 0 and b gets 2a+1. A 6.0-conforming compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-53",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-110",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 6.0 lists private as an implicit-behavior keyword of defaultmap on target, so the program is legal and a 6.0 compiler must accept the keyword. The semantics paragraph describes map-types, firstprivate, present, self, none and default but gives no explicit text for private, so the required run-time effect (w stays 0 on host) rests on the keyword name and the equivalent default(private) wording.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-21",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "c784ec9f2e11e75b5dfa1154cfb7506df5c131397b1e6f251041223f8185ced9",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: OpenMP 6.0 lists private among the implicit-behavior keywords of defaultmap, with variable-category defaulting to all. The program is therefore conforming and a 6.0 compiler must accept the keyword. a, b and host_flag are explicitly mapped. c and w are implicitly private on the target, so the host w stays 0 and b gets 2a+1, as expected. The refusal is a compiler error.",
+ "adjudicators": [
+  {
+   "run": "adj-20261113/batch-01",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "private is listed as an implicit-behavior keyword in 6.0, so the clause parses. But the Semantics paragraph defines behavior only for map-types, firstprivate, present, self, none and default; private has no stated meaning. Reading A's claim that w stays unmodified on the host rests on unstated semantics. Reading B is right: the expected result is not required, and an earlier-version compiler may reject it."
+  },
+  {
+   "run": "adj-20261113/batch-07",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 1
+   },
+   "reasoning": "OpenMP 6.0 lists private as an implicit-behavior argument of defaultmap on target, with all as the default category, so the clause is syntactically valid and must be accepted by a 6.0 compiler. Reading B is right that the Semantics paragraph does not define private, but the meaning (data-sharing attribute private) is the only natural one; a, b and host_flag are explicitly mapped and c and w are written before being read, so the expected result follows. The refusal is a pre-6.0 front end."
+  },
+  {
+   "run": "adj-v2-20261113b/batch-03",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 6.0 lists private among the implicit-behavior keywords of defaultmap, with variable-category defaulting to all. The program is therefore conforming and a 6.0 compiler must accept the keyword. a, b and host_flag are explicitly mapped. c and w are implicitly private on the target, so the host w stays 0 and b gets 2a+1, as expected. Reading A is right. Reading B's doubt about the semantics does not change acceptance, since private is a listed keyword and names the private data-sharing attribute. The refusal is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-16",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "adj-v2-20261113b/batch-08",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 6.0 lists private among the implicit-behavior keywords of defaultmap, and with no variable-category all is implied, so a 6.0 compiler must accept the clause. Reading B is right that the semantics paragraph does not describe private, but acceptance does not depend on that gap, and the refusal lists no private keyword, so the compiler is behind the 6.0 keyword list.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-54",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "finding": "fuzz/s1-2592-cce21.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-13",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "in_reduction(*: r) on target inside a taskgroup with task_reduction(*: r) is permitted, and r is implicitly mapped tofrom with always. xs(1:1)='k' (107), 107 mod 13 = 3, so every factor is 1 and r stays -1. No race, since the loop is sequential in one target task. A conforming compiler must accept it; an internal compiler error is a bug."
+  },
+  {
+   "run": "run-20261113/batch-75",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "in_reduction on target matches the enclosing taskgroup task_reduction for the same list item r with the same identifier *. The in_reduction variable is implicitly mapped tofrom/always. r stays -1 since the multiplier is 1, so check=pass. The intent(in) xs is only read. Compilation must be accepted."
+  },
+  {
+   "run": "run-v2-20261113/batch-11",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r is the base variable of an in_reduction list item on target, so it is mapped tofrom,always; the taskgroup task_reduction supplies the reduction scope. The loop runs sequentially in the target task, so no race. mod(107,13)=3, so r stays -1 and the expected pass result is required. The compiler crash ('Should never reach this code') is not permitted behavior for a conforming program.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-53",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-81",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "r appears in task_reduction on the enclosing taskgroup with the same operator as in_reduction on the target, as required. The target is treated as mapping r tofrom,always. The loop runs sequentially in one thread; ichar('k') mod 13 is not 0 so each factor is 1 and the combined result is -1*1 = -1, so check=pass. A compiler abort is a defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-33",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "52475a9cdce35fc58547279cb52d525fd35242d59f500d6f32088be74231cb7f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

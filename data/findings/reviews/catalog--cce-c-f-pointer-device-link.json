@@ -1,0 +1,130 @@
+{
+ "finding": "catalog/cce-c-f-pointer-device-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-39",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "pa and pb are C_PTR values obtained from c_loc and then converted by use_device_ptr on target data. They are valid device pointers, so is_device_ptr on target is allowed. pp and qq are privatized. c_f_pointer is a standard intrinsic, so a conforming compiler must link it in a target region. The undefined symbol _C_F_POINTER is a compiler or runtime limitation."
+  },
+  {
+   "run": "run-20261113/batch-45",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "use_device_ptr on target data with C_PTR items converts references in the region to device addresses; a target region may then use them via is_device_ptr. c_loc of an allocated target array, c_f_pointer on device pointers into private pointer arrays, and the loop are conforming; no race. The unresolved symbol _C_F_POINTER is a compiler/runtime library gap for a standard intrinsic, so a conforming compiler must build and run it."
+  },
+  {
+   "run": "run-v2-20261113/batch-37",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "use_device_ptr on target data with C_PTR items that point to mapped data gives device addresses. is_device_ptr on the target construct accepts C_PTR items, and the privatized pa and pb hold the device addresses. pp and qq are private pointers and c_f_pointer is a standard intrinsic, so calling it in the target region is conforming. No race exists. An undefined _C_F_POINTER symbol at link time is a compiler or runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-55",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-60",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 4,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "use_device_ptr on target data with C_PTR items is allowed; a and b are mapped, so pa and pb convert to device addresses. is_device_ptr(pa,pb) on the target with C_PTR items is valid, and c_f_pointer is a standard intrinsic-module procedure usable in the region. A conforming compiler must link the program; the undefined _C_F_POINTER is a compiler/runtime defect.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-04",
+     "model": "claude-sonnet",
+     "batch_decoys": "missed",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    },
+    {
+     "run": "verify-20261113b/batch-03",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "f33a70d2ff3361b7e1920c037b02611cadfc06f35f80d6948c609305418c5cd8",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

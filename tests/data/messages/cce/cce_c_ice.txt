@@ -1,0 +1,79 @@
+# Verbatim compiler/shell output captured on tuolumne2151, 2026-10-19.
+# source: craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -fopenmp-version=52 -O2 (CCE 19.0.0) on offload.engine.c_gen omp52-c-clause-map-iterator
+# exit status: 1
+==== verbatim output below ====
+DeclRefExpr for Decl not entered in LocalDeclMap?
+UNREACHABLE executed at /workspace/clang/lib/CodeGen/CGExpr.cpp:3180!
+PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace, preprocessed source, and associated run script.
+Stack dump:
+0.	Program arguments: /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19 -cc1 -triple x86_64-unknown-linux-gnu -mllvm -cray-omp-opt-fork-call -mllvm -cray-omp-parallel-opt-call -mllvm -cray-openmp-rename-outlined -fcray-gpu -flocal-restrict -mllvm -cray-enhanced-asm=1 -fenhanced-asm=1 -mllvm -cray-enhanced-ir=1 -fenhanced-ir=1 -fomp-local-offload-table -ffortran -emit-llvm-bc -emit-llvm-uselists -dumpdir omp52-c-clause-map-iterator.x- -disable-free -clear-ast-before-backend -main-file-name omp52-c-clause-map-iterator.c -mrelocation-model static -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -debugger-tuning=gdb -fdebug-compilation-dir=/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/cap2 -fcoverage-compilation-dir=/tmp/<user>/claude-67182/-p-lustre5-<user>-compliant/2139e8ca-8d96-4940-99d9-40d497ec7f74/scratchpad/cap2 -resource-dir /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/lib/clang/19 -isystem /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/lib/clang/19/include -isystem /opt/cray/pe/cce/19.0.0/cce/x86_64/include/craylibs -D __CRAY_X86_64 -D __CRAYXT_COMPUTE_LINUX_TARGET -internal-isystem /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/lib/clang/19/include/llvm_libc_wrappers -internal-isystem /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/lib/clang/19/include -internal-isystem /usr/local/include -internal-isystem /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -internal-isystem /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/lib/clang/19/include -internal-isystem /usr/local/include -internal-isystem /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -O2 -ferror-limit 19 -fcray-openmp -fcray-omp-opt-fork -fcray-omp-parallel-opt -fcray-openmp-rename-outlined-funcs -fopenmp -fopenmp-version=52 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -vectorize-loops -vectorize-slp -disable-llvm-passes -fopenmp-targets=amdgcn-amd-amdhsa -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o <site>/omp52-c-clause-map-iterator-dac532.bc -x c omp52-c-clause-map-iterator.c
+1.	<eof> parser at end of file
+2.	Per-file LLVM IR generation
+3.	omp52-c-clause-map-iterator.c:16:5: Generating code for declaration 'main'
+ #0 0x0000000003f8b1c7 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x3f8b1c7)
+ #1 0x0000000003f880bb SignalHandler(int) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x3f880bb)
+ #2 0x000015555511698f (/lib64/libpthread.so.0+0x1298f)
+ #3 0x0000155553e295ae raise (/lib64/libc.so.6+0x4e5ae)
+ #4 0x0000155553dfcee4 abort (/lib64/libc.so.6+0x21ee4)
+ #5 0x0000000003ee1389 llvm::llvm_unreachable_internal(char const*, char const*, unsigned int) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x3ee1389)
+ #6 0x000000000474c7ff clang::CodeGen::CodeGenFunction::EmitDeclRefLValue(clang::DeclRefExpr const*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x474c7ff)
+ #7 0x0000000004744cf8 clang::CodeGen::CodeGenFunction::EmitLValueHelper(clang::Expr const*, clang::CodeGen::KnownNonNull_t) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4744cf8)
+ #8 0x0000000004752831 clang::CodeGen::CodeGenFunction::EmitCheckedLValue(clang::Expr const*, clang::CodeGen::CodeGenFunction::TypeCheckKind) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4752831)
+ #9 0x00000000047a67df (anonymous namespace)::ScalarExprEmitter::EmitLoadOfLValue(clang::Expr const*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47a67df)
+#10 0x00000000047a2c3a (anonymous namespace)::ScalarExprEmitter::Visit(clang::Expr*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47a2c3a)
+#11 0x00000000047a6d16 (anonymous namespace)::ScalarExprEmitter::VisitCastExpr(clang::CastExpr*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47a6d16)
+#12 0x00000000047a2c3a (anonymous namespace)::ScalarExprEmitter::Visit(clang::Expr*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47a2c3a)
+#13 0x00000000047ae771 clang::CodeGen::CodeGenFunction::EmitPromotedScalarExpr(clang::Expr const*, clang::QualType) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47ae771)
+#14 0x00000000047af075 (anonymous namespace)::ScalarExprEmitter::EmitBinOps(clang::BinaryOperator const*, clang::QualType) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47af075)
+#15 0x00000000047a11d8 clang::StmtVisitorBase<std::add_pointer, (anonymous namespace)::ScalarExprEmitter, llvm::Value*>::Visit(clang::Stmt*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47a11d8)
+#16 0x00000000047a61bb clang::CodeGen::CodeGenFunction::EmitScalarExpr(clang::Expr const*, bool) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47a61bb)
+#17 0x00000000047415ca clang::CodeGen::CodeGenFunction::EmitArraySubscriptExpr(clang::ArraySubscriptExpr const*, bool)::'lambda'(bool)::operator()(bool) const (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x47415ca)
+#18 0x000000000474ff89 clang::CodeGen::CodeGenFunction::EmitArraySubscriptExpr(clang::ArraySubscriptExpr const*, bool) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x474ff89)
+#19 0x0000000004745303 clang::CodeGen::CodeGenFunction::EmitLValueHelper(clang::Expr const*, clang::CodeGen::KnownNonNull_t) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4745303)
+#20 0x0000000004745710 clang::CodeGen::CodeGenFunction::EmitLValue(clang::Expr const*, clang::CodeGen::KnownNonNull_t) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4745710)
+#21 0x00000000042f5a3f clang::CodeGen::CodeGenFunction::EmitOMPSharedLValue(clang::Expr const*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x42f5a3f)
+#22 0x0000000004884a7e (anonymous namespace)::MappableExprsHandler::generateInfoForComponentList(clang::OpenMPMapClauseKind, llvm::ArrayRef<clang::OpenMPMapModifierKind>, llvm::ArrayRef<clang::OpenMPMotionModifierKind>, llvm::ArrayRef<clang::OMPClauseMappableExprCommon::MappableComponent>, (anonymous namespace)::MappableExprsHandler::MapCombinedInfoTy&, (anonymous namespace)::MappableExprsHandler::MapCombinedInfoTy&, (anonymous namespace)::MappableExprsHandler::StructRangeInfoTy&, bool, bool, bool, clang::ValueDecl const*, bool, clang::ValueDecl const*, clang::Expr const*, llvm::ArrayRef<llvm::ArrayRef<clang::OMPClauseMappableExprCommon::MappableComponent>>, bool) const (.constprop.0) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4884a7e)
+#23 0x00000000048c3320 (anonymous namespace)::MappableExprsHandler::generateAllInfoForClauses(llvm::ArrayRef<clang::OMPClause const*>, (anonymous namespace)::MappableExprsHandler::MapCombinedInfoTy&, llvm::OpenMPIRBuilder&, llvm::DenseSet<clang::CanonicalDeclPtr<clang::Decl const>, llvm::DenseMapInfo<clang::CanonicalDeclPtr<clang::Decl const>, void>> const&) const (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x48c3320)
+#24 0x00000000048c9447 clang::CodeGen::CGOpenMPRuntime::emitTargetDataStandAloneCall(clang::CodeGen::CodeGenFunction&, clang::OMPExecutableDirective const&, clang::Expr const*, clang::Expr const*)::'lambda0'(clang::CodeGen::CodeGenFunction&, clang::CodeGen::PrePostActionTy&)::operator()(clang::CodeGen::CodeGenFunction&, clang::CodeGen::PrePostActionTy&) const (.constprop.0) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x48c9447)
+#25 0x00000000048668ca clang::CodeGen::RegionCodeGenTy::operator()(clang::CodeGen::CodeGenFunction&) const (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x48668ca)
+#26 0x0000000004869843 clang::CodeGen::CGOpenMPRuntime::emitTargetDataStandAloneCall(clang::CodeGen::CodeGenFunction&, clang::OMPExecutableDirective const&, clang::Expr const*, clang::Expr const*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4869843)
+#27 0x000000000430fcb5 clang::CodeGen::CodeGenFunction::EmitOMPTargetEnterDataDirective(clang::OMPTargetEnterDataDirective const&) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x430fcb5)
+#28 0x00000000042e554c clang::CodeGen::CodeGenFunction::EmitStmt(clang::Stmt const*, llvm::ArrayRef<clang::Attr const*>) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x42e554c)
+#29 0x00000000042ed05b clang::CodeGen::CodeGenFunction::EmitCompoundStmtWithoutScope(clang::CompoundStmt const&, bool, clang::CodeGen::AggValueSlot) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x42ed05b)
+#30 0x000000000437babe clang::CodeGen::CodeGenFunction::EmitFunctionBody(clang::Stmt const*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x437babe)
+#31 0x0000000004392c02 clang::CodeGen::CodeGenFunction::GenerateCode(clang::GlobalDecl, llvm::Function*, clang::CodeGen::CGFunctionInfo const&) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4392c02)
+#32 0x00000000043f29ed clang::CodeGen::CodeGenModule::EmitGlobalFunctionDefinition(clang::GlobalDecl, llvm::GlobalValue*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x43f29ed)
+#33 0x00000000043ec733 clang::CodeGen::CodeGenModule::EmitGlobalDefinition(clang::GlobalDecl, llvm::GlobalValue*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x43ec733)
+#34 0x00000000043f94d4 clang::CodeGen::CodeGenModule::EmitDeferred() (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x43f94d4)
+#35 0x00000000043fb537 clang::CodeGen::CodeGenModule::Release() (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x43fb537)
+#36 0x000000000490239d (anonymous namespace)::CodeGeneratorImpl::HandleTranslationUnit(clang::ASTContext&) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x490239d)
+#37 0x000000000490059e clang::BackendConsumer::HandleTranslationUnit(clang::ASTContext&) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x490059e)
+#38 0x00000000066180db clang::ParseAST(clang::Sema&, bool, bool) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x66180db)
+#39 0x0000000004c0cfe8 clang::FrontendAction::Execute() (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4c0cfe8)
+#40 0x0000000004b7b67d clang::CompilerInstance::ExecuteAction(clang::FrontendAction&) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4b7b67d)
+#41 0x0000000004ceb8c0 clang::ExecuteCompilerInvocation(clang::CompilerInstance*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x4ceb8c0)
+#42 0x000000000101575d cc1_main(llvm::ArrayRef<char const*>, char const*, void*) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x101575d)
+#43 0x000000000100ebeb ExecuteCC1Tool(llvm::SmallVectorImpl<char const*>&, llvm::ToolContext const&) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x100ebeb)
+#44 0x0000000001010d1d clang_main(int, char**, llvm::ToolContext const&) (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x1010d1d)
+#45 0x0000000000f05933 main (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0xf05933)
+#46 0x0000155553e15864 __libc_start_main (/lib64/libc.so.6+0x3a864)
+#47 0x000000000100b1dd _start (/opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang-19+0x100b1dd)
+clang: error: unable to execute command: Aborted
+clang: error: clang frontend command failed due to signal (use -v to see invocation)
+Cray clang version 19.0.0  (cc4d36e4ff3377d45f0e6e892b5dacd82009a0ca)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin
+Build config: +assertions
+Configuration file: /opt/cray/pe/cce/19.0.0/cce-clang/x86_64/bin/clang.cfg
+clang: note: diagnostic msg: 
+********************
+
+PLEASE ATTACH THE FOLLOWING FILES TO THE BUG REPORT:
+Preprocessed source(s) and associated run script(s) are located at:
+clang: note: diagnostic msg: <site>/omp52-c-clause-map-iterator-dd27c2.c
+clang: note: diagnostic msg: <site>/omp52-c-clause-map-iterator-39d0e0.c
+clang: note: diagnostic msg: <site>/omp52-c-clause-map-iterator-dd27c2.sh
+clang: note: diagnostic msg: 
+
+********************

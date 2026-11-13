@@ -1,0 +1,113 @@
+{
+ "finding": "oop/cce-element-component-map-lost.f90",
+ "readers": [
+  {
+   "run": "run-20261112/batch-08",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "vk(4)%g(3) is a single element of an array component of one array element; only one part-ref has nonzero rank (none here), so it is a valid map list item. No other list item shares storage. Mapping tofrom copies the element back, so r1=74 and r2=74 are required; compiler A returning 0 did not copy back (or mapped the wrong storage)."
+  },
+  {
+   "run": "run-20261112/batch-26",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "map(tofrom: vk(4)%g(3)) maps one element of a component of an array element; map clause allows structure elements and array sections, and an element is a degenerate section. The device writes 74, copied back; other elements remain 0, so r1=r2=74. Slight doubt only about whether an array element of a component is a permitted list item."
+  },
+  {
+   "run": "run-v2-20261113/batch-107",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The map clause may list structure elements. vk(4)%g(3) is one element of a structure component and is the only part referenced in the target region, so the restriction on other referenced elements is met. The write of 74 must be copied back on exit (tofrom). Host reads vk(4)%g(3)=74 and the sum is 74 as the other elements are 0. Observed 0 means the copy-back was lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-10",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-48",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "map(tofrom: vk(4)%g(3)) maps a single array element of a structure component; no map restriction forbids it. The device assignment is copied back at target exit, so r1 is 74 and r2 (other elements zero by default init) is 74. Observed 0 means the copy-back was lost.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 0,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "497269e97ca301f5f1b3bc466451751cf65f2b625d49212c1030e0fe968fbef9",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

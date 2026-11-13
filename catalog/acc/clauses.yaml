@@ -1,0 +1,391 @@
+# Clause argument grammar for the OpenACC slice (OpenACC 3.4, free-form
+# Fortran).
+#
+# Same notation as catalog/omp/clauses.yaml (read by offload/engine/catalog.py
+# load_grammar and offload/engine/grammar.py); `since` is the catalog version 34
+# (OpenACC 3.4, the only OpenACC version in the catalog) and every citation
+# is "OpenACC 3.4 §<sec>, p.<n>": the clause's section and the printed page
+# where it starts (spec/openacc/openacc-3.4.pdf, read with
+# offload.engine.spec_text sections("acc3.4")). Atoms are acc.clause.<name>[.<f>].
+#
+# Additional modifier-class flag:
+#   out_of_slice: true  the keywords parse but give no slice atom. The data
+#                       clause modifiers (always, alwaysin, alwaysout,
+#                       capture, readonly, zero; 3.4 §2.7.4, p.52) are left
+#                       out of this slice (an earlier brief
+#                       said they are not in 3.4; they are), so programs using them still parse.
+#
+# Every entry is `status: provisional` until the project owner reviews it.
+
+clauses:
+  async:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.16.1, p.99"
+        syntax: "none | expr@async_argument"
+
+  attach:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.13, p.59"
+        syntax: "list"
+
+  auto:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.7, p.69"
+        syntax: "none"
+
+  bind:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.15.1, p.91"
+        syntax: "expr"
+
+  capture:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.12, p.77"
+        syntax: "none"
+
+  collapse:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.1, p.65"
+        syntax: "[enum[force] ':'] expr"
+
+  copy:
+    status: provisional
+    notes: "present_or_copy and pcopy are alternate names (3.4 §2.7.7, p.54); the skeleton lists them as spellings of copy."
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.7, p.54"
+        syntax: "[modifiers[data-clause-modifier] ':'] list"
+        modifiers:
+          data-clause-modifier: {keywords: [always, alwaysin, alwaysout, capture], out_of_slice: true}
+
+  copyin:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.8, p.55"
+        syntax: "[modifiers[data-clause-modifier] ':'] list"
+        modifiers:
+          data-clause-modifier: {keywords: [always, alwaysin, readonly, capture], out_of_slice: true}
+
+  copyout:
+    status: provisional
+    notes: "The modifier list of 3.4 §2.7.9 reads 'always, alwaysin or zero'; alwaysout (§2.7.4) is accepted too."
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.9, p.56"
+        syntax: "[modifiers[data-clause-modifier] ':'] list"
+        modifiers:
+          data-clause-modifier: {keywords: [always, alwaysin, alwaysout, zero, capture], out_of_slice: true}
+
+  create:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.10, p.57"
+        syntax: "[modifiers[data-clause-modifier] ':'] list"
+        modifiers:
+          data-clause-modifier: {keywords: [zero, capture], out_of_slice: true}
+
+  default:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.16, p.40"
+        syntax: "enum[none, present]"
+
+  default_async:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.14.3, p.87"
+        syntax: "expr"
+
+  delete:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.12, p.58"
+        syntax: "list"
+
+  detach:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.14, p.59"
+        syntax: "list"
+
+  device:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.14.4, p.88"
+        syntax: "list"
+
+  device_num:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.14.1, p.84"
+        syntax: "expr"
+
+  device_resident:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.13.1, p.82"
+        syntax: "list"
+
+  device_type:
+    status: provisional
+    notes: "device_type( * ) or a device-type-list of implementation-defined architecture names; dtype is an alternate name (3.4 §2.4, p.32)."
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.4, p.31"
+        syntax: "expr_list"
+
+  deviceptr:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.5, p.53"
+        syntax: "list"
+
+  finalize:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.6.6, p.45"
+        syntax: "none"
+
+  firstprivate:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.14, p.38"
+        syntax: "list"
+
+  gang:
+    status: provisional
+    notes: "gang-arg-list: at most one num, one dim and one static argument (3.4 §2.9, p.64); the alternatives below are the single arguments and static with num or dim, in either order. On routine only dim (3.4 §2.15.1, p.91)."
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.2, p.66"
+        syntax: "none | expr@num | enum[num] ':' expr | enum[dim] ':' expr | enum[static] ':' expr | expr@num ',' enum[static] ':' expr | enum[num] ':' expr ',' enum[static] ':' expr | enum[static] ':' expr ',' enum[num] ':' expr | enum[static] ':' expr ',' expr@num | enum[dim] ':' expr ',' enum[static] ':' expr | enum[static] ':' expr ',' enum[dim] ':' expr"
+      - since: 34
+        directives: [routine]
+        citation: "OpenACC 3.4 §2.15.1, p.91"
+        syntax: "none | enum[dim] ':' expr"
+
+  host:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.14.4, p.88"
+        syntax: "list"
+
+  if:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.6, p.37"
+        syntax: "expr"
+
+  if_present:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.14.4, p.88"
+        syntax: "none"
+
+  independent:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.6, p.69"
+        syntax: "none"
+
+  link:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.13.3, p.84"
+        syntax: "list"
+
+  no_create:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.11, p.57"
+        syntax: "list"
+
+  nohost:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.15.1, p.91"
+        syntax: "none"
+
+  num_gangs:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.10, p.37"
+        syntax: "expr_list"
+
+  num_workers:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.11, p.38"
+        syntax: "expr"
+
+  present:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.7.6, p.53"
+        syntax: "list"
+
+  private:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.13, p.38"
+        syntax: "list"
+      - since: 34
+        directives: [loop]
+        citation: "OpenACC 3.4 §2.9.10, p.70"
+        syntax: "list"
+
+  read:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.12, p.77"
+        syntax: "none"
+
+  reduction:
+    status: provisional
+    notes: "Fortran reduction operators: 3.4 §2.5.15, p.39 (table). The C operators of the same table (+ * max min & | ^ && ||) give the same atoms as their Fortran counterparts (offload.engine.catalog._OPS); .eqv. and .neqv. are Fortran only."
+    forms:
+      - since: 34
+        langs: [f90]
+        citation: "OpenACC 3.4 §2.5.15, p.39"
+        syntax: "modifiers[reduction-operator] ':' list"
+        modifiers:
+          reduction-operator: {keywords: ['+', '*', max, min, iand, ior, ieor, '.and.', '.or.', '.eqv.', '.neqv.'], one_of: true, required: true, ultimate: true}
+      - since: 34
+        langs: [f90]
+        directives: [loop]
+        citation: "OpenACC 3.4 §2.9.11, p.71"
+        syntax: "modifiers[reduction-operator] ':' list"
+        modifiers:
+          reduction-operator: {keywords: ['+', '*', max, min, iand, ior, ieor, '.and.', '.or.', '.eqv.', '.neqv.'], one_of: true, required: true, ultimate: true}
+      - since: 34
+        langs: [c]
+        citation: "OpenACC 3.4 §2.5.15, p.39"
+        syntax: "modifiers[reduction-operator] ':' list"
+        modifiers:
+          reduction-operator: {keywords: ['+', '*', max, min, '&', '|', '^', '&&', '||'], one_of: true, required: true, ultimate: true}
+      - since: 34
+        langs: [c]
+        directives: [loop]
+        citation: "OpenACC 3.4 §2.9.11, p.71"
+        syntax: "modifiers[reduction-operator] ':' list"
+        modifiers:
+          reduction-operator: {keywords: ['+', '*', max, min, '&', '|', '^', '&&', '||'], one_of: true, required: true, ultimate: true}
+
+  self:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.7, p.37"
+        syntax: "none | expr@condition"
+      - since: 34
+        directives: [update]
+        citation: "OpenACC 3.4 §2.14.4, p.88"
+        syntax: "list"
+
+  seq:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.5, p.68"
+        syntax: "none"
+
+  tile:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.8, p.69"
+        syntax: "expr_list"
+
+  update:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.12, p.77"
+        syntax: "none"
+
+  use_device:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.8.1, p.63"
+        syntax: "list"
+
+  vector:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.4, p.68"
+        syntax: "none | enum[length] ':' expr | expr@length"
+      - since: 34
+        directives: [routine]
+        citation: "OpenACC 3.4 §2.15.1, p.91"
+        syntax: "none"
+
+  vector_length:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.5.12, p.38"
+        syntax: "expr"
+
+  wait:
+    status: provisional
+    notes: "wait-argument: [devnum : int-expr :] [queues :] async-argument-list (3.4 §2.16, p.98)."
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.16.2, p.100"
+        syntax: "none | [enum[devnum] ':' expr ':'] [enum[queues] ':'] expr_list"
+
+  worker:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.9.3, p.68"
+        syntax: "none | enum[num] ':' expr | expr@num"
+      - since: 34
+        directives: [routine]
+        citation: "OpenACC 3.4 §2.15.1, p.91"
+        syntax: "none"
+
+  write:
+    status: provisional
+    forms:
+      - since: 34
+        citation: "OpenACC 3.4 §2.12, p.77"
+        syntax: "none"

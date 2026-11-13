@@ -1,0 +1,88 @@
+== cce 19.0.0 no-openmp -O0
+Warning:
+ Headers and libraries from cray-libsci/25.03.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy
+== cce 19.0.0 no-openmp -O2
+Warning:
+ Headers and libraries from cray-libsci/25.03.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy
+== cce 20.0.2 no-openmp -O0
+Warning:
+ Headers and libraries from cray-libsci/25.09.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy
+== cce 20.0.2 no-openmp -O2
+Warning:
+ Headers and libraries from cray-libsci/25.09.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy
+== cce 21.0.3 no-openmp -O0
+Warning:
+ Headers and libraries from cray-libsci/26.03.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy
+== cce 21.0.3 no-openmp -O2
+Warning:
+ Headers and libraries from cray-libsci/26.03.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy
+== cce 21.0.4 no-openmp -O0
+Warning:
+ Headers and libraries from cray-libsci/26.03.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy
+== cce 21.0.4 no-openmp -O2
+Warning:
+ Headers and libraries from cray-libsci/26.03.0 will be ignored because depends on PE_MPICH which is unavailable..
+
+ A check=p
+B check=p
+ C len= 4
+ D check=pass
+ E check=pass
+ F check=pass
+ G check=xpassy

@@ -1,0 +1,12 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (NVIDIA A100), 2026-10-24.
+# source: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2 (NVHPC 25.11) on offload.engine.c_gen omp52-c-illegal-reduction-clause-007 (OpenMP/OpenACC version 52), compile sweep
+# exit status: 2
+==== verbatim output below ====
+"<tmpdir>/p.c", line 38: warning: variable "mp" was set but never used [set_but_not_used]
+    for (int i = 1; i <= n; i++) {
+    ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+NVC++-F-0000-Internal compiler error. unhandled size for preparing min constant      19  (<tmpdir>/p.c: 38)
+NVC++/x86-64 Linux 25.11-0: compilation aborted

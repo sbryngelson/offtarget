@@ -1,0 +1,113 @@
+{
+ "finding": "defaultmap-none-loop-variable.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-24",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "i is listed in private on the target construct, so it has an explicitly determined data-sharing attribute and satisfies defaultmap(none). a, b, host_flag are mapped; n is a named constant. The program is conforming and the refusal is a compiler error."
+  },
+  {
+   "run": "run-20261113/batch-65",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "i is listed in private(i) on the target construct. That is a data-sharing attribute, so defaultmap(none) does not require another listing for it. a, b and host_flag are mapped explicitly, and n is a named constant. omp_is_initial_device may be called in a target region. The compiler's claim that i is unlisted is wrong. Acceptance and the expected output are required."
+  },
+  {
+   "run": "run-v2-20261113/batch-58",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "defaultmap(none) requires each referenced variable to be listed in a data-environment attribute clause. i is listed in private(i), a, b and host_flag are in map clauses, and n is a named constant. The program therefore satisfies the restriction and the compilers' error about i is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-67",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-63",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "defaultmap(none) requires each referenced variable to be explicitly listed in a data-environment attribute clause. i is in private(i), a data-environment attribute clause. a, b and host_flag are in map clauses, n is a named constant, and omp_is_initial_device is a procedure. So the program conforms and the error about i is wrong.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-06",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d42578e6bebc4666d346b17de9d806e86762d9d086f179426fe57bae603832da",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

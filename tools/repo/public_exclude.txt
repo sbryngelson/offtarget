@@ -1,0 +1,16 @@
+# Paths left out of the public repository (tools/repo/public_export.py), as shell patterns over tracked paths.
+# The vendor report drafts: written for the maintainers to decide what to file; never published.
+data/vendor/amd/*
+data/vendor/hpe/*
+data/vendor/nvidia/*
+data/vendor/README.md
+data/vendor/errata-for-findings.md
+# the maintainers' running record of each finding
+data/findings/LOG.md
+# and the report texts the drafts are rendered from
+data/vendor/checks/reports-*.yaml
+data/vendor/checks/reports.json
+# The benchmark sets: other projects' code, and the held-out sets kept unread for a later evaluation.
+data/bench/*
+# the overlay itself: its files appear at their own paths instead
+tools/repo/public_overlay/*

@@ -1,0 +1,42 @@
+name: Dispute or support a finding's legality
+description: A program in the catalog is not legal, or the specification does not require the result it expects
+labels: [legality]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Each issue's legality is read independently from the specification text (the website's method page,
+        "Legality review"). A dispute is checked the same way: the argument below is given to new readers next to
+        the existing readings. A reason that cites the specification is the one that can settle it.
+  - type: input
+    id: finding
+    attributes:
+      label: Finding
+      description: The finding's name, as in the issue page's address or `offload issues --show NAME`.
+    validations: {required: true}
+  - type: dropdown
+    id: claim
+    attributes:
+      label: What is wrong
+      options:
+        - The program is not legal
+        - The program is legal, but the specification does not require the expected result
+        - The program is legal and the result required (support for a contested or unconfirmed finding)
+        - Something else (explain below)
+    validations: {required: true}
+  - type: textarea
+    id: passage
+    attributes:
+      label: The specification passage
+      description: Quote it, with the version (for example OpenMP 5.2), the section and the page.
+    validations: {required: true}
+  - type: textarea
+    id: lines
+    attributes:
+      label: The lines of the program it applies to
+      render: text
+    validations: {required: true}
+  - type: textarea
+    id: reasoning
+    attributes:
+      label: Why

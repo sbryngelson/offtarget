@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-c-allocate-allocator-modifier-rejected.c",
+ "readers": [
+  {
+   "run": "run-20261113/batch-38",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "allocate clause with allocator-complex-modifier is valid in 5.2 on parallel/for; predefined omp_default_mem_alloc is listed in uses_allocators on the enclosing target, satisfying the restriction. t is privatized by private(t), as required. Refusing allocator(...) is a missing 5.2 feature."
+  },
+  {
+   "run": "run-20261113/batch-76",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenMP 5.2 allows the allocator-complex-modifier allocator(expr) on the allocate clause of parallel for. t is privatized on the same directive, and omp_default_mem_alloc appears in uses_allocators on the enclosing target, satisfying the target-region restriction. The compiler error parses allocator(...) as an expression, i.e. lacks 5.2 syntax."
+  },
+  {
+   "run": "run-v2-20261113/batch-36",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 allows the allocator-complex-modifier allocator(expr) on allocate for parallel. t is privatized on the same directive. omp_default_mem_alloc is a predefined allocator named in uses_allocators with no modifiers, as a base-language identifier. The compiler treated allocator(...) as an expression, so it does not implement 5.2 syntax; acceptance is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-05",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-72",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenMP 5.2 allocate clause accepts the allocator(allocator-complex-modifier) form. t is privatized on the same directive, so the allocate clause applies. omp_default_mem_alloc is a predefined allocator made available by uses_allocators on the enclosing target. The compiler must accept it; the clang error treats allocator(...) as a function call, so the clause form is unsupported.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-34",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "edd714222dd86168fe296c20be733cd55975ec7b37edb82612a8b2d0eabc7beb",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

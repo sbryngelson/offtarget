@@ -1,0 +1,113 @@
+{
+ "finding": "catalog/cce-allocators-stack-ice.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-33",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "uses_allocators on target with a predefined allocator is allowed; the allocate clause on the parallel worksharing-loop uses that allocator for private t. default(none) is satisfied (a, b shared; t private; i predetermined). omp_is_initial_device is callable in target regions. The compiler front-end crash on it is a defect."
+  },
+  {
+   "run": "run-20261113/batch-53",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "uses_allocators accepts a predefined allocator on target, and the allocate clause on parallel do names it for private t, as required inside a target region. No race: t private, b(i) distinct. A conforming compiler must accept and run it."
+  },
+  {
+   "run": "run-v2-20261113/batch-104",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "uses_allocators lists the predefined allocator on target; the allocate clause with a simple allocator modifier appears on parallel do together with private(t), as required. Conforming, so the compiler must accept it; the crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-41",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-14",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "uses_allocators with a predefined allocator and no modifiers is allowed on target. The allocate clause on the parallel do in the target region uses that allocator. default(none) is satisfied: a and b are shared, t is private, i is the loop variable. Each iteration writes a distinct b(i). The compiler crash (expression stack error) on a legal program is a compiler bug; acceptance is required.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-47",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "093c548a7f53905631f322233ccb8e318f2df1b804710099227161578e2ef819",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

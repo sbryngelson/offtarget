@@ -1,0 +1,10 @@
+--- a/libc/src/__support/GPU/allocator.cpp	2026-11-02 17:30:19.000000000 -0800
++++ b/libc/src/__support/GPU/allocator.cpp	2026-11-02 17:31:49.000000000 -0800
+@@ -342,6 +342,7 @@
+     uint32_t slot = index / BITS_IN_WORD;
+     uint32_t bit = index % BITS_IN_WORD;
+ 
++    cpp::atomic_thread_fence(cpp::MemoryOrder::RELEASE);
+     cpp::AtomicRef(get_bitfield()[slot])
+         .fetch_and(~(1u << bit), cpp::MemoryOrder::RELAXED);
+   }

@@ -1,0 +1,43 @@
+# Verbatim compiler output (stdout and stderr merged) captured on wingtip (wingtip, NVIDIA A100), 2026-10-28.
+# source: GCC 16.2.0 gcc -fopenmp -foffload=nvptx-none -foffload-options=nvptx-none=-march=sm_80 -foffload-options=nvptx-none=-latomic (gcc_sm80) -O2 on the harvested dev program hv-llvm-mapping-map-ordering-tgt-data-alloc-from (results/harvest/src; coverage parity, tools/campaigns/parity.py)
+# exit status: 1
+==== verbatim output below ====
+during GIMPLE pass: omplower
+hv-llvm-mapping-map-ordering-tgt-data-alloc-from.c: In function ‘hv_orig_main’:
+hv-llvm-mapping-map-ordering-tgt-data-alloc-from.c:20:9: internal compiler error: in install_var_field, at omp-low.cc:806
+   20 | #pragma omp target data map(alloc : x) map(from : x) map(alloc : x)
+      |         ^~~
+0x208693b internal_error(char const*, ...)
+	<site>/gcc-build/gcc-16.2.0/gcc/diagnostic-global-context.cc:787
+0x7c5659 fancy_abort(char const*, int, char const*)
+	<site>/gcc-build/gcc-16.2.0/gcc/diagnostics/context.cc:1813
+0x79494d install_var_field
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:806
+0xd0bbce scan_sharing_clauses
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:1698
+0xd0ce43 scan_omp_target
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:3155
+0xd0d940 scan_omp_1_stmt
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:4280
+0xb6740e walk_gimple_stmt(gimple_stmt_iterator*, tree_node* (*)(gimple_stmt_iterator*, bool*, walk_stmt_info*), tree_node* (*)(tree_node**, int*, void*), walk_stmt_info*)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimple-walk.cc:619
+0xb6762d walk_gimple_seq_mod(gimple**, tree_node* (*)(gimple_stmt_iterator*, bool*, walk_stmt_info*), tree_node* (*)(tree_node**, int*, void*), walk_stmt_info*)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimple-walk.cc:51
+0xb67542 walk_gimple_stmt(gimple_stmt_iterator*, tree_node* (*)(gimple_stmt_iterator*, bool*, walk_stmt_info*), tree_node* (*)(tree_node**, int*, void*), walk_stmt_info*)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimple-walk.cc:682
+0xb6762d walk_gimple_seq_mod(gimple**, tree_node* (*)(gimple_stmt_iterator*, bool*, walk_stmt_info*), tree_node* (*)(tree_node**, int*, void*), walk_stmt_info*)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimple-walk.cc:51
+0xb6751a walk_gimple_stmt(gimple_stmt_iterator*, tree_node* (*)(gimple_stmt_iterator*, bool*, walk_stmt_info*), tree_node* (*)(tree_node**, int*, void*), walk_stmt_info*)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimple-walk.cc:737
+0xb6762d walk_gimple_seq_mod(gimple**, tree_node* (*)(gimple_stmt_iterator*, bool*, walk_stmt_info*), tree_node* (*)(tree_node**, int*, void*), walk_stmt_info*)
+	<site>/gcc-build/gcc-16.2.0/gcc/gimple-walk.cc:51
+0xd19540 scan_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:4330
+0xd19540 execute_lower_omp
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15318
+0xd19540 execute
+	<site>/gcc-build/gcc-16.2.0/gcc/omp-low.cc:15382
+<site>/gcc-16.2/libexec/gcc/x86_64-pc-linux-gnu/16.2.0/cc1 -quiet -imultiarch x86_64-linux-gnu -D_REENTRANT hv-llvm-mapping-map-ordering-tgt-data-alloc-from.c -quiet -dumpdir a- -dumpbase hv-llvm-mapping-map-ordering-tgt-data-alloc-from.c -dumpbase-ext .c -mtune=generic -march=x86-64 -O2 -fopenmp -foffload-options=nvptx-none=-march=sm_80 -foffload-options=nvptx-none=-latomic -o /tmp/cc6jOTIB.s
+Please submit a full bug report, with preprocessed source (by using -freport-bug).
+Please include the complete backtrace with any bug report.
+See <https://gcc.gnu.org/bugs/> for instructions.

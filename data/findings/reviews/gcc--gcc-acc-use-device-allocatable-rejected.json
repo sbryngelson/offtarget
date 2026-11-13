@@ -1,0 +1,113 @@
+{
+ "finding": "gcc/gcc-acc-use-device-allocatable-rejected.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-28",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "OpenACC 3.4 only requires a use_device var to be the name of a variable or array; Fortran allocatable arrays are not excluded and are present via the enclosing data construct. The allocatable arrays are contiguous and passed to explicit-shape dummies carrying deviceptr. The compile-time refusal of allocatable objects in use_device is not supported by the specification."
+  },
+  {
+   "run": "run-20261113/batch-51",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "reasoning": "host_data use_device on Fortran allocatable arrays is not prohibited by OpenACC 3.4; the arrays are present via the enclosing data region, and the device address is passed to a procedure using deviceptr. The restrictions require only a variable or array name. The gfortran rejection of ALLOCATABLE is not backed by the spec."
+  },
+  {
+   "run": "run-v2-20261113/batch-44",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenACC 3.4 restricts a use_device var only to be the name of a variable or array. An allocatable array is a variable and is present from the enclosing data region. Passing the allocated, contiguous array to the explicit-shape dummy x(m) is valid, and the callee uses deviceptr. A compiler that rejects ALLOCATABLE objects in use_device is stricter than the specification.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-25",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-98",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "OpenACC 3.4 only requires a use_device var to be the name of a variable or array; allocatable arrays are not excluded. a and b are present from the enclosing data construct, so the host_data use_device is valid, and the refusal is a compiler limitation.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-60",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b534f71d0172a4b8e0942f23b405a3ccf9c832b2e31aad0773f6a446a62ab95c",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

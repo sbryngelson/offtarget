@@ -1,0 +1,132 @@
+{
+ "finding": "oop/afar-final-dealloc-device-link.f90",
+ "readers": [
+  {
+   "run": "run-20261113/batch-04",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The module variable fin_count has a declare target to clause (deprecated in 5.2 but valid). The finalizer ft_fin and alloc_work carry declare target. The atomic update is race-free across teams and threads. deallocate(o) finalizes the object once per iteration, so r1 is 64 and r2 is sum(i+1)=2144. The specification does not permit refusing the program at link time because the finalizer was not emitted for the device. Some doubt remains because the spec does not state that implicit finalizer calls are references to the procedure."
+  },
+  {
+   "run": "run-20261113/batch-74",
+   "model": "claude-sonnet",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "reasoning": "The to clause on declare target is deprecated in 5.2 but still allowed. The finalizer and alloc_work are declare target, fin_count is mapped via declare target and updated with atomic. Deallocating o runs final subroutine ft_fin, so 64 finalizations and sum(i+1)=2144 are determined. No race. The link-time refusal is a compiler failure."
+  },
+  {
+   "run": "run-v2-20261113/batch-17",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 4,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "fin_count is a module variable with declare target (deprecated to clause, still allowed in 5.2). The final subroutine ft_fin and alloc_work are explicitly declare target, so the finalization triggered by deallocate on the device calls a device routine. The only shared update is atomic, so there is no race, and fin_count is synchronized with target update to/from. The expected counts (64 and 2144) follow. A link-time refusal is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-31",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 0,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-20261113/batch-64",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "missed",
+   "legal": "yes",
+   "result_required": "uncertain",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The program looks conforming. The to clause on declare target is deprecated in 5.2 but allowed. fin_count has a declare target in a module, and ft_fin and alloc_work carry declare target. The finalizer runs on deallocate, so fin_count is 64 and the sum is 2144. The spec does not say how the implicit finalizer call reached through the type's final binding is made available on the device. A link failure there might be an implementation matter, so the required outcome is uncertain."
+  },
+  {
+   "run": "run-v2-20261113b/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The declare target to(fin_count) form is deprecated in 5.2 but still allowed. The finalizer ft_fin and alloc_work are declare target, and fin_count is updated atomically. The finalizer runs once per explicit deallocate, so 64 calls give fin_count=64, and sum(res)=2144. No data race and no rule is broken. The spec does not allow refusing at link time.",
+   "verifications": [
+    {
+     "run": "verify-20261113/batch-06",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "71a48548132ce5291b00eb5d67543cda13a44b595fbe8891fabf46e4430bb20e",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}
