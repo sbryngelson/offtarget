@@ -66,7 +66,7 @@ case "${1:-}" in
     # 1.15.3) with the test packages of tools/repo/test_requirements.txt
     # (pytest 9.0.3 or later: GHSA-6w46-j5rx-g56g), in the shared data
     # directory; an existing env with other versions is brought to these
-    PINS="PyYAML==6.0.2 numpy==2.1.2 scipy==1.15.3 pytest==9.1.1 pluggy==1.7.0 pytest-xdist==3.8.0 hatchling==1.33.0"
+    PINS="PyYAML==6.0.2 numpy==2.1.2 scipy==1.15.3 pytest==9.1.1 pluggy==1.7.0 pytest-xdist==3.8.0 hatchling==1.33.0 hatch-vcs==0.5.0 setuptools-scm==10.3.4 setuptools==84.2.1"
     if [ -x "$PY" ] && "$PY" - $PINS <<'EOF'
 import sys
 from importlib.metadata import version, PackageNotFoundError

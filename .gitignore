@@ -21,5 +21,8 @@ __pycache__/
 # offload data built from a checkout
 .offload-cache/
 
+# the version hatch-vcs writes at build time (pyproject.toml)
+/offload/_version.py
+
 # per-user settings for the machines and compilers (catalog/local.example.yaml)
 /catalog/local.yaml

@@ -1,11 +1,13 @@
 [build-system]
-# hatchling 1.27: license-files (PEP 639); pyyaml: the build hook (hatch_build.py) builds the bundled data with offload's own code
-requires = ["hatchling>=1.27", "pyyaml"]
+# hatchling 1.27: license-files (PEP 639); hatch-vcs: the version from the git tag;
+# pyyaml: the build hook (hatch_build.py) builds the bundled data with offload's own code
+requires = ["hatchling>=1.27", "hatch-vcs", "pyyaml"]
 build-backend = "hatchling.build"
 
 [project]
 name = "offtarget"
-# read from offload/__init__.py (__version__), the one place it is written
+# the version is the git tag (vX.Y.Z), read at build time by hatch-vcs; a release is a pushed tag
+# (.github/workflows/release.yml). offload.__version__ reads it back.
 dynamic = ["version"]
 description = "Known OpenMP and OpenACC offload compiler problems: look up support, search issues"
 readme = "README.md"
@@ -37,7 +39,39 @@ Repository = "https://github.com/sbryngelson/offtarget"
 Issues = "https://github.com/sbryngelson/offtarget/issues"
 
 [tool.hatch.version]
-path = "offload/__init__.py"
+source = "vcs"
+# PyPI refuses local versions ("+gHASH"): an untagged build is X.Y.Z.devN
+raw-options = { local_scheme = "no-local-version" }
+
+[tool.hatch.build.hooks.vcs]
+version-file = "offload/_version.py"
+
+# the sdist holds what the wheel build reads (offload/_bundle.py, tools/repo/bundle_manifest.txt), nothing more;
+# tests/test_offload.py builds the wheel from it and compares
+[tool.hatch.build.targets.sdist]
+include = [
+    "/offload",
+    "/hatch_build.py",
+    "/README.md",
+    "/THIRD_PARTY_NOTICES.md",
+    "/tools/repo/bundle_manifest.txt",
+    "/catalog/acc",
+    "/catalog/omp",
+    "/catalog/later_forms.yaml",
+    "/catalog/machines.yaml",
+    "/catalog/toolchains.yaml",
+    "/catalog/vendor_claims_generic.yaml",
+    "/data/findings",
+    "/data/vendor/checks/build.py",
+    "/data/vendor/checks/cases.json",
+    "/data/vendor/checks/cases-site.json",
+    "/data/vendor/checks/results-compact",
+    "/data/vendor/checks/results-site",
+    "/data/vendor/checks/run_checks.py",
+    "/data/vendor/checks/src",
+    "/site/inputs",
+]
+exclude = ["/data/findings/proposed"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["offload"]
