@@ -63,15 +63,30 @@ case "${1:-}" in
   --prepare) prepare; exit $? ;;
   --setup)
     # Python as on Tuolumne (3.13.2, PyYAML 6.0.2, numpy 2.1.2, scipy
-    # 1.15.3, pytest 8.3.4) plus pytest-xdist, in the shared data directory
-    [ -x "$PY" ] && { "$PY" -c 'import yaml, numpy, scipy, pytest, xdist' &&
-                      echo "env ok: $PY"; exit $?; }
-    MM=${MICROMAMBA:-micromamba}
-    nice -n 10 timeout --kill-after=10 900 "$MM" create -y -q -p "$DATA/env" \
-      -c conda-forge --override-channels python=3.13.2 pip || exit 3
-    nice -n 10 timeout --kill-after=10 900 "$PY" -m pip install -q \
-      PyYAML==6.0.2 numpy==2.1.2 scipy==1.15.3 pytest==8.3.4 pluggy==1.5.0 \
-      pytest-xdist==3.6.1 setuptools==80.9.0 || exit 3
+    # 1.15.3) with the test packages of tools/repo/test_requirements.txt
+    # (pytest 9.0.3 or later: GHSA-6w46-j5rx-g56g), in the shared data
+    # directory; an existing env with other versions is brought to these
+    PINS="PyYAML==6.0.2 numpy==2.1.2 scipy==1.15.3 pytest==9.1.1 pluggy==1.7.0 pytest-xdist==3.8.0 setuptools==80.9.0"
+    if [ -x "$PY" ] && "$PY" - $PINS <<'EOF'
+import sys
+from importlib.metadata import version, PackageNotFoundError
+def have(name, want):
+    try:
+        return version(name) == want
+    except PackageNotFoundError:
+        return False
+sys.exit(0 if all(have(*p.split("==")) for p in sys.argv[1:]) else 1)
+EOF
+    then
+      echo "env ok: $PY"; exit 0
+    fi
+    if [ ! -x "$PY" ]; then
+      MM=${MICROMAMBA:-micromamba}
+      nice -n 10 timeout --kill-after=10 900 "$MM" create -y -q -p "$DATA/env" \
+        -c conda-forge --override-channels python=3.13.2 pip || exit 3
+    fi
+    # shellcheck disable=SC2086
+    nice -n 10 timeout --kill-after=10 900 "$PY" -m pip install -q $PINS || exit 3
     exit 0 ;;
 esac
 
