@@ -142,3 +142,28 @@ Nothing in the repository does these steps.
   rewrite it (`git filter-repo`). The site build and its checks look only at the current tree.
 - **Vendor report drafts** (`data/vendor/{amd,hpe,nvidia}`). These are not part of the site, and
   they are sent by hand, if at all.
+
+# Releasing the package
+
+`.github/workflows/release.yml` builds `offtarget` and uploads it to PyPI by Trusted Publishing, with no stored
+token. It runs only on a pushed `v*` tag or a manual dispatch, never on a push to a branch.
+
+| piece | role |
+|---|---|
+| `pyproject.toml` | the version is the tag (`v0.2.0` gives `0.2.0`), read by hatch-vcs; an untagged build is `X.Y.Z.devN`. The sdist's include list names what the build hook reads and nothing else |
+| `hatch_build.py` | puts the data an installed `offload` reads into the wheel (`offload/_bundle.py`) |
+| `tests/test_offload.py` | builds the wheel and the sdist, builds a second wheel from the sdist alone, and checks that the two match, that the sdist holds no drafts, sealed-set lists or tests, and that the installed command works |
+| `release.yml` | builds the sdist and the wheel from it, runs `twine check --strict`, installs the wheel and checks that `offload --version` matches the tag, then uploads |
+
+## Turning it on
+
+1. On https://pypi.org/manage/account/publishing/, add a pending publisher: project `offtarget`, this repository's
+   GitHub account and name, workflow `release.yml`, environment `pypi`. On https://test.pypi.org, the same
+   with environment `testpypi`.
+2. Under **Settings > Environments**, the `pypi` and `testpypi` environments are created on the first run. A
+   required reviewer on `pypi` makes every upload wait for approval.
+3. Dry run: **Actions > release > Run workflow**, target `testpypi`. The version is a `.devN` one.
+4. Release: `git tag v0.1.0 && git push origin v0.1.0`. A version can be uploaded once; a fix needs a new tag.
+
+The installed data is the findings at the tagged commit. A release after findings change gives `pip install -U
+offtarget` users the new catalog.

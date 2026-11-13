@@ -1,5 +1,7 @@
 # OffTarget
 
+[![Website](https://img.shields.io/badge/web-sbryngelson.github.io%2Fofftarget-1f5fbf.svg)](https://sbryngelson.github.io/offtarget/) [![check](https://github.com/sbryngelson/offtarget/actions/workflows/check.yml/badge.svg)](https://github.com/sbryngelson/offtarget/actions/workflows/check.yml) [![PyPI](https://img.shields.io/pypi/v/offtarget?color=1f5fbf)](https://pypi.org/project/offtarget/) [![Python](https://img.shields.io/badge/python-3.10%2B-1f5fbf.svg)](https://pypi.org/project/offtarget/) [![License: MIT](https://img.shields.io/badge/License-MIT-1f5fbf.svg)](https://github.com/sbryngelson/offtarget/blob/master/LICENSE)
+
 A catalog of small, legal OpenMP and OpenACC GPU-offload programs that real compilers get wrong on real GPUs, and
 `offload`, the command that looks them up. The compilers are AMD's AFAR, HPE's Cray CCE, NVIDIA's HPC SDK and GCC;
 the GPUs are AMD's MI300A, MI250X, MI300X and MI350X and NVIDIA's A100.
@@ -33,27 +35,25 @@ pip install .
 offload --help
 ```
 
-To run it from a checkout without installing: `python3 -m offload --help` from the top of the checkout. The first
-command builds its data from the checkout, which takes about a minute.
+To run it from a checkout without installing: `python3 -m offload --help` from the top of the checkout. The first command builds its data from the checkout, which takes about a minute.
 
 ## Where the answers come from
 
 Each problem is a file in `data/findings/` holding the reproducer and the measurements behind it; the tool and the
 website are built from these files. A failure counts only when it reproduces in another build directory, on another
 node and in a repeat run, and each program's legality is read independently from the specification text by
-language-model readers checked against decoys ([tools/review/](tools/review/README.md)). See
-[how it works](docs/how-it-works.md), [usage](docs/usage.md) and [docs/README.md](docs/README.md).
+language-model readers checked against decoys ([tools/review/](https://github.com/sbryngelson/offtarget/blob/master/tools/review/README.md)). See
+[how it works](https://github.com/sbryngelson/offtarget/blob/master/docs/how-it-works.md), [usage](https://github.com/sbryngelson/offtarget/blob/master/docs/usage.md) and [docs/README.md](https://github.com/sbryngelson/offtarget/blob/master/docs/README.md).
 
 ## Limits
 
-CCE ran on the MI300A and MI250X, NVHPC on the A100, AFAR on every AMD GPU, and GCC on the MI250X, MI300X, MI350X
-and A100. [Scope and limits](docs/scope.md) has the details.
+CCE ran on the MI300A and MI250X, NVHPC on the A100, AFAR on every AMD GPU, and GCC on the MI250X, MI300X, MI350X and A100. [Scope and limits](https://github.com/sbryngelson/offtarget/blob/master/docs/scope.md) has the details.
 
 ## Contributing
 
 Open an issue to report a compiler problem, dispute a catalogued program's legality or report a fix; each has a
 form, linked from every issue page on the website. To add or correct a finding with results from your own compiler,
-see [CONTRIBUTING.md](CONTRIBUTING.md); you do not need access to the project's machines.
+see [CONTRIBUTING.md](https://github.com/sbryngelson/offtarget/blob/master/CONTRIBUTING.md); you do not need access to the project's machines.
 
 ## Licence
 

@@ -104,7 +104,11 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def test_version(capsys):
     assert cli.main(["--version"]) == 0
-    assert capsys.readouterr().out.strip() == "offload 0.1.0"
+    # the version is the git tag at build time (pyproject.toml); a checkout that was not built says 0+unknown
+    import re
+    from offload import __version__
+    assert capsys.readouterr().out.strip() == f"offload {__version__}"
+    assert re.fullmatch(r"\d+(\.\d+)*((a|b|rc)\d+)?(\.post\d+)?(\.dev\d+)?(\+[a-z0-9.]+)?", __version__), __version__
 
 
 def test_unknown_command_exits_2_with_the_list(capsys):
@@ -130,7 +134,8 @@ def test_no_arguments_prints_usage_and_exits_2(capsys):
 def test_module_form_matches_script_form():
     r = subprocess.run([sys.executable, "-m", "offload", "--version"], cwd=ROOT, capture_output=True, text=True,
                        env={"PYTHONPATH": str(ROOT), "PATH": "/usr/bin:/bin"})
-    assert r.returncode == 0 and r.stdout.strip() == "offload 0.1.0"
+    from offload import __version__
+    assert r.returncode == 0 and r.stdout.strip() == f"offload {__version__}"
 
 
 # ---- offload.data: where a checkout's built data is cached, and how the cache is published ---------------
@@ -201,6 +206,8 @@ import where
 SAMPLES = ["data/findings/afar-cce19-character-defaultmap.f90", "data/findings/cce-c-dist-schedule-segv.c",
            "data/findings/hecbench/controls/f16-ctl-float-array.c"]
 SIZE_LIMIT = 25_000_000
+# the version the test builds carry: the copied tree has no .git for hatch-vcs to read a tag from
+VERSION = "0.1.0"
 
 
 def _run(cmd, **kw):
@@ -218,10 +225,19 @@ def _build_install(work):
     for s in SAMPLES:
         (empty / s).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / s, empty / s)
+    env = {**os.environ, "SETUPTOOLS_SCM_PRETEND_VERSION": VERSION}
     r = _run([sys.executable, "-m", "pip", "wheel", "--no-deps", "--no-build-isolation", "-w", str(work / "wheels"),
-              str(src)])
+              str(src)], env=env)
     assert r.returncode == 0, r.stderr[-1500:]
     wheel = next((work / "wheels").glob("offtarget-*.whl"))
+    # the sdist, and a wheel built from it alone (what a release uploads)
+    r = _run([sys.executable, "-c", f"from hatchling.build import build_sdist; build_sdist({str(work / 'sdist')!r})"],
+             cwd=src, env=env)
+    assert r.returncode == 0, r.stderr[-1500:]
+    sdist = next((work / "sdist").glob("offtarget-*.tar.gz"))
+    r = _run([sys.executable, "-m", "pip", "wheel", "--no-deps", "--no-build-isolation", "-w",
+              str(work / "wheels-from-sdist"), str(sdist)], env=env)
+    assert r.returncode == 0, r.stderr[-1500:]
     venv = work / "venv"
     assert _run([sys.executable, "-m", "venv", "--system-site-packages", str(venv)]).returncode == 0
     r = _run([str(venv / "bin" / "python"), "-m", "pip", "install", "--no-index", "--no-deps", str(wheel)])
@@ -237,6 +253,8 @@ def installed():
     work = where.built_once("offload_install", _build_install)
     wheel = next((work / "wheels").glob("offtarget-*.whl"))
     return {"wheel": wheel, "venv": work / "venv", "empty": work / "empty",
+            "sdist": next((work / "sdist").glob("offtarget-*.tar.gz")),
+            "sdist_wheel": next((work / "wheels-from-sdist").glob("offtarget-*.whl")),
             "env": {"PATH": "/usr/bin:/bin", "HOME": str(work)}}
 
 
@@ -271,8 +289,31 @@ def test_wheel_carries_the_licence_and_the_notices(installed):
     assert any(n.endswith("THIRD_PARTY_NOTICES.md") for n in names)
 
 
+def _contents(wheel: Path) -> dict:
+    z = zipfile.ZipFile(wheel)
+    return {n: z.read(n) for n in z.namelist() if ".dist-info/" not in n}
+
+
+def test_the_sdist_alone_builds_the_same_wheel(installed):
+    """The sdist's include list (pyproject.toml) holds every file the build hook reads."""
+    a, b = _contents(installed["wheel"]), _contents(installed["sdist_wheel"])
+    assert sorted(a) == sorted(b)
+    assert [n for n in a if a[n] != b[n]] == []
+
+
+def test_the_sdist_holds_only_what_the_build_reads(installed):
+    import tarfile
+    names = [n.split("/", 1)[1] for n in tarfile.open(installed["sdist"]).getnames() if "/" in n]
+    tops = {n.split("/")[0] for n in names}
+    assert tops <= {"offload", "catalog", "data", "site", "tools", "hatch_build.py", "pyproject.toml", "README.md",
+                    "LICENSE", "THIRD_PARTY_NOTICES.md", "PKG-INFO", ".gitignore"}, sorted(tops)
+    bad = [n for n in names if n.startswith(("data/reports", "data/findings/proposed", "tests/", ".github"))
+           or "holdout" in n or "sealed" in n or "/drafts" in n]
+    assert not bad, bad[:5]
+
+
 def test_version_and_help_work_installed(installed):
-    assert offload(installed, "--version").stdout.strip() == "offload 0.1.0"
+    assert offload(installed, "--version").stdout.strip() == f"offload {VERSION}"
     for c in ("can-use", "issues"):
         assert offload(installed, c, "--help").stdout.startswith(f"usage: offload {c}")
 

@@ -22,7 +22,7 @@ Read in this order. Paths are relative to this folder.
 10. [tooling/contributing](tooling/contributing.md) has the standing rules and the steps for adding a finding, a compiler or a campaign. The linter and its tooling are kept on the `linter` branch.
 11. [tooling/regenerate](tooling/regenerate.md) lists every generated file with its inputs and how to check that it is current.
 12. [tooling/site](tooling/site.md) explains how the website is built from the findings.
-13. [tooling/publishing](tooling/publishing.md) explains how the site is deployed.
+13. [tooling/publishing](tooling/publishing.md) explains how the site is deployed and the package is released.
 
 ## The maintainers' own machines
 
