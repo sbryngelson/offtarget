@@ -6,7 +6,7 @@ Run this from the repository root:
 
 `-n auto` needs pytest-xdist (`tools/repo/test_requirements.txt`). The suite is about 5700 small checks. It takes some 15 minutes on one core and a couple of minutes on sixteen. Without xdist, run the folder you changed. `-m "not slow"` leaves out the 121 tests that build the site data or the data bundle, install the package or compare committed files with measurements. The `check` workflow runs all of them.
 
-`pytest.ini` puts the root and `tests/` on the path. Add `-rs` to list the skips. Tests marked `gpu` need a GPU on the node and run by default, and `-m "not gpu"` leaves them out. Do not run compilers or tests on login nodes.
+`pyproject.toml` (`[tool.pytest.ini_options]`) puts the root and `tests/` on the path. Add `-rs` to list the skips. Tests marked `gpu` need a GPU on the node and run by default, and `-m "not gpu"` leaves them out. Do not run compilers or tests on login nodes.
 
 The full lane copies the tree to the A100 host and runs the suite there with xdist, using `tools/lanes/wingtip_offline.sh tests [FILE...]`. The test ids it leaves for Tuolumne are listed in the run's `tuolumne.txt`, and `tools/lanes/run_tioga_suite.sh` runs most of them on Tioga. `docs/tooling/contributing.md` and `docs/tooling/wingtip.md` give the details.
 

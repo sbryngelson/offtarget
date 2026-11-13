@@ -1,20 +1,58 @@
 [build-system]
-requires = ["setuptools>=61", "pyyaml"]
-build-backend = "setuptools.build_meta"
+# hatchling 1.27: license-files (PEP 639); pyyaml: the build hook (hatch_build.py) builds the bundled data with offload's own code
+requires = ["hatchling>=1.27", "pyyaml"]
+build-backend = "hatchling.build"
 
 [project]
 name = "offtarget"
-version = "0.1.0"
+# read from offload/__init__.py (__version__), the one place it is written
+dynamic = ["version"]
 description = "Known OpenMP and OpenACC offload compiler problems: look up support, search issues"
+readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{ name = "Spencer H. Bryngelson" }]
+keywords = ["openmp", "openacc", "gpu", "offload", "compiler", "fortran"]
 dependencies = ["pyyaml"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Fortran",
+    "Programming Language :: C",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Compilers",
+]
 
 [project.scripts]
 offload = "offload.cli:main"
 
-[tool.setuptools]
-license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+[project.urls]
+Homepage = "https://sbryngelson.github.io/offtarget/"
+Repository = "https://github.com/sbryngelson/offtarget"
+Issues = "https://github.com/sbryngelson/offtarget/issues"
 
-[tool.setuptools.packages.find]
-include = ["offload*"]
+[tool.hatch.version]
+path = "offload/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["offload"]
+# the package's READMEs describe the source tree; the wheel carries code and offload/_root only
+exclude = ["README.md"]
+
+# copies the data an installed offload needs into offload/_root (offload/_bundle.py)
+[tool.hatch.build.targets.wheel.hooks.custom]
+path = "hatch_build.py"
+
+[tool.pytest.ini_options]
+pythonpath = [".", "tests"]
+testpaths = ["tests"]
+markers = [
+    "gpu: needs the GPU on this node (runs by default)",
+    "gfortran: runs the gfortran base-language checker (runs by default)",
+    "slow: builds the site data or the bundle, installs the package, or checks the committed data against measurements (runs by default; -m \"not slow\" leaves them out)",
+]

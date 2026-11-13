@@ -212,7 +212,7 @@ def test_every_maintainers_path_in_a_tracked_text_file_exists_or_is_listed_as_hi
 # ---- What a visitor sees at the top of the repository, and nothing heavy outside the data directories ----
 
 
-ALLOWED = {"README.md", "CONTRIBUTING.md", "CLAUDE.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml", "setup.py", "pytest.ini", ".gitignore",
+ALLOWED = {"README.md", "CONTRIBUTING.md", "CLAUDE.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml", "hatch_build.py", ".gitignore",
            ".github", "offload", "docs", "catalog", "data", "site", "tests", "tools", "corpus"}
 DATA = ("catalog/", "data/")
 
