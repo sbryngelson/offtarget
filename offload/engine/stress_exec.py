@@ -121,9 +121,8 @@ def _step(cmd: str, tag: str, mem_kib: int, limit_s: int = 900) -> str:
     will not be timed out" (coreutils). The driver's children (front end,
     optimizer, clang -cc1, ...) stay in the run's process group and die by
     the harness's group kill; when the Python runner itself dies, that kill
-    comes from the harness's outer ``timeout --kill-after`` around the
-    script (offload/engine/harness.py ``_command``, commit 2e0124c), which
-    signals the whole group. So a hung compiler and its children are
+    comes from the run's watchdog (offload/engine/harness.py
+    ``watch_group``), which signals the whole group. So a hung compiler and its children are
     bounded only together with the harness, not by this timeout alone."""
     return (f"( ulimit -v {mem_kib}; /usr/bin/time -f "
             f"'STRESS_TIME {tag} %M %e rc=%x' {TIMEOUT} "

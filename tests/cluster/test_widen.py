@@ -126,6 +126,7 @@ def test_scope_and_rules():
 
 
 @pytest.mark.gfortran
+@pytest.mark.needs_gcc
 def test_base_language():
     if shutil.which("gfortran") is None or shutil.which("gcc") is None:
         pytest.skip("gfortran or gcc not found")

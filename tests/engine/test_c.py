@@ -591,6 +591,7 @@ def test_illegal_c_programs_violate_exactly_their_rule(programs):
 
 
 @pytest.mark.gfortran
+@pytest.mark.needs_gcc
 def test_c_programs_are_c11(programs):
     # the base-language checker: gcc -std=c11 -pedantic-errors
     # -fsyntax-only, no -fopenmp (pragmas ignored), against OMP_H_STUB

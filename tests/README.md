@@ -2,7 +2,7 @@
 
 Run this from the repository root:
 
-    python3 -I -m pytest -q -n auto
+    python3 -I -m pytest -q -n auto -m "not gpu"
 
 `-n auto` needs pytest-xdist (`tools/repo/test_requirements.txt`). The suite is about 5700 small checks. It takes some 15 minutes on one core and a couple of minutes on sixteen. Without xdist, run the folder you changed. `-m "not slow"` leaves out the 121 tests that build the site data or the data bundle, install the package or compare committed files with measurements. The `check` workflow runs all of them.
 
@@ -37,4 +37,4 @@ The files directly in `tests/` cover the two commands, the package bundle, the t
 
 The tests read a made-up user's machines and lanes (`tests/data/local_settings.yaml`), not yours. The tests that run a real compiler need its install path. Put your own settings file (based on `catalog/local.example.yaml`) in `OFFLOAD_TEST_LOCAL`.
 
-Tests that need git-ignored inputs carry `needs_spec`, `needs_corpus("name")` or `needs_results("path", ...)`. Tests that need the benchmark sets, an old commit or an installed compiler carry `needs_bench("path", ...)`, `needs_commit("rev")` or `needs_compiler("toolchain")`. `conftest.py` skips them and names what is missing. A test with no marker that fails only because a file under `spec/`, `results/` or `corpus/` is absent is reported as skipped in the same way. The tests that `tools/lanes/wingtip_offline.yaml` leaves for an AMD GPU node (`tuolumne_tests`) skip on a machine without the AFAR compiler or with another GPU. `docs/tooling/setup.md` says how to obtain the inputs.
+Tests that need git-ignored inputs carry `needs_spec`, `needs_corpus("name")` or `needs_results("path", ...)`. Tests that need the benchmark sets, an old commit or an installed compiler carry `needs_bench("path", ...)`, `needs_commit("rev")` or `needs_compiler("toolchain")`. Tests that use Linux process control (`/proc`, `setsid`, GNU `time`) carry `needs_linux("what")`, and the base-language checks that need GNU gcc as `gcc` carry `needs_gcc`. `conftest.py` skips them and names what is missing. A test with no marker that fails only because a file under `spec/`, `results/` or `corpus/` is absent is reported as skipped in the same way. The tests that `tools/lanes/wingtip_offline.yaml` leaves for an AMD GPU node (`tuolumne_tests`) skip on a machine without the AFAR compiler or with another GPU. `docs/tooling/setup.md` says how to obtain the inputs.

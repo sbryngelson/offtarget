@@ -115,7 +115,7 @@ that compiles them.
 ## Stage 3 (`b3`, group alloc)
 
 Two generator defects were found here and fixed before the findings
-below (commits `04ba2e1`, `7477ac9`; the 41 affected programs were rerun
+below (the 41 affected programs were rerun
 and their earlier results discarded): a scalar dummy declared
 `intent(in)` while its kernel mapped it `tofrom`, and a `present`
 modifier on a pointer component (the data region maps the structure,
@@ -144,7 +144,7 @@ giving its wrong value when rerun, so it was not reproduced; 11 (CCE 20)
 has a present modifier, which elision does not apply to. Withdrawn: `b3-92` (the minimizer had deleted the explicit map of the
 pointer component `dr%pc`, which leaves its association undefined; the
 minimizer now keeps the maps of structure elements and pointer
-components, commit `a67402a`).
+components).
 
 ## Stage 4 (`b4`, group declare)
 

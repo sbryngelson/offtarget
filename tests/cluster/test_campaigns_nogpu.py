@@ -731,8 +731,14 @@ def test_the_budget_is_a_hard_stop_and_c_reuses_a_path(tmp_path,
     GPU-hours, scales the limits with its workers, and runs (c) in the
     path of the recorded (a)."""
     import argparse
+    import concurrent.futures
+    import functools
     import json
+    import multiprocessing
     T = _tool()
+    # the workers must see this test's patches: forked, whatever the platform's default start method
+    monkeypatch.setattr(concurrent.futures, "ProcessPoolExecutor", functools.partial(
+        concurrent.futures.ProcessPoolExecutor, mp_context=multiprocessing.get_context("fork")))
     out = tmp_path / "gate"
     monkeypatch.setattr(T, "OUT", out)
     monkeypatch.setattr(T, "LEDGER", out / "ledger.jsonl")
