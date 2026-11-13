@@ -251,8 +251,9 @@ def commit_names(log: str) -> set[str]:
 @functools.lru_cache(maxsize=None)
 def private_names() -> tuple[str, ...]:
     """The user names nothing published may contain, taken from where they are, never written down: each
-    committer's e-mail name (git), this account's login, and OFFLOAD_PRIVATE_NAMES (comma-separated; the
-    tests use it). A trailing number is dropped, so jdoe also stands for jdoe1 and sjdoe3."""
+    committer's e-mail name (git), this account's login, the author's handle (AUTHOR; a shallow or merge-commit
+    checkout may have no commit of the author's) and OFFLOAD_PRIVATE_NAMES (comma-separated; the tests use it).
+    A trailing number is dropped, so jdoe also stands for jdoe1 and sjdoe3."""
     import getpass
     import os
     import subprocess
@@ -266,6 +267,7 @@ def private_names() -> tuple[str, ...]:
         names.add(getpass.getuser())
     except (KeyError, OSError):
         pass
+    names.add(AUTHOR[1].rsplit("/", 1)[1])
     names |= {n.strip() for n in os.environ.get("OFFLOAD_PRIVATE_NAMES", "").split(",")}
     generic = {"root", "runner", "user", "ubuntu", "github", "trial", "noreply", "admin", "builder", "test", "tests", "testing", "example", "actions"}
     return tuple(sorted({re.sub(r"\d+$", "", n) for n in names if len(n) >= 4 and n.lower() not in generic}))
