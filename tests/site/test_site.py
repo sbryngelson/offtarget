@@ -230,6 +230,27 @@ console.log(JSON.stringify(sorted([mk('ice-reg', 'compile', true), mk('wrong', '
     assert json.loads(out[0]) == ["wrong", "ice-reg"]
 
 
+def test_the_default_sort_puts_confirmed_legality_before_contested_among_wrong_answers():
+    """Among wrong answers, confirmed (or supported) legality comes first, then unconfirmed, then
+    contested, before regressions and reach; the compiler pages' order agrees."""
+    out = _js("""
+S = fromQuery('?fam=cce');
+const v = (reg) => ({versions: ['cce21'], targets: ['mi300a-u'], status: 'open', status_version: null, regression: reg});
+const mk = (id, legality, reg) => ({id, defect: id, kind: 'incorrect', kinds: ['incorrect'], phase: 'offload',
+  lang: 'f90', model: 'omp', title: id, constructs: [], regression: reg, legality, fams: {cce: v(reg)}});
+console.log(JSON.stringify(sorted([mk('contested-reg', 'contested', true), mk('unconf', 'unconfirmed', false),
+  mk('conf', 'confirmed', false), mk('supp', 'supported', true)]).map((i) => i.id)));
+""")
+    assert json.loads(out[0]) == ["supp", "conf", "unconf", "contested-reg"]
+    from offload.engine.site import data as D
+    mk = lambda i, legality, reg: {"id": i, "title": i, "phase": "offload", "kind": "incorrect",  # noqa: E731
+                                   "kinds": ["incorrect"], "regression": reg, "legality": legality,
+                                   "fams": {"cce": {"versions": ["cce21"], "targets": ["mi300a-u"]}}}
+    got = D.fixed_order([mk("contested-reg", "contested", True), mk("unconf", "unconfirmed", False),
+                         mk("conf", "confirmed", False), mk("supp", "supported", True)], "cce")
+    assert [i["id"] for i in got] == ["supp", "conf", "unconf", "contested-reg"]
+
+
 def test_search_covers_messages_and_ranks_title_then_constructs():
     out = _js("""
 S = fromQuery('?fam=cce&q=mapinfo');

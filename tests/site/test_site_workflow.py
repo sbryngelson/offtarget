@@ -146,7 +146,8 @@ def test_the_requirements_are_pinned_and_small():
     req = next(p for p in PATHISH.findall(WORKFLOW.read_text()) if p.endswith("requirements.txt"))
     lines = [l.strip() for l in (ROOT / req).read_text().splitlines() if l.strip() and not l.startswith("#")]
     assert lines and all(re.match(r"^[A-Za-z0-9_.-]+==\d", l) for l in lines), lines
-    assert {l.split("==")[0].lower() for l in lines} == {"pyyaml", "pytest"}
+    # pytest-xdist runs the site tests in parallel (-n auto), so a deploy takes minutes, not ten
+    assert {l.split("==")[0].lower() for l in lines} == {"pyyaml", "pytest", "pytest-xdist"}
 
 
 def test_the_publish_script_is_the_one_command():

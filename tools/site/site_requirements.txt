@@ -2,3 +2,4 @@
 # .github/workflows/site.yml). Pinned; the rest is the standard library.
 pyyaml==6.0.2
 pytest==8.3.5
+pytest-xdist==3.6.1

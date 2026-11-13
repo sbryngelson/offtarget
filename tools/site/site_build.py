@@ -271,7 +271,7 @@ def compiler_page(c, issues, root):
                           f'<ul>{"".join(item(i) for i in mine)}</ul></section>')
     return (f'<h1>{e(c["label"])}</h1><p class="sub">{len(defects)} observed issues; '
             f'{len(c["regressions"])} regressions from the previous version, marked below. Most serious first: wrong '
-            'results, then regressions, then how widely an issue fails.</p>'
+            'results, then issues whose legality is settled, then regressions, then how widely an issue fails.</p>'
             f'<p><a href="{root}index.html?fam={fam}&amp;vers={quote(pill(c["tc"]))}&amp;st={LIST_ST}">'
             'See them in the issue list</a></p>'
             + "".join(groups) +

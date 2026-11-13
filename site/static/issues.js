@@ -84,6 +84,11 @@ function searchRank(i, q) {
 // Wrong answers: an issue of the offload phase that appears to behave incorrectly.
 function wrongAnswer(i) { return i.phase === 'offload' && (i.kinds || [i.kind]).includes('incorrect'); }
 
+// How settled an issue's legality is: confirmed or supported, then unconfirmed, then contested
+// (offload/engine/site/data.py LEGALITY_RANK).
+const LEGALITY_RANK = { confirmed: 2, supported: 2, unconfirmed: 1, contested: 0 };
+function legalityRank(i) { return LEGALITY_RANK[i.legality] ?? 1; }
+
 function sorted(rows) {
   // newest failing version: 0 when an issue fails on the newest release of a family it is shown
   // under, -1 on the one before, and so on
@@ -96,7 +101,7 @@ function sorted(rows) {
   const q = S.q.trim().toLowerCase();
   const rank = (a, b) => (q ? searchRank(a, q) - searchRank(b, q) : 0);
   const by = {
-    fixed: (a, b) => wrongAnswer(b) - wrongAnswer(a) || (regression(b) - regression(a))
+    fixed: (a, b) => wrongAnswer(b) - wrongAnswer(a) || legalityRank(b) - legalityRank(a) || (regression(b) - regression(a))
       || reach(b) - reach(a) || a.title.localeCompare(b.title),
     version: (a, b) => newest(b) - newest(a) || a.title.localeCompare(b.title),
     construct: (a, b) => (a.constructs[0] || '').localeCompare(b.constructs[0] || '') || a.title.localeCompare(b.title),
@@ -224,7 +229,7 @@ function render() {
   const list = document.getElementById('list');
   list.replaceChildren(...(rows.length ? rows.map(row) : [el('p', { class: 'sub', style: 'padding:16px' }, 'No issues match these filters.')]));
   document.getElementById('sorts').replaceChildren(el('span', { class: 'small' }, 'Sort by'),
-    ...[['fixed', 'Wrong answers, regressions, reach'], ['version', 'Newest failing version'], ['construct', 'Construct']]
+    ...[['fixed', 'Wrong answers, legality, regressions, reach'], ['version', 'Newest failing version'], ['construct', 'Construct']]
       .map(([k, l]) => el('button', { type: 'button', class: 'btn', 'aria-pressed': String(S.sort === k),
         'data-key': 'sort', 'data-value': k, onclick: () => set({ sort: k }) }, l)),
     el('button', { type: 'button', class: 'btn', id: 'copy-link', 'data-key': 'copy', onclick: copyLink },

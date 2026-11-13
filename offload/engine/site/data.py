@@ -516,15 +516,21 @@ def _read(path: Path) -> str:
     return path.read_text(errors="replace") if path.is_file() else ""
 
 
+# how settled an issue's legality is (the list's sort, site/static/issues.js LEGALITY_RANK)
+LEGALITY_RANK = {"confirmed": 2, "supported": 2, "unconfirmed": 1, "contested": 0}
+
+
 def fixed_order(issues: list[dict], fam: str, regressions: set | None = None) -> list[dict]:
     """The spec's fixed order: wrong answers first (an offload-phase issue that appears to
-    behave incorrectly), then regressions, then reach (versions and targets it fails on in
-    the family), then title."""
+    behave incorrectly), then how settled its legality is (confirmed or supported, unconfirmed,
+    contested), then regressions, then reach (versions and targets it fails on in the family),
+    then title."""
     def key(i):
         v = i["fams"].get(fam) or {"versions": [], "targets": []}
         wrong = i["phase"] == "offload" and "incorrect" in i.get("kinds", [i["kind"]])
         reg = i["id"] in regressions if regressions is not None else i["regression"]
-        return (not wrong, not reg, -(len(v["versions"]) + len(v["targets"])), i["title"])
+        return (not wrong, -LEGALITY_RANK.get(i.get("legality"), 1), not reg,
+                -(len(v["versions"]) + len(v["targets"])), i["title"])
     return sorted(issues, key=key)
 
 
