@@ -151,7 +151,9 @@ class _Quiet(http.server.SimpleHTTPRequestHandler):
         pass
 
 
-def check(site: Path, allow: tuple[str, ...] = ()) -> dict:
+def check(site: Path, allow: tuple[str, ...] = (), clicks: bool = True) -> dict:
+    """Links, leaks, and in headless Chrome every page at two widths; with `clicks`, also every
+    control of the issue list (a test of one page-load detector passes clicks=False)."""
     site = Path(site).resolve()
     problems = link_problems(site) + file_leaks(site, allow)
     srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0),
@@ -164,7 +166,7 @@ def check(site: Path, allow: tuple[str, ...] = ()) -> dict:
     try:
         for width in (1280, 420):
             r = subprocess.run(["node", str(ROOT / "tools/site/site_check.mjs"), base, str(width), chrome(),
-                                json.dumps(pages)], capture_output=True, text=True, timeout=900)
+                                json.dumps(pages)] + ([] if clicks else ["noclicks"]), capture_output=True, text=True, timeout=900)
             rep = json.loads(r.stdout.strip().splitlines()[-1]) if r.stdout.strip() else {"fatal": r.stderr[-400:]}
             if "fatal" in rep:
                 problems.append(f"{width}px: {rep['fatal']}")

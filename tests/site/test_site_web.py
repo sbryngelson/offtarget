@@ -54,15 +54,16 @@ def test_check_passes_fixture_site(site):  # noqa: F811
 def test_check_flags_sideways_scroll(site):  # noqa: F811
     p = site / "method.html"
     p.write_text(p.read_text().replace("</main>", '<div style="width:3000px">wide</div></main>'))
-    report = SC.check(site)
+    report = SC.check(site, clicks=False)        # a page-load check: the list's click loop is not needed
     assert any("sideways" in x and "method.html" in x for x in report["problems"])
+    assert report["controls"] == 0
 
 
 @pytest.mark.skipif(not HAVE_BROWSER, reason="needs node and Chrome")
 def test_check_reads_a_large_report(site):  # noqa: F811
     p = site / "method.html"
     p.write_text(p.read_text().replace("</main>", "<p>" + "word " * 40000 + "</p></main>"))
-    report = SC.check(site)
+    report = SC.check(site, clicks=False)
     assert report["problems"] == [], report["problems"]
 
 
@@ -71,7 +72,7 @@ def test_check_flags_stringified_objects(site):  # noqa: F811
     # an array or element appended as text renders "[object HTMLButtonElement]"
     p = site / "method.html"
     p.write_text(p.read_text().replace("</main>", "<p>[object HTMLButtonElement]</p></main>"))
-    report = SC.check(site)
+    report = SC.check(site, clicks=False)
     assert any("[object" in x and "method.html" in x for x in report["problems"])
 
 

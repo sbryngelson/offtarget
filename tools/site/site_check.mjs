@@ -10,7 +10,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 
-const [base, width, chromeBin, pagesJson] = process.argv.slice(2);
+const [base, width, chromeBin, pagesJson, mode] = process.argv.slice(2);
+const clicks = mode !== 'noclicks';    // noclicks: the pages only, not the issue list's click loop
 const pages = JSON.parse(pagesJson);
 const prof = mkdtempSync(join(tmpdir(), 'sitechk-'));
 // Chrome leads its own process group (detached), so that `done` can end every process it
@@ -79,7 +80,8 @@ async function open(path, again = true) {
   logs = [];
   await send('Page.navigate', { url: base + path });
   for (let i = 0; i < 80; i++) { if (await ev('document.readyState === "complete"').catch(() => false)) break; await sleep(250); }
-  await sleep(800);
+  // a page with scripts gets time for late errors and fetched data; a static page has none to wait for
+  await sleep((await ev('document.scripts.length').catch(() => 1)) ? 800 : 50);
   if (again && logs.length && logs.every((l) => DROPPED.test(l))) await open(path, false);
 }
 const state = () => ev(`(() => ({ scrollW: document.documentElement.scrollWidth, innerW: innerWidth,
@@ -108,7 +110,7 @@ for (const path of pages) {
     for (let i = 0; i < 40 && !(await ev('location.pathname').catch(() => '')).endsWith('index.html'); i++) await sleep(50);
     rec.landed = await ev('location.pathname + location.search').catch(() => '');
   }
-  if (path === 'index.html') {
+  if (path === 'index.html' && clicks) {
     await openList('index.html');
     rec.specRows = await ev(`[...document.querySelectorAll("#list .item")].map((a) => [a.getAttribute("href"),
       (a.querySelector(".spec") || { textContent: "" }).textContent])`);
