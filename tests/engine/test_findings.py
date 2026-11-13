@@ -1370,6 +1370,7 @@ def test_harness_refuses_nvhpc_on_an_amd_node(monkeypatch):
     assert harness.wrong_arch(NV) is None
 
 
+@pytest.mark.needs_linux("setsid")
 def test_direct_scheduler_runs_detached_and_reports_state(tmp_path):
     """The no-scheduler runner behind the job interface."""
     import time

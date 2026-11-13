@@ -570,15 +570,22 @@ def test_runtime_loader_failure_is_harness_error():
 
 
 def _alive(pid: int) -> bool:
+    """`pid` has not exited (a zombie has): /proc where there is one, else ps."""
+    import os
+    import subprocess
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
         return False
-    stat = Path(f"/proc/{pid}/stat")
-    try:  # a zombie is dead for our purpose
-        return stat.read_text().split(") ", 1)[1][0] != "Z"
-    except (FileNotFoundError, IndexError):
-        return False
+    except PermissionError:
+        pass
+    if Path("/proc/self").exists():
+        try:
+            return Path(f"/proc/{pid}/stat").read_text().split(") ", 1)[1][0] != "Z"
+        except (OSError, IndexError):
+            return False
+    st = subprocess.run(["ps", "-o", "stat=", "-p", str(pid)], capture_output=True, text=True).stdout.strip()
+    return bool(st) and not st.startswith("Z")
 
 
 def test_timeout_is_wrong_answer_with_reason(tmp_path):
@@ -1377,11 +1384,7 @@ def test_c_math_programs_link_libm():
     assert with_libm(with_libm(tc, p), p).extra.split().count("-lm") == 1
 
 
-def _pid_alive(pid: int) -> bool:
-    try:
-        return open(f"/proc/{pid}/stat").read().split()[2] != "Z"
-    except OSError:
-        return False
+_pid_alive = _alive
 
 
 def test_a_run_dies_with_its_runner(tmp_path):
@@ -1500,6 +1503,7 @@ def _watchdogs(own: bool = False) -> list[int]:
     return out
 
 
+@pytest.mark.needs_linux("/proc")
 @pytest.mark.parametrize("runner", ["alive", "gone"])
 def test_the_watchdog_itself_ends_a_term_ignoring_group(tmp_path, runner):
     """The watchdog alone (not the
@@ -1549,6 +1553,7 @@ def test_the_watchdog_itself_ends_a_term_ignoring_group(tmp_path, runner):
     assert dog.proc.pid not in _watchdogs()
 
 
+@pytest.mark.needs_linux("/proc")
 def test_no_watchdog_outlives_a_run(tmp_path):
     from offload.engine import harness
     before = set(_watchdogs(own=True))
@@ -1557,6 +1562,7 @@ def test_no_watchdog_outlives_a_run(tmp_path):
     assert set(_watchdogs(own=True)) <= before
 
 
+@pytest.mark.needs_linux("/proc")
 def test_own_watchdogs_sees_a_watchdog_left_running(tmp_path):
     """The check above still catches a leak: a watchdog this process
     started and did not stop is counted."""

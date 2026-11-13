@@ -17,9 +17,11 @@ The full list, with the test for each, is in "Standing rules" of docs/tooling/co
 
 ## Commands
 
-    python3 -I -m pytest -q -n auto           # the tests; needs pytest-xdist (tools/repo/test_requirements.txt)
+    python3 -I -m pytest -q -n auto -m "not gpu"   # the tests; needs pytest-xdist (tools/repo/test_requirements.txt)
     python3 -I tools/repo/check_findings.py   # findings against their recorded rows
     python3 -I tools/regenerate.py --check    # every generated file is current
+
+The tool itself runs as `python3 -m offload` from the root: `-I` drops the checkout from the import path.
 
 Do not trim tests to make the suite faster. Share or cache the expensive setup instead. A fresh clone has no `results/`, `corpus/` or `spec/`. Tests that need them skip and say so ([docs/tooling/setup.md](docs/tooling/setup.md)).
 

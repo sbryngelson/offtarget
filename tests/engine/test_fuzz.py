@@ -678,16 +678,22 @@ def test_shrinker_keeps_the_wrong_kernels(monkeypatch):
 
 
 def _alive(pid: int) -> bool:
+    """`pid` has not exited (a zombie has): /proc where there is one, else ps."""
     import os
+    import subprocess
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
         return False
-    try:  # a zombie of an exited group member is not running
-        st = open(f"/proc/{pid}/stat").read().split()[2]
-        return st != "Z"
-    except OSError:
-        return False
+    except PermissionError:
+        pass
+    if Path("/proc/self").exists():
+        try:
+            return Path(f"/proc/{pid}/stat").read_text().split(") ", 1)[1][0] != "Z"
+        except (OSError, IndexError):
+            return False
+    st = subprocess.run(["ps", "-o", "stat=", "-p", str(pid)], capture_output=True, text=True).stdout.strip()
+    return bool(st) and not st.startswith("Z")
 
 
 @pytest.mark.parametrize("how", ["run_group", "execute"])
@@ -854,6 +860,7 @@ def test_run_scripts_carry_the_limit_inside_the_job(tmp_path):
     assert ex.rc == 124
 
 
+@pytest.mark.needs_linux("GNU time -f")
 def test_inner_timeouts_do_not_escape_the_group_kill(tmp_path):
     """F5: the structure build_script emits (a step
     under the in-job timeout) whose compiler leaves a grandchild that

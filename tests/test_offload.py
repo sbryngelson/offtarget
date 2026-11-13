@@ -266,7 +266,8 @@ def test_wheel_has_no_sealed_withheld_or_log_files(installed):
 
 def test_wheel_carries_the_licence_and_the_notices(installed):
     names = zipfile.ZipFile(installed["wheel"]).namelist()
-    assert any(n.endswith(".dist-info/LICENSE") for n in names)
+    # setuptools 77 and later put the licence files under .dist-info/licenses/ (PEP 639)
+    assert any(n.endswith((".dist-info/LICENSE", ".dist-info/licenses/LICENSE")) for n in names)
     assert any(n.endswith("THIRD_PARTY_NOTICES.md") for n in names)
 
 

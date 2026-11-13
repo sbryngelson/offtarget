@@ -71,7 +71,7 @@ case "${1:-}" in
       -c conda-forge --override-channels python=3.13.2 pip || exit 3
     nice -n 10 timeout --kill-after=10 900 "$PY" -m pip install -q \
       PyYAML==6.0.2 numpy==2.1.2 scipy==1.15.3 pytest==8.3.4 pluggy==1.5.0 \
-      pytest-xdist==3.6.1 || exit 3
+      pytest-xdist==3.6.1 setuptools==80.9.0 || exit 3
     exit 0 ;;
 esac
 

@@ -8,11 +8,14 @@ commit of history. A marked test skips, naming what is missing.
     @pytest.mark.needs_bench("wild/cases.yaml", ...)   # files under data/bench
     @pytest.mark.needs_commit("a125ad9")    # a commit of this repository's history
     @pytest.mark.needs_compiler("afar")     # the toolchain's compiler, where the local settings say it is
+    @pytest.mark.needs_linux("/proc")       # Linux; the argument says what of it the test uses
+    @pytest.mark.needs_gcc                  # GNU gcc as `gcc` (on macOS `gcc` is clang)
 """
 import functools
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
@@ -54,6 +57,8 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "needs_commit: needs a commit of the history (not in the public repository)")
     config.addinivalue_line("markers", "needs_compiler: needs a toolchain's compiler installed "
                             "(catalog/local.example.yaml)")
+    config.addinivalue_line("markers", "needs_linux(what): needs Linux (/proc, setsid, GNU time, PR_SET_PDEATHSIG)")
+    config.addinivalue_line("markers", "needs_gcc: needs GNU gcc as `gcc` (the base-language checker)")
 
 
 def missing_inputs(item) -> list[str]:
@@ -78,6 +83,27 @@ def missing_inputs(item) -> list[str]:
     if m:
         miss += [lack for tc in m.args if (lack := _no_compiler(tc))]
     return miss + _missing_machine(item)
+
+
+@functools.lru_cache(maxsize=None)
+def _no_gnu_gcc() -> str | None:
+    """Why `gcc` is not GNU gcc (absent, or another compiler under that name, as on macOS); None when it is."""
+    try:
+        r = subprocess.run(["gcc", "-dM", "-E", "-x", "c", os.devnull], capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.SubprocessError):
+        return "gcc not found"
+    if "__GNUC__" not in r.stdout or "__clang__" in r.stdout:
+        return "`gcc` is not GNU gcc"
+    return None
+
+
+def _platform_lacks(item) -> str | None:
+    m = item.get_closest_marker("needs_linux")
+    if m and not sys.platform.startswith("linux"):
+        return f"needs Linux ({', '.join(m.args) or 'process control'}); this is {sys.platform}"
+    if item.get_closest_marker("needs_gcc") and (why := _no_gnu_gcc()):
+        return f"needs GNU gcc: {why}"
+    return None
 
 
 def _no_compiler(tc: str) -> str | None:
@@ -127,6 +153,9 @@ def pytest_collection_modifyitems(config, items):
 
 
 def pytest_runtest_setup(item):
+    lack = _platform_lacks(item)
+    if lack:
+        pytest.skip(lack)
     miss = missing_inputs(item)
     if miss:
         pytest.skip("needs inputs this clone lacks: " + ", ".join(miss) + " (docs/tooling/setup.md)")
