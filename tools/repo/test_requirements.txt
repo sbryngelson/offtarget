@@ -1,5 +1,6 @@
 # The Python packages the test workflow installs (.github/workflows/check.yml). Pinned to the versions the
-# maintainers' lane uses (tools/lanes/wingtip_offline_run.sh); the rest is the standard library.
+# maintainers' lane uses (tools/lanes/wingtip_offline_run.sh); the rest is the standard library. pyyaml, numpy and
+# scipy are Tuolumne's site Python's and move when Tuolumne's do (.github/dependabot.yml leaves them).
 pyyaml==6.0.2
 numpy==2.1.2
 scipy==1.15.3

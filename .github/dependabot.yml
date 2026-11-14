@@ -11,12 +11,23 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+  # pyyaml, numpy and scipy are Tuolumne's site Python's versions (the CPU lane tests what the cluster runs):
+  # they move by hand when Tuolumne's do, never here
   - package-ecosystem: pip
-    directories:
-      - /tools/repo
-      - /tools/site
+    directory: /tools/repo
+    schedule:
+      interval: monthly
+    ignore:
+      - dependency-name: pyyaml
+      - dependency-name: numpy
+      - dependency-name: scipy
+    groups:
+      test-tools:
+        patterns: ["*"]
+  - package-ecosystem: pip
+    directory: /tools/site
     schedule:
       interval: monthly
     groups:
-      python:
+      site-tools:
         patterns: ["*"]
