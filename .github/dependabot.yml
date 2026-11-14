@@ -1,0 +1,22 @@
+# Version updates (security alerts are on regardless). Every action is pinned to a commit with its version in a
+# comment, and the Python packages are pinned exactly; Dependabot moves both. A bump of
+# tools/repo/test_requirements.txt must also reach the PINS line of tools/lanes/wingtip_offline_run.sh
+# (tests/cluster/test_lanes.py checks).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: pip
+    directories:
+      - /tools/repo
+      - /tools/site
+    schedule:
+      interval: monthly
+    groups:
+      python:
+        patterns: ["*"]

@@ -883,3 +883,19 @@ def test_left_after_tioga_is_every_id_not_passed_there(tmp_path):
                            "tests/cluster/test_toolchains.py::test_device_smoke"
                            "[afar-1]",
                            "tests/engine/test_gen.py::test_y[50]"]
+
+
+# ---- the lane's Python packages are the test workflow's (tools/repo/test_requirements.txt says so) ---------------
+
+def _pins(text: str) -> dict:
+    return {re.sub(r"[-_.]+", "-", n).lower(): v for n, v in re.findall(r"([A-Za-z0-9_.-]+)==([^\s\"]+)", text)}
+
+
+def test_the_lane_pins_the_test_requirements():
+    """Dependabot bumps tools/repo/test_requirements.txt and cannot see the lane's PINS line: a bump fails here
+    until the lane carries it too."""
+    want = _pins((ROOT / "tools" / "repo" / "test_requirements.txt").read_text())
+    line = next(ln for ln in (ROOT / "tools" / "lanes" / "wingtip_offline_run.sh").read_text().splitlines()
+                if ln.strip().startswith("PINS="))
+    have = _pins(line)
+    assert want and {n: have.get(n) for n in want} == want
