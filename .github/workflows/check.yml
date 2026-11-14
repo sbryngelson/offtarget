@@ -13,7 +13,13 @@ permissions:
 
 jobs:
   tests:
-    runs-on: ubuntu-24.04
+    name: tests (${{ matrix.os }})
+    # macOS: the tests that need Linux process control or GNU gcc skip there (needs_linux, needs_gcc in tests/conftest.py)
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
       - name: Check out the repository
@@ -27,6 +33,7 @@ jobs:
           cache: pip
           cache-dependency-path: tools/repo/test_requirements.txt
       - name: Install gfortran
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gfortran
       - name: Install the Python packages
         run: python3 -m pip install -r tools/repo/test_requirements.txt
