@@ -35,6 +35,13 @@ jobs:
       - name: Install gfortran
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gfortran
+      - name: Install gfortran and the GNU tools the tests use (macOS)
+        # GNU timeout (coreutils), flock and rsync 3 (macOS ships openrsync), ahead of the system tools
+        if: runner.os == 'macOS'
+        run: |
+          brew install coreutils flock rsync gcc
+          echo "$(brew --prefix coreutils)/libexec/gnubin" >> "$GITHUB_PATH"
+          echo "$(brew --prefix rsync)/bin" >> "$GITHUB_PATH"
       - name: Install the Python packages
         run: python3 -m pip install -r tools/repo/test_requirements.txt
       - name: Check the findings against their recorded rows
