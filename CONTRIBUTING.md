@@ -102,7 +102,7 @@ the program lines it applies to, and your reasoning.
 
 ## Run the tests
 
-You need Python 3.10 or newer and the packages in `tools/repo/test_requirements.txt`, which include pytest-xdist
+You need Python 3.11 or newer (the installed `offload` runs on 3.10; the tests and the tooling use 3.11's `enum.StrEnum`) and the packages in `tools/repo/test_requirements.txt`, which include pytest-xdist
 for the parallel run the `check` workflow uses.
 
     python3 -m venv .venv

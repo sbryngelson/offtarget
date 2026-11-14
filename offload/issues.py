@@ -68,7 +68,7 @@ def _source(rec: dict) -> tuple[str, str]:
     rel = rec["id"]
     for f in sorted((ROOT / "data" / "findings").glob(rel + ".*")):
         if f.suffix != ".yaml":
-            return f"data/findings/{f.relative_to(ROOT / "data" / 'findings')}", f.read_text(errors="replace")
+            return f"data/findings/{f.relative_to(ROOT / 'data' / 'findings')}", f.read_text(errors="replace")
     return "", ""
 
 

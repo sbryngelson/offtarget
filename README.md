@@ -35,7 +35,7 @@ pip install offtarget
 offload --help
 ```
 
-From a checkout, `pip install .` installs it, and `python3 -m offload --help` runs it without installing; the first command then builds its data from the checkout, which takes about a minute.
+From a checkout (Python 3.11 or newer), `pip install .` installs it, and `python3 -m offload --help` runs it without installing; the first command then builds its data from the checkout, which takes about a minute.
 
 ## Where the answers come from
 
