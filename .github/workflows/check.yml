@@ -34,3 +34,68 @@ jobs:
         run: python3 -I tools/repo/check_findings.py
       - name: Run the tests
         run: python3 -I -m pytest -q -rs -m "not gpu" -n auto
+
+  # The package as a release builds it (.github/workflows/release.yml): the sdist, the wheel from the sdist, twine check.
+  package-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repository with its tags
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0   # hatch-vcs reads the version from the tags
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - name: Build the sdist, and the wheel from the sdist
+        run: |
+          python3 -m pip install build==1.6.1 twine==7.0.0
+          python3 -m build
+          python3 -m twine check --strict dist/*
+      - name: Keep the distributions for the install job
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dist
+          path: dist/
+
+  # That wheel on every Python the package claims (pyproject.toml requires-python, classifiers). Building needs 3.11
+  # (the build hook imports the engine, which uses enum.StrEnum); the wheel is pure Python and runs on 3.10.
+  package:
+    name: package (Python ${{ matrix.python }})
+    needs: package-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Compile the package
+        # validate.py (the confirmer, run by maintainers on 3.12 or newer) nests quotes in an f-string, which only 3.12
+        # parses; an edit there changes the confirmer's inputs hash (docs/tooling/regenerate.md)
+        run: python3 -m compileall -q -x 'offload/engine/confirm/validate\.py' offload
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist
+          path: dist/
+      - name: Install the wheel and run the commands
+        run: |
+          python3 -m venv /tmp/v
+          /tmp/v/bin/pip install dist/*.whl
+          cd /tmp
+          /tmp/v/bin/offload --version
+          /tmp/v/bin/offload can-use clause.map.present > /dev/null
+          /tmp/v/bin/offload can-use --list > /dev/null
+          /tmp/v/bin/offload issues > /dev/null
+          /tmp/v/bin/offload issues map present > /dev/null
+          /tmp/v/bin/offload issues --show nvhpc-c-map-present-ignored > /dev/null
