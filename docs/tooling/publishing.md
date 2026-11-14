@@ -145,15 +145,16 @@ Nothing in the repository does these steps.
 
 # Releasing the package
 
-`.github/workflows/release.yml` builds `offtarget` and uploads it to PyPI by Trusted Publishing, with no stored
-token. It runs only on a pushed `v*` tag or a manual dispatch, never on a push to a branch.
+`.github/workflows/release.yml` builds `offtarget`, uploads it to PyPI by Trusted Publishing, with no stored
+token, and then creates the GitHub release for the tag. It runs only on a pushed `v*` tag or a manual dispatch,
+never on a push to a branch; a manual dispatch creates no GitHub release.
 
 | piece | role |
 |---|---|
 | `pyproject.toml` | the version is the tag (`v0.2.0` gives `0.2.0`), read by hatch-vcs; an untagged build is `X.Y.Z.devN`. The sdist's include list names what the build hook reads and nothing else |
 | `hatch_build.py` | puts the data an installed `offload` reads into the wheel (`offload/_bundle.py`) |
 | `tests/test_offload.py` | builds the wheel and the sdist, builds a second wheel from the sdist alone, and checks that the two match, that the sdist holds no drafts, sealed-set lists or tests, and that the installed command works |
-| `release.yml` | builds the sdist and the wheel from it, runs `twine check --strict`, installs the wheel and checks that `offload --version` matches the tag, then uploads |
+| `release.yml` | builds the sdist and the wheel from it, runs `twine check --strict`, installs the wheel and checks that `offload --version` matches the tag, then uploads. After the upload to PyPI, it creates the GitHub release for the tag (`gh release create`, notes generated from the merged pull requests) with the same sdist and wheel attached |
 
 ## Turning it on
 
