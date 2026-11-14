@@ -144,7 +144,7 @@ T0=$(date +%s)
 nice -n 10 timeout --kill-after=10 "$LIMIT" ${PRE[@]+"${PRE[@]}"} "${CMD[@]}" "$@"
 rc=$?
 echo "exit $rc after $(( $(date +%s) - T0 )) s at $(date -Is)"
-if [ -n "${PRE[*]}" ]; then
+if [ -n "${PRE[*]+${PRE[*]}}" ]; then   # bash before 4.4 calls an empty array unbound under set -u
   if ! "$PY" -I tools/lanes/wingtip_offline.py exec-check .offline/trace >&2 &&
      [ "$GUARD" = 1 ] && [ "$rc" = 0 ]; then
     echo "the step ran a compiler or tried a program wingtip does not have: it belongs on Tuolumne (exit 3)" >&2
