@@ -34,7 +34,7 @@ classifiers = [
 offload = "offload.cli:main"
 
 [project.urls]
-Homepage = "https://sbryngelson.github.io/offtarget/"
+Homepage = "https://offtarget.sh"
 Repository = "https://github.com/sbryngelson/offtarget"
 Issues = "https://github.com/sbryngelson/offtarget/issues"
 

@@ -1,6 +1,6 @@
 # OffTarget
 
-[![Website](https://img.shields.io/badge/web-sbryngelson.github.io%2Fofftarget-1f5fbf.svg)](https://sbryngelson.github.io/offtarget/) [![check](https://github.com/sbryngelson/offtarget/actions/workflows/check.yml/badge.svg)](https://github.com/sbryngelson/offtarget/actions/workflows/check.yml) [![PyPI](https://img.shields.io/pypi/v/offtarget?color=1f5fbf)](https://pypi.org/project/offtarget/) [![Python](https://img.shields.io/badge/python-3.10%2B-1f5fbf.svg)](https://pypi.org/project/offtarget/) [![License: MIT](https://img.shields.io/badge/License-MIT-1f5fbf.svg)](https://github.com/sbryngelson/offtarget/blob/master/LICENSE)
+[![Website](https://img.shields.io/badge/web-offtarget.sh-1f5fbf.svg)](https://offtarget.sh) [![check](https://github.com/sbryngelson/offtarget/actions/workflows/check.yml/badge.svg)](https://github.com/sbryngelson/offtarget/actions/workflows/check.yml) [![PyPI](https://img.shields.io/pypi/v/offtarget?color=1f5fbf)](https://pypi.org/project/offtarget/) [![Python](https://img.shields.io/badge/python-3.10%2B-1f5fbf.svg)](https://pypi.org/project/offtarget/) [![License: MIT](https://img.shields.io/badge/License-MIT-1f5fbf.svg)](https://github.com/sbryngelson/offtarget/blob/master/LICENSE)
 
 A catalog of small, legal OpenMP and OpenACC GPU-offload programs that real compilers get wrong on real GPUs, and
 `offload`, the command that looks them up. The compilers are AMD's AFAR, HPE's Cray CCE, NVIDIA's HPC SDK and GCC;
