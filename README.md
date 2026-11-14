@@ -28,14 +28,14 @@ settings. `-` means not run there; `unknown` means the runs did not give a clear
 
 ## Install
 
-You need Python 3.10 or newer and PyYAML. The tool does not download anything when it runs.
+You need Python 3.10 or newer; pip installs PyYAML, the one dependency. The tool does not download anything when it runs.
 
 ```
-pip install .
+pip install offtarget
 offload --help
 ```
 
-To run it from a checkout without installing: `python3 -m offload --help` from the top of the checkout. The first command builds its data from the checkout, which takes about a minute.
+From a checkout, `pip install .` installs it, and `python3 -m offload --help` runs it without installing; the first command then builds its data from the checkout, which takes about a minute.
 
 ## Where the answers come from
 
