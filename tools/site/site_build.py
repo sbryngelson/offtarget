@@ -475,7 +475,7 @@ def render(out: Path) -> None:
         '<p class="small">Each row is one issue; findings with the same cause are grouped as its reproducers.</p></div></div>', "", "issues",
         '<script src="static/toolchains.js"></script><script src="static/query.js"></script>'
         '<script src="static/issues.js"></script>',
-        "OpenMP and OpenACC device-offload programs that compilers get wrong, with reproducers and evidence."))
+        "Legal OpenMP and OpenACC GPU-offload programs, illegal compilers"))
     # the issue list was issues.html: old and shared links forward to it with their filters
     (out / "issues.html").write_text(
         '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Observed issues</title>'
