@@ -2444,6 +2444,55 @@ def test_the_device_flag_must_be_a_call_not_the_import(tmp_path):
     assert RD.has_device_flag(PADDED) and not RD.has_device_flag(gone)
 
 
+NOWAIT = """program repro
+  use omp_lib, only: omp_is_initial_device
+  implicit none
+  integer, parameter :: n = 64
+  integer :: a(n), b(n), i, on_host
+  a = [(i, i = 1, n)]
+  b = 0
+  on_host = 1
+  !$omp target teams distribute parallel do map(to: a) map(tofrom: b, on_host) nowait
+  do i = 1, n
+    b(i) = 2*a(i)
+    if (i == 1) on_host = merge(1, 0, omp_is_initial_device())
+  end do
+  !$omp end target teams distribute parallel do
+  !$omp taskwait
+  print '(a,i0,a,a)', 'RESULT ran_on_host=', on_host, ' check=', merge('pass', 'fail', all(b == 2*a))
+end program repro
+"""
+
+
+def test_a_deferred_target_task_keeps_its_wait(tmp_path):
+    """A candidate that keeps a nowait target construct but drops the taskwait after it reads b
+    while the deferred task may still write it (a race): refused before any run, when the
+    original waits."""
+    runner = RD.FakeRunner(lambda t, g: "rejected")
+    judge = _judge(tmp_path, runner)
+    judge.device_flag, judge.wait_after_nowait = True, RD.waits_after_nowait(NOWAIT)
+    assert judge.wait_after_nowait
+    gone = NOWAIT.replace("  !$omp taskwait\n", "")
+    ok, why = judge(gone)
+    assert not ok and "taskwait" in why and runner.calls == 0
+    assert not RD.waits_after_nowait(gone)
+    # without the nowait there is nothing to wait for
+    assert RD.waits_after_nowait(gone.replace(" nowait", ""))
+
+
+def test_the_host_flag_stays_mapped_back(tmp_path):
+    """A candidate that drops the map of the host-execution flag variable leaves it firstprivate
+    in the target region, so no run can show the device ran it: refused when the original maps it."""
+    runner = RD.FakeRunner(lambda t, g: "rejected")
+    judge = _judge(tmp_path, runner)
+    judge.device_flag, judge.flag_mapped = True, RD.flag_mapped(NOWAIT)
+    assert judge.flag_mapped
+    gone = NOWAIT.replace("map(tofrom: b, on_host)", "map(tofrom: b)")
+    ok, why = judge(gone)
+    assert not ok and "on_host" in why and runner.calls == 0
+    assert not RD.flag_mapped(gone) and not RD.flag_mapped(NOWAIT.replace(" map(to: a) map(tofrom: b, on_host)", ""))
+
+
 FUZZ_EMPTY_MODULE = """module fuzz_mod
   implicit none
 contains

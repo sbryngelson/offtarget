@@ -91,17 +91,26 @@ def _values(obs_text: str) -> tuple[list, str]:
 _PREFER = R.ICE_BANNERS
 
 
+def _compile_line(o: R.Obs) -> str | None:
+    """The line of a compile failure that names it (an ICE banner, else the first diagnostic that is
+    not flang's "error: Semantic errors in FILE" summary), whole; None for another stage."""
+    text = S.scrub(o.obs)
+    if text.split(" ", 1)[0].split("\n", 1)[0] != "COMPILE_FAIL":
+        return None
+    body = text.split("\n", 1)[1] if "\n" in text else ""
+    lines = [x.strip() for x in body.splitlines() if x.strip()]
+    diags = [x for x in lines if _DIAG.search(x)]
+    return next((x for rx in _PREFER for x in lines if rx.search(x)), None) or \
+        next((x for x in diags if not M._SUMMARY.match(x)), diags[0] if diags else lines[0] if lines else "")
+
+
 def _observed(o: R.Obs) -> str:
     text = S.scrub(o.obs)
     stage = text.split(" ", 1)[0].split("\n", 1)[0]
     body = text.split("\n", 1)[1] if "\n" in text else ""
     lines = [x.strip() for x in body.splitlines() if x.strip()]
     if stage == "COMPILE_FAIL":
-        # flang's "error: Semantic errors in FILE" names no diagnostic: the located line after it does
-        diags = [x for x in lines if _DIAG.search(x)]
-        pick = next((x for rx in _PREFER for x in lines if rx.search(x)), None) or \
-            next((x for x in diags if not M._SUMMARY.match(x)), diags[0] if diags else lines[0] if lines else "")
-        return f"`{pick[:150]}`"
+        return f"`{_compile_line(o)[:150]}`"
     sig = re.search(r"signal=(\w+)", text.split("\n", 1)[0])
     vals, chk = _values(text)
     if stage == "RUN_OK" and vals:
@@ -367,11 +376,15 @@ def generate(program, campaign: str, rows, controls=(), name: str | None = None,
 
     from offload.engine.toolchains import TOOLCHAINS
     arches = list(dict.fromkeys(TOOLCHAINS[t].arch for t in tcs if t in TOOLCHAINS)) or ["gfx942"]
-    msg = re.sub(r"`", "", _observed(rep).split("`")[1] if _observed(rep).startswith("`") else "")[:100]
-    msg = re.sub(r"\b\d+:\d+\b|\bline \d+\b", "", msg).strip()
+    # a compile failure's whole diagnostic line (backticks and all), else the observed line's text
+    line = _compile_line(rep)
+    if line is None:
+        line = _observed(rep).split("`")[1] if _observed(rep).startswith("`") else ""
+    msg = re.sub(r"\b\d+:\d+\b|\bline \d+\b", "", line).strip()
     # a located diagnostic's file ("x.f90:: error: ..."): the confirmer matches catalog cells, whose
     # files have other names, so the message starts after it
     msg = re.sub(r"^\S+\.(?:f90|F90|f|c|cc|cpp)(?::+\d*)*:?\s*", "", msg)
+    msg = msg[:100].strip()        # backticks stay: the confirmer matches the message as written
     try:
         re.compile(msg)
     except re.error:

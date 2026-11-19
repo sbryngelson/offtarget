@@ -2459,3 +2459,19 @@ findings:
     modes: [unified, copy]
     arch: [gfx942, gfx90a]
     programs: ["omp50-clause-nowait", "omp52-clause-nowait"]
+  - file: catalog/afar-flang-deprecated-minus-reduction-rejected.f90
+    toolchains: [afar244]
+    lang: f90
+    outcome: rejected
+    message: 'error: The minus reduction operator is deprecated since OpenMP v5.2'
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-clause-reduction-minus", "omp52-clause-in_reduction-minus"]
+  - file: catalog/afar-flang-linear-ref-assumed-shape-rejected.f90
+    toolchains: [afar244]
+    lang: f90
+    outcome: rejected
+    message: 'error: The list item `x` specified with the REF ''linear-modifier'' must not be a polymorphic variable'
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp52-clause-linear-ref", "omp60-clause-linear-ref"]

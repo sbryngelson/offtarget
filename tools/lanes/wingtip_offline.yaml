@@ -201,7 +201,6 @@ steps:
       - results/nested/big/meta.json            # tests/cluster/test_campaigns.py (the seed-11 draw)
       - results/nested/big/programs.jsonl
       - results/oop/main                        # tests/cluster/test_campaigns.py (oop confirm against the stored snapshot)
-      - results/student-repro/malloc/cmp/omp    # tests/engine/test_nested_oop.py (the saved temporaries)
     outputs: [results/offline/suite]
     # run alone after the parallel part
     serial_tests:

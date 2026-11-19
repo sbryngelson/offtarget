@@ -1,0 +1,87 @@
+{
+ "finding": "catalog/afar-flang-linear-ref-assumed-shape-rejected.f90",
+ "readers": [
+  {
+   "run": "review-two/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The linear clause with the ref modifier on declare simd for dummy x is legal. OpenMP 5.2 requires that with ref the list items be polymorphic, assumed-shape, or allocatable. x is an assumed-shape dummy without VALUE, so it satisfies the rule; the reported diagnostic states the restriction inverted. The program has no race. A conforming compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-two/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "review-two/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The Fortran restriction for linear on declare simd says that with the ref modifier the list items must be polymorphic variables, assumed-shape arrays, or allocatables. x is an assumed-shape dummy without VALUE, so linear(x: ref) is required, not forbidden; the compiler's message states the opposite. Nothing else in the program breaks a rule: the SIMD directive may be ignored, the call is sequential on the device, and a(i:i) is a valid actual argument. A conforming compiler must accept it.",
+   "verifications": [
+    {
+     "run": "verify-two/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "69f8b8b4214986aa404340d55d603d2fe63b7fede10a878c08e9e4a82550afc0",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

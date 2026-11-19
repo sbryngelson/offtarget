@@ -1166,6 +1166,28 @@ def has_device_construct(text: str) -> bool:
     return DEVICE_CONSTRUCT.search(text) is not None
 
 
+_NOWAIT_TARGET = re.compile(r"^\s*(?:!\$omp|#\s*pragma\s+omp)\s+target\b.*\bnowait\b", re.I)
+_WAIT = re.compile(r"^\s*(?:!\$omp|#\s*pragma\s+omp)\s+(?:end\s+)?(?:taskwait|barrier|taskgroup)\b", re.I)
+
+
+def waits_after_nowait(text: str) -> bool:
+    """No nowait target construct, or a wait (taskwait, barrier, the end of a taskgroup) after the
+    last one: the host reads the region's results only after the deferred target task is done. A
+    candidate that drops the wait but keeps the nowait reads them in a race. (Fortran continuation
+    lines are joined, so a nowait on a `!$omp&` line counts.)"""
+    lines = re.sub(r"&\s*\n\s*!\$omp&?", " ", text, flags=re.I).splitlines()
+    last = max((k for k, ln in enumerate(lines) if _NOWAIT_TARGET.match(ln)), default=None)
+    return last is None or any(_WAIT.match(ln) for ln in lines[last + 1:])
+
+
+def flag_mapped(text: str) -> bool:
+    """A host-execution flag variable appears in a map clause, so its device value reaches the host;
+    a candidate that drops the map leaves it firstprivate and no run can tell device from host."""
+    joined = re.sub(r"&\s*\n\s*!\$omp&?", " ", text, flags=re.I)
+    maps = " ".join(m.group(1) for m in re.finditer(r"\bmap\s*\(([^)]*)\)", joined, re.I))
+    return any(re.search(rf"\b{re.escape(v)}\b", maps, re.I) for v in flag_names(text))
+
+
 def flag_names(text: str) -> set:
     """The variables assigned from the host-execution flag."""
     out = set()
@@ -1571,6 +1593,8 @@ class Judge:
         self.n = 0
         self.device_flag = True             # the original calls the host-execution flag
         self.device_construct = True        # the original has a device compute construct
+        self.wait_after_nowait = False      # the original waits for its nowait target tasks
+        self.flag_mapped = False            # the original maps its host-execution flag back
         self._lock = threading.Lock()
 
     def __call__(self, text: str) -> tuple[bool, str]:
@@ -1594,6 +1618,12 @@ class Judge:
             return None, "the host-execution flag (omp_is_initial_device) must stay"
         if self.device_construct and not has_device_construct(text):
             return None, "no device construct left (the failure must stay a device-offload failure)"
+        if self.wait_after_nowait and not waits_after_nowait(text):
+            return None, ("a nowait target construct without the taskwait after it (the host would read "
+                          "its results in a race)")
+        if self.flag_mapped and not flag_mapped(text):
+            return None, (f"the host-execution flag ({', '.join(sorted(flag_names(text))) or 'its variable'}) "
+                          "must stay mapped (else no run can show the device ran the region)")
         ok, why = self.witness(text, self.lang)
         if not ok:
             return None, "illegal: " + "; ".join(why)[:300]
@@ -1818,6 +1848,8 @@ def reduce(text: str, lang: str, judge: Judge, levels=LEVELS, seed: int | None =
     before = len(text.splitlines())
     judge.device_flag = has_device_flag(text)
     judge.device_construct = has_device_construct(text)
+    judge.wait_after_nowait = waits_after_nowait(text)
+    judge.flag_mapped = flag_mapped(text)
     steps: list[str] = []
     ck = load_checkpoint(checkpoint, origin, judge, levels) if checkpoint else None
     if ck:

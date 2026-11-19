@@ -789,6 +789,19 @@ def test_the_observed_line_skips_flangs_semantic_errors_summary(tree):
     assert "x.c" not in msg and "This compound directive does not allow NOWAIT clause" in msg
 
 
+
+def test_the_index_message_keeps_a_diagnostic_with_backticks_after_a_long_file_name(tree):
+    rows = [json.loads(x) for x in (tree / "results/c/rows.jsonl").read_text().splitlines()]
+    for r in rows:
+        if r["outcome"] == "rejected" and r["program_id"] == "r1":
+            r["compile_log"] = ("error: Semantic errors in x.c\n"
+                                "site-catalog--a-rather-long-finding-name-for-the-check-case.c:18:37: error: The list item "
+                                "`x` specified with the REF 'linear-modifier' must not be a polymorphic variable")
+    (tree / "results/c/rows.jsonl").write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    msg = next(x for x in draft(tree).index_entry.splitlines() if "message:" in x)
+    assert "site-catalog" not in msg and "The list item `x` specified with the REF" in msg and "must not be a polymorphic" in msg
+
+
 def test_a_compiler_that_fails_another_way_is_not_listed_with_the_others(tree):
     rows = [json.loads(x) for x in (tree / "results/c/rows.jsonl").read_text().splitlines()]
     for r in rows:

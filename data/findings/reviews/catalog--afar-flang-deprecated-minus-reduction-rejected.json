@@ -1,0 +1,87 @@
+{
+ "finding": "catalog/afar-flang-deprecated-minus-reduction-rejected.f90",
+ "readers": [
+  {
+   "run": "review-two/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 1,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "In OpenMP 5.2 the minus reduction operator is deprecated, not removed; it remains a valid reduction identifier. Compilers may warn but a conforming one must accept reduction(-: s) for an integer. The default(none) clause names a, b, host_flag as shared, s as reduction, and the loop index is predetermined. Only iteration 1 writes host_flag, so there is no race.",
+   "verifications": [
+    {
+     "run": "verify-two/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "review-two/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "reduction(-: s) is still a valid reduction identifier in 5.2; the specification marks the minus operator deprecated, not removed. The loop uses s = s - a(i), a valid reduction form. default(none) is satisfied: a, b, host_flag are listed shared, s is in the reduction clause, i is the predetermined loop variable, n is a parameter. host_flag is written by a single iteration, so there is no race. A deprecation is at most a warning, so rejecting the program as an error is not permitted.",
+   "verifications": [
+    {
+     "run": "verify-two/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "c59f8583125771cd102c5600c577af07d9aa3bdb09821ddbcac782b63064186e",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

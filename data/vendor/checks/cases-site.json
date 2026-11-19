@@ -3305,6 +3305,60 @@
   ]
  },
  {
+  "id": "site-catalog--afar-flang-linear-ref-assumed-shape-rejected",
+  "finding": "catalog/afar-flang-linear-ref-assumed-shape-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar244"
+  ],
+  "repro": "../../findings/catalog/afar-flang-linear-ref-assumed-shape-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-catalog--afar-flang-deprecated-minus-reduction-rejected",
+  "finding": "catalog/afar-flang-deprecated-minus-reduction-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar244"
+  ],
+  "repro": "../../findings/catalog/afar-flang-deprecated-minus-reduction-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
   "id": "site-fuzz--par-s1-2082-gcc_g90",
   "finding": "fuzz/par-s1-2082-gcc_g90.f90",
   "symptom": "compile:.",

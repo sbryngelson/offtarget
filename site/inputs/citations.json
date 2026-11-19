@@ -476,6 +476,20 @@
    "quote": null
   }
  ],
+ "catalog/afar-flang-deprecated-minus-reduction-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §5.5.1 p.124 l.22-23",
+   "version": "OpenMP 5.2",
+   "section": "5.5.1",
+   "quote": null
+  },
+  {
+   "text": "5.2 §1.2.7 p.20 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "1.2.7",
+   "quote": null
+  }
+ ],
  "catalog/afar-flang-dist-schedule-chunk.f90": [
   {
    "text": "5.2 §11.6.1 p.256",
@@ -487,6 +501,20 @@
  "catalog/afar-flang-linear-parallel-ice.f90": [
   {
    "text": "5.2 §5.4.6 p.118",
+   "version": "OpenMP 5.2",
+   "section": "5.4.6",
+   "quote": null
+  }
+ ],
+ "catalog/afar-flang-linear-ref-assumed-shape-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §5.4.6 p.119 l.22-23",
+   "version": "OpenMP 5.2",
+   "section": "5.4.6",
+   "quote": "If linear-modifier is ref, list items must be polymorphic variables, assumed-shape arrays, or variables with the ALLOCATABLE attribute."
+  },
+  {
+   "text": "5.2 §5.4.6",
    "version": "OpenMP 5.2",
    "section": "5.4.6",
    "quote": null
