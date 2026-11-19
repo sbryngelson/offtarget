@@ -1,34 +1,5 @@
 [
  {
-  "id": "site-catalog--cce-nohost-link",
-  "finding": "catalog/cce-nohost-link.f90",
-  "symptom": "compile:.",
-  "expect": "ok",
-  "lang": "f90",
-  "model": "omp",
-  "affected": [
-   "cce19",
-   "cce20",
-   "cce21"
-  ],
-  "repro": "../../findings/catalog/cce-nohost-link.f90",
-  "derived": true,
-  "arch": [
-   "gfx942",
-   "gfx90a",
-   "sm_80"
-  ],
-  "vendor": [
-   "amd",
-   "hpe",
-   "nvidia"
-  ],
-  "modes": [
-   1,
-   0
-  ]
- },
- {
   "id": "site-nvhpc-c-ordered-in-target-nvcpfe-crash",
   "finding": "nvhpc-c-ordered-in-target-nvcpfe-crash.c",
   "symptom": "compile:.",
@@ -229,7 +200,8 @@
   "lang": "c",
   "model": "omp",
   "affected": [
-   "afar"
+   "afar",
+   "afar244"
   ],
   "repro": "../../findings/afar-c-lastprivate-distribute-parallel-for-small-type.c",
   "derived": true,
@@ -483,7 +455,8 @@
   "lang": "f90",
   "model": "omp",
   "affected": [
-   "afar"
+   "afar",
+   "afar244"
   ],
   "repro": "../../findings/harvest/afar-flang-strided-target-update.f90",
   "derived": true,
@@ -3289,6 +3262,33 @@
   "derived": true,
   "control": "../../findings/hecbench/controls/pc-ctl-shift-sum.c",
   "control_what": "one change from the finding; correct on gcc_g90",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-catalog--afar-flang-nowait-combined-target-rejected",
+  "finding": "catalog/afar-flang-nowait-combined-target-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar244"
+  ],
+  "repro": "../../findings/catalog/afar-flang-nowait-combined-target-rejected.f90",
+  "derived": true,
   "arch": [
    "gfx942",
    "gfx90a",

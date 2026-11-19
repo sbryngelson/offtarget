@@ -861,6 +861,18 @@ def test_fails_like_needs_same_class_and_signature():
     assert c.state == "fails-like" and c.envs == 4 and c.version == "19.0.0"
 
 
+def test_two_flang_semantic_errors_have_two_signatures():
+    """flang prints "error: Semantic errors in FILE" before every semantic diagnostic: the
+    signature is the located diagnostic after it, so two different rejections differ."""
+    a = "COMPILE_FAIL rc=1\nerror: Semantic errors in x.f90\nx.f90:9:9: error: This compound directive does not allow NOWAIT clause"
+    b = "COMPILE_FAIL rc=1\nerror: Semantic errors in x.f90\nx.f90:3:1: error: Must have INTEGER type, but is REAL(4)"
+    assert M.signature(a) == ("reject", M.signature("COMPILE_FAIL rc=1\nx.f90:9:9: error: This compound "
+                                                      "directive does not allow NOWAIT clause")[1])
+    assert "nowait" in M.signature(a)[1] and M.signature(a) != M.signature(b)
+    # the summary line alone (no located diagnostic recorded) is still a signature
+    assert M.signature("COMPILE_FAIL rc=1\nerror: Semantic errors in x.f90")[1] == "error: semantic errors in"
+
+
 def test_other_failure_is_fails_differently():
     rows = four("y", "cce19", "tuolumne", "1", ICE_OBS) + four("y", "cce20", "tuolumne", "1", LINK)
     cs = M.cells("catalog/y", rows=rows, cases=[ICE])

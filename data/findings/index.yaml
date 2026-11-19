@@ -506,7 +506,7 @@ findings:
     programs: ["omp60-directive-target_teams_workdistribute", "omp60-directive-teams_workdistribute"]
     # promoted from the confirmer's draft of catalog:omp60-directive-target_teams_workdistribute:afar:gfx942:unified
   - file: catalog/afar-flang-reduction-minus-rejected.f90
-    toolchains: [afar, afar244]
+    toolchains: [afar]
     lang: f90
     outcome: rejected
     message: "The minus reduction operator is deprecated"
@@ -2451,3 +2451,11 @@ findings:
     modes: [copy]
     arch: [gfx90a]
     programs: [hecbench-popcount-omp]
+  - file: catalog/afar-flang-nowait-combined-target-rejected.f90
+    toolchains: [afar244]
+    lang: f90
+    outcome: rejected
+    message: 'error: This compound directive does not allow NOWAIT clause'
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ["omp50-clause-nowait", "omp52-clause-nowait"]

@@ -16,6 +16,9 @@ history: 'A review of the catalog on 2026-10-23 found 1,016 catalog cells with a
   withdrew the gfortran/gcc witnesses (R12a cannot fire). What remains is listed below with the reason it has no
   finding.'
 closed:
+- key: afar|f90|rejected|This compound directive does not allow NOWAIT clause
+  cells: 6
+  outcome: 'promoted: data/findings/catalog/afar-flang-nowait-combined-target-rejected.f90 (a regression of AFAR 24.4.0)'
 - key: afar|c|rejected|link __kmpc_doacross_init
   cells: 6
   outcome: 'promoted: data/findings/catalog/afar-c-ordered-doacross-link.c'
@@ -177,9 +180,12 @@ groups:
 - key: afar|f90|rejected|The list item `x must not be a polymorphic variable, an assumed-shape array, or a variable with the `ALLOCATABLE` attrib
   cells: 6
   why: 'No finding yet (2026-11-19): new with AFAR 24.4.0, whose front end rejects linear(ref(x)) in omp52/60-clause-linear-ref ("must not be a polymorphic variable, an assumed-shape array, or ... ALLOCATABLE"); 24.3.0 did not support the clause. The legality of the rejection is to be reviewed with the finding'
-- key: afar|f90|rejected|This compound directive does not allow NOWAIT clause
+- key: afar|f90|rejected|The minus operator is not supported as a reduction operator
   cells: 6
-  why: 'No finding yet (2026-11-19): a regression of AFAR 24.4.0, whose front end rejects nowait on the compound directive of omp50/52-clause-nowait ("This compound directive does not allow NOWAIT clause"); 24.3.0 compiled and ran them'
+  why: 'No finding yet (2026-11-19): AFAR 24.4.0 rejects reduction(-:) and in_reduction(-:) in omp50-clause-reduction-minus and omp50-clause-in_reduction-minus with "The minus operator is not supported as a reduction operator", another message than 24.3.0''s (data/findings/catalog/afar-flang-reduction-minus-rejected.f90, which therefore names 24.3.0 only)'
+- key: afar|f90|rejected|The minus reduction operator is deprecated since OpenMP vN.N
+  cells: 6
+  why: 'No finding yet (2026-11-19): AFAR 24.4.0 stops with an error on reduction(-:) and in_reduction(-:) in the omp52 programs, "The minus reduction operator is deprecated since OpenMP 5.2"; a deprecated feature is still part of 5.2, which the legality review is to confirm with the finding'
 - key: afar|c|wrong|omp*-c-clause-map-present
   cells: 4
   why: 'verdict unified_memory_failure, not compiler_bug (only compiler_bug groups are promoted): AFAR amdclang at HSA_XNACK=1

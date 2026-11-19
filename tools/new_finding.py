@@ -97,8 +97,10 @@ def _observed(o: R.Obs) -> str:
     body = text.split("\n", 1)[1] if "\n" in text else ""
     lines = [x.strip() for x in body.splitlines() if x.strip()]
     if stage == "COMPILE_FAIL":
+        # flang's "error: Semantic errors in FILE" names no diagnostic: the located line after it does
+        diags = [x for x in lines if _DIAG.search(x)]
         pick = next((x for rx in _PREFER for x in lines if rx.search(x)), None) or \
-            next((x for x in lines if _DIAG.search(x)), lines[0] if lines else "")
+            next((x for x in diags if not M._SUMMARY.match(x)), diags[0] if diags else lines[0] if lines else "")
         return f"`{pick[:150]}`"
     sig = re.search(r"signal=(\w+)", text.split("\n", 1)[0])
     vals, chk = _values(text)
@@ -367,6 +369,9 @@ def generate(program, campaign: str, rows, controls=(), name: str | None = None,
     arches = list(dict.fromkeys(TOOLCHAINS[t].arch for t in tcs if t in TOOLCHAINS)) or ["gfx942"]
     msg = re.sub(r"`", "", _observed(rep).split("`")[1] if _observed(rep).startswith("`") else "")[:100]
     msg = re.sub(r"\b\d+:\d+\b|\bline \d+\b", "", msg).strip()
+    # a located diagnostic's file ("x.f90:: error: ..."): the confirmer matches catalog cells, whose
+    # files have other names, so the message starts after it
+    msg = re.sub(r"^\S+\.(?:f90|F90|f|c|cc|cpp)(?::+\d*)*:?\s*", "", msg)
     try:
         re.compile(msg)
     except re.error:

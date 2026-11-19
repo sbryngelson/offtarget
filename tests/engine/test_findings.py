@@ -771,6 +771,24 @@ def test_the_observed_line_is_the_crash_banner_not_a_build_note(tree):
     assert "PLEASE submit a bug report to HPE" in H.parse(draft(tree).text).get("observed")
 
 
+def test_the_observed_line_skips_flangs_semantic_errors_summary(tree):
+    """flang prints "error: Semantic errors in FILE" before the located diagnostic; the observed
+    line (and the index message the confirmer matches by) is the diagnostic, not the summary."""
+    rows = [json.loads(x) for x in (tree / "results/c/rows.jsonl").read_text().splitlines()]
+    for r in rows:
+        if r["outcome"] == "rejected" and r["program_id"] == "r1":
+            r["compile_log"] = ("error: Semantic errors in x.c\n"
+                                "x.c:9:9: error: This compound directive does not allow NOWAIT clause")
+    (tree / "results/c/rows.jsonl").write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    d = draft(tree)
+    obs = H.parse(d.text).get("observed")
+    assert "does not allow NOWAIT clause" in obs and "Semantic errors" not in obs
+    assert "Semantic errors" not in d.index_entry
+    # the index message the confirmer matches catalog cells by names no file
+    msg = next(x for x in d.index_entry.splitlines() if "message:" in x)
+    assert "x.c" not in msg and "This compound directive does not allow NOWAIT clause" in msg
+
+
 def test_a_compiler_that_fails_another_way_is_not_listed_with_the_others(tree):
     rows = [json.loads(x) for x in (tree / "results/c/rows.jsonl").read_text().splitlines()]
     for r in rows:

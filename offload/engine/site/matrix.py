@@ -155,6 +155,9 @@ _LINK = re.compile(r"undefined (?:symbol|reference)|\bld(?:\.lld)?:|\blld:|nvlin
 _DIAG = re.compile(r"error|-[SF]-|fatal|internal|undefined|abort", re.I)
 # NVFORTRAN's per-unit count line ("0 inform, 2 warnings, 0 severes, 0 fatal for p") names no diagnostic
 _NOT_DIAG = re.compile(r"^\s*\d+ inform,\s*\d+ warnings?,", re.I)
+# flang's summary line before every semantic diagnostic ("error: Semantic errors in x.f90")
+# names no diagnostic either: the located line after it does, so two rejections differ
+_SUMMARY = re.compile(r"^\s*error: Semantic errors in ", re.I)
 _NUM = re.compile(r"0x[0-9a-fA-F]+|[-+]?\d+(?:\.\d*)?(?:[eE][-+]?\d+)?")
 # a token holding a source file name without a directory (the check case's copy of the program,
 # which the scrub leaves: `site-x--demo.c:3:7:`, NVFORTRAN's `(site-x--demo.f90: 12)`); a token
@@ -174,8 +177,9 @@ def signature(obs: str) -> tuple[str, str]:
     body = "\n".join(lines)
     if stage == "COMPILE_FAIL":
         cls = "ice" if _ICE.search(body) else "link" if _LINK.search(body) else "reject"
-        return cls, _norm(next((x for x in lines if _DIAG.search(x) and not _NOT_DIAG.match(x)),
-                               lines[0] if lines else ""))
+        diags = [x for x in lines if _DIAG.search(x) and not _NOT_DIAG.match(x)]
+        return cls, _norm(next((x for x in diags if not _SUMMARY.match(x)),
+                               diags[0] if diags else lines[0] if lines else ""))
     if stage == "RUN_FAIL" and re.search(r"^RUN_FAIL rc=-?\d+ signal=", obs):
         return "crash", _norm(lines[0] if lines else "")
     if stage in ("RUN_OK", "RUN_FAIL"):
