@@ -42,6 +42,7 @@
 !   nd-f-omp-update-chain-d4-0079ddfd
 ! - legality: the rules (offload.engine.rules) accept it; AFAR's flang front end and NVHPC accept it and run it correctly
 !   (front ends of two other families)
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 program t
   use omp_lib
   implicit none

@@ -44,6 +44,7 @@
 !   with HSA_XNACK 0 and 1 (results/parity/nvc1/tuo.bar.jsonl). CCE 19/20/21/21.0.4 stop with an internal compiler error on single
 !   and barrier in a target region, their own documented failure (cce19-target-parallel-single-ice.f90), and run the
 !   worksharing-loop variant correctly. NVHPC is the compiler under test and is not counted as a witness
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   use omp_lib, only: omp_is_initial_device
   implicit none

@@ -13,6 +13,7 @@
 !   at HSA_XNACK=0: present= 1, as required. AFAR amdclang the same (C
 !   reproducer: afar-c-xnack1-target-is-present.c).
 ! - CCE 19.0.0, 20.0.2, 21.0.3: present= 1 / 0 in both modes.
+! - releases: AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X
 ! The catalog's copy-mode programs skip their presence checks at
 ! HSA_XNACK=1; run with the presence checks at HSA_XNACK=1
 ! (tools/campaigns/presence_x1.py, tests/data/presence_x1_summary.json) every one of

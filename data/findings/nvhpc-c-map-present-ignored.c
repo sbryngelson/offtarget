@@ -24,6 +24,8 @@
 // on both releases, the same output.
 // NVHPC: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2
 // Run:   OMP_TARGET_OFFLOAD=mandatory ./a.out
+// - releases: AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X;
+//   NVHPC 25.11 and 26.9 fail it the same way
 #include <stdio.h>
 int main(void) {
   int a[64], b[64];

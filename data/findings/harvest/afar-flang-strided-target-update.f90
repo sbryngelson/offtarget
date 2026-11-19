@@ -42,6 +42,7 @@
 ! - found by: while reducing the CCE C strided-update failures of
 !   llvm-project offload/test/offloading/strided_update/ (no Fortran test
 !   there).
+! - releases: AFAR 24.3.0 and 24.4.0 fail it the same way
 ! AFAR: amdflang -fopenmp --offload-arch=gfx942 -O2
 ! Run:  OMP_TARGET_OFFLOAD=mandatory HSA_XNACK=0 ./a.out
 program strided_f

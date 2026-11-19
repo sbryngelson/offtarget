@@ -580,11 +580,11 @@ def test_triage_reaches_a_program_without_a_stored_record():
     c = Case(ref, "cce21", "tuolumne", "gfx942", "unified", "wrong_answer")
     e = C.COLLECTORS["expected_record"].collect(c, ctx())[0]
     d = _j.loads(e.detail)
-    assert d["withdraw"] == ["afar", "cce19", "cce20", "cce21"] and \
+    assert d["withdraw"] == ["afar", "afar244", "cce19", "cce20", "cce21"] and \
         d["status"] == "triage_only"
     assert "no executed witness" in d["needs_human"]
     f = Facts(c, evidence={"expected_record": [e]})
-    assert {w["toolchain"] for w in f.withdrawn()} == {"afar", "cce19",
+    assert {w["toolchain"] for w in f.withdrawn()} == {"afar", "afar244", "cce19",
                                                       "cce20", "cce21"}
 
 
@@ -595,7 +595,7 @@ def test_missing_evidence_is_listed():
     evs = C.COLLECTORS["other_toolchains"].collect(case(), c)
     f = Facts(case(), evidence={"other_toolchains": evs})
     miss = f.missing_evidence()
-    assert {m["toolchain"] for m in miss} == {"afar", "cce19", "cce20"}
+    assert {m["toolchain"] for m in miss} == {"afar", "afar244", "cce19", "cce20"}
     assert "afar" in f.missing_families()
 
 

@@ -25,6 +25,7 @@
 // without any message.
 // CCE: cc -fopenmp -O2 (module load cce/19.0.0 craype-accel-amd-gfx942 rocm)
 // Run: OMP_TARGET_OFFLOAD=mandatory HSA_XNACK=0 ./a.out
+// - releases: CCE 19.0.0 fails it the same way; CCE 20.0.2, 21.0.3 and 21.0.4 run it correctly
 #include <stdio.h>
 #include <stdint.h>
 int main(void) {

@@ -23,6 +23,7 @@
 // compilers/lib; the first 26.9 runs had loaded 25.11's): still present
 // on both releases, the same output.
 // NVHPC: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2
+// - releases: NVHPC 25.11 and 26.9 fail it the same way
 #include <stdio.h>
 #include <omp.h>
 int main(void) {

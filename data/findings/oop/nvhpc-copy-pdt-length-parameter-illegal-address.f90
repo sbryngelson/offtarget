@@ -21,6 +21,7 @@
 !   one)
 ! - legality: for the nvhpc cells: the rules (offload.engine.rules, with the fortran-oop restrictions) and AFAR's flang front end
 !   (-fsyntax-only) (tools/campaigns/oop.py legality, results/oop/main/legality.json)
+! - releases: NVHPC 25.11 and 26.9 fails it the same way on A100 separate and runs it correctly on A100 managed
 module oop_m
   implicit none
   integer, parameter :: n = 64

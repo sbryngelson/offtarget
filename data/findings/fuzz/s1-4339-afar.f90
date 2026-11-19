@@ -26,6 +26,8 @@
 ! Expected: "RESULT check=pass".
 !
 ! amdflang -fopenmp --offload-arch=gfx942 -O2 (afar recipe, offload/engine/toolchains.py)
+! - releases: AFAR 24.3.0 fails it the same way on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X; AFAR 24.4.0
+!   runs it correctly
 module mm
   implicit none
   integer, parameter :: n = 128

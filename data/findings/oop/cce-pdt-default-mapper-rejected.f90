@@ -23,6 +23,7 @@
 !   one)
 ! - legality: for the cce cells: the rules (offload.engine.rules, with the fortran-oop restrictions) and AFAR's flang front end
 !   (-fsyntax-only) and NVHPC 26.9 nvfortran (compile only) (tools/campaigns/oop.py legality, results/oop/main/legality.json)
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 module oop_m
   implicit none
   integer, parameter :: n = 64

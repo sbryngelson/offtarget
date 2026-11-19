@@ -15,6 +15,7 @@
 !   variable of the main program
 ! - evidence: results/stress/audit/runs-nvhpc.jsonl. The confirmer gave needs_human (R22, no
 !   cross-machine witness); the audit counts the MI300A results
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program acc_component
   implicit none
   type :: t

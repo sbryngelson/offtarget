@@ -44,6 +44,7 @@
 //   working directory: 0 of 80 (wingtip1.log; that also changes the file
 //   name, not only the path). The scripts: data/evidence/gate_probe/wingtip/round1-4/
 //   (those runs were not inside compliant.slice: see the scripts' notes).
+// - releases: NVHPC 25.11 and 26.9 fail it the same way
 // Control (same compilers, same flags): the same loop and ordered region
 // without target (a host parallel for ordered, which the guide supports)
 // compiles and prints "RESULT ran_on_host=1 check=pass" on both releases

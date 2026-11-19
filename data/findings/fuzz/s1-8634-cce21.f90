@@ -22,6 +22,7 @@
 ! - AFAR amdflang 24.0.0git: compiles and prints "RESULT check=pass".
 ! - Tioga MI250X (gfx90a, HSA_XNACK=0): CCE 21 the same ICE
 !   (results/t28_probe/g90/ice_char_exit_delete.cce21_g90.json).
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 ! Fuzz campaign s1: the "Unhandled expression type in get base or dv mem"
 ! and "unexpected type in TYPE_DEREF" ICE cells of CCE 19/20/21 (most of
 ! those programs map character scalars and arrays in target enter data;

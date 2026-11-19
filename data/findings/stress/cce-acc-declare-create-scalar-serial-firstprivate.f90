@@ -21,6 +21,7 @@
 ! - legality: legal by reading: serial, a module scalar, update device/self of a declared variable
 ! - evidence: results/stress/audit/runs.jsonl, runs-tioga.jsonl, runs-nvhpc.jsonl. The confirmer
 !   gave needs_human (R22); the audit counts the A100 results as the other-family witness
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 module acc_scalar_m
   implicit none
   integer(8) :: g

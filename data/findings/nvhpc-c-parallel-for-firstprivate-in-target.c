@@ -35,6 +35,7 @@
 // on both releases, the same output.
 // NVHPC: nvc -mp=gpu -gpu=cc80 -gpu=mem:separate -O2
 // Run:   OMP_TARGET_OFFLOAD=mandatory ./a.out
+// - releases: NVHPC 25.11 and 26.9 fail it the same way
 #include <stdio.h>
 int main(void) {
   int b[64];

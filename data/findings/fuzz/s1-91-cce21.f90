@@ -42,6 +42,7 @@
 !
 ! ftn -fopenmp -O2 (a bundle: 
 !@file fuzz_dmod.f90
+! - releases: CCE 19.0.0 and 20.0.2 fail it another way; CCE 21.0.3 and 21.0.4 fail it the same way
 module fuzz_dmod
   implicit none
   type :: mt_t

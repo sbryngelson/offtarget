@@ -34,6 +34,7 @@
 !   confirmed on gfx90a.
 ! - legality: offload.engine.prerun.check accepts it (the rules with the race
 !   rule, and the AFAR flang front end).
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 ! CCE:  ftn -fopenmp -O2 (module load cce/<v> craype-accel-amd-gfx942 rocm/<r>;
 !       module unload cray-mpich)
 ! Run:  OMP_TARGET_OFFLOAD=mandatory ./a.out

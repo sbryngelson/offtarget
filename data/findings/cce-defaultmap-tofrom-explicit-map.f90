@@ -31,6 +31,10 @@
 !   copy a back in regions 2 and 4 (host a unchanged: 0): this defect, fixed
 !   in 20.0.2, is back in 21 (data/vendor/hpe/cce21-defaultmap-aggregate-
 !   flag.md, variants: confirmed in the four environments on both releases).
+! - releases: CCE 19.0.0 fails it the same way; CCE 20.0.2 fails it the same way on MI300A unified and runs it correctly on MI300A
+!   copy, MI250X; CCE 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 fails it the same way on MI300A unified and runs it
+!   correctly on MI300A copy, MI250X, MI300X, MI350X; AFAR 24.4.0 fails it the same way on MI300A unified and runs it correctly on
+!   MI300A copy, MI300X, MI350X; NVHPC 25.11 and 26.9 fails it the same way on A100 managed and runs it correctly on A100 separate
 ! Found by the gfx90a map-mutant audit (data/reports/map-mutant-audit-
 ! gfx90a.md): the weaken_map and swap_to_from mutants of the defaultmap-
 ! tofrom programs survive on CCE 19.

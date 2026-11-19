@@ -28,6 +28,7 @@
 !
 ! ftn -fopenmp -O2 (a bundle: !@file marks start the files)
 !@file fuzz_dmod.f90
+! - releases: CCE 19.0.0 fails it the same way; CCE 20.0.2, 21.0.3 and 21.0.4 run it correctly
 module fuzz_dmod
   implicit none
   integer, parameter :: nm = 48

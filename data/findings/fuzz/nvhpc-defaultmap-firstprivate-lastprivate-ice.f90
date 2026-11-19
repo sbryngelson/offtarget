@@ -45,6 +45,7 @@
 !   24.3.0 runs both controls correctly and stops on every file with defaultmap(firstprivate: scalar) in its lowering ("not yet
 !   implemented", results/parity/nvs1/tuo.dm.jsonl), AFAR's own limit. NVHPC is the compiler under test and is not counted as a
 !   witness
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer :: a(8), j, lp

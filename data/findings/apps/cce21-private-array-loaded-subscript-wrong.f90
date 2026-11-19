@@ -16,6 +16,7 @@
 !   MI300A at HSA_XNACK 1 and 0, also at -O0; MI250X at HSA_XNACK 0.
 ! - CCE 19.0.0 and 20.0.2, AFAR 24.0.0git (drop 24.3.0): all 0 (MI300A both modes, MI250X).
 ! - NVHPC 25.11 and 26.9 (A100, separate and managed memory): all 0.
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 ! Logs: data/reports/apps/.
 ! Same-compiler controls (in this program, CCE 21 correct): the same private array subscripted by a
 ! firstprivate scalar (k = 3), or by a subscript computed from the loop variable, and a mapped (not private)

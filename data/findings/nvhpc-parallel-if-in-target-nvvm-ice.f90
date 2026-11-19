@@ -39,6 +39,7 @@
 ! support 'if' clauses for managing parallel region". No separate finding.
 ! NVHPC: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2
 ! Run:   OMP_TARGET_OFFLOAD=mandatory ./a.out
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer :: a(64), i

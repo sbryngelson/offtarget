@@ -13,6 +13,7 @@
 // - CCE craycc 19.0.0, 20.0.2, 21.0.3: bad= 0 a_present= 1 b_present= 0,
 //   at HSA_XNACK 0 and 1 (delete acts like release).
 // - AFAR amdclang 24.0.0git: expected output in both modes.
+// - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 // The Fortran form passes on CCE (the catalog's Fortran map.delete
 // programs). The catalog's C map.delete programs (5.2, 6.0) check the
 // presence only in copy mode (copy_mode_only evidence: under unified

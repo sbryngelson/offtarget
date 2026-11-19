@@ -22,6 +22,8 @@
 ! - legality: legal by reading
 ! - evidence: results/fresh-drafts/tuo-p2.jsonl, tuo2-q2.jsonl, tuo3-r*-b.jsonl, tioga/tioga-b.jsonl,
 !   wingtip/nv.jsonl, wingtip/nv4.jsonl (review)
+! - releases: CCE 19.0.0 fails it the same way on MI300A copy, MI250X and runs it correctly on MI300A unified; CCE 20.0.2, 21.0.3
+!   and 21.0.4 run it correctly
 module m
   implicit none
 contains

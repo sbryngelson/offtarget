@@ -31,6 +31,15 @@
 #     (results/gcc/gcc/matrix.*.canaries.jsonl, results/*.gcc-mi3?0x.xnack0.canaries.jsonl).
 #   AFAR on MI300X and MI350X (afar_mi300x, afar_mi350x): the five canaries of AFAR,
 #     measured in copy mode (results/matrix.<machine>.xnack0.canaries.jsonl).
+#   AFAR 24.4.0 (afar244 and its twins): 24.4.0 compiles and runs omp52-clause-linear
+#     correctly, so its ICE canary is catalog omp52-clause-reduction-task, the ICE of
+#     data/findings/catalog/afar-flang-reduction-task-ice.f90 (both memory modes on the
+#     MI300A, copy mode on the MI300X and MI350X: results/task26/matrix.*.afar244.x?.canaries.jsonl,
+#     results/amd-cluster/afar244/*.canaries.jsonl); the other four as on 24.3.0.
+#     The matrix runs carried the linear canary (their own canary files there record
+#     the fix); the canary files beside the merged tables are the five canaries measured
+#     again with reduction-task, the same install, the same day
+#     (results/gate/canaries/<machine>.afar244*.jsonl).
 # `reason`: a prefix (or a part) the row's reason must have.
 version: 1
 programs:
@@ -38,6 +47,7 @@ programs:
   linear: {catalog: omp52-clause-linear}
   if: {catalog: omp52-clause-if}
   schedule-static: {catalog: omp52-clause-schedule-static}
+  reduction-task: {catalog: omp52-clause-reduction-task}
   defaultmap-firstprivate: {catalog: omp52-clause-defaultmap-firstprivate}
   uses-allocators-traits: {catalog: omp50-clause-uses_allocators-traits}
   defaultmap-pointer: {catalog: omp52-clause-defaultmap-pointer}
@@ -150,5 +160,29 @@ toolchains:
     pass: {program: pass, outcome: correct_on_device}
     ice: {program: uses-allocators-traits, outcome: rejected, reason: "not_implemented:"}
     wrong: {program: defaultmap-pointer, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  afar244:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: reduction-task, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  afar244_g90:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: reduction-task, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  afar244_mi300x:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: reduction-task, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
+    racy: {program: racy, outcome: refused, reason: "race:"}
+    hang: {program: hang, outcome: wrong_answer, reason: timeout}
+  afar244_mi350x:
+    pass: {program: pass, outcome: correct_on_device}
+    ice: {program: reduction-task, outcome: rejected, reason: "ice:"}
+    wrong: {program: schedule-static, outcome: wrong_answer, reason: "check_fail"}
     racy: {program: racy, outcome: refused, reason: "race:"}
     hang: {program: hang, outcome: wrong_answer, reason: timeout}

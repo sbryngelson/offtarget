@@ -24,6 +24,7 @@
 ! - legality: legal by reading (copy(sumA) on the parallel construct; the reduction clause on both
 !   loop directives of the nest)
 ! - evidence: results/fresh-drafts/wingtip/nv.jsonl, tuo2-q6.jsonl, tioga/tioga-b.jsonl (review)
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 module test_mod
 contains
 subroutine test(A, sumA)

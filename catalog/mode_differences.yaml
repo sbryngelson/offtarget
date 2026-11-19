@@ -6,10 +6,12 @@
 # differs), so no entry here blames the program. Entries match program ids
 # and toolchains with fnmatch patterns; the first match wins. Every
 # difference was confirmed with both modes run again on one node
-# (tools/jobs/run_map_iterator_audit.sh).
+# (tools/jobs/run_map_iterator_audit.sh). AFAR 24.4.0 (afar244) shares the 24.3.0 entries:
+# each of its differences has the outcomes of 24.3.0 in both modes (results/matrix*.jsonl)
+# and its failing cells passed the reproduction gate; the one-node audit was not rerun.
 entries:
   - programs: ["omp5?-directive-target-hostdev", "omp60-directive-target-hostdev"]
-    toolchains: ["afar", "cce19", "cce20", "cce21"]
+    toolchains: ["afar", "afar244", "cce19", "cce20", "cce21"]
     class: copy_mode_failure
     finding: target-update-sections-in-parallel.f90
     why: >-
@@ -31,7 +33,7 @@ entries:
       device. The mapper's final map type is to (5.2 §5.8.8 Table 5.3),
       host_flag is tofrom. CCE 21 and AFAR are correct.
   - programs: ["omp5?-clause-map-present", "omp60-clause-map-present", "omp5?-c-clause-map-present", "omp60-c-clause-map-present"]
-    toolchains: ["afar"]
+    toolchains: ["afar", "afar244"]
     class: unified_memory_failure
     finding: afar-xnack1-present-not-enforced.f90
     why: >-
@@ -40,7 +42,7 @@ entries:
       terminates at HSA_XNACK=0 and runs on at HSA_XNACK=1; the program has
       no requires directive. CCE (Fortran) terminates in both modes.
   - programs: ["omp5?-c-clause-map-iterator", "omp60-c-clause-map-iterator"]
-    toolchains: ["afar"]
+    toolchains: ["afar", "afar244"]
     class: x1_oracle_blind
     finding: afar-xnack1-target-is-present.f90
     why: >-
@@ -51,7 +53,7 @@ entries:
       AFAR reports no mapped item present (afar-xnack1-target-is-present.f90),
       so the HSA_XNACK=1 "correct" is no evidence; wrong in both modes.
   - programs: ["omp5?-c-clause-to-iterator", "omp60-c-clause-to-iterator", "omp5?-c-clause-from-iterator", "omp60-c-clause-from-iterator"]
-    toolchains: ["afar"]
+    toolchains: ["afar", "afar244"]
     class: copy_mode_failure
     finding: afar-c-update-iterator-copy-mode.c
     why: >-
@@ -86,7 +88,7 @@ entries:
       chunk-size programs fail in both modes for another reason (finding
       cce-c-dist-schedule-chunk.c) and are no mode difference.
   - programs: ["omp5?-c-clause-unified_address*", "omp60-c-clause-unified_address*"]
-    toolchains: ["afar"]
+    toolchains: ["afar", "afar244"]
     class: requirement_refused
     why: >-
       requires unified_address: the AFAR runtime aborts at HSA_XNACK=0
@@ -95,7 +97,7 @@ entries:
       implementation defined (5.2 §8.2 p.211), so the refusal is
       conforming. CCE runs the program in both modes.
   - programs: ["omp5?-clause-unified_shared_memory*", "omp60-clause-unified_shared_memory*", "omp5?-c-clause-unified_shared_memory*", "omp60-c-clause-unified_shared_memory*", "omp60-clause-self_maps*", "omp60-c-clause-self_maps*", "omp60-clause-map-self", "omp60-c-clause-map-self", "omp60-clause-defaultmap-self"]
-    toolchains: ["afar", "cce19", "cce20", "cce21"]
+    toolchains: ["afar", "afar244", "cce19", "cce20", "cce21"]
     class: needs_unified_memory
     why: >-
       requires unified_shared_memory or self_maps, or the self map-type
@@ -103,6 +105,14 @@ entries:
       zero_copy) and the runtimes refuse it or fail at HSA_XNACK=0. Whether
       an implementation supports a requirement is implementation defined
       (5.2 §8.2 p.211); not a portability result.
+  - programs: ["omp50-c-clause-reduction-ieor"]
+    toolchains: ["afar244"]
+    class: no_finding_yet
+    why: >-
+      No finding yet. AFAR 24.4.0 at HSA_XNACK=0: one of three repeats hit the run timeout, the other two
+      ran correctly on the device; the gate calls the cell nondeterministic. Correct at
+      HSA_XNACK=1, on the MI300X, MI350X and MI250X, and on AFAR 24.3.0 everywhere.
+
 # The class of every difference between a compiler's MI300A
 # copy-mode cell (gfx942, HSA_XNACK=0) and its gfx90a cell (Tioga MI250X,
 # a discrete GPU, HSA_XNACK=0), read by offload/engine/report.py
@@ -111,6 +121,12 @@ entries:
 # devices ran on gfx90a with every device visible (as on Tuolumne) before
 # any class was given.
 arch_entries:
+  - programs: ["omp50-c-clause-reduction-ieor"]
+    toolchains: ["afar244"]
+    class: no_finding_yet
+    why: >-
+      No finding yet. AFAR 24.4.0: one of three MI300A copy-mode repeats hit the run timeout (the other two
+      correct; gate: nondeterministic); the MI250X cell is correct. Not an arch difference.
   - programs: ["omp5?-directive-target-hostdev", "omp60-directive-target-hostdev"]
     toolchains: ["afar"]
     class: intermittent

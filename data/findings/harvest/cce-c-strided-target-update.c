@@ -35,6 +35,8 @@
 //   (gfx942 and gfx90a; gate confirmed).
 // - legality: offload.engine.prerun.check accepts it (the rules and the AFAR
 //   clang front end).
+// - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A
+//   unified and runs it correctly on MI300A copy, MI300X, MI350X
 // CCE:  craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa
 //       -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -fopenmp-version=52 -O2
 // Run:  OMP_TARGET_OFFLOAD=mandatory HSA_XNACK=0 ./a.out

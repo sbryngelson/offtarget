@@ -13,6 +13,7 @@
 // which at(compilation) should not). The Fortran form (amdflang) builds and
 // runs; CCE craycc 19, 20, 21 build and run both placements. Makes the C message, severity and
 // severity.warning programs (6.0) a link failure on AFAR.
+// - releases: AFAR 24.3.0 fails it the same way; AFAR 24.4.0 runs it correctly
 #include <stdio.h>
 #include <omp.h>
 

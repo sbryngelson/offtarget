@@ -42,6 +42,7 @@
 ! - CCE 20.0.2, 21.0.3: ftn-1964 "Variable "I" must have its data mapping
 !   attribute explicitly declared because default map(none) was specified";
 ! - CCE 19.0.0: ftn-1964 "Variable "B" ..." although b is in map(from: b).
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fail it the same way
 ! The catalog's omp50/52/60-clause-defaultmap-none programs are rejected on
 ! every compiler because of it.
 !

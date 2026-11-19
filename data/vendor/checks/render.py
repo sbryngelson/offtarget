@@ -29,15 +29,18 @@ sys.path.insert(0, str(HERE))
 import build  # noqa: E402
 import dispositions  # noqa: E402
 
-VTC = {"amd": ["afar"], "hpe": ["cce19", "cce20", "cce21", "cce21_4"],
+VTC = {"amd": ["afar", "afar244"], "hpe": ["cce19", "cce20", "cce21", "cce21_4"],
        "nvidia": ["nvhpc", "nvhpc269"]}
 NEWEST = {v: list(reversed(t)) for v, t in VTC.items()}
 PRIM = {"amd": "tuolumne", "hpe": "tuolumne", "nvidia": "wingtip"}
 VNAME = {"amd": "AMD", "hpe": "HPE", "nvidia": "NVIDIA"}
-TCNAME = {"afar": "AFAR 24.3.0", "cce19": "CCE 19.0.0", "cce20": "CCE 20.0.2",
+TCNAME = {"afar": "AFAR 24.3.0", "afar244": "AFAR 24.4.0", "cce19": "CCE 19.0.0", "cce20": "CCE 20.0.2",
           "cce21": "CCE 21.0.3", "cce21_4": "CCE 21.0.4", "nvhpc": "NVHPC 25.11",
           "nvhpc269": "NVHPC 26.9"}
-ALLTC = ["afar", "cce19", "cce20", "cce21", "cce21_4", "nvhpc", "nvhpc269"]
+ALLTC = ["afar", "afar244", "cce19", "cce20", "cce21", "cce21_4", "nvhpc", "nvhpc269"]
+# the AFAR drops and the variable each is installed as in the command lines
+AFAR_DROP = {"afar": ("therock-afar-24.3.0-multiarch-10.1.0-592954c", "AFAR"),
+             "afar244": ("therock-afar-24.4.0-multiarch-10.3.0-a71da8f", "AFAR_24_4")}
 MACH = {"tuolumne": "MI300A", "tioga": "MI250X", "wingtip": "A100"}
 TIERS = {1: "wrong answer", 2: "crash, internal compiler error, hang or link failure",
          3: "rejection of a legal program", 4: "lower tier"}
@@ -273,11 +276,13 @@ def command(case, tc, machine, var="repro"):
     cmd = rs[0]["cmd"]
     cmd = re.sub(r"[^\s'\"]*/therock-afar-24\.3\.0-multiarch-10\.1\.0-592954c/bin/",
                  "$AFAR/bin/", cmd)
+    cmd = re.sub(r"[^\s'\"]*/therock-afar-24\.4\.0-multiarch-10\.3\.0-a71da8f/bin/",
+                 "$AFAR_24_4/bin/", cmd)
     cmd = re.sub(r"/opt/nvidia/hpc_sdk/Linux_x86_64/25\.11/compilers/bin/", "", cmd)
     cmd = re.sub(r"/fastscratch/\S+/26\.9/compilers/bin/", "", cmd)
     cmd = re.sub(r"\$NVHPC_(25_11|26_9)/compilers/bin/", "", cmd)
     cmd = cmd.replace(" -L/usr/lib/gcc/x86_64-redhat-linux/8", "")
-    fam = "afar" if tc == "afar" else "nvhpc" if tc.startswith("nvhpc") else "cce"
+    fam = "afar" if tc in AFAR_DROP else "nvhpc" if tc.startswith("nvhpc") else "cce"
     lines = []
     if fam == "cce":
         v = {"cce19": ("19.0.0", "6.4.3"), "cce20": ("20.0.2", "6.4.3"), "cce21": ("21.0.3", "7.2.0"),
@@ -312,10 +317,11 @@ def version_line(tc, lang="f90"):
     if not v:
         raise SystemExit(f"no recorded version of {tc} ({lang}) on {m}")
     first = [l for l in v.splitlines() if l.strip() and not NOISE.match(l)]
-    if tc == "afar":
+    if tc in AFAR_DROP:
         lv = next((l for l in first if "version" in l.lower()), "")
-        return (f"`{lv.strip()}`; {'amdclang' if lang == 'c' else 'amdflang'} of the AFAR 24.3.0 drop "
-                "(therock-afar-24.3.0-multiarch-10.1.0-592954c), installed as $AFAR")
+        drop, var = AFAR_DROP[tc]
+        return (f"`{lv.strip()}`; {'amdclang' if lang == 'c' else 'amdflang'} of the {TCNAME[tc]} drop "
+                f"({drop}), installed as ${var}")
     if tc.startswith("cce"):
         lv = next((l for l in first if re.search(r"Version|version \d", l)), "")
         v_, r_ = {"cce19": ("19.0.0", "6.4.3"), "cce20": ("20.0.2", "6.4.3"),

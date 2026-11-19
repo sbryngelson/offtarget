@@ -44,7 +44,7 @@ VENDOR_ONLY = {k: v for k, v in LEGACY_MANUAL.items() if k[0] in (
     "afar-flang-thread-limit-target-parallel-do.f90",
     "clang-c-declare-target-to-omp52.c")}
 
-_VENDOR = {"afar": "amd", "cce19": "hpe", "cce20": "hpe", "cce21": "hpe",
+_VENDOR = {"afar": "amd", "afar244": "amd", "cce19": "hpe", "cce20": "hpe", "cce21": "hpe",
            "nvhpc": "nvidia", "nvhpc269": "nvidia"}
 
 

@@ -17,6 +17,7 @@
 !   on data/reports/fuzz-stress-audit/r1-target-scalar*.f90). The confirmer gave needs_human (R22): it
 !   does not draw a witness across machines; the audit counts the executed MI300A results
 !   as the other-family witness for this deterministic single-construct program
+! - releases: AFAR 24.3.0 and 24.4.0 fail it the same way; NVHPC 25.11 and 26.9 fail it the same way
 program target_scalar_tofrom
   use omp_lib
   implicit none

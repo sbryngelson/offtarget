@@ -32,6 +32,7 @@
 ! - AFAR amdflang 24.0.0git: compiles, "RESULT check=pass" in both modes.
 ! - Tioga MI250X (gfx90a, HSA_XNACK=0): the same; CCE 19/20/21 reject,
 !   AFAR passes (results/t28_probe/g90/strided_update.cce21_g90.json).
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 ! Fuzz campaign s1: 988 CCE cells (s1 and s1x0) fail on this diagnostic,
 ! verdict compiler_bug (rule R11 where AFAR compiles the program, decision
 ! D1 where every family rejects the program at different statements).

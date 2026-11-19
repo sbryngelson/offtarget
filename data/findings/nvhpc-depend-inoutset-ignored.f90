@@ -34,6 +34,7 @@
 ! on both releases, the same output.
 ! NVHPC: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2
 ! Run:   OMP_TARGET_OFFLOAD=mandatory ./a.out
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer :: w(64), b(64), j, sp, spin(1)

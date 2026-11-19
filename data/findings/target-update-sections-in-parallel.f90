@@ -17,6 +17,8 @@
 ! - AFAR 24.0.0git: bad= 16 in 3 of 5 runs (one quarter lost); correct
 !   with num_threads(1) and with fixed-size arrays (concurrent updates of
 !   disjoint sections of one allocatable).
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fails it the same way on MI300A copy, MI250X and runs it correctly on MI300A
+!   unified
 ! AFAR: amdflang -fopenmp --offload-arch=gfx942 -O2
 ! CCE:  ftn -fopenmp -O2 (module load cce/<v> craype-accel-amd-gfx942 rocm)
 ! Run:  OMP_TARGET_OFFLOAD=mandatory HSA_XNACK=0 ./a.out

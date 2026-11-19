@@ -59,6 +59,7 @@
 // - legality: the rules (offload.engine.rules) accept it; GCC compiles and runs it (GCC is no legality witness); the
 //   AFAR/CCE C front ends reject it with a diagnostic, so the only other front end is NVHPC nvc, which accepted the
 //   campaign's update programs of this form where it ran at all (results/nested/main/witness*.jsonl)
+// - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fail it the same way
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>

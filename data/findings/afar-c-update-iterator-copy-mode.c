@@ -15,6 +15,8 @@
 // - CCE craycc 19, 20, 21: reject the iterator modifier of to/from (the
 //   catalog's to.iterator and from.iterator C programs: "call to
 //   undeclared function").
+// - releases: AFAR 24.3.0 fails it the same way on MI300A copy, MI250X, MI300X, MI350X and runs it correctly on MI300A unified;
+//   AFAR 24.4.0 fails it the same way on MI300A copy, MI300X, MI350X and runs it correctly on MI300A unified
 // The catalog's C to.iterator and from.iterator programs (5.2, 6.0) fail
 // on AFAR at HSA_XNACK=0 because of it, and so does the C map.iterator
 // program: target enter data map(iterator(k = 1:2), to: w[k:n / 2 - k])

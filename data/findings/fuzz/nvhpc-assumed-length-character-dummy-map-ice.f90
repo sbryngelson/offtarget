@@ -40,6 +40,7 @@
 !   data in target regions ("Unsupported OpenMP construct Fortran character"), its own documented limit
 !   (afar-cce19-character-defaultmap.f90). NVHPC 26.9 compiles and runs this file correctly but is not counted as a witness:
 !   NVHPC is the compiler under test
+! - releases: NVHPC 25.11 fails it the same way; NVHPC 26.9 runs it correctly
 program p
   implicit none
   integer :: r

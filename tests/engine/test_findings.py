@@ -10,6 +10,7 @@ import pytest
 
 from offload.engine import finding_claims as C
 from offload.engine import finding_header as H
+from offload.engine import finding_releases as FR
 from offload.engine import finding_rows as R
 
 FAIL = "COMPILE_FAIL rc=1\nftn-1: ERROR File = x.f90, Line = 3, Column = 5\n  illegal construct\n"
@@ -290,8 +291,9 @@ def test_mentions_of_every_committed_finding_equal_masters():
         p = root / rel
         if not p.is_file():
             continue
+        # the generated `releases` line (offload/engine/finding_releases.py) came after the snapshot
         got = [[m.family, [t for t in m.tcs if t in known], m.explicit, m.pos]
-               for m in H.mentions(p.read_text(errors="replace"))]
+               for m in H.mentions(FR.strip(p.read_text(errors="replace")))]
         if got != parses:
             bad[rel] = [(g, w) for g, w in zip(got, parses) if g != w][:3]
     assert not bad, bad
@@ -305,6 +307,19 @@ def test_mentions_read_families_and_versions():
     assert ("cce", ("cce21_4",)) in got
     assert ("nvhpc", ("nvhpc",)) in got
     assert ("gcc", ("gcc",)) in got
+
+
+def test_a_bare_afar_names_its_first_release():
+    """With two AFAR releases, a bare "AFAR" still names 24.3.0 (every header written
+    before 24.4.0 means it); "AFAR 24.4.0" names the new one, and a CCE version list
+    does not run on into the AFAR mention after it."""
+    def tcs(text):
+        return [(m.family, m.tcs, m.explicit) for m in H.mentions(text)]
+    assert tcs("AFAR rejects it") == [("afar", ("afar",), True)]
+    assert tcs("AFAR 24.4.0 rejects it") == [("afar", ("afar244",), True)]
+    assert tcs("AFAR 24.3.0 and 24.4.0 pass") == [("afar", ("afar", "afar244"), True)]
+    assert tcs("CCE 19.0.0 and 21.0.3, AFAR 24.0.0git (drop 24.3.0): builds") == [
+        ("cce", ("cce19", "cce21"), True), ("afar", ("afar",), True)]
 
 
 def test_header_parse_unfolds_bullets():

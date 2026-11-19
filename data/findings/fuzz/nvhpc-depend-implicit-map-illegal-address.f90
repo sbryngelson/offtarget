@@ -39,6 +39,7 @@
 !   par-c1-nvhpc-nvhpc269:2302, par-s1-nvhpc-nvhpc269:1984, par-s1-nvhpc-nvhpc269:2459, par-s1-nvhpc-nvhpc269:4050. The three s1
 !   programs name an array the construct maps only implicitly (ds, ic, xr8) in a depend clause with nowait, fail with
 !   cuEventQuery error 700 on both releases, and give the expected checksum with their depend and nowait clauses removed
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 ! (exploration)
 ! - related, not counted: par-c1-nvhpc-nvhpc269:962 ends with error 719 (CUDA_ERROR_LAUNCH_FAILED) at cuEventQuery rather than 700,
 !   and its depend lists name arrays that are present through an enclosing target data region (o1 also in an explicit map clause)

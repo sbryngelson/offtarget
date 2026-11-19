@@ -17,6 +17,7 @@
 !   the family under test)
 ! - witnesses: afar/gfx942/copy, cce19/gfx942/copy, cce20/gfx942/copy
 ! - withdrawn: none
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 !
 ! Audit, candidate 4, CONTROL (explicit map(tofrom: g)) of a declare target module scalar.
 ! Basis (N3): g appears in an enter clause (the 5.0 declare target(list) form), so its

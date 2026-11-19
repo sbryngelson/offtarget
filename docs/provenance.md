@@ -28,7 +28,7 @@ Every program is a small, self-checking, legal device-offload program in C or fr
 
 On the A100 host, `-gpu=mem:unified` builds but aborts at run time, and the machine record quotes the message. That mode is therefore recorded as not applicable.
 
-The compiler releases are AMD AFAR 24.3.0, Cray CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4, NVHPC 25.11 and 26.9, and GCC 16.2.0 (an AMD build for gfx90a, gfx942 and gfx950 and an NVIDIA build for sm_80). CCE 21.0.4 is used for regression checks against 21.0.3. The MI250X systems carry gfx90a twins of the AFAR and CCE toolchains. Each result row records the node, compile flags, version banner, loaded modules, an environment hash and the git revision (`offload/engine/provenance.py`).
+The compiler releases are AMD AFAR 24.3.0 and 24.4.0, Cray CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4, NVHPC 25.11 and 26.9, and GCC 16.2.0 (an AMD build for gfx90a, gfx942 and gfx950 and an NVIDIA build for sm_80). CCE 21.0.4 is used for regression checks against 21.0.3. The MI250X systems carry gfx90a twins of the AFAR and CCE toolchains, and the MI300X and MI350X twins of AFAR (both releases) and GCC. Each result row records the node, compile flags, version banner, loaded modules, an environment hash and the git revision (`offload/engine/provenance.py`).
 
 ## From a failing run to a finding
 

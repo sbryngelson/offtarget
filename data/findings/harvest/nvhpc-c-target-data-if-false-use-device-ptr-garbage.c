@@ -23,6 +23,7 @@
 // - evidence: results/harvest-known/main.wingtip (hk-018, gate: confirmed), results/harvest-known/probes.wingtip.jsonl,
 //   the MI250X probe runs' output for AFAR and CCE (results/harvest-known/logs/tioga/probe.f656gDkdAd9R.log; its rows
 //   file probes.tioga.jsonl was not kept)
+// - releases: NVHPC 25.11 and 26.9 fail it the same way
 #include <omp.h>
 #include <stdbool.h>
 #include <stdio.h>

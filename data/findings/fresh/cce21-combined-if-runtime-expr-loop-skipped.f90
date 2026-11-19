@@ -31,6 +31,7 @@
 !   modifier on this combined construct is also conforming under OpenMP 5.0, which HPE claims in full
 ! - evidence: results/fresh-drafts/tuo-p3.jsonl, tuo2-q3.jsonl, tuo3-r*-a.jsonl, tioga/tioga-c.jsonl,
 !   tuo4-p.jsonl, tioga/tioga2.jsonl, wingtip/nv.jsonl (review)
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 module ctl
   implicit none
   logical :: on = .true.

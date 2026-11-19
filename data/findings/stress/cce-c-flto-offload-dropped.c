@@ -36,6 +36,7 @@
 // - legality: legal C11 / OpenMP 5.0 by reading: a[0:64] is mapped from and each iteration writes
 //   its own element; dev is mapped tofrom and written by the one initial thread of a target region
 //   (amdclang -fopenmp -fsyntax-only, not of the family under test, accepts it)
+// - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 /* Audit: craycc -flto with OpenMP offload. A target teams
    distribute loop; built with -flto it must still run on the device.
    Expected (with and without -flto): sum= 2016 dev= 1 */

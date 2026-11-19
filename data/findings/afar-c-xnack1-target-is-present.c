@@ -8,6 +8,7 @@
 // - AFAR amdclang 24.0.0git at HSA_XNACK=1: present= 0 after enter data;
 //   at HSA_XNACK=0: present= 1.
 // - CCE craycc 19.0.0: present= 1 / 0 in both modes.
+// - releases: AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X
 // AFAR: amdclang -fopenmp --offload-arch=gfx942 -fopenmp-version=52 -O2
 // CCE:  craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa
 //       -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -fopenmp-version=52 -O2

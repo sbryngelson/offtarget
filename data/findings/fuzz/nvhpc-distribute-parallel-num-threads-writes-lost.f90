@@ -42,6 +42,7 @@
 !   a Tuolumne compute node; results/parity/nvc1/prerun.dp.txt); AFAR 24.3.0 and CCE 19/20/21/21.0.4 compile and run all three
 !   correctly with HSA_XNACK 0 and 1 (results/parity/nvc1/tuo.dp.jsonl). NVHPC is the compiler under test and is not counted as a
 !   witness (26.9 runs the file correctly, 25.11 does not)
+! - releases: NVHPC 25.11 fails it the same way; NVHPC 26.9 runs it correctly
 program p
   use omp_lib, only: omp_is_initial_device
   implicit none

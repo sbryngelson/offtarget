@@ -42,6 +42,7 @@
 !   (offload.engine.prerun.check on a Tuolumne compute node; results/parity/nvs1/prerun.bt.txt); AFAR 24.3.0 and CCE 19/20/21/21.0.4
 !   compile and run all of them correctly with HSA_XNACK 0 and 1 (results/parity/nvs1/tuo.bt.jsonl). NVHPC is the compiler under
 !   test and is not counted as a witness
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer, parameter :: n = 16, m = 4

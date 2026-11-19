@@ -27,6 +27,8 @@
 ! - evidence: results/fresh-drafts/tuo*-*.jsonl, tioga/tioga-a.jsonl, wingtip/nv.jsonl (runs of the review);
 !   the data/bench/fresh ground truth (data/bench/fresh/outcomes.csv: cce19/cce20
 !   copy crash on gfx942 and gfx90a)
+! - releases: CCE 19.0.0 and 20.0.2 fails it the same way on MI300A copy, MI250X and runs it correctly on MI300A unified; CCE 21.0.3
+!   and 21.0.4 run it correctly
 program reproducer
   implicit none
   !$omp target

@@ -25,6 +25,7 @@
 ! - legality: legal by reading (5.0 and 5.2 text above; the common block is declared in the scoping
 !   unit of the clause)
 ! - evidence: results/fresh-drafts/tuo-p1.jsonl, tuo2-q4.jsonl, tuo3-r*-c.jsonl, tioga/tioga-d.jsonl (review)
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 program main
    integer :: A(2), C, r
    real :: B

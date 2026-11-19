@@ -16,10 +16,10 @@ $ offload can-use clause.map.present
 clause.map.present   OpenMP 5.2, Fortran
                    MI300A unified  MI300A copy  MI250X   MI300X   MI350X   A100 separate  A100 managed
 AFAR 24.3.0        unknown         correct      correct  correct  correct  -              -
+AFAR 24.4.0        unknown         correct      correct  correct  correct  -              -
 CCE 21.0.3         correct         correct      correct  -        -        -              -
 NVHPC 26.9         -               -            -        -        -        unsupported    unsupported
 GCC 16.2.0 (AMD)   unknown         unknown      correct  correct  correct  -              -
-GCC 16.2.0 (A100)  -               -            -        -        -        correct        -
 ```
 
 There is a table per specification version and language and a row per release (some left out here). Columns are

@@ -27,6 +27,7 @@
 ! - AFAR amdflang 24.0.0git: "RESULT check=pass".
 ! - Tioga MI250X (gfx90a, HSA_XNACK=0): the same; CCE 19/20/21 reject,
 !   AFAR passes (results/t28_probe/g90/dn_teams_loopvar.cce21_g90.json).
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 ! Fuzz campaign s1: the ftn-1510 "I" and ftn-1310 "I" cells of CCE (rule
 ! R11, decisions D2 and D5), verdict compiler_bug. Representatives: s1
 ! seeds 2370 (cce21, copy) and 6443 (cce21); reproducer written by hand

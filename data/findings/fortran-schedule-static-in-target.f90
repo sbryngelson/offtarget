@@ -11,6 +11,7 @@
 ! round-robin), 997 of 1000 iterations on the wrong thread, 744 second
 ! chunks. The C form (sched_repro.c in results/t27a/diag/d2, AMD clang)
 ! is correct: tid = 0 0 0 0 1 1 1 1 ...
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fail it the same way
 program sched_repro
   use omp_lib
   implicit none

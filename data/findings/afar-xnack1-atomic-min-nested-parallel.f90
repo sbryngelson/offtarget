@@ -12,6 +12,8 @@
 ! Hand-reduced from data/findings/fuzz/b2-183-afar.f90.
 !   amdflang -fopenmp --offload-arch=gfx942 -O2 afar-xnack1-atomic-min-nested-parallel.f90
 !   HSA_XNACK=1 OMP_TARGET_OFFLOAD=mandatory ./a.out
+! - releases: AFAR 24.3.0 fails it the same way on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X; AFAR 24.4.0
+!   runs it correctly
 program p
   implicit none
   integer, parameter :: n = 24, m = 2

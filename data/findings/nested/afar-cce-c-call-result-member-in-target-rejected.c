@@ -35,6 +35,7 @@
 // - programs (1): nd-fnres-c-child-pointer
 // - legality: the rules (offload.engine.rules) accept it; GCC compiles and runs it; the clang front ends of AFAR and CCE are
 //   the two compilers that reject it (they share a lineage, so neither witnesses the other)
+// - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fail it the same way
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>

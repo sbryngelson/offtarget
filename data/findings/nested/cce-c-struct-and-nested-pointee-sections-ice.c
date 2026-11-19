@@ -41,6 +41,7 @@
 // - programs (5): nd-c-omp-always-chain-d2-53712162, nd-c-omp-always-chain-d3-71393589, nd-c-omp-close-chain-d3-87bce034,
 //   nd-c-omp-one-chain-d3-9f7ac271, nd-c-omp-one-chain-d3-d6c766c9
 // - legality: the rules (offload.engine.rules) accept it; AFAR's clang compiles and runs it (a front end of another family)
+// - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>

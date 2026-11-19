@@ -14,6 +14,7 @@
 ! - CCE 21.0.3: 13 or 14 wrong (first s18) in 21 of 22 runs, once 7
 !   (first s166), both modes;
 ! - CCE 19.0.0: bad= 0 (10 runs, both modes).
+! - releases: CCE 19.0.0 runs it correctly; CCE 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 ! (This program, and the same with a copy(rd, a) clause as in the stress
 ! kernel, red_acc_200_i8_copy.f90: the same counts.)
 ! Controls (same compilers): the same 200 reductions of default integer

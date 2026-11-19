@@ -402,7 +402,7 @@ def _stress_batch(out: Path, specs: list, workers: int) -> None:
     tasks = [("check", s) for s in specs] + [
         ("run", (s, tc, (0,), "O2", lim)) for s in specs
         for tc in ARM_TOOLCHAINS
-        if not (s["model"] == "acc" and tc == "afar")]
+        if not (s["model"] == "acc" and tc.startswith("afar"))]
     with ProcessPoolExecutor(workers) as ex, \
             (out / "programs.jsonl").open("a") as fp, \
             (out / "rows.jsonl").open("a") as fr:

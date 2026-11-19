@@ -17,6 +17,7 @@
 !   family under test)
 ! - witnesses: cce19/gfx942/copy, cce20/gfx942/copy, cce21/gfx942/copy
 ! - withdrawn: none
+! - releases: AFAR 24.3.0 and 24.4.0 fail it the same way; NVHPC 25.11 and 26.9 fail it the same way
 !
 ! Audit, candidate 1: a scalar with the TARGET attribute referenced
 ! in a target region is implicitly map(tofrom) (OpenMP 5.0 §2.19.7 p.315,

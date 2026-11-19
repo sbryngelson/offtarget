@@ -7,6 +7,7 @@
 ! - observed: `lld: error: undefined symbol: _EXTENDS_TYPE_OF`, every CCE release, both modes
 ! - expected: compiles; `r1= 121`
 ! - rule: Fortran 2018 11.1.11 (CLASS IS guards); no OpenMP restriction on SELECT TYPE in device procedures
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 ! (section 6)
 ! - same-compiler control: TYPE IS guards only (oop-poly-select-type) link (and then take the wrong branch:
 !   cce-select-type-guard-not-taken.f90)

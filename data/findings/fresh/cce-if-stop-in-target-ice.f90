@@ -25,6 +25,7 @@
 ! - evidence: results/fresh-drafts/tuo4-r*.jsonl, tioga/tioga2.jsonl (d106-r2.f90, identical to the
 !   program below), tuo2-q1.jsonl, tuo3-r*-c.jsonl, tioga/tioga-d.jsonl (d106-e4.f90, the same with an
 !   unused allocatable) (review)
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 program p
   implicit none
   integer :: x

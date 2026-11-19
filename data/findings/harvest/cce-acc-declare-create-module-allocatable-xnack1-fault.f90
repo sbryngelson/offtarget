@@ -27,6 +27,7 @@
 !   19/20/21 at HSA_XNACK=1 only (19 and 20 fault, 21 hipErrorIllegalAddress; another node)
 ! - evidence: results/harvest-known/main (hk-007, hk-008, hk-013, CCE 19/20/21 at HSA_XNACK=1),
 !   results/harvest-known/probes.tuolumne.jsonl, probes.wingtip.jsonl
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fails it the same way on MI300A unified and runs it correctly on MI300A copy
 module v008_m
   implicit none
   real(8), allocatable :: buf(:)

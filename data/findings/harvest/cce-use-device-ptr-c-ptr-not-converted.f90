@@ -31,6 +31,8 @@
 !   (results/harvest-known/logs/tioga/probe.f656gDkdAd9R.log and probe.f656k2mjQdoD.log; their rows file
 !   probes.tioga.jsonl was not kept); results/harvest-known/probes.tuolumne.jsonl (MI300A, v040-ptr.f90:
 !   fail at HSA_XNACK=0, pass at 1)
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fails it the same way on MI300A copy and runs it correctly on MI300A unified;
+!   AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X
 program v040pp
   use iso_c_binding
   use omp_lib

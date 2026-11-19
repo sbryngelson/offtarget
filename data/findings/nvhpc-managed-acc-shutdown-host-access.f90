@@ -16,6 +16,7 @@
 ! - -gpu=mem:separate: "after shutdown", "sum 64", exit 0 (correct);
 ! - -gpu=mem:managed: no output, exit status 139 (SIGSEGV; the buffered
 !   output is lost).
+! - releases: NVHPC 25.11 and 26.9 fails it the same way on A100 managed and runs it correctly on A100 separate
 ! Found by the catalog: acc34-directive-shutdown is correct in separate
 ! memory and crashes in managed memory (catalog/mode_differences.yaml
 ! nvhpc_entries, class managed_failure); reduced by hand to this program.

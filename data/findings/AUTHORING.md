@@ -43,6 +43,12 @@ The following parts of the header are generated from the rows.
 - Each control's result. A control is claimed only on the compilers where a row passes. The tool's notes name the
   others, and the sentence leaves them out.
 
+One line is generated after the finding is written and kept current: `- releases:` states what each release of a
+family the file fails on does with it in the site matrix (`data/vendor/checks/results-site`), for the families with
+more than one release run on it ("AFAR 24.3.0 and 24.4.0 fail it the same way"). The rest of the header states what
+the rows showed when the finding was written, so a release added later is named only there.
+`tools/derive/finding_releases.py` writes it and `tools/regenerate.py --check finding-releases` checks it.
+
 ## What is left for a person
 
 Each of these is marked `TODO(human)`:

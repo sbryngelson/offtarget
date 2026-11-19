@@ -226,6 +226,24 @@ toolchains:
     fc: "{root}/bin/amdflang"
     cc: "{root}/bin/amdclang"
     cxx: "{root}/bin/amdclang++"
+  # AFAR 24.4.0 (TheRock multiarch 10.3.0, a71da8f): the release after 24.3.0, on the
+  # same GPUs and in the same modes
+  afar244:
+    family: afar
+    version: 24.4.0
+    machine: tuolumne
+    arch: gfx942
+    modes: [unified, copy]
+    label: AFAR 24.4
+    site_version: "AFAR 24.4.0"
+    site_root_var: AFAR_24_4
+    merged_key: afar244
+    lane: tuolumne
+    install:
+      default: /opt/afar/therock-afar-24.4.0-multiarch-10.3.0-a71da8f
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
   cce19:
     family: cce
     version: 19.0.0
@@ -470,3 +488,42 @@ toolchains:
     cc: "{root}/bin/gcc"
     cxx: "{root}/bin/g++"
     env: {LD_LIBRARY_PATH: "{root}/lib64"}
+  afar244_g90:
+    family: afar
+    version: 24.4.0
+    machine: tioga
+    arch: gfx90a
+    modes: [copy]
+    twin_of: afar244
+    lane: tioga
+    install: {default: /opt/afar/therock-afar-24.4.0-multiarch-10.3.0-a71da8f}
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
+    env: {LD_LIBRARY_PATH: "{root}/lib:{root}/lib/llvm/lib"}
+  afar244_mi300x:
+    family: afar
+    version: 24.4.0
+    machine: mi300x
+    arch: gfx942
+    modes: [copy]
+    twin_of: afar244
+    lane: mi300x
+    install: {default: /opt/afar/therock-afar-24.4.0-multiarch-10.3.0-a71da8f}
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
+    env: {LD_LIBRARY_PATH: "{root}/lib:{root}/lib/llvm/lib"}
+  afar244_mi350x:
+    family: afar
+    version: 24.4.0
+    machine: mi350x
+    arch: gfx950
+    modes: [copy]
+    twin_of: afar244
+    lane: mi350x
+    install: {default: /opt/afar/therock-afar-24.4.0-multiarch-10.3.0-a71da8f}
+    fc: "{root}/bin/amdflang"
+    cc: "{root}/bin/amdclang"
+    cxx: "{root}/bin/amdclang++"
+    env: {LD_LIBRARY_PATH: "{root}/lib:{root}/lib/llvm/lib"}

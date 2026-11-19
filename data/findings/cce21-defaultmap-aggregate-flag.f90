@@ -18,6 +18,7 @@
 ! answer: catalog/rulings.yaml RUL-MAPPED-FLAG-NOT-COPIED-BACK).
 ! CCE: ftn -fopenmp -O2 (module load cce/21.0.4 craype-accel-amd-gfx942
 !      rocm/7.2.0; module unload cray-mpich)
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 program h
   use omp_lib
   implicit none

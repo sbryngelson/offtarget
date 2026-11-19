@@ -22,6 +22,7 @@
 !   restrictions (5.2 §11.7 p.257 l.29-34, p.258 l.1-4) and its implicit order(concurrent)
 !   (§10.3 p.234 l.14-24) allow the assignment
 ! - evidence: results/fresh-drafts/wingtip/nv.jsonl, tuo-p4.jsonl, tioga/tioga-d.jsonl (review)
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 MODULE GLOBALS
    IMPLICIT NONE
    REAL :: Z

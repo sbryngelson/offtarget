@@ -17,6 +17,7 @@
 ! - AFAR amdflang 24.0.0git: "RESULT check=pass" in both modes;
 ! - Tioga MI250X (gfx90a, HSA_XNACK=0): CCE 21 the same ICE
 !   (results/t28_probe/g90/ice_inred_char_substring.cce21_g90.json).
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 ! Fuzz campaign s1: the "Should never reach this code (doehmke)" cells of
 ! CCE 19/20/21. Representative s1 seed 2592 on cce21; the confirmer's
 ! reduction (results/confirm/drafts/fuzz_s1_2592_cce21_gfx942_unified,

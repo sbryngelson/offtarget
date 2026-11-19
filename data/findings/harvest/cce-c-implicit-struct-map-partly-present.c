@@ -70,6 +70,7 @@
 //   relies on is the one quoted above (5.2 §5.8.3 p.154 l.18-21: the part of
 //   an implicitly mapped list item that is present is the only part mapped);
 //   AFAR runs the file correctly, and the OpenMP Examples document the form.
+// - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 // CCE:  craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa
 //       -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -fopenmp-version=52 -O2
 // Run:  OMP_TARGET_OFFLOAD=mandatory ./a.out

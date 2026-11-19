@@ -3,6 +3,7 @@
 ! region (a different construct, so 5.0 §2.12.5 p.175 does not forbid it).
 ! Expected: compiles and prints 2*i+1. The same program with the 5.2 form
 ! uses_allocators(traits(my_traits): my_alloc) compiles on CCE 19/20/21.
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 program p
   use omp_lib
   implicit none

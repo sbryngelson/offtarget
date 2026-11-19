@@ -31,6 +31,7 @@
 ! Expected: "RESULT check=pass".
 !
 ! ftn -fopenmp -O2 (cce20 recipe, offload/engine/toolchains.py)
+! - releases: CCE 19.0.0 and 20.0.2 fail it the same way; CCE 21.0.3 and 21.0.4 run it correctly
 module m
   implicit none
   integer, parameter :: n = 16

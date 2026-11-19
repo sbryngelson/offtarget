@@ -27,6 +27,7 @@
 !   c_loc(tab); the C_PTR form is the one 5.2 keeps (the non-C_PTR form is deprecated, l.8-10).
 !   omp_get_mapped_ptr is OpenMP 5.1 (§3.8.11); the pre-run check accepts the program
 ! - evidence: results/harvest-known/main.wingtip (hk-040, gate: confirmed), results/harvest-known/probes.wingtip.jsonl
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program v040pp
   use iso_c_binding
   use omp_lib

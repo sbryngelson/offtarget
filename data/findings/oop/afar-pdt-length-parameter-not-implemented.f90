@@ -18,6 +18,7 @@
 ! - legality: the rules accept every program; the front ends of the other families: CCE compiles none (its own rejection,
 !   cce-pdt-default-mapper-rejected.f90) and NVHPC's verdict is in results/oop/main/witness.jsonl; the not-implemented message is
 !   AFAR's own statement of a missing feature
+! - releases: AFAR 24.3.0 and 24.4.0 fail it the same way
 module oop_m
   implicit none
   integer, parameter :: n = 64

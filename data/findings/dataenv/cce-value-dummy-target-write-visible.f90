@@ -36,6 +36,7 @@
 ! - found by: the data-environment pilot, rule omp-target-value-dummy-firstprivate
 !   (catalog/dataenv_rules.yaml); gate verdict confirmed on all 9 CCE cells.
 !   This 22-line reproducer is the reviewer's.
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 ! CCE:  ftn -fopenmp -O2 (module load cce/<v> craype-accel-amd-gfx942 rocm/<r>; module unload cray-mpich)
 ! AFAR: amdflang -fopenmp --offload-arch=gfx942 -O2
 ! Run:  OMP_TARGET_OFFLOAD=mandatory ./a.out

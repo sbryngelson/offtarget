@@ -23,6 +23,8 @@
 ! on both releases, the same output.
 ! NVHPC: nvfortran -mp=gpu -gpu=cc80 -gpu=mem:separate -O2
 ! Run:   OMP_TARGET_OFFLOAD=mandatory ./a.out
+! - releases: CCE 19.0.0 fails it the same way; CCE 20.0.2 runs it correctly; CCE 21.0.3 and 21.0.4 fail it the same way; NVHPC
+!   25.11 and 26.9 fail it the same way
 program p
   use omp_lib, only: omp_is_initial_device
   implicit none

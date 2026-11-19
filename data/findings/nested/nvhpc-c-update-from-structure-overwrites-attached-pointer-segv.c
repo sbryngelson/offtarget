@@ -48,6 +48,7 @@
 //   nd-c-omp-update-chain-d3-a9134361, nd-c-omp-update-chain-d3-c5604bb2
 // - legality: the rules (offload.engine.rules) accept it; AFAR and CCE compile and run it correctly (front ends of two other
 //   families)
+// - releases: NVHPC 25.11 and 26.9 fails it the same way on A100 separate and runs it correctly on A100 managed
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>

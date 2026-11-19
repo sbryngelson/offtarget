@@ -12,6 +12,7 @@
 ! - CCE 19.0.0 and 20.0.2: bad= 64 dev= 1 b(1:4)= 1 1 1 1 (MI300A both modes, MI250X)
 ! - CCE 21.0.3: bad= 63 dev= 1 b(1:4)= 1 3 5 7 (MI300A both modes, MI250X)
 ! - NVHPC 25.11 and 26.9: bad= 0 (separate and managed memory): the other family that passes
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fail it the same way
 ! The values read back are not the team's: b = 1 means t(3-j) = 0.
 !
 ! Logs: data/reports/apps/.

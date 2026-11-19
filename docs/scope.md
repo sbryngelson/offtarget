@@ -17,7 +17,7 @@ The tool works offline, needs no compiler or GPU, and gives the same answers on 
 
 | | covered |
 |---|---|
-| compilers in `can-use` | AFAR 24.3.0, CCE 19.0.0, 20.0.2, 21.0.3 (and 21.0.4 in the tables), NVHPC 25.11 and 26.9 |
+| compilers in `can-use` | AFAR 24.3.0 and 24.4.0, CCE 19.0.0, 20.0.2, 21.0.3 (and 21.0.4 in the tables), NVHPC 25.11 and 26.9 |
 | compilers in `issues` only | GCC 16.2 (offloading to MI300A, MI250X, MI300X, MI350X and A100) |
 | machines and modes | MI300A (unified and copy memory), MI250X (copy), A100 (separate and managed memory) |
 | languages | Fortran and C; OpenMP 5.0 to 6.0 (5.2 by default) and OpenACC 3.4 |

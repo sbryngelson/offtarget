@@ -31,6 +31,7 @@
 ! unh_k4.f90, data/evidence/gate_probe/logs/wingtip5.log), so it is no witness.
 ! CCE: ftn -fopenmp -O2 (module load cce/21.0.3 craype-accel-amd-gfx942 rocm)
 ! Run: OMP_TARGET_OFFLOAD=mandatory HSA_XNACK=0 ./a.out
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 program p
   implicit none
   integer, parameter :: n = 16

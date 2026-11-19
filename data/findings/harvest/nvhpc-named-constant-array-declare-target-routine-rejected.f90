@@ -27,6 +27,7 @@
 ! - MFC's documented nvfortran 23.11/24.1 fort2 crash on a parameter array passed into a
 !   declare-target routine (hk-005) no longer reproduces: hk-005 compiles and runs on 25.11/26.9
 ! - evidence: results/harvest-known/main.wingtip (gate: confirmed), results/harvest-known/probes.wingtip.jsonl
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 module vpa_m
   implicit none
   real(8), parameter :: c(2) = [1.5d0, 2.5d0]

@@ -1003,7 +1003,7 @@ def toolchain_meta(tc: Toolchain, workdir: Path) -> dict:
         found = nvidia_targets(exe.read_bytes())  # embedded images' arch
     objdump = Path(tc.fc).parent.parent / "lib" / "llvm" / "bin" / \
         "llvm-objdump"
-    if tc.base == "afar" and objdump.is_file():
+    if tc.kind == "afar" and objdump.is_file():
         r = subprocess.run([str(objdump), "--offloading", str(exe)],
                            capture_output=True, text=True, timeout=120)
         arches = re.findall(r"^arch\s+(\S+)", r.stdout, re.M)

@@ -407,8 +407,10 @@ def test_registered_campaigns_declare_toolchains_through_the_catalog_only(name):
 
 def test_nested_and_oop_keep_their_recorded_targets_and_gate_kinds():
     """The record behind the stored rows (the former TARGETS tables of
-    tools/campaigns/nested.py and tools/campaigns/oop.py), now derived from the catalog."""
-    want = {"tuolumne": (["afar", "cce19", "cce20", "cce21", "cce21_4"], [0, 1]),
+    tools/campaigns/nested.py and tools/campaigns/oop.py), now derived from the catalog: a
+    release added since (AFAR 24.4.0, afar244) is in the targets at once
+    (docs/tooling/contributing.md, "Add a compiler or a compiler release")."""
+    want = {"tuolumne": (["afar", "afar244", "cce19", "cce20", "cce21", "cce21_4"], [0, 1]),
             "tioga": (["gcc_g90"], [0]),
             "wingtip": (["nvhpc", "nvhpc269", "gcc_sm80"], [0, 2])}
     for name in ("nested", "oop"):
@@ -556,7 +558,7 @@ def test_list_names_every_campaign(capsys):
     assert _tool().main(["list"]) == 0
     out = capsys.readouterr().out
     assert out.startswith("nested: kind nested") and "\noop: kind oop" in out
-    assert "tuolumne: afar, cce19, cce20, cce21, cce21_4; modes [0, 1]" in out
+    assert "tuolumne: afar, afar244, cce19, cce20, cce21, cce21_4; modes [0, 1]" in out
 
 
 # ---- The decided review queue of the reproduction gate ---------------------------------------------------

@@ -125,7 +125,9 @@ _KEY = re.compile(r"\b(" + "|".join(sorted((t for ts in FAMILIES.values() for t 
 _FAM_NAMES = [_R.families[f].name for f in FAMILIES]
 _FAM = re.compile(r"\b(" + "|".join(map(re.escape, _FAM_NAMES)) + r")\b"
                   r"(?:\s+((?:v?\d+(?:\.\d+){0,2})(?:\s*(?:/|,\s*|\s+and\s+|\s+or\s+|\s+to\s+)\s*"
-                  r"(?:" + "|".join(re.escape(_R.families[f].name) + r"\s+" for f in _VERS)
+                  # a CCE or NVHPC version list does not go on into AFAR ("CCE 21.0.3, AFAR
+                  # 24.0.0git" is two mentions), as when AFAR had one release
+                  r"(?:" + "|".join(re.escape(_R.families[f].name) + r"\s+" for f in _VERS if f != "afar")
                   + r")?\d+(?:\.\d+){0,2})*))?")
 # a family with one release installed on several machines (GCC 16.2 on the AMD GPUs and the
 # A100): the words near its name that pick the install, the catalog's `mention_words` or,
@@ -195,7 +197,12 @@ def mentions(text: str) -> list[Mention]:
             if tcs:
                 out.append(Mention(fam, tcs, True, m.start()))
                 continue
-        out.append(Mention(fam, FAMILIES[fam], fam == "afar", m.start()))
+        if fam == "afar":
+            # a bare "AFAR" names its first release (24.3.0): every header written before
+            # 24.4.0 means it; a later release is named with its version ("AFAR 24.4.0")
+            out.append(Mention(fam, FAMILIES[fam][:1], True, m.start()))
+            continue
+        out.append(Mention(fam, FAMILIES[fam], False, m.start()))
     out.sort(key=lambda x: x.pos)
     return out
 

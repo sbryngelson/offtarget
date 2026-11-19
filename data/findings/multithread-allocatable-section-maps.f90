@@ -57,6 +57,8 @@
 ! AFAR: amdflang -fopenmp --offload-arch=gfx942 -O2
 ! CCE:  ftn -fopenmp -O2 (module load cce/<v> craype-accel-amd-gfx942 rocm)
 ! Run:  OMP_TARGET_OFFLOAD=mandatory HSA_XNACK=0 ./a.out
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A
+!   copy, MI300X, MI350X and runs it correctly on MI300A unified
 program p
   implicit none
   integer, parameter :: n = 64

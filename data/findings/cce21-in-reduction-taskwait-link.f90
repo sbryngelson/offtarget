@@ -7,6 +7,7 @@
 ! evidence: construct
 ! needs: none
 ! std: f2008
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 program gen_prog
   use omp_lib, only: omp_is_initial_device
   implicit none

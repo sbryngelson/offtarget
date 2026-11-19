@@ -3,6 +3,7 @@
 ! a correction). Each team's mine is private (teams private(tm, mine)) and the loop's
 ! binding thread set is the encountering thread, so no race (offload.engine.prerun's race rule
 ! flags mine: a false positive).
+! - releases: AFAR 24.3.0 and 24.4.0 fail it the same way
 program t
   use omp_lib, only: omp_get_team_num
   implicit none

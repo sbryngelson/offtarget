@@ -53,6 +53,8 @@
 !   19/20 run it. CCE 21/21.0.4 reduce r correctly on the file and every variant but do not copy back the explicitly mapped h
 !   (`r= 2080 h= -1`): their documented defect cce21-defaultmap-aggregate-flag.f90 (a defaultmap clause on target stops the
 !   copy-back of a map(tofrom:) scalar), not this one. NVHPC is the compiler under test and is not counted as a witness
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way; NVHPC 25.11 and 26.9 fail it the
+!   same way
 program p
   use omp_lib, only: omp_is_initial_device
   implicit none

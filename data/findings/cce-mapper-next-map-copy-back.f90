@@ -16,6 +16,8 @@
 !   BEFORE the mapper clause, host_flag= 0 (correct); without the mapper
 !   modifier correct. At HSA_XNACK=1 correct (host_flag= 0, sv= 7).
 ! - CCE 21.0.3 and AFAR 24.0.0git: correct in both modes.
+! - releases: CCE 19.0.0 and 20.0.2 fails it the same way on MI300A copy, MI250X and runs it correctly on MI300A unified; CCE 21.0.3
+!   and 21.0.4 run it correctly
 ! The catalog's map.mapper programs (5.0, 5.2) put host_flag after the
 ! mapper clause, so CCE 19/20 report them as "fell back to host"
 ! (ran_on_host=1) at HSA_XNACK=0.

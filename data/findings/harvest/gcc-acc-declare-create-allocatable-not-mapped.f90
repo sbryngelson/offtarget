@@ -25,6 +25,8 @@
 !   hk-013, hk-087
 ! - legality: the pre-run check (offload.engine.prerun.check: the rules and AFAR's front end, two witnesses) accepts the harvested
 !   programs; this file is read against the rule above. GCC is a compiler under test only and never a legality witness.
+! - releases: CCE 19.0.0 and 20.0.2 fails it another way on MI300A unified and runs it correctly on MI300A copy; CCE 21.0.3 and
+!   21.0.4 fails it the same way on MI300A unified and runs it correctly on MI300A copy
 module declare_create_m
   implicit none
   integer, allocatable :: a(:)

@@ -41,6 +41,7 @@
 !   all of them correctly with HSA_XNACK 0 and 1 (results/parity/nvs1/tuo.st.jsonl); AFAR 24.3.0 stops on every one of them in
 !   its lowering (`not yet implemented: lastprivate clause in constructs other than simd/worksharing-loop/taskloop`,
 !   results/parity/nvs1/tuo.st.jsonl), AFAR's own limit. NVHPC is the compiler under test and is not counted as a witness
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer :: a(8), i, lp, r

@@ -26,6 +26,7 @@
 //   implicit barrier, and the host code that reads a runs after the region. An internal compiler
 //   error is a defect on any input. The pre-run check accepts the program
 // - evidence: results/harvest-known/main.wingtip (hk-030, gate: confirmed), results/harvest-known/probes.wingtip.jsonl
+// - releases: NVHPC 25.11 fails it the same way; NVHPC 26.9 runs it correctly
 #include <omp.h>
 #include <stdio.h>
 

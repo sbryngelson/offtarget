@@ -31,6 +31,7 @@
 !   the MI250X probe runs' output (results/harvest-known/logs/tioga/probe.f656gDkdAd9R.log and
 !   probe.f656iLRSBypT.log; their rows file probes.tioga.jsonl was not kept); the three controls on CCE 19/20/21, both modes:
 !   results/findings-baseline/harvest-cparam-controls.cce.jsonl
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 module vpa_m
   implicit none
   real(8), parameter :: c(2) = [1.5d0, 2.5d0]

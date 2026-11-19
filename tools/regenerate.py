@@ -53,6 +53,10 @@ STEPS = [
      "results/support_table{,_c}.{md,csv}, results/acc_support_table.*, "
      "data/reports/{c,acc}-support-table.md, data/reports/{c,acc}_support_"
      "table.csv"),
+    ("finding-releases", "offline (committed data only)",
+     "tools/derive/finding_releases.py (each release's result in the site matrix, "
+     "data/vendor/checks/results-site)",
+     "the `releases` line of the finding headers (data/findings/)"),
     ("widen-table", "offline (after the widened catalog's GPU runs)",
      "tools/campaigns/widen.py merge; audit-summary; expected; table",
      "results/widen/matrix.jsonl, tests/data/widen_audit_summary*.json, "
@@ -478,6 +482,12 @@ def check_toolchains_gen() -> list[str]:
             for p in _tool("toolchains_gen").stale()]
 
 
+def check_finding_releases() -> list[str]:
+    """The generated `releases` line of every finding header is the one the committed site
+    matrix gives (tools/derive/finding_releases.py)."""
+    return _tool("finding_releases").stale()
+
+
 def check_site_inputs() -> list[str]:
     """The site's committed inputs (site/inputs/) are those of the current
     atom table and spec cache (tools/site/site_inputs.py); a clean clone builds
@@ -493,6 +503,7 @@ CHECKS = [("confirm-batch", check_batch),
           ("toolchains-gen", check_toolchains_gen),
           ("expected-report", check_expected_report),
           ("support-tables", check_support_tables),
+          ("finding-releases", check_finding_releases),
           ("decide", check_decide),
           ("witness", check_witness),
           ("index-scope", check_index_scope),
@@ -540,6 +551,7 @@ def run_offline(log=print) -> None:
             ["tools/derive/support_table.py", "--lang", "c"],
             ["tools/derive/support_table.py", "--model", "acc"],
             ["tools/derive/support_table.py", "--model", "acc", "--lang", "c"],
+            ["tools/derive/finding_releases.py"],
             ["tools/campaigns/widen.py", "audit-summary"],
             ["tools/campaigns/widen.py", "table"],
             ["tools/confirm.py", "index", "--scope", "--write"],

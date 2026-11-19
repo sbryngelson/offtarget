@@ -34,6 +34,8 @@
 !   nd-f-omp-update-chain-d3-cf66ca90, nd-f-omp-update-chain-d3-f84ee81c, nd-f-omp-update-tree-d3-cef9276d
 ! - legality: the rules (offload.engine.rules) accept it; AFAR compiles it (a front end of another family; AFAR fails the
 !   pointer-root shape at run time for its own reason, which its map(to:) control shares)
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; NVHPC 25.11 and 26.9 fails it the same way on A100
+!   separate and runs it correctly on A100 managed
 program t
   use omp_lib
   implicit none

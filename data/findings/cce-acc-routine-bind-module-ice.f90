@@ -1,6 +1,7 @@
 ! OpenACC 3.4 §2.15.1 (routine bind): host_val is called on the device under
 ! the name dev_val. Legal. Expected output: 3 5 7 9 11 13 15 17
 ! (dev_val(x) = 2*x + 1). Compile: ftn -h acc -O2.
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 module m
   implicit none
 contains

@@ -16,6 +16,7 @@
 ! - legality: legal by reading: a module variable, no parallelism in the region
 ! - evidence: results/stress/audit/runs-nvhpc.jsonl (tools/jobs/run_wingtip_fix1.sh). The confirmer gave
 !   needs_human (R22, no cross-machine witness); the audit counts the MI300A results
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 module dt_scalar_m
   implicit none
   integer(8) :: g

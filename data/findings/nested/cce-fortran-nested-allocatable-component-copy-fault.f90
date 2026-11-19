@@ -23,6 +23,8 @@
 !   nvhpc269 (NVHPC 26.9) fail it another way in copy mode, e.g. `exit_status: 1; without mandatory: exit_status: 1`
 ! - legality: the rules (offload.engine.rules) accept it; AFAR compiles and runs it correctly (a front end of another
 !   family)
+! - releases: CCE 19.0.0 and 20.0.2 fails it the same way on MI300A copy and runs it correctly on MI300A unified; CCE 21.0.3 and
+!   21.0.4 fails it another way on MI300A copy and runs it correctly on MI300A unified
 program t
   use omp_lib
   implicit none

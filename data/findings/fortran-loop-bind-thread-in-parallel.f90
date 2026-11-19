@@ -16,6 +16,7 @@
 ! directive fails too, and the program is correct at -O0: CCE's failure is
 ! the sequential-loop defect of cce19-target-parallel-guarded-loop.f90, not
 ! a bind(thread) defect. On AFAR it is a bind(thread) defect.
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fail it the same way
 program bind_thread_repro
   use omp_lib
   implicit none

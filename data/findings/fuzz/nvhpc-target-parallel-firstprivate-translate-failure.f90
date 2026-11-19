@@ -40,6 +40,7 @@
 !   19/20/21/21.0.4
 !   compile and run it correctly with HSA_XNACK 0 and 1 (results/parity/nvc1/tuo.fp2.jsonl). NVHPC is the compiler under test and is
 !   not counted as a witness
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer :: a(64), i, k

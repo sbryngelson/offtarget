@@ -14,6 +14,7 @@
 !   and error termination, as required. AFAR amdclang (C programs) the same.
 ! - CCE 19.0.0, 20.0.2, 21.0.3: error termination in both modes ("Variable
 !   not found in present table").
+! - releases: AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X
 ! The catalog's map.present negative probes (Fortran and C, 5.2 and 6.0)
 ! read wrong at HSA_XNACK=1 and correct at HSA_XNACK=0 on AFAR.
 ! AFAR: amdflang -fopenmp --offload-arch=gfx942 -O2

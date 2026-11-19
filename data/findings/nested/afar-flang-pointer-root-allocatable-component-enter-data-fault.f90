@@ -77,6 +77,7 @@
 !   nd-f-omp-update-tree-d3-cef9276d
 ! - legality: the rules (offload.engine.rules) accept it, AFAR's flang front end accepts it and CCE compiles and runs it
 !   (the front ends of two other families)
+! - releases: AFAR 24.3.0 and 24.4.0 fails it the same way on MI300A copy, MI300X, MI350X and runs it correctly on MI300A unified
 program t
   use omp_lib
   implicit none

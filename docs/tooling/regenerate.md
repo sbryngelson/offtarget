@@ -24,19 +24,20 @@ Run the commands from the repository root. GPU steps need a compute node, for ex
 | 5 | `claims` | offline | `python3 -I tools/derive/claims.py ingest` | `catalog/vendor_claims_generic.yaml` | `claims` |
 | 6 | `toolchains-gen` | offline, after editing `catalog/toolchains.yaml` or `catalog/machines.yaml` | `python3 -I tools/derive/toolchains_gen.py` (`--check` lists stale files) | `site/static/toolchains.js`, `tools/jobs/toolchains.sh`, `docs/tooling/toolchains.md` | `toolchains-gen` |
 | 7 | `support-tables` | offline | `python3 -I tools/derive/support_table.py`; `--lang c`; `--model acc`; `--model acc --lang c` | `results/support_table{,_c}.{md,csv}`, `results/acc_support_table*`, `data/reports/{c,acc,acc-c}-support-table.md`, `data/reports/{c,acc,acc_c}_support_table.csv` | `support-tables` |
-| 8 | `widen-table` | offline, after the widened catalog's GPU runs | `python3 -I tools/campaigns/widen.py merge`, `audit-summary`, `expected`, `table` | `results/widen/matrix.jsonl`, `tests/data/widen_audit_summary{,_c}.json`, `results/expected/widen*.jsonl`, `data/reports/widen_support_table.csv`, `data/reports/widen-support-table.md` | `widen-table` |
-| 9 | `fuzz` | GPU node, then offline | `tools/campaigns/fuzz.py` campaigns (`tools/jobs/run_fuzz_seeds.sh`); then `python3 -I tools/campaigns/fuzz.py report ...` | `results/fuzz/*`, `data/reports/fuzz-*.md` | - |
-| 10 | `confirm-evidence` | GPU node (and Tioga over ssh) | `tools/jobs/run_confirm_shards.sh` (runs `confirm batch --run` in shards) | `results/confirm/shards/*.ev.*.jsonl`, `results/confirm/evidence.jsonl` | - |
-| 11 | `confirm-batch` | compute node, offline, about 5 min | `flux batch -q pbatch -N1 -t 30 --setattr=thp=always --env=INSTALL=1 --output=results/confirm/shards/regen.log tools/jobs/run_regen_confirm.sh` (full and s1 batches in 8 shards each, then `confirm decide`) | `results/confirm/batch_full.jsonl`, `batch_s1.jsonl`, `batch_s1.final.jsonl` | `confirm-batch`, `decide` |
-| 12 | `widen-batch` | compute node, offline, a few minutes | `tools/jobs/run_widen_confirm.sh` (stamps its inputs) | `results/confirm/batch_widen.jsonl`, `batch_widen.stamp.json` | `widen-batch` |
-| 13 | `witness` | offline (ssh to the `witness_only` offload compilers of `catalog/machines.yaml`, if any) | `python3 -I tools/confirm.py witness` | `catalog/legality_witness.yaml` | `witness` |
-| 14 | `index-scope` | offline | `python3 -I tools/confirm.py index --scope --write` | `data/findings/index.yaml` (`modes`, `arch`) | `index-scope` |
-| 15 | `backlog` | offline | `python3 -I tools/confirm.py backlog --write` | `data/reports/unlinked-bugs.md` | `backlog` |
-| 16 | `ompvv-compare` | offline | `python3 -I tools/derive/ompvv_compare.py`; `--lang c`; the omp_vv index rows come from `tools/campaigns/index_corpus.py` | `results/ompvv_compare{,_c}.csv`, `data/index/corpus_index.csv` | `ompvv-compare`, `ompvv-corpus` |
-| 17 | `triage` | offline | `python3 -I tools/confirm.py triage` | `results/confirm/triage27b.jsonl`, `data/reports/triage-2026-10.md` (generated block), `docs/upstream.md` | `triage` |
-| 18 | `validate` | offline | `python3 -I tools/confirm.py validate` | `data/reports/confirm-validation.md` | - |
-| 19 | `dashboard` | offline, then publish | `python3 -I tools/site/dashboard_data.py OUT_DIR`, then publish each changed dataset ([dashboard-publish.md](dashboard-publish.md)) | the published datasets (not committed) | - |
-| 20 | `site-inputs` | offline (`tools/lanes/wingtip_offline.sh site-inputs`) | `python3 -I tools/site/site_inputs.py` (feature support from `results/dash/atoms.json`; verified citations of the published findings from `results/spec_cache`) | `site/inputs/atoms.json.gz`, `site/inputs/citations.json` | `site-inputs` |
+| 8 | `finding-releases` | offline, committed data only, after the site matrix is packed | `python3 -I tools/derive/finding_releases.py` (`--check` lists stale findings) | the generated `releases` line of the finding headers (`data/findings/`) | `finding-releases` |
+| 9 | `widen-table` | offline, after the widened catalog's GPU runs | `python3 -I tools/campaigns/widen.py merge`, `audit-summary`, `expected`, `table` | `results/widen/matrix.jsonl`, `tests/data/widen_audit_summary{,_c}.json`, `results/expected/widen*.jsonl`, `data/reports/widen_support_table.csv`, `data/reports/widen-support-table.md` | `widen-table` |
+| 10 | `fuzz` | GPU node, then offline | `tools/campaigns/fuzz.py` campaigns (`tools/jobs/run_fuzz_seeds.sh`); then `python3 -I tools/campaigns/fuzz.py report ...` | `results/fuzz/*`, `data/reports/fuzz-*.md` | - |
+| 11 | `confirm-evidence` | GPU node (and Tioga over ssh) | `tools/jobs/run_confirm_shards.sh` (runs `confirm batch --run` in shards) | `results/confirm/shards/*.ev.*.jsonl`, `results/confirm/evidence.jsonl` | - |
+| 12 | `confirm-batch` | compute node, offline, about 5 min | `flux batch -q pbatch -N1 -t 30 --setattr=thp=always --env=INSTALL=1 --output=results/confirm/shards/regen.log tools/jobs/run_regen_confirm.sh` (full and s1 batches in 8 shards each, then `confirm decide`) | `results/confirm/batch_full.jsonl`, `batch_s1.jsonl`, `batch_s1.final.jsonl` | `confirm-batch`, `decide` |
+| 13 | `widen-batch` | compute node, offline, a few minutes | `tools/jobs/run_widen_confirm.sh` (stamps its inputs) | `results/confirm/batch_widen.jsonl`, `batch_widen.stamp.json` | `widen-batch` |
+| 14 | `witness` | offline (ssh to the `witness_only` offload compilers of `catalog/machines.yaml`, if any) | `python3 -I tools/confirm.py witness` | `catalog/legality_witness.yaml` | `witness` |
+| 15 | `index-scope` | offline | `python3 -I tools/confirm.py index --scope --write` | `data/findings/index.yaml` (`modes`, `arch`) | `index-scope` |
+| 16 | `backlog` | offline | `python3 -I tools/confirm.py backlog --write` | `data/reports/unlinked-bugs.md` | `backlog` |
+| 17 | `ompvv-compare` | offline | `python3 -I tools/derive/ompvv_compare.py`; `--lang c`; the omp_vv index rows come from `tools/campaigns/index_corpus.py` | `results/ompvv_compare{,_c}.csv`, `data/index/corpus_index.csv` | `ompvv-compare`, `ompvv-corpus` |
+| 18 | `triage` | offline | `python3 -I tools/confirm.py triage` | `results/confirm/triage27b.jsonl`, `data/reports/triage-2026-10.md` (generated block), `docs/upstream.md` | `triage` |
+| 19 | `validate` | offline | `python3 -I tools/confirm.py validate` | `data/reports/confirm-validation.md` | - |
+| 20 | `dashboard` | offline, then publish | `python3 -I tools/site/dashboard_data.py OUT_DIR`, then publish each changed dataset ([dashboard-publish.md](dashboard-publish.md)) | the published datasets (not committed) | - |
+| 21 | `site-inputs` | offline (`tools/lanes/wingtip_offline.sh site-inputs`) | `python3 -I tools/site/site_inputs.py` (feature support from `results/dash/atoms.json`; verified citations of the published findings from `results/spec_cache`) | `site/inputs/atoms.json.gz`, `site/inputs/citations.json` | `site-inputs` |
 
 The site pages are built from committed data only. `tools/site_publish.sh OUT_DIR` builds them (see [publishing.md](publishing.md) and [site.md](site.md)), and on GitHub `.github/workflows/site.yml` does. The build needs node 22 and Chrome, and the pages are not committed.
 
@@ -75,6 +76,7 @@ Rule R12a applies when every family rejects a program, an independent checker ac
 
 | input | rerun from |
 |---|---|
+| `data/vendor/checks/results-site` (the packed site matrix) | `finding-releases`, then `confirm-batch` (the headers are findings) |
 | `data/findings/index.yaml`, a new finding file | `confirm-batch` through `validate`; `site-inputs` when the finding is published on the site (its citations) |
 | `results/dash/atoms.json` (from `dashboard`), `results/spec_cache` | `site-inputs` |
 | `catalog/mode_differences.yaml` | `support-tables` (the report rejects a class its cells contradict; `tests/cluster/test_reports.py` checks that every entry still classifies a current difference), then `confirm-batch` through `validate` |

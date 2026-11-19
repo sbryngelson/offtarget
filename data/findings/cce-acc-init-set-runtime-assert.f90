@@ -8,6 +8,7 @@
 ! MI250X: "_cray_acc_init_device ... Incorrect device type set" and, for
 ! a plain `!$acc shutdown`, "_cray_acc_shutdown_device ... Shutting down
 ! incorrect device type" (results/acc_matrix.jsonl).
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way
 program t
   use openacc
   implicit none

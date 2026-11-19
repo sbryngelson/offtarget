@@ -28,6 +28,7 @@
 ! - CCE 19.0.0, 20.0.2: ftn-113, VAL read as an undeclared variable (they do
 !   not claim the 5.2 syntax).
 ! - AFAR amdflang 24.0.0git: crashes (ICE) in both forms.
+! - releases: CCE 19.0.0 and 20.0.2 fail it another way; CCE 21.0.3 and 21.0.4 fail it the same way
 ! The catalog's omp52/60-clause-linear-val programs are rejected on every
 ! compiler because of these.
 !

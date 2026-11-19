@@ -42,6 +42,7 @@
 !   compile and run this file and its controls correctly with HSA_XNACK 0 and 1 (results/parity/nvs1/tuo.cl.jsonl); CCE 19
 !   rejects character data in target regions ("Unsupported OpenMP construct Fortran character"), its own documented limit
 !   (afar-cce19-character-defaultmap.f90). NVHPC is the compiler under test and is not counted as a witness
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer, parameter :: n = 16

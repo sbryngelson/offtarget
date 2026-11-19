@@ -303,6 +303,8 @@
 //   read-back result (the block is wrong right after the thread's own stores); the density and first-touch results; the
 //   rates; the nodes (tuolumne1021 and tuolumne1028, MI300A, four APUs, launches pinned one per APU with
 //   ROCR_VISIBLE_DEVICES)
+// - releases: CCE 19.0.0 and 20.0.2 fail it the same way; CCE 21.0.3 and 21.0.4 run it correctly; AFAR 24.3.0 fails it the same way
+//   on MI300A unified and runs it correctly on MI300A copy, MI300X, MI350X; AFAR 24.4.0 runs it correctly
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -34,6 +34,7 @@
 !   map(tofrom: lp1) added it gives the expected checksum (exploration runs
 !   on both releases): the missing implicit map of this finding on target simd.
 !   No separate finding
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program lastprivate_combined
   use omp_lib
   implicit none

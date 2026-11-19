@@ -23,6 +23,7 @@
 ! - with collapse(2) (collapsent2) or simd (simdnt2) added: the same;
 ! - control, the same directive without num_threads and if (nont): lp= 200
 !   in 60 of 60 runs on CCE 19/20/21, both modes.
+! - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; NVHPC 25.11 and 26.9 fail it the same way
 ! Mechanism: CCE 19/20/21 warn at compile time, on this file
 ! and on the if(parallel: .false.) form but not on the control:
 !   ftn-7256 ftn: WARNING P, File = lp.f90, Line = <the directive>

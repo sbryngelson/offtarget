@@ -17,6 +17,7 @@
 !   the family under test)
 ! - witnesses: afar/gfx942/copy, cce21/gfx942/copy, elision
 ! - withdrawn: none
+! - releases: CCE 19.0.0 and 20.0.2 fail it the same way; CCE 21.0.3 and 21.0.4 run it correctly
 !
 ! Audit, candidate 6: a teams reduction over 2**24 iterations with
 ! num_teams(65536). All variables are integer(8); the sum is 8455717314 (more

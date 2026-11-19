@@ -25,6 +25,7 @@
 // (the -binop programs: acc34-c-clause-gang-binop, acc34-c-clause-gang-dim-
 // binop, acc34-c-directive-loop-binop); reduced by hand.
 // NVHPC: nvc -acc=gpu -gpu=cc80 -gpu=mem:separate -O2
+// - releases: NVHPC 25.11 and 26.9 fail it the same way
 #include <stdio.h>
 int main(void) {
   int x = 0;

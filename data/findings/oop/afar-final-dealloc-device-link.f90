@@ -19,6 +19,8 @@
 ! - legality: the rules and the front ends of the other families (AFAR's own front end is not its witness): CCE compiles it (its
 !   failure is at run time) and NVHPC's verdict is no verdict (an unsupported runtime routine, results/oop/main/witness.jsonl);
 !   tools/campaigns/oop.py legality: legal for AFAR
+! - releases: AFAR 24.3.0 fails it the same way on MI300A unified, MI300A copy and runs it correctly on MI300X, MI350X; AFAR 24.4.0
+!   runs it correctly
 module oop_m
   implicit none
   integer, parameter :: n = 64

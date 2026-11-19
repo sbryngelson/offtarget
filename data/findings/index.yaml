@@ -22,7 +22,7 @@
 # never duplicates).
 findings:
   - file: afar-cce19-character-defaultmap.f90
-    toolchains: [afar, cce19, cce20]
+    toolchains: [afar, afar244, cce19, cce20]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -63,7 +63,7 @@ findings:
     programs: ["omp5?-clause-default-shared", "omp60-clause-default-shared", "omp60-clause-default-all", "omp52-w-task"]
     # the catalog programs README.md names as failing through this finding; the widened catalog's task program
   - file: afar-loop-bind-thread-in-teams.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: rejected
     message: "BIND\\(TEAMS\\)` must be specified"
@@ -80,11 +80,11 @@ findings:
     programs: ["omp*-clause-defaultmap", "omp*-clause-defaultmap-[!s]*", "omp*-clause-defaultmap-scalar*", "omp*-clause-defaultmap-storage*"]
     constructs: ["clause:defaultmap"]
   - file: multithread-allocatable-section-maps.f90
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
-    arch: [gfx942]
+    arch: [gfx942, gfx90a]
     expected: "bad= 0"
     scope: host+device
   - file: target-update-sections-in-parallel.f90
@@ -150,14 +150,14 @@ findings:
     modes: [unified, copy]
     arch: [gfx942]
   - file: afar-flang-task-reduction-max.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: rejected
     message: "no symbol found for|Invalid reduction identifier in TASK_REDUCTION"
     modes: [unified, copy]
     arch: [gfx942, gfx90a]
   - file: afar-flang-loop-bind-teams-reduction.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: rejected
     message: "'REDUCTION' clause not allowed with '!\\$OMP LOOP BIND\\(TEAMS\\)'"
@@ -173,7 +173,7 @@ findings:
     modes: [unified, copy]
     arch: [gfx942, gfx90a]
   - file: afar-flang-firstprivate-map-two-targets.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: rejected
     message: "may not appear on both MAP and FIRSTPRIVATE"
@@ -197,7 +197,7 @@ findings:
     programs: ["omp5?-c-clause-map-present", "omp60-c-clause-map-present"]
     # the catalog programs README.md names as failing through this finding
   - file: afar-clang-requires-device-safesync-hang.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: timeout
     message: "compile_timeout"
@@ -237,14 +237,14 @@ findings:
     modes: [unified, copy]
     arch: [gfx942, gfx90a]
   - file: clang-c-linear-directive-name-hang.c
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: c
     outcome: timeout
     message: "compile_timeout"
     modes: [unified, copy]
     arch: [gfx942, gfx90a]
   - file: afar-nontemporal-assumed-shape-ice.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: ice
     message: "verification of lowering to FIR failed"
@@ -276,7 +276,7 @@ findings:
     programs: ["omp5?-clause-map-mapper"]
     constructs: ["clause:mapper"]
   - file: afar-c-update-iterator-copy-mode.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: wrong_answer
     modes: [copy]
@@ -294,14 +294,14 @@ findings:
     programs: ["omp5?-c-clause-map-delete", "omp60-c-clause-map-delete"]
     constructs: ["clause:delete"]
   - file: afar-xnack1-target-is-present.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [unified]
     arch: [gfx942]
     constructs: ["dir:target enter data"]
   - file: afar-c-xnack1-target-is-present.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: wrong_answer
     modes: [unified]
@@ -309,7 +309,7 @@ findings:
     programs: ["omp5?-c-clause-map-iterator", "omp60-c-clause-map-iterator"]
     constructs: ["dir:target enter data"]
   - file: afar-xnack1-present-not-enforced.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [unified]
@@ -326,7 +326,7 @@ findings:
     arch: [gfx942, gfx90a]
     constructs: ["clause:defaultmap"]
   - file: fortran-schedule-static-in-target.f90
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -337,7 +337,7 @@ findings:
     # : AFAR's bind(thread)
     # defect only; on CCE the bind(thread) programs fail by the sequential-loop
     # defect of cce19-target-parallel-guarded-loop.f90, which now names them
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -346,7 +346,7 @@ findings:
     constructs: ["clause:bind", "dir:loop"]
   # (claim mismatches and omp_vv flags)
   - file: clang-c-declare-target-to-omp52.c
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: c
     outcome: rejected
     message: "unexpected 'to' clause, use 'enter' instead"
@@ -354,7 +354,7 @@ findings:
     arch: [gfx942, gfx90a]
     expected: "RESULT ran_on_host=0 check=pass"
   - file: clang-c-map-iterator-omp51.c
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: c
     outcome: rejected
     message: "incorrect map type modifier, expected one of"
@@ -362,7 +362,7 @@ findings:
     arch: [gfx942, gfx90a]
     expected: "RESULT ran_on_host=0 check=pass"
   - file: defaultmap-none-loop-variable.f90
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: f90
     outcome: rejected
     message: "DEFAULTMAP\\(NONE\\) clause requires|default map\\(none\\) was specified"
@@ -463,7 +463,7 @@ findings:
     modes: [unified, copy]
     arch: [gfx942]
   - file: catalog/afar-c-ordered-doacross-link.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: rejected
     message: "undefined symbol: __kmpc_doacross_init"
@@ -472,7 +472,7 @@ findings:
     programs: ["omp52-c-clause-ordered-n", "omp60-c-clause-ordered-n"]
     # promoted from the confirmer's draft of catalog:omp52-c-clause-ordered-n:afar:gfx942:unified
   - file: catalog/afar-c-reduction-task-link.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: rejected
     message: "undefined symbol: __kmpc_taskred_modifier_init"
@@ -481,7 +481,7 @@ findings:
     programs: ["omp52-c-clause-reduction-task", "omp60-c-clause-reduction-task"]
     # promoted from the confirmer's draft of catalog:omp52-c-clause-reduction-task:afar:gfx942:unified
   - file: catalog/afar-flang-reduction-task-ice.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: ice
     message: "Call parameter type does not match function signature"
@@ -506,7 +506,7 @@ findings:
     programs: ["omp60-directive-target_teams_workdistribute", "omp60-directive-teams_workdistribute"]
     # promoted from the confirmer's draft of catalog:omp60-directive-target_teams_workdistribute:afar:gfx942:unified
   - file: catalog/afar-flang-reduction-minus-rejected.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: rejected
     message: "The minus reduction operator is deprecated"
@@ -515,7 +515,7 @@ findings:
     programs: ["omp50-clause-in_reduction-minus", "omp50-clause-reduction-minus", "omp52-clause-in_reduction-minus", "omp52-clause-reduction-minus"]
     # promoted from the confirmer's draft of catalog:omp52-clause-in_reduction-minus:afar:gfx942:unified
   - file: catalog/afar-flang-dist-schedule-chunk.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -527,7 +527,7 @@ findings:
     # distribute parallel}, a parser artifact) matched every combined loop
     constructs: ["clause:dist_schedule", "dir:target teams distribute parallel"]
   - file: catalog/afar-flang-ordered-wrong.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -888,7 +888,7 @@ findings:
     programs: ["omp52-w-optional-absent", "omp52-w-data-optional-absent"]
     # Promoted from the confirmer's draft of catalog:omp52-w-optional-absent:afar:gfx942:unified (the widened catalog)
   - file: catalog/afar-flang-critical-target-parallel-wrong.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -897,7 +897,7 @@ findings:
     programs: ["omp52-w-critical", "omp52-w-critical-reduction"]
     # Promoted from the confirmer's draft of catalog:omp52-w-critical:afar:gfx942:unified (the widened catalog)
   - file: catalog/afar-flang-named-critical-link.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: rejected
     modes: [unified, copy]
@@ -907,7 +907,7 @@ findings:
     programs: ["omp52-w-critical-named", "omp52-w-critical-hint"]
     # Promoted from the confirmer's draft of catalog:omp52-w-critical-named:afar:gfx942:unified (the widened catalog)
   - file: catalog/afar-c-critical-hint-link.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: rejected
     modes: [unified, copy]
@@ -916,7 +916,7 @@ findings:
     programs: ["omp52-c-w-critical-hint"]
     # Promoted from the confirmer's draft of catalog:omp52-c-w-critical-hint:afar:gfx942:unified (the widened catalog)
   - file: catalog/afar-flang-sections-in-target-ice.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: ice
     modes: [unified, copy]
@@ -925,7 +925,7 @@ findings:
     programs: ["omp52-w-sections", "omp52-w-parallel-sections"]
     # Promoted from the confirmer's draft of catalog:omp52-w-sections:afar:gfx942:unified (the widened catalog)
   - file: catalog/c-allocate-const-mem-firstprivate-wrong.c
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: c
     outcome: wrong_answer
     modes: [unified, copy]
@@ -1062,7 +1062,7 @@ findings:
     programs: ["acc34-w-loop-in-routine", "acc34-w-loop-in-routine-sequence-association"]
     # Promoted from the confirmer's draft of catalog:acc34-w-loop-in-routine:cce19:gfx942:unified (the widened catalog)
   - file: catalog/defaultmap-present-private-array-abort.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: crash
     modes: [copy]
@@ -1232,7 +1232,7 @@ findings:
   # audit reproducers (results/stress/audit; data/reports/fuzz-stress.md),
   # scope from the hand runs (MI300A both modes, Tioga MI250X)
   - file: stress/afar-target-scalar-implicit-firstprivate.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -1326,7 +1326,7 @@ findings:
     expected: "l= 2560 dev= 1"
     constructs: ["clause:lastprivate"]
   - file: stress/afar-c-lastprivate-combined-target-not-mapped.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: wrong_answer
     modes: [unified, copy]
@@ -1360,7 +1360,7 @@ findings:
     # -O2/-O3 with the message is related (findings.path_allows)
   # From the application corpus (PRK transpose; the widened catalog program)
   - file: apps/afar-cce-teams-private-array-nested-parallel-wrong.f90
-    toolchains: [afar, cce19, cce20, cce21]
+    toolchains: [afar, afar244, cce19, cce20, cce21]
     lang: f90
     outcome: wrong_answer
     modes: [unified, copy]
@@ -1464,7 +1464,7 @@ findings:
     expected: "l= 83200 dev= 1"
     constructs: ["dir:target teams distribute", "clause:reduction"]
   - file: afar-c-lastprivate-distribute-parallel-for-small-type.c
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: c
     outcome: wrong_answer
     modes: [unified, copy]
@@ -1567,7 +1567,7 @@ findings:
     constructs: ["dir:target update", "clause:from", "feature:strided_section"]
     source: harvest
   - file: harvest/afar-flang-strided-target-update.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: wrong_answer
     modes: [copy]

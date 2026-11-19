@@ -36,6 +36,7 @@
 !   data/reports/fuzz-stress.md records CCE 19/20's fill-and-reduce shape as
 !   wrong from 2**22 elements under candidate 6; its cause is not shown here,
 !   so this finding claims CCE 21 only.
+! - releases: CCE 19.0.0 and 20.0.2 fail it another way; CCE 21.0.3 and 21.0.4 fail it the same way
 ! Another family: AFAR amdflang (XNACK 0 and 1) and nvfortran 25.11 and 26.9
 ! (A100 80 GB, separate memory): s= 2164663527981
 ! (data/evidence/gate_probe/logs/wingtip5.log).

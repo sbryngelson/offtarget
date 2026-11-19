@@ -21,6 +21,7 @@
 ! - NVHPC 26.9 (A100, separate and managed memory): expected line. NVHPC 25.11 does not compile it
 !   ("NVFORTRAN-W-0155-Compiler failed to translate accelerator region: Missing branch target block" at
 !   f_advance_step; not studied here).
+! - releases: CCE 19.0.0 and 20.0.2 run it correctly; CCE 21.0.3 and 21.0.4 fail it the same way
 ! Controls (apps/controls/, CCE 21 builds them and prints bad= 0, as do CCE 19/20 and AFAR on MI300A and
 ! MI250X): bubble-two-substeps.f90 (the third RK substep call of f_advance_step replaced by err(3) = err(2))
 ! and bubble-simple-rddot.f90 (the Gilmore acceleration f_rddot replaced by a one-line expression). The crash

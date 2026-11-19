@@ -25,6 +25,7 @@
 ! - legality: read against the spec (the rule above); the catalog programs of the list are legal by construction
 !   (offload.engine.gen,
 !   c_gen and acc_gen; no compiler). GCC is a compiler under test only and never a legality witness.
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program defaultmap_to_pointer
   use omp_lib, only: omp_is_initial_device
   implicit none

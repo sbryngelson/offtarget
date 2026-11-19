@@ -12,7 +12,7 @@ toolchain, mode, environment) to --out.
 
 Environments are the reproduction gate's (offload/engine/gate.py): a and b differ
 in the build directory name, c is a on another node or GPU, d is a second
-compile and run. AFAR_ROOT names where AFAR is installed. Compile has a 32 GiB ulimit and a timeout (compile_s,
+compile and run. AFAR_ROOT and AFAR244_ROOT name where the AFAR releases are installed. Compile has a 32 GiB ulimit and a timeout (compile_s,
 default 300 s); run has a timeout (run_s, default 120 s)."""
 import argparse
 import concurrent.futures as cf
@@ -34,8 +34,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 
-AFAR_942 = "/opt/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c"
-AFAR_90A = "/opt/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c"
+# the AFAR releases' installs (one multi-arch drop serves every AMD GPU); <TC>_ROOT
+# overrides one (AFAR_ROOT for afar, AFAR244_ROOT for afar244)
+AFAR = {"afar": "/opt/afar/therock-afar-24.3.0-multiarch-10.1.0-592954c",
+        "afar244": "/opt/afar/therock-afar-24.4.0-multiarch-10.3.0-a71da8f"}
 NV = {"nvhpc": "/opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers",
       "nvhpc269": "/opt/nvidia/hpc_sdk/Linux_x86_64/26.9/compilers"}
 CCE = {"cce19": ("19.0.0", "6.4.3"), "cce20": ("20.0.2", "6.4.3"),
@@ -58,7 +60,7 @@ GIB_KIB = 1024 * 1024
 def family(tc):
     if tc.startswith("gcc"):
         return "gcc"
-    return "afar" if tc == "afar" else "nvhpc" if tc.startswith("nvhpc") else "cce"
+    return "afar" if tc in AFAR else "nvhpc" if tc.startswith("nvhpc") else "cce"
 
 
 def modes_of(fam, machine):
@@ -82,7 +84,7 @@ def recipe(tc, machine, lang, model, extra, opt, mode, src, exe):
     if fam == "afar":
         if model == "acc":
             return None
-        root = os.environ.get("AFAR_ROOT") or (AFAR_90A if machine == "tioga" else AFAR_942)
+        root = os.environ.get(f"{tc.upper()}_ROOT") or AFAR[tc]
         if machine != "tuolumne":
             env["LD_LIBRARY_PATH"] = f"{root}/lib:{root}/lib/llvm/lib"
         if lang == "c":

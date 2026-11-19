@@ -18,6 +18,7 @@
 !   At -O0 CCE 20 builds it and prints bad= 0.
 ! - CCE 19.0.0 and 21.0.3, AFAR 24.0.0git (drop 24.3.0): builds, bad= 0 (MI300A at HSA_XNACK 1 and 0; MI250X).
 ! - NVHPC 25.11 and 26.9 (A100, separate and managed memory): bad= 0.
+! - releases: CCE 19.0.0 runs it correctly; CCE 20.0.2 fails it the same way; CCE 21.0.3 and 21.0.4 run it correctly
 !
 ! What it needs (controls in apps/controls/, all link and print bad= 0 on CCE 20):
 ! - cbc-inline.f90: the same program without the !DIR$ INLINENEVER line (CCE inlines the two helpers when it

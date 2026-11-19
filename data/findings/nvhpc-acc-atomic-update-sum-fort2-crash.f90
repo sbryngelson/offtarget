@@ -27,6 +27,7 @@
 ! (data/evidence/gate_probe/logs/wingtip1-4.log): the 12th cell crashes too, not
 ! every time.
 ! NVHPC: nvfortran -acc=gpu -gpu=cc80 -gpu=mem:separate -O2
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 program p
   implicit none
   integer, parameter :: n = 64

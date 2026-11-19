@@ -700,14 +700,18 @@ def test_a_run_with_a_gate_list_gates_only_the_listed_cells(tmp_path):
     run = C.Run(camp, tmp_path / "t120", "t120")
     run.gen(0, 3, half="dev")
     tcs = camp.caps.toolchains("tuolumne")
+    # the failing toolchain is of another family than the witness (hecbench gates a failure
+    # only with another family's correct run)
+    from offload.engine.toolchains import TOOLCHAINS
+    bad = next(t for t in tcs if TOOLCHAINS[t].family_id != TOOLCHAINS[tcs[0]].family_id)
     ps = [p for p in run.programs() if p.recipe["status"] == "ok"][:2]
     rows = []
     for p in ps:
-        rows.append(row_5(p.id, tcs[1], 0, "wrong_answer", "check_fail: x", stage="run", campaign="hecbench"))
+        rows.append(row_5(p.id, bad, 0, "wrong_answer", "check_fail: x", stage="run", campaign="hecbench"))
         rows.append(row_5(p.id, tcs[0], 0, "correct_on_device", "", campaign="hecbench"))
     C.append_jsonl(run.d / "rows.jsonl", rows)
     assert {it["ident"] for it in run.gate_items("tuolumne")} == {p.id for p in ps}
-    (run.d / "gate_only.json").write_text(json.dumps([camp.cell(ps[0].id, tcs[1], 0)]))
+    (run.d / "gate_only.json").write_text(json.dumps([camp.cell(ps[0].id, bad, 0)]))
     assert [it["ident"] for it in run.gate_items("tuolumne")] == [ps[0].id]
 
 

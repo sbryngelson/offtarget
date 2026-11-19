@@ -15,6 +15,7 @@
 !   oop-dreduce-argmax, oop-dreduce-nested (offload/engine/oop_gen.py; this file is the first one)
 ! - legality: for the nvhpc cells: the rules (offload.engine.rules, with the fortran-oop restrictions) and AFAR's flang front end
 !   (-fsyntax-only) (tools/campaigns/oop.py legality, results/oop/main/legality.json)
+! - releases: NVHPC 25.11 and 26.9 fail it the same way
 module oop_m
   implicit none
   integer, parameter :: n = 64
