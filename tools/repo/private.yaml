@@ -1,0 +1,18 @@
+# The maintainers' private checkout (a separate repository that only the maintainers can read) and the paths of
+# this tree that come from it. tools/repo/link_private.py links each path into this tree at the same path; the
+# links are git-ignored (.gitignore). Without the checkout those paths are absent, and the tools and tests that
+# need them skip and say so (docs/tooling/setup.md, "The private checkout").
+#
+# Set `root` in your local settings (catalog/local.example.yaml):
+#   private.yaml:
+#     root: ../offtarget-private      # absolute, or relative to this repository's root
+root: null
+paths:                        # shell patterns, each matched in the private checkout; a path this tree tracks is never linked
+  - data/bench/*              # the benchmark sets: other projects' code, and held-out sets kept unread
+  - data/vendor/amd           # the vendor report drafts, never published
+  - data/vendor/hpe
+  - data/vendor/nvidia
+  - data/vendor/errata-for-findings.md
+  - data/vendor/checks/reports-*.yaml   # the report texts the drafts are rendered from
+  - data/vendor/checks/reports.json
+  - data/findings/LOG.md      # the maintainers' running record of each finding

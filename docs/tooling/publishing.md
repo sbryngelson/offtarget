@@ -112,14 +112,14 @@ Nothing in the repository does these steps.
   project's offload tests (Apache 2.0 with LLVM exception) and AMD's AOMP tests. Each is credited
   in its program's header. Check the licence of the catalog, the findings and the site text
   against those sources' terms.
-- **The whole repository.** The public repository is not this one.
-  `tools/repo/public_export.py` builds it as one commit from the tracked files and leaves out
-  what `tools/repo/public_exclude.txt` names. That covers the vendor report drafts and their
-  texts, and the benchmark sets. The benchmark code comes from other projects under their own
-  licences, and the held-out sets stay sealed. The export's `data/bench/` holds a README and
-  the programs that findings name. The export scrubs the generated reports and refuses to run
-  when private text is left. Its copy has its own `THIRD_PARTY_NOTICES.md` for what is published,
-  and a README for each directory it trims.
+- **What is not published.** The vendor report drafts and their texts, the benchmark sets (`data/bench/`) and
+  the findings log are in a separate repository that only the maintainers can read, linked into
+  a clone by `tools/repo/link_private.py` (`tools/repo/private.yaml`, [setup.md](setup.md)).
+  The benchmark code comes from other projects under their own licences, and the held-out sets
+  stay sealed. `THIRD_PARTY_NOTICES.md` covers what is published; the notices for the
+  benchmark code are in the private repository. The generated reports and run records name
+  this site's paths and user names when they are written; `tools/repo/private_text.py --write` scrubs them, and
+  `tests/test_private_text.py` fails while any tracked file holds private text.
 - **Specification quotations.** The site quotes the OpenMP (4.5 to 6.0) and OpenACC (3.4)
   specifications from `site/inputs/citations.json`, and attributes each quote to its version,
   section and page. The OpenMP documents' notice reads: "Copyright © 1997-20xx OpenMP Architecture Review

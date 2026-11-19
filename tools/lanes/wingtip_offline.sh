@@ -67,10 +67,10 @@ fi
 T=$(mktemp -d "${TMPDIR:-/tmp}/wingtip-offline.XXXXXX") || exit 1
 trap 'rm -rf "$T"' EXIT
 
-# the code: tracked and new files as on disk, never the shared links
+# the code: tracked and new files as on disk with the private checkout's (copied as files), never the shared links
 # and never a sealed benchmark set that is not scored yet
 # (catalog/sealed_spent.yaml)
-git ls-files -co --exclude-standard -z |
+python3 -I tools/repo/link_private.py files -z |
   grep -zvE '^(results|corpus|spec)(/|$)' | $MAN code-files > "$T/code.list" ||
   { echo "listing the code failed" >&2; exit 1; }
 [ -n "${STEP:-}" ] && $MAN inputs "$STEP" --under code >> "$T/code.list"
@@ -114,7 +114,7 @@ if [ "$remote_head" != "$(git rev-parse HEAD)" ]; then
   timeout 600 $RSYNC -a -e "$SSH" "$T/head.bundle" "$HOST:$LANE/.offline/head.bundle" || exit 1
 fi
 cp "$T/rev" "$T/.wingtip_rev"
-timeout 1800 $RSYNC -a --from0 --files-from="$T/code.list" -e "$SSH" ./ "$HOST:$LANE/" &&
+timeout 1800 $RSYNC -aL --from0 --files-from="$T/code.list" -e "$SSH" ./ "$HOST:$LANE/" &&
   timeout 120 $RSYNC -a -e "$SSH" "$T/.wingtip_rev" "$HOST:$LANE/.wingtip_rev" &&
   timeout 120 $RSYNC -a -e "$SSH" "$T/code.list" "$HOST:$LANE/.offline/files.list" || {
   echo "copying the code to $HOST:$LANE failed" >&2; exit 1; }

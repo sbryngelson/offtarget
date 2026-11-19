@@ -24,7 +24,8 @@ and `results-site`). Then run the following from a compute node or a wingtip lan
 
 The tool prints the draft and the two entries the repository needs. `--write [--readme-section HEADING]` puts the
 finding, its controls and the entries in place. The entries are in `data/findings/index.yaml` and the maintainers'
-log, `data/findings/LOG.md` (kept in the maintainers' repository only, not in the public one). An outside
+log, `data/findings/LOG.md` (in the maintainers' private checkout, `tools/repo/private.yaml`; without it the tool
+prints the row). An outside
 contributor uses `--proposal` instead, which writes to `data/findings/proposed/` with no entries
 ([CONTRIBUTING.md](../../CONTRIBUTING.md)). The tool finds rows by the program text without
 its comments, or by `--id` (the row's program id). `--case` adds the committed rows of a data/vendor/site check case.

@@ -732,13 +732,14 @@ def test_the_spent_list_names_sealed_sets():
     assert not [e for e in WO.check() if "sealed" in e]
 
 
-def _sealed_repo(tmp_path):
+def _sealed_repo(tmp_path, linked=False):
     """A small tree with the two copy scripts, a scored sealed set, an
-    unscored one and an unsealed one."""
+    unscored one and an unsealed one; with `linked`, the sets come from a
+    private checkout linked in (tools/repo/link_private.py)."""
     root = tmp_path / "tree"
     for f in ("tools/lanes/wingtip_sync.sh", "tools/lanes/wingtip_offline.sh",
               "tools/lanes/wingtip_offline.py", "tools/jobs/wingtip_cap.sh",
-              "catalog/sealed_spent.yaml"):
+              "catalog/sealed_spent.yaml", "tools/repo/link_private.py", "tools/repo/private.yaml"):
         (root / f).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(ROOT / f, root / f)
     for d in ("offload", "catalog"):        # the scripts read the machine's access settings through the package
@@ -746,17 +747,27 @@ def _sealed_repo(tmp_path):
     (root / "tools" / "lanes" / "wingtip_offline.yaml").write_text(yaml.safe_dump({
         "host": "wingtip", "data_root": "/d", "lane_root": "/l",
         "steps": {"noop": {"doc": "d", "cmd": ["true"], "limit": 10}}}))
+    sets = tmp_path / "private" if linked else root
     for d, sealed in (("fresh", True), ("holdout", True),
                       ("holdout-public", False)):
-        (root / "data" / "bench" / d).mkdir(parents=True)
-        (root / "data" / "bench" / d / "case.c").write_text("int x;\n")
+        (sets / "data" / "bench" / d).mkdir(parents=True)
+        (sets / "data" / "bench" / d / "case.c").write_text("int x;\n")
         if sealed:
-            (root / "data" / "bench" / d / "SEAL").write_text("sealed\n")
-    git = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-C",
-           str(root)]
-    subprocess.run(git[:1] + ["init", "-q", str(root)], check=True)
-    subprocess.run(git + ["add", "-A"], check=True)
-    subprocess.run(git + ["commit", "-q", "-m", "t"], check=True)
+            (sets / "data" / "bench" / d / "SEAL").write_text("sealed\n")
+    local = os.environ["OFFLOAD_LOCAL"]
+    for tree in ([root, sets] if linked else [root]):
+        git = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-C", str(tree)]
+        subprocess.run(git[:1] + ["init", "-q", str(tree)], check=True)
+        subprocess.run(git + ["add", "-A"], check=True)
+        subprocess.run(git + ["commit", "-q", "-m", "t"], check=True)
+    if linked:
+        mine = yaml.safe_load(Path(local).read_text()) or {}
+        mine["private.yaml"] = {"root": str(sets)}
+        local = str(tmp_path / "local.yaml")
+        Path(local).write_text(yaml.safe_dump(mine))
+        subprocess.run([sys.executable, "-I", "tools/repo/link_private.py"], cwd=root, check=True,
+                       env={**os.environ, "OFFLOAD_LOCAL": local})
+        assert (root / "data" / "bench" / "holdout").is_symlink()
     fake = tmp_path / "bin"
     fake.mkdir()
     cap = tmp_path / "copied"
@@ -767,16 +778,17 @@ def _sealed_repo(tmp_path):
     env = {"PATH": f"{fake}:{os.path.dirname(sys.executable)}:"
            + os.environ.get("PATH", "/usr/bin:/bin"),
            "HOME": str(tmp_path), "TMPDIR": str(tmp_path),
-           "COMPLIANT_HOSTNAME": "tuolumne1001", "OFFLOAD_LOCAL": os.environ["OFFLOAD_LOCAL"],
+           "COMPLIANT_HOSTNAME": "tuolumne1001", "OFFLOAD_LOCAL": local,
            "WINGTIP_OFFLINE_PY": sys.executable}
     return root, env, cap
 
 
+@pytest.mark.parametrize("linked", [False, True], ids=["in-tree", "private-checkout"])
 @pytest.mark.parametrize("cmd", [["tools/lanes/wingtip_sync.sh", "push"],
                                  ["tools/lanes/wingtip_offline.sh", "--no-pull",
                                   "noop"]])
-def test_no_copy_to_wingtip_carries_an_unscored_sealed_set(tmp_path, cmd):
-    root, env, cap = _sealed_repo(tmp_path)
+def test_no_copy_to_wingtip_carries_an_unscored_sealed_set(tmp_path, cmd, linked):
+    root, env, cap = _sealed_repo(tmp_path, linked)
     r = subprocess.run(["bash", *cmd], cwd=root, env=env,
                        capture_output=True, text=True, timeout=120)
     copied = cap.read_text().split("\0") if cap.exists() else []

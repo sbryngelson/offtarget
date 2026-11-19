@@ -937,8 +937,8 @@ def test_a_leftover_gate_directory_is_removed_only_under_a_gate_name(monkeypatch
 def test_no_sealed_outcomes_file_is_tracked():
     """The holdout's outcomes stay on disk (git-ignored); only SEAL, the recipe and split files are tracked
     under a sealed directory."""
-    files = subprocess.run(["git", "-C", str(ROOT), "ls-files", "bench"], capture_output=True, text=True,
-                           check=True).stdout.split()
+    from offload.engine import private as PRIV
+    files = [f for f in PRIV.files(ROOT) if f.startswith("data/bench/")]   # with the private checkout's
     for f in files:
         if "hecbench-holdout" in f:
             assert Path(f).name in ("SEAL", "recipes.yaml", "cases.yaml"), f
@@ -946,6 +946,11 @@ def test_no_sealed_outcomes_file_is_tracked():
 
 
 def test_the_outcomes_file_is_git_ignored():
-    r = subprocess.run(["git", "-C", str(ROOT), "check-ignore", "data/bench/hecbench-holdout/outcomes.csv"],
-                       capture_output=True, text=True)
-    assert r.returncode == 0
+    """Here, and in the private checkout when the set is linked in from it."""
+    d = ROOT / "data" / "bench" / "hecbench-holdout"
+    where = [(ROOT, "data/bench/hecbench-holdout/outcomes.csv")]
+    if d.is_symlink():
+        where = [(d.resolve(), "outcomes.csv")]
+    for repo, rel in where:
+        r = subprocess.run(["git", "-C", str(repo), "check-ignore", rel], capture_output=True, text=True)
+        assert r.returncode == 0, (repo, r.stderr)

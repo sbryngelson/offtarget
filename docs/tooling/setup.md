@@ -83,6 +83,31 @@ With the file in place, `tools/reduce.py --target TOOLCHAIN/MODE` runs on your m
 
 Tests marked `gpu` need a compute node with a supported GPU. The rest of the test suite does not use your machines.
 
+## The private checkout
+
+The benchmark sets (under `data/bench/`), the vendor report drafts (the `amd`, `hpe` and `nvidia` directories of
+`data/vendor/`, and their texts) and the findings log (`data/findings/LOG.md`) are in a separate repository that
+only the maintainers can read.
+`tools/repo/private.yaml` lists those paths. A clone without it works: the tests that need them skip and say so.
+A maintainer checks it out beside the clone, names it in the local settings and links it in:
+
+```
+# ~/.config/offload/local.yaml or catalog/local.yaml
+private.yaml:
+  root: ../offtarget-private          # absolute, or relative to the clone
+```
+
+```
+python3 -I tools/repo/link_private.py           # make or repair the links (git-ignored)
+python3 -I tools/repo/link_private.py --check   # list what is missing
+```
+
+A change to a linked file is committed in the private checkout. The lanes that copy the tree to another machine
+(`tools/jobs/campaign_remote.sh`, `tools/lanes/run_tioga_suite.sh`, `tools/lanes/wingtip_sync.sh` and the others)
+take their file list from `link_private.py files` and copy the linked files as files. Before a commit, run
+`python3 -I tools/repo/private_text.py --write`: it scrubs the user names and paths that the generated reports
+carry, and lists any other file that holds them.
+
 ## Example: a remote NVIDIA node (NVHPC 25.11)
 
 The maintainers' A100 node is the machine `wingtip` in `catalog/machines.yaml`. Its `access` entry (ssh host, clone root, python) is in the maintainers' own `local.yaml`. The node has four NVIDIA A100 80GB PCIe GPUs, no scheduler and no GitHub access. NVHPC is at `/opt/nvidia/hpc_sdk/Linux_x86_64/25.11`, and `NVHPC_BIN` overrides that path. Create the environment once:

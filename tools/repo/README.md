@@ -9,6 +9,9 @@ Checks and lists that keep the repository consistent. [maintainers](../../docs/m
 | `docstring_report.py` | module docstrings over the length limit (`--write` rewrites the allowlist) |
 | `docstring_allow.txt` | modules allowed to exceed that limit |
 | `scrub_vocab.py` | report or remove internal work-item vocabulary from text |
+| `private.yaml` | the maintainers' private checkout (`root`, set in local settings) and the paths it supplies |
+| `link_private.py` | link those paths into the tree; `files` lists the tree with them for the lanes |
+| `private_text.py` | list tracked files that hold user names, private paths or work-item labels; `--write` scrubs the generated ones |
 | `trace_reads.py` | list the repository files a command opens |
 | `bundle_manifest.txt` | files an installed `offload` carries; checked by `tests/test_bundle.py` |
 | `path_allowlist.txt` | paths named in tracked text that are not files, one `file<TAB>path` per line |

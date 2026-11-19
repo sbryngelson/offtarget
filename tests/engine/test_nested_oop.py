@@ -1644,7 +1644,7 @@ def test_the_students_fortran_program_is_an_observation_not_a_finding():
     assert not (ROOT / OBS_OLD).exists()
     assert not (ROOT / "data/findings/malloc/controls/afar-first-use-malloc-student-elem.f90").exists()
     assert "array-constructor-corrupts-records" not in _read("data/findings/index.yaml")
-    log = ROOT / "data/findings/LOG.md"            # the maintainers' log: not in the public export
+    log = ROOT / "data/findings/LOG.md"            # the maintainers' log: from the private checkout
     assert not log.is_file() or "malloc/afar-device-array-constructor" not in log.read_text()
     text = _read(OBS)
     assert "site:" not in text and "end site" not in text

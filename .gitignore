@@ -13,7 +13,6 @@ __pycache__/
 .pytest_cache/
 *.pyc
 *.core
-/data/bench/hecbench-holdout/outcomes.csv
 
 # core dumps
 *.core
@@ -26,3 +25,15 @@ __pycache__/
 
 # per-user settings for the machines and compilers (catalog/local.example.yaml)
 /catalog/local.yaml
+
+# the paths the maintainers' private checkout supplies, linked here by tools/repo/link_private.py
+# (tools/repo/private.yaml); no trailing slash, so the links match too
+/data/bench/*
+!/data/bench/README.md
+/data/vendor/amd
+/data/vendor/hpe
+/data/vendor/nvidia
+/data/vendor/errata-for-findings.md
+/data/vendor/checks/reports-*.yaml
+/data/vendor/checks/reports.json
+/data/findings/LOG.md

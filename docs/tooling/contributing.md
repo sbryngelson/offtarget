@@ -25,14 +25,14 @@ The machines below are the maintainers' own. The catalog names them by hardware.
 | `offload/engine/` | library: generators (`gen.py`, `c_gen.py`, `acc_gen.py`, `oop_gen.py`, `nested_gen.py`, `fuzz*.py`, `stress*.py`), `rules.py`, `prerun.py` (legality check), `harness.py` (compile and run), `gate.py` (reproduction gate), `toolchains.py`, `campaign.py` (campaign interface) with `campaigns/`, `confirm/` (verdict engine), `site/` |
 | `tools/` | command-line entry points (`campaign.py`, `confirm.py`, `fuzz.py`, `gate.py`, `reduce.py`, `new_finding.py`, `regenerate.py`, `site_build.py`, `site_publish.sh`, ...), `jobs/` (job scripts) |
 | `data/findings/` | one small program per compiler issue, with a header; `index.yaml`; `README.md`; `AUTHORING.md` |
-| `data/vendor/` | draft report packets (`amd/`, `hpe/`, `nvidia/`) and `checks/`, which re-runs the cases per compiler (`run_checks.py`) |
+| `data/vendor/` | `checks/`, which re-runs the cases per compiler (`run_checks.py`); the draft report packets (`amd/`, `hpe/`, `nvidia/`) come from the private checkout |
 | `docs/tooling/` | how-to pages: [setup](setup.md), [regenerate](regenerate.md), [wingtip](wingtip.md), [confirm](confirm.md), [site](site.md), [publishing](publishing.md), [dashboard-publish](dashboard-publish.md), [toolchains](toolchains.md), [nested-data](nested-data.md), [expected-behaviour](expected-behaviour.md) |
 | `site/` | static site template (`templates/`, `static/`) and its committed inputs (`inputs/`, from `tools/site/site_inputs.py`) |
 | `.github/workflows/site.yml` | builds, checks and deploys the site to GitHub Pages (CPU only) |
 | `tests/` | pytest; `data/` holds captured compiler messages and audit summaries |
-| `data/bench/` | benchmark sets of real-world programs; sealed sets are never read |
+| `data/bench/` | benchmark sets of real-world programs, from the private checkout; sealed sets are never read |
 | `data/index/` | corpus index and vendor-claim snapshots |
-| git-ignored | `results/` (measurements), `corpus/` (cloned test suites), `spec/` (specification PDFs); [setup.md](setup.md) says how to get them |
+| git-ignored | `results/` (measurements), `corpus/` (cloned test suites), `spec/` (specification PDFs); [setup.md](setup.md) says how to get them. The links to the maintainers' private checkout (`tools/repo/private.yaml`) |
 
 Work in your own git worktree. A worktree links `results/`, `corpus/` and `spec/` to the shared directories. Git ignores those links, so they are never committed.
 

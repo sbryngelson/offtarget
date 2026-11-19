@@ -24,10 +24,10 @@ case "$1" in
   push)
     $SSH "$HOST" "mkdir -p $ROOT/results/nested/$NAME"
     T=$(mktemp -d "${TMPDIR:-/tmp}/nestedpush.XXXXXX") || exit 1
-    git ls-files -co --exclude-standard -z | grep -zv -E "^(results|corpus|spec)$" |
+    python3 -I tools/repo/link_private.py files -z | grep -zv -E "^(results|corpus|spec)$" |
       grep -zv -E "^data/bench/[^/]*holdout" |
       python3 -I tools/lanes/wingtip_offline.py code-files > "$T/code.list" || exit 1
-    rsync -a --from0 --files-from="$T/code.list" -e "$SSH" ./ "$HOST:$ROOT/"
+    rsync -aL --from0 --files-from="$T/code.list" -e "$SSH" ./ "$HOST:$ROOT/"
     git rev-parse --short HEAD > "$T/rev"
     rsync -a -e "$SSH" "$T/rev" "$HOST:$ROOT/.wingtip_rev"
     D=results/nested/$NAME

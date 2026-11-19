@@ -144,7 +144,7 @@ import fnmatch
 import scrub_vocab as SV  # noqa: E402
 
 # frozen inputs (benchmark programs, sealed sets, pinned models), the notes, and the files that teach the scrubber
-EXEMPT = SV.EXEMPT + ("", "docs/superpowers/*", "tests/site/test_site_inputs.py")
+EXEMPT = SV.EXEMPT + ("", "docs/superpowers/*", "tests/site/test_site_inputs.py", "tests/test_private_text.py")
 # a few files whose strings are written into committed seals keep the original words
 KEEP = SV.STRING_EXEMPT
 SUFFIXES = SV.SUFFIXES + (".json", ".js", ".mjs", ".toml", ".ini", ".cfg")

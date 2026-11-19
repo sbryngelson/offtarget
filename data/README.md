@@ -7,7 +7,7 @@ Evidence, benchmark inputs and generated tables that the engine and the website 
 | [findings/](findings/) | one reproducer per confirmed compiler defect, plus the findings index | evidence |
 | [evidence/](evidence/) | the small experiments findings cite, with their output | evidence |
 | [vendor/](vendor/) | the check programs that re-run each finding on each compiler and GPU, and their compact results | evidence, partly generated |
-| [bench/](bench/) | benchmark sets; the public repository has only the programs findings name | input; the `*-holdout`, `fresh` and `fresh2` sets are sealed |
+| [bench/](bench/) | benchmark sets, from the maintainers' private checkout (`tools/repo/private.yaml`); only the README is tracked here | input; the `*-holdout`, `fresh` and `fresh2` sets are sealed |
 | [index/](index/) | directive tables from the compilers' sources, snapshots of the vendor documents behind claims, corpus index | input and generated |
 | [licenses/](licenses/) | licence texts for the third-party programs under `bench/` | input |
 | [reports/](reports/) | generated tables, run logs and write-ups | generated |

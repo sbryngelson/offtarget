@@ -28,9 +28,9 @@ case "${1:-}" in
     # never a sealed benchmark set that is not scored yet (data/bench/<set>/SEAL
     # without <set> in catalog/sealed_spent.yaml): it stays on Tuolumne
     files=$(mktemp)
-    { git ls-files -co --exclude-standard -z; printf '.wingtip_rev\0'; } |
+    { python3 -I tools/repo/link_private.py files -z; printf '.wingtip_rev\0'; } |
       python3 -I tools/lanes/wingtip_offline.py code-files > "$files"
-    rsync -a --from0 --files-from="$files" -e "$SSH" ./ "$HOST:$ROOT/"
+    rsync -aL --from0 --files-from="$files" -e "$SSH" ./ "$HOST:$ROOT/"
     rm -f "$files"
     rm -f .wingtip_rev
     for c in omp_vv acc_vv; do

@@ -20,8 +20,11 @@ The full list, with the test for each, is in "Standing rules" of docs/tooling/co
     python3 -I -m pytest -q -n auto -m "not gpu"   # the tests; needs pytest-xdist (tools/repo/test_requirements.txt)
     python3 -I tools/repo/check_findings.py   # findings against their recorded rows
     python3 -I tools/regenerate.py --check    # every generated file is current
+    python3 -I tools/repo/private_text.py --write   # scrub user names and paths from generated reports
 
 The tool itself runs as `python3 -m offload` from the root: `-I` drops the checkout from the import path.
+
+The benchmark sets, the vendor report drafts and `data/findings/LOG.md` are in the maintainers' private checkout, linked in by `tools/repo/link_private.py` ([docs/tooling/setup.md](docs/tooling/setup.md), "The private checkout"). Commit changes to them there.
 
 Do not trim tests to make the suite faster. Share or cache the expensive setup instead. A fresh clone has no `results/`, `corpus/` or `spec/`. Tests that need them skip and say so ([docs/tooling/setup.md](docs/tooling/setup.md)).
 

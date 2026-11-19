@@ -33,5 +33,8 @@ wingtip_offline.yaml:                # the offline test lane (tools/lanes/wingti
   data_root: /scratch/me/offload-data
   lane_root: /home/me/offload-lanes
 
+private.yaml:                        # the maintainers' private checkout (tools/repo/private.yaml; docs/tooling/setup.md)
+  root: ../offtarget-private
+
 canaries.yaml:                       # the five canary outcomes of a toolchain you add (see catalog/canaries.yaml)
   toolchains: {}

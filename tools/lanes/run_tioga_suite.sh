@@ -23,7 +23,7 @@ mkdir -p "$OUT/lists"
 python3 -I tools/lanes/tioga_suite.py split "$RUN/tuolumne.txt" "$OUT/lists" || exit 1
 T=$(mktemp -d "${TMPDIR:-/tmp}/tsuite.XXXXXX") || exit 1
 trap 'rm -rf "$T"' EXIT
-git ls-files -co --exclude-standard -z | grep -zvE '^(results|corpus|spec)(/|$)' |
+python3 -I tools/repo/link_private.py files -z | grep -zvE '^(results|corpus|spec)(/|$)' |
   python3 -I tools/lanes/tioga_suite.py copy-files > "$T/code.list" || exit 1
 python3 -I tools/lanes/tioga_suite.py inputs | sed 's|^corpus/||' > "$T/corpus.list" || exit 1
 rev=$(git rev-parse --short HEAD)
@@ -34,7 +34,7 @@ print(yaml.safe_dump({n: localcfg.overlay(n, {}) for n in ("machines.yaml", "too
 
 timeout 120 $SSH $HOST "test ! -e $DEST && mkdir -p $DEST/results $DEST/corpus $DEST/.tsuite" ||
   { echo "refused: $HOST:$DEST exists or cannot be made" >&2; exit 1; }
-timeout 1800 rsync -a --from0 --files-from="$T/code.list" -e "$SSH" ./ "$HOST:$DEST/" &&
+timeout 1800 rsync -aL --from0 --files-from="$T/code.list" -e "$SSH" ./ "$HOST:$DEST/" &&
   timeout 600 rsync -a --files-from="$T/corpus.list" -e "$SSH" corpus/ "$HOST:$DEST/corpus/" &&
   timeout 120 rsync -a -e "$SSH" "$OUT/lists/" "$HOST:$DEST/.tsuite/lists/" &&
   timeout 120 rsync -a -e "$SSH" "$T/local.yaml" "$HOST:$DEST/catalog/local.yaml" &&

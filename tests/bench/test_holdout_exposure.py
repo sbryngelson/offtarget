@@ -35,9 +35,10 @@ EXCLUSION = {"harvest2-holdout": ("harvest2-holdout-", "catalog/harvest2_holdout
 SOURCE_EXT = (".c", ".h", ".f90", ".F90", ".f", ".F", ".cpp", ".cc")
 
 
-def _git(*args):
-    return subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, text=True,
-                          check=True).stdout
+def _files(under: str = "") -> list[str]:
+    """The tree's files with the private checkout's linked ones (offload/engine/private.py)."""
+    from offload.engine import private as PRIV
+    return [f for f in PRIV.files(ROOT) if f.startswith(under)]
 
 
 def _unspent_sealed():
@@ -48,7 +49,7 @@ def _unspent_sealed():
 def _cases(sset, prefix):
     """case id -> [tracked paths of the sealed set that belong to it]."""
     out: dict = {}
-    for path in _git("ls-files", f"data/bench/{sset}").splitlines():
+    for path in _files(f"data/bench/{sset}/"):
         m = re.search(re.escape(prefix) + r"\d+", path)
         if m and path.endswith(SOURCE_EXT):
             out.setdefault(m.group(0), []).append(path)
@@ -85,7 +86,7 @@ def test_no_tracked_source_outside_the_set_is_a_copy_of_an_unexcluded_case(sset)
         files = [(p, (ROOT / p).read_text(errors="replace")) for p in sorted(cases[cid])]
         sha[program_sha(files)] = cid
     exposed = {}
-    for path in _git("ls-files").splitlines():
+    for path in _files():
         if path.startswith("data/bench/") and re.search(r"-holdout", path.split("/")[2]):
             continue    # the sealed sets themselves
         if not path.endswith(SOURCE_EXT):
@@ -112,7 +113,7 @@ def test_no_tracked_file_names_an_unexcluded_case(sset):
     assert names
     pat = re.compile("|".join(re.escape(n) for n in names) + r"(?!\d)")
     hits = []
-    for path in _git("ls-files", "-z").split("\0"):
+    for path in _files():
         if not path or path.startswith(f"data/bench/{sset}/"):
             continue
         try:
@@ -159,7 +160,7 @@ def test_the_hecbench_exclusion_file_accounts_for_the_sealed_cases():
 def test_no_hecbench_program_text_is_tracked():
     """The benchmarks stay in the git-ignored clone: a tracked source file of either half, or a path
     into the clone, would show the sealed half's code."""
-    for path in _git("ls-files").splitlines():
+    for path in _files():
         assert "HeCBench-ornl" not in path, path
         if path.startswith(("data/bench/hecbench/", f"data/bench/{HEC_SET}/")) and \
                 not path.startswith("data/bench/hecbench/stubs/"):       # stubs/: this corpus's own files
@@ -173,7 +174,7 @@ def test_no_tracked_file_names_an_unexcluded_hecbench_holdout_benchmark():
     d, hashes, hashlib = _hec_hashes()
     excluded, _ = _excluded(HEC_EXCLUDED)
     hits = []
-    for path in _git("ls-files", "-z").split("\0"):
+    for path in _files():
         if not path or path.startswith(f"data/bench/{HEC_SET}/"):
             continue
         try:

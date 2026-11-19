@@ -1,6 +1,6 @@
 """Markers for tests that need inputs a clone may not have: a fresh clone has no spec PDFs, no corpus/ and no
-results/ (docs/tooling/setup.md says how to get them); the public repository has no benchmark sets and one
-commit of history. A marked test skips, naming what is missing.
+results/ (docs/tooling/setup.md says how to get them), and the benchmark sets come from the maintainers' private
+checkout (tools/repo/private.yaml). A marked test skips, naming what is missing.
 
     @pytest.mark.needs_spec                 # the spec PDFs (all of them)
     @pytest.mark.needs_corpus("omp_vv")     # corpus/<name> (default: omp_vv)
@@ -53,8 +53,8 @@ def pytest_configure(config):
         config.addinivalue_line("markers", f"{name}: needs {what} "
                                 "(git-ignored; docs/tooling/setup.md)")
     config.addinivalue_line("markers", "needs_bench: needs files of the benchmark sets under data/bench "
-                            "(not in the public repository)")
-    config.addinivalue_line("markers", "needs_commit: needs a commit of the history (not in the public repository)")
+                            "(the maintainers' private checkout, tools/repo/private.yaml)")
+    config.addinivalue_line("markers", "needs_commit: needs a commit of the history (one this clone may not have)")
     config.addinivalue_line("markers", "needs_compiler: needs a toolchain's compiler installed "
                             "(catalog/local.example.yaml)")
     config.addinivalue_line("markers", "needs_linux(what): needs Linux (/proc, setsid, GNU time, PR_SET_PDEATHSIG)")
