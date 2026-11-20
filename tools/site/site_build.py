@@ -392,6 +392,9 @@ legality, filed from the link on its page, goes to adjudicators the same way. An
 result required.</dd>
 <dt>supported by outside evidence</dt><dd>the readers find the specification unclear, and an official example, a vendor's
 own bug tracker or a fix in a later release settles it.</dd>
+<dt>settled by a maintainer's ruling</dt><dd>the readers got the specification wrong, and a maintainer's ruling
+quotes the passage that decides it. The quotes are checked against the specification text like the readers', the ruling
+is shown in full on the issue, and it lapses when the program changes.</dd>
 <dt>contested</dt><dd>an adjudicator (or, before adjudication, a reader) finds the program not legal or the result
 not required, and nothing outside settles it. The reason is shown on the issue.</dd>
 <dt>not independently confirmed</dt><dd>no review yet, readers uncertain, or the program changed since its review.</dd>

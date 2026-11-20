@@ -113,7 +113,7 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--kind", choices=sorted(KIND_WORDS))
     ap.add_argument("--stage", choices=("compile", "link", "run"), help="when it fails")
     ap.add_argument("--status", choices=("open", "fixed", "changed", "not-reproduced"))
-    ap.add_argument("--legality", choices=("confirmed", "supported", "contested", "unconfirmed"),
+    ap.add_argument("--legality", choices=("confirmed", "supported", "ruled", "contested", "unconfirmed"),
                     help="the independent legality review's verdict")
     ap.add_argument("--show", metavar="ID", help="one issue in full, with its reproducer (an id, a part of one or a path)")
     ap.add_argument("--format", choices=("text", "json"), default="text")

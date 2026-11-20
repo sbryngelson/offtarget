@@ -144,6 +144,9 @@ def test_ingest_records_readers_then_adjudicators(tmp_path, monkeypatch):
     assert rec["verdict"] == "confirmed" and len(rec["adjudicators"]) == 2 and len(rec["readers"]) == 2
     assert rec["why"].startswith("One independent reading disputed it")
     assert "Reading" not in R._clip("Reading B fails. The rule holds. Reading A is right; it cites 5.8.1.")
+    assert R._clip("Both readings are right. The map restriction forbids it.") == "The map restriction forbids it."
+    kept = "Both readings are right that bind(thread) is allowed inside teams in 5.2. But the loop races."
+    assert R._clip(kept) == kept
     assert not L.problems("x", rec)
 
 
@@ -275,3 +278,50 @@ def test_verification_attaches_to_the_reading_and_two_refutations_drop_it(tmp_pa
     dropped = rec["readers"][1]
     assert len(dropped["verifications"]) == 2 and L.refuted(dropped)
     assert rec["verdict"] == "confirmed" and not L.problems("x", rec)
+
+
+def ruling(ok=1, wrong_section=0, not_found=0):
+    return {"by": "maintainer", "date": "2026-11-20", "reasoning": "r",
+            "passages": [{"spec": "openmp-5.2.txt", "section": "3.2.6", "quote": "q"}],
+            "quotes": {"ok": ok, "wrong_section": wrong_section, "not_found": not_found}}
+
+
+def test_a_maintainers_ruling_with_checked_passages_settles_a_finding_as_ruled():
+    contested = [reader(), reader(legal="no")]
+    assert L.verdict({"readers": contested, "adjudicators": [reader(legal="no")]}) == "contested"
+    assert L.verdict({"readers": contested, "adjudicators": [reader(legal="no")], "ruling": ruling()}) == "ruled"
+    assert "ruled" in L.VERDICTS and "ruling" in L.WORDS["ruled"]
+    assert L.WORDS["ruled"] != L.WORDS["confirmed"]          # never shown as independent confirmation
+
+
+def test_a_ruling_whose_passages_do_not_check_out_is_ignored_and_reported():
+    contested = [reader(), reader(legal="no")]
+    for bad in (ruling(ok=0, not_found=1), ruling(ok=1, wrong_section=1), ruling(ok=0)):
+        rec = {"readers": contested, "ruling": bad, "program_sha": "x"}
+        assert L.verdict(rec) == "contested"
+        rec["verdict"] = "contested"
+        assert any("ruling" in p for p in L.problems("f", rec))
+
+
+@pytest.mark.needs_spec
+def test_the_rule_command_writes_a_ruling_only_for_quotes_in_the_specification(tmp_path, monkeypatch):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("review", L.ROOT / "tools" / "review" / "review.py")
+    R = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(R)
+    monkeypatch.setattr(L, "FINDINGS", tmp_path / "f")
+    monkeypatch.setattr(L, "REVIEWS", tmp_path / "f" / "reviews")
+    (tmp_path / "f" / "reviews").mkdir(parents=True)
+    (tmp_path / "f" / "x.c").write_text("int main(void) { return 0; }\n")
+    sha = L.program_sha(tmp_path / "f" / "x.c")
+    L.record_path("x").write_text(json.dumps({"finding": "x.c", "program_sha": sha, "readers": [reader(), reader(legal="no")],
+                                              "verdict": "contested", "why": "w"}))
+    good = "The values of the iterator are the set of values"
+    assert R.main(["rule", "x", "--spec", "openmp-5.2.txt", "--section", "3.2.6", "--quote", "a sentence it never says",
+                   "--why", "w"]) == 1
+    assert L.load("x")["verdict"] == "contested"
+    assert R.main(["rule", "x", "--spec", "openmp-5.2.txt", "--section", "3.2.6", "--quote", good,
+                   "--why", "k = 1:2 is one value"]) == 0
+    rec = L.load("x")
+    assert rec["verdict"] == "ruled" and rec["ruling"]["quotes"]["ok"] == 1 and not L.problems("x", rec)
+    assert "maintainer" in rec["why"] and "3.2.6" in rec["why"] and good in rec["why"]

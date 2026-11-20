@@ -109,7 +109,7 @@
  "program_sha": "a6505cb66ed3e3210a0014eba0decf3f40be152d7f18ee783ed422ee42a56803",
  "instructions": "v2",
  "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: Both readings hold. The error directive with at(compilation) and severity(warning) displays an implementation-defined message; only fatal aborts compilation. The observed output is a warning, which is the specified action, and nothing restricts the directive inside a target region (it is pure when at is compilation). The observed result is permitted.",
+ "why": "An independent adjudicating reading finds the result not required: The error directive with at(compilation) and severity(warning) displays an implementation-defined message; only fatal aborts compilation. The observed output is a warning, which is the specified action, and nothing restricts the directive inside a target region (it is pure when at is compilation). The observed result is permitted.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-01",

@@ -122,7 +122,7 @@
  "program_sha": "f51bf6d6b6072933b5f3edfebb6c81ab4aa32d2209c73ced0c3904c679bb32a4",
  "instructions": "v2",
  "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: Both readings agree. In 6.0 self is a map-type-modifier and map-type is optional (default), so map(self: a) is syntactically valid and the compiler error reflects the pre-6.0 rule. A self map causes runtime error termination when the original item is not accessible from the target device and cannot be made so. With separate memory the allocatable a may not be accessible, so successful execution is not required.",
+ "why": "An independent adjudicating reading finds the result not required: In 6.0 self is a map-type-modifier and map-type is optional (default), so map(self: a) is syntactically valid and the compiler error reflects the pre-6.0 rule. A self map causes runtime error termination when the original item is not accessible from the target device and cannot be made so. With separate memory the allocatable a may not be accessible, so successful execution is not required.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-01",

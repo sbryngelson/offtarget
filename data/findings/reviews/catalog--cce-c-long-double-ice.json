@@ -109,7 +109,7 @@
  "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
  "instructions": "v2",
  "verdict": "unconfirmed",
- "why": "Independent readings are uncertain: Both readings agree. The only mapping restriction is a mappable type, and the specification does not exclude long double or require a device to support it. The program is race-free. Whether a compiler must accept long double in a target region is not stated, and no compiler is recorded as passing, so requiring acceptance is not supported.",
+ "why": "Independent readings are uncertain: The only mapping restriction is a mappable type, and the specification does not exclude long double or require a device to support it. The program is race-free. Whether a compiler must accept long double in a target region is not stated, and no compiler is recorded as passing, so requiring acceptance is not supported.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-03",

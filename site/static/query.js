@@ -4,7 +4,7 @@
 // generated from catalog/toolchains.yaml and loaded before this script.
 const KINDS = ['incorrect', 'unsupported'];
 const STAGES = ['compile', 'link', 'run'];
-const LEGALITY = ['confirmed', 'supported', 'contested', 'unconfirmed'];
+const LEGALITY = ['confirmed', 'supported', 'ruled', 'contested', 'unconfirmed'];
 const LANGS = ['f90', 'c'];
 const MODELS = ['omp', 'acc'];
 const STATUSES = ['open', 'changed', 'mixed', 'fixed', 'not-reproduced', 'not-run'];

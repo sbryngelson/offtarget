@@ -1,8 +1,10 @@
 """The in-the-wild bug benchmark (data/bench/wild/): every case file
 names its source URL and parses as a program of its language, the runner's
 outcome classes, and the dev / holdout split."""
+import functools
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -46,8 +48,35 @@ def test_case_header(path):
                      r"data|enter|update|routine|teams|metadirective)", path.read_text())
 
 
+@functools.lru_cache(maxsize=None)
+def _has_omp_h(tool: str) -> bool:
+    """Whether the C compiler `tool` finds omp.h (Apple's clang, which answers to `gcc` on macOS,
+    does not)."""
+    try:
+        r = subprocess.run([tool, "-fopenmp", "-fsyntax-only", "-x", "c", "-"], input="#include <omp.h>\n",
+                           capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return r.returncode == 0
+
+
 # legal Fortran the syntax checker (gfortran 13) does not parse
 GFORTRAN_GAP = re.compile(r"(?im)^\s*do\s+concurrent\s*\(\s*integer\s*(\([^)]*\))?\s*::")
+
+
+def test_a_c_compiler_without_omp_h_is_found_out(tmp_path, monkeypatch):
+    """Apple's clang answers to `gcc` on macOS and has no omp.h: the C cases are skipped there,
+    not failed (the check runs the compiler on an #include <omp.h>)."""
+    fake = tmp_path / "gcc"
+    fake.write_text("#!/bin/sh\necho \"fatal error: 'omp.h' file not found\" >&2\nexit 1\n")
+    fake.chmod(0o755)
+    monkeypatch.setenv("PATH", f"{tmp_path}:/usr/bin:/bin")
+    _has_omp_h.cache_clear()
+    assert _has_omp_h("gcc") is False
+    fake.write_text("#!/bin/sh\nexit 0\n")
+    _has_omp_h.cache_clear()
+    assert _has_omp_h("gcc") is True
+    _has_omp_h.cache_clear()
 
 
 @pytest.mark.gfortran
@@ -56,6 +85,8 @@ def test_case_parses(path):
     tool = "gcc" if path.suffix == ".c" else "gfortran"
     if shutil.which(tool) is None:
         pytest.skip(f"{tool} not found")
+    if tool == "gcc" and not _has_omp_h(tool):
+        pytest.skip("this gcc has no omp.h (Apple's clang on macOS)")
     ok, err = WB.parse_one(path)
     if not ok and GFORTRAN_GAP.search(path.read_text()) and "Syntax error in DO statement" in err:
         pytest.skip("this gfortran rejects a type-spec in a DO CONCURRENT header "

@@ -8,7 +8,9 @@ specification text (offload.engine.citations). When the readers disagree or are 
 adjudicators read the program and both readings side by side, each in a batch with a decoy dispute
 whose right side is known. A record holds the readers and adjudicators of one finding, its prior
 art and outside evidence, and the verdict, which follows from them by a fixed rule (``verdict``). A record names the hash of the program its readers saw: a changed program makes
-it stale, and the finding is then unconfirmed."""
+it stale, and the finding is then unconfirmed. A maintainer can settle a finding the readers got
+wrong with a ruling that cites the specification (``ruling_holds``); the verdict is then "ruled",
+never "confirmed", and the site says whose word it is."""
 from __future__ import annotations
 
 import hashlib
@@ -24,10 +26,11 @@ FINDINGS = ROOT / "data" / "findings"
 # made under it. v2: each answer quotes the program lines it relies on and names what it says the
 # program lacks, both checked against the program (check_program).
 INSTRUCTIONS = "v2"
-VERDICTS = ("confirmed", "supported", "contested", "unconfirmed")
+VERDICTS = ("confirmed", "supported", "ruled", "contested", "unconfirmed")
 # what each verdict says on the site and in `offload issues`
 WORDS = {"confirmed": "independently confirmed",
          "supported": "supported by outside evidence",
+         "ruled": "settled by a maintainer's ruling",
          "contested": "contested",
          "unconfirmed": "not independently confirmed"}
 _SPEC_FILE = {"openmp-4.5": "OpenMP 4.5", "openmp-5.0": "OpenMP 5.0", "openmp-5.1": "OpenMP 5.1",
@@ -134,13 +137,23 @@ def _no(r: dict) -> bool:
     return r["legal"] == "no" or r["result_required"] == "no"
 
 
+def ruling_holds(rec: dict) -> bool:
+    """A maintainer's ruling counts when it cites at least one passage and every passage it cites
+    is in the specification under the section it names (check_quotes)."""
+    q = (rec.get("ruling") or {}).get("quotes") or {}
+    return bool(rec.get("ruling")) and q.get("ok", 0) >= 1 and not q.get("not_found") and not q.get("wrong_section")
+
+
 def verdict(rec: dict) -> str:
     """The fixed rule. Counted adjudicators decide first: two that find the program legal and the
     result required confirm it, one that finds it not legal or not required contests it. Then the
     readers: confirmed (two counted readers, both legal and required), contested (a counted reader
     says not legal or not required), supported (a contest or an uncertainty settled by outside
     evidence or strong prior art), else unconfirmed (no counted reader yet, or uncertainty with
-    nothing to settle it)."""
+    nothing to settle it). A maintainer's ruling that holds (``ruling_holds``) comes before all
+    of these: "ruled"."""
+    if ruling_holds(rec):
+        return "ruled"
     rs = [r for r in rec.get("readers", []) if counted(r)]
     adj = [r for r in rec.get("adjudicators", []) if counted(r)]
     settled = bool(rec.get("external")) or any(p.get("strength") == "strong"
@@ -233,4 +246,6 @@ def problems(finding_id: str, rec: dict) -> list[str]:
             out.append(f"{finding_id}: a reader without quote-check results")
     if not rec.get("program_sha"):
         out.append(f"{finding_id}: no program hash")
+    if rec.get("ruling") and not ruling_holds(rec):
+        out.append(f"{finding_id}: a ruling whose passages are not all in the specification as cited")
     return out

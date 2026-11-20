@@ -517,7 +517,7 @@ def _read(path: Path) -> str:
 
 
 # how settled an issue's legality is (the list's sort, site/static/issues.js LEGALITY_RANK)
-LEGALITY_RANK = {"confirmed": 2, "supported": 2, "unconfirmed": 1, "contested": 0}
+LEGALITY_RANK = {"confirmed": 2, "supported": 2, "ruled": 2, "unconfirmed": 1, "contested": 0}
 
 
 def fixed_order(issues: list[dict], fam: str, regressions: set | None = None) -> list[dict]:

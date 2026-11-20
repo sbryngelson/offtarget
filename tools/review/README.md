@@ -48,3 +48,17 @@ program legal and the result required confirm it, one that finds it not legal or
 them, two readers that agree confirm it and a reader that says no contests it. A contest or a doubt that prior art
 (such as an OpenMP Examples program) or outside evidence settles is supported. Anything else is unconfirmed. A change to the program (not its header)
 makes the record stale and the finding unconfirmed until it is read again.
+
+## A maintainer's ruling
+
+When the readers misread the specification and the passage that decides the question is clear, a maintainer records
+a ruling instead of tuning the instructions to that one answer:
+
+    python3 -I tools/review/review.py rule ID --spec openmp-5.2.txt --section 3.2.6 \
+        --quote "The values of the iterator are the set of values" --why "k = 1:2 names the one value k = 1 ..."
+
+`--quote` repeats for several passages. The command refuses a quote that is not in the specification under the section
+named, and a record whose program changed since its review. The verdict is then `ruled` ("settled by a maintainer's
+ruling"), never `confirmed`: the issue page shows the ruling, its passages and the readings it overrides. A ruling
+lapses with the readings when the program changes (`ingest` drops it), and `problems` reports one whose passages no
+longer check out.

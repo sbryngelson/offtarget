@@ -109,7 +109,7 @@
  "program_sha": "02a59217d8398374d30da0c9fce1b2d79b69e1cbb66c01ca481b9908db1dce62",
  "instructions": "v2",
  "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: Both readings agree. device_safesync is a member of the requirement clause group in 6.0 and the requires directive is at file scope before any device construct. But support for a requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. The compiler's refusal is therefore permitted.",
+ "why": "An independent adjudicating reading finds the result not required: device_safesync is a member of the requirement clause group in 6.0 and the requires directive is at file scope before any device construct. But support for a requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. The compiler's refusal is therefore permitted.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-03",

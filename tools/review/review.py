@@ -6,6 +6,8 @@
     python3 -I tools/review/review.py disputes --out DIR [--argument FILE ID]   # adjudication batches
     python3 -I tools/review/review.py verify --out DIR [--per 8]     # claim verification batches
     python3 -I tools/review/review.py ingest DIR                     # check the answers, write the records
+    python3 -I tools/review/review.py rule ID --spec openmp-5.2.txt --section 3.2.6 --quote TEXT --why TEXT
+                                                                     # a maintainer's ruling (see README.md)
 
 `prepare` writes DIR/batch-NN/ with one anonymized case file per finding, one decoy, key.json and
 prompt.txt; `disputes` does the same for the findings whose readers disagree or are uncertain, adding
@@ -308,7 +310,10 @@ def _clip(text: str, n: int = 450) -> str:
     """The text up to its last full sentence within n characters (else the last whole word)."""
     text = " ".join(text.split())
     # the adjudicators' "Reading A/B" are labels of their batch only; a reader of the site has none
-    text = " ".join(x for x in re.split(r"(?<=[.;])\s+", text) if not re.search(r"\bReadings? [AB]\b", x))
+    # (a short "Both readings hold." judges the readings only; a longer sentence about them carries a point)
+    text = " ".join(x for x in re.split(r"(?<=[.;])\s+", text)
+                    if not re.search(r"\bReadings? [AB]\b", x)
+                    and not (len(x) < 60 and re.search(r"\b(both|either|neither) readings?\b", x, re.I)))
     if len(text) <= n:
         return text
     cut = text[:n]
@@ -316,8 +321,21 @@ def _clip(text: str, n: int = 450) -> str:
     return cut[:end + 1] if end > n // 3 else cut[:cut.rfind(" ")] + " ..."
 
 
+def _ruling_text(rec: dict) -> str:
+    """What the site says of a ruling: whose it is, the passages it cites and its reason."""
+    r = rec["ruling"]
+    cites = "; ".join(f'{L._SPEC_FILE.get(p["spec"].removesuffix(".txt"), p["spec"])} \u00a7{p["section"]}: '
+                      f'"{p["quote"]}"' for p in r["passages"])
+    return f"A maintainer's ruling, citing {cites}. {r['reasoning']}"
+
+
 def why_of(rec: dict) -> str:
     v = rec["verdict"]
+    if v == "ruled":
+        rs = [r for r in rec.get("adjudicators", []) + rec["readers"] if L.counted(r)]
+        dissent = next((r for r in rs if r["legal"] == "no" or r["result_required"] == "no"), None)
+        return _ruling_text(rec) + (" The independent readings had found otherwise: "
+                                    + _clip(dissent.get("reasoning", ""), 300) if dissent and dissent.get("reasoning") else "")
     rs = [r for r in rec["readers"] if L.counted(r)]
     adj = [r for r in rec.get("adjudicators", []) if L.counted(r)]
     no = lambda r: r["legal"] == "no" or r["result_required"] == "no"  # noqa: E731
@@ -386,6 +404,7 @@ def ingest(run: Path) -> int:
                     continue
                 rec["readers"] = []            # the program changed: earlier readings no longer apply
                 rec.pop("adjudicators", None)
+                rec.pop("ruling", None)        # and neither does a ruling on the old program
             rec["program_sha"] = k["sha"]
             rec["instructions"] = L.INSTRUCTIONS
             rid = f"{run.name}/{d.name}"
@@ -403,6 +422,30 @@ def ingest(run: Path) -> int:
         L.record_path(fid).write_text(json.dumps(rec, indent=1) + "\n")
     from collections import Counter
     print(dict(Counter(r["verdict"] for r in records.values())), f"{len(records)} records")
+    return 0
+
+
+def rule(fid: str, spec: str, section: str, quotes: list[str], why: str, date: str) -> int:
+    """Record a maintainer's ruling on a finding: refused unless every quote is in the
+    specification under the section named (legality_review.check_quotes)."""
+    rec = L.load(fid)
+    f = L.finding_file(fid)
+    if rec is None or f is None:
+        print(f"{fid}: no review record or no finding")
+        return 1
+    passages = [{"spec": spec, "section": section, "quote": q} for q in quotes]
+    checked = L.check_quotes(passages)
+    if checked["not_found"] or checked["wrong_section"] or not checked["ok"]:
+        print(f"{fid}: refused, the quotes do not all check out under {spec} \u00a7{section}: {checked}")
+        return 1
+    if rec.get("program_sha") != L.program_sha(f):
+        print(f"{fid}: refused, the program changed since its review; review it again first")
+        return 1
+    rec["ruling"] = {"by": "maintainer", "date": date, "passages": passages, "quotes": checked, "reasoning": why}
+    rec["verdict"] = L.verdict(rec)
+    rec["why"] = why_of(rec)
+    L.record_path(fid).write_text(json.dumps(rec, indent=1) + "\n")
+    print(f"{fid}: {rec['verdict']}")
     return 0
 
 
@@ -430,7 +473,16 @@ def main(argv=None) -> int:
     v.add_argument("--seed", type=int, default=1)
     i = sub.add_parser("ingest")
     i.add_argument("run", type=Path)
+    r = sub.add_parser("rule", help="a maintainer's ruling that cites the specification")
+    r.add_argument("id")
+    r.add_argument("--spec", required=True, help="the specification text, e.g. openmp-5.2.txt")
+    r.add_argument("--section", required=True)
+    r.add_argument("--quote", action="append", required=True, help="a verbatim passage (repeatable)")
+    r.add_argument("--why", required=True, help="the reasoning, one or two sentences")
+    r.add_argument("--date", default=__import__("datetime").date.today().isoformat())
     a = ap.parse_args(argv)
+    if a.cmd == "rule":
+        return rule(a.id, a.spec, a.section, a.quote, a.why, a.date)
     if a.cmd == "select":
         print("\n".join(select(a.set, _pages())))
         return 0
