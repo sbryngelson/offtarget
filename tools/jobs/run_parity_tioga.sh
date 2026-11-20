@@ -2,7 +2,7 @@
 # Coverage parity on Tioga (gcc_g90; tools/campaigns/parity.py), inside ONE foreground
 # interactive job (this account has no pbatch on Tioga), from the copy that
 # tools/jobs/parity_remote.sh pushes:
-#   flux run -q pdebug -N1 -n1 --exclusive -t 60m --job-name=compile-test-gcc-parity-N \
+#   flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive -t 60m --job-name=compile-test-gcc-parity-N \
 #     tools/jobs/run_parity_tioga.sh LIMIT_S GCD:STEP [GCD:STEP...]
 # Each GCD:STEP runs at once on its own GCD (ROCR_VISIBLE_DEVICES), WORKERS
 # (default 8) workers; the steps of one GCD separated by "@" run in order.

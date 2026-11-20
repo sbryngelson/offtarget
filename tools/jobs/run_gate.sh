@@ -52,7 +52,7 @@ half() {   # half K: per campaign, shard K in a,b,d then shard 1-K in c
 export -f half
 END=$(( $(date +%s) + LIM ))
 export M LIM W PY END JOB BUDGETS CAMPS="$*"
-flux run -N1 -n1 --exclusive bash -c 'half 0' > results/gate/logs/half0.$JOB.log 2>&1 &
-flux run -N1 -n1 --exclusive bash -c 'half 1' > results/gate/logs/half1.$JOB.log 2>&1 &
+flux run --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive bash -c 'half 0' > results/gate/logs/half0.$JOB.log 2>&1 &
+flux run --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive bash -c 'half 1' > results/gate/logs/half1.$JOB.log 2>&1 &
 wait
 echo "all done $(date -Is)"

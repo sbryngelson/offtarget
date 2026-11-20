@@ -42,8 +42,8 @@ phase() {   # phase P on half K
 export -f phase
 export M W PY END JOB NAME
 for P in run abd c audit; do
-  flux run -N1 -n1 --exclusive bash -c "phase $P 0" >> results/dataenv/logs/$P.0.$JOB.log 2>&1 &
-  flux run -N1 -n1 --exclusive bash -c "phase $P 1" >> results/dataenv/logs/$P.1.$JOB.log 2>&1 &
+  flux run --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive bash -c "phase $P 0" >> results/dataenv/logs/$P.0.$JOB.log 2>&1 &
+  flux run --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive bash -c "phase $P 1" >> results/dataenv/logs/$P.1.$JOB.log 2>&1 &
   wait
 done
 echo "all done $(date -Is)"

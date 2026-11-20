@@ -12,7 +12,7 @@
 #   supervised interactive pdebug job of at most an hour per environment, (c) on
 #   another node than (a)) from the /p/vast1 copy:
 #     GCC=1 setsid nohup bash tools/jobs/run_site_matrix.sh wingtip ENV GPU > LOG ... &
-#     flux run -q pdebug -N1 -n1 -t 60m --job-name=compile-test-gcc-site-ENV \
+#     flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 60m --job-name=compile-test-gcc-site-ENV \
 #       tools/jobs/run_site_matrix.sh tioga ENV
 #   GCC on the other AMD GPUs (the install's device libraries cover gfx942 and gfx950; GCC_ROOT and
 #   GCC_ROCM name the install and the ROCm it loads): Tuolumne's MI300A in both memory modes, the

@@ -9,7 +9,7 @@
 #     tools/jobs/run_nested.sh "run abd" [NAME] [LIMIT_S] [WORKERS]
 # When pbatch is starved the same script runs as one foreground pdebug job
 # (<= 30 min, one at a time, named like a compile job):
-#   flux run -q pdebug -N1 -n1 --exclusive -t 30m --setattr=thp=always \
+#   flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive -t 30m --setattr=thp=always \
 #     --job-name=compile-test-nested-N [--requires=-host:NODE] \
 #     tools/jobs/run_nested.sh STEPS [NAME] [LIMIT_S] [WORKERS]
 # RUN_TCS=afar,cce21_4 limits the run step to those toolchains; RUN_SHARD=k/m takes

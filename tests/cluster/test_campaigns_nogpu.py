@@ -1330,3 +1330,36 @@ def test_gpu_count_from_rocminfo():
     text = ("  Name:  AMD EPYC\n  Name:   gfx90a  \n  Marketing Name: X\n"
             "  Name:   gfx90a  \n")
     assert gpu_count(text) == 2 and gpu_count("") == 0
+
+
+def test_a_gate_budget_cannot_change_once_the_campaign_has_reruns(tmp_path):
+    """The plan (which failing rows are rerun, which inherit) follows from the budget in meta.json:
+    another budget under stored reruns would turn confirmed cells into unchecked ones."""
+    import json
+    from offload.engine import campaign as CP
+    run = CP.Run(CP.get("nested"), tmp_path, "t")
+    run.set_gate_budget(780.0)                          # no reruns yet: any budget
+    run.set_gate_budget(900.0)
+    (tmp_path / "gate_reruns.part.node1.1.jsonl").write_text(json.dumps({"cell": "nested|p|afar|0", "env": "a"}) + "\n")
+    run.set_gate_budget(900.0)                          # the stored budget again
+    with pytest.raises(ValueError, match="planned under a budget of 900"):
+        run.set_gate_budget(780.0)
+    assert run.gate_budget() == 900.0
+    (tmp_path / "meta.json").write_text(json.dumps({"n": 3}))     # reruns of every failing row
+    with pytest.raises(ValueError, match="planned for every failing row"):
+        run.set_gate_budget(780.0)
+    assert run.meta() == {"n": 3}
+
+
+def test_the_harness_refuses_to_start_processes_under_spindle(tmp_path, monkeypatch):
+    """Tuolumne's flux shell loads Spindle into every `flux run` job (LD_AUDIT); a burst of process
+    starts then stalls for good (27 of 48 workers blocked in fork, the compilers spinning). The
+    harness stops with the submit option that turns it off instead of hanging."""
+    monkeypatch.delenv("LD_AUDIT", raising=False)
+    assert harness._execute_now("echo ok", tmp_path, 20).stdout.strip() == "ok"
+    monkeypatch.setenv("LD_AUDIT", "/tmp/u/spindle.1081/collab/lib/spindle/1-spindlens-dso-libspindle_audit_pipe.so")
+    with pytest.raises(SystemExit, match="SPINDLE_FLUXOPT=disable"):
+        harness._execute_now("echo ok", tmp_path, 20)
+    monkeypatch.setenv("LD_AUDIT", "/opt/tool/libaudit.so")            # another auditor is not refused
+    from offload.engine.provenance import refuse_spindle
+    refuse_spindle()

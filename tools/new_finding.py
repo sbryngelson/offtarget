@@ -242,7 +242,10 @@ def generate(program, campaign: str, rows, controls=(), name: str | None = None,
     pri = [t for t in M.TOOLCHAINS if t in pri or t in counted]
     from offload.engine import finding_claims as C
     sig_of = C._sig                                                         # the claim checker's own
-    failing = [o for o in failing_all if o.tc in pri]
+    # the failing cells are counted on the GPUs of the toolchains named, as the claim checker counts
+    # them: a row on a machine twin's GPU (MI300X, MI350X) is a support-table cell, no evidence
+    gpus = C._gpus_of(tuple(t for t in M.TOOLCHAINS if t in pri))
+    failing = [o for o in failing_all if o.tc in pri and (gpus is None or o.target in gpus)]
     tcs = [t for t in M.TOOLCHAINS if t in pri]
     modes = [m for m in MODE_ORDER if any(o.mode == m for o in failing)]
     opt = _opt(o.cmd for o in failing)

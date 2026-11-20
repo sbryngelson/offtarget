@@ -797,7 +797,10 @@ def test_run_group_kills_a_term_ignoring_grandchild_with_its_runner(tmp_path):
     os.kill(runner.pid, signal.SIGKILL)
     runner.wait()
     assert _gone(pid, 30), "a grandchild outlived its killed runner"
-    assert _gone(dog, 10), "the watchdog outlived its run"
+    # the watchdog exits KILL_AFTER_S after its TERM, also when the grandchild died at the TERM (the
+    # kill came before its trap was set): the wait is that delay and a margin
+    from offload.engine import harness
+    assert _gone(dog, harness.KILL_AFTER_S + 10), "the watchdog outlived its run"
 
 
 def test_run_group_watchdog_fires_for_a_stopped_runner(tmp_path):

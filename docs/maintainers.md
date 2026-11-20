@@ -81,6 +81,7 @@ These pages describe each part of the tooling and the commands to run it.
 | [setup](tooling/setup.md) | the inputs a clone needs (spec PDFs, corpus, results) and how to get them |
 | [contributing](tooling/contributing.md) | the standing rules, and the runbooks for adding a finding, a compiler or a campaign |
 | [regenerate](tooling/regenerate.md) | every generated file, its inputs, the command that rebuilds it and its currency check |
+| [new-release](tooling/new-release.md) | the order of the runs that add a compiler release |
 | [confirm](tooling/confirm.md) | the confirmer: ingesting failures, the legality gate, drafting findings |
 | [expected-behaviour](tooling/expected-behaviour.md) | how expected values are derived and checked |
 | [nested-data](tooling/nested-data.md) | the nested pointer and aggregate program generator |

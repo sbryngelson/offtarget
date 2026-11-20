@@ -2,7 +2,7 @@
 # nested-data on Tioga (gcc_g90, MI250X) inside ONE foreground interactive job
 # (this account has no pbatch on Tioga), from the copy tools/jobs/nested_remote.sh
 # pushes (<campaign_lanes>/wt-nested):
-#   ssh HOST 'builtin cd <campaign_lanes>/wt-nested && flux run -q pdebug -N1 -n1 --exclusive -t 60m \
+#   ssh HOST 'builtin cd <campaign_lanes>/wt-nested && flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive -t 60m \
 #     --job-name=compile-test-nested-tio-N tools/jobs/run_nested_tioga.sh STEP NAME LIMIT_S'
 # STEP: run | abd | c. (c) is another compute node: run it as a separate job
 # placed off the node of (a) (--requires=-host:NODE); it refuses to start on a

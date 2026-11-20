@@ -709,6 +709,18 @@ def test_the_draft_holds_the_facts_the_rows_give(tree):
     assert "-fopenmp -O2" in h.get("build")
 
 
+def test_site_rows_of_a_machine_twin_are_not_counted_as_failing_cells(tree, monkeypatch):
+    """A check case's rows on the MI300X or MI350X are support-table cells: the claim checker counts
+    the failing cells on the GPUs of the toolchains named (C._gpus_of), and the draft counts the same."""
+    def site_obs(case, rows):
+        return [R.Obs("cce19", t, "a", "", False, True, "COMPILE rc=1\n" + ICE, "site-rows", "repro", case["id"], cls="ice")
+                for t in ("mi300a-c", "mi300x", "mi350x")]
+    monkeypatch.setattr(R, "site_obs", site_obs)
+    d = draft(tree, case={"id": "site-demo"}, primary=["cce19", "cce20"])
+    h = H.parse(d.text)
+    assert "identical signature on 4 of 4 failing cells" in h.get("observed"), h.get("observed")
+
+
 def test_a_control_is_claimed_only_where_a_row_passes(tree):
     d = draft(tree)
     ctl = H.parse(d.text).get("control")

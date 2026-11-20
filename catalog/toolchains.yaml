@@ -178,6 +178,9 @@ pdebug:
 #   site_pill              the issue list's version pill (default: site_version)
 #   site_targets           the site's GPU/mode columns it has cells in
 #                          (default: every target of its GPU vendor kind)
+#   table_targets          the support tables' and can-use's GPU/mode columns it
+#                          has cells in, where they are fewer than site_targets
+#                          (GCC: no MI300A rows); any other is n/a there
 #   site_plan_runs         plan site-matrix runs on a machine the site does
 #                          not otherwise plan for (machines.yaml site_plan_runs)
 #   site_root_var          the public placeholder of its install root in the
@@ -413,6 +416,7 @@ toolchains:
     merged_key: gcc
     site_pill: "16.2 AMD"
     site_targets: [mi300a-u, mi300a-c, mi250x, mi300x, mi350x]
+    table_targets: [mi250x, mi300x, mi350x]
     mention_words: [gfx942, Tuolumne, MI300A]
     # the site plans its MI250X runs (supervised pdebug jobs) although the
     # site plans no other Tioga run: GCC is the only family with MI250X site runs

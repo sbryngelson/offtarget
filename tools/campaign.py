@@ -138,7 +138,7 @@ def cmd_findings_plan(camp, a, runner=None) -> int:
 # one foreground pdebug job, named like a compile (Tuolumne <= 30 min when
 # pbatch is starved, Tioga <= 60 min: this account has no pbatch there); the
 # limits come from catalog/toolchains.yaml `pdebug`
-PDEBUG = ("flux run -q pdebug -N1 -n1 --exclusive -t {minutes}m --setattr=thp=always "
+PDEBUG = ("flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive -t {minutes}m --setattr=thp=always "
           "--job-name=compile-test-{camp}-{name}{requires} {script} {camp} {steps} {name} "
           "{limit} {workers}")
 PBATCH = ("flux batch -q pbatch -N1 -t {minutes}m --setattr=thp=always "

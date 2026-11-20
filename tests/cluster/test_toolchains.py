@@ -359,6 +359,10 @@ def test_run_targets_are_the_machines_of_a_toolchain_and_its_twins():
     assert reg.run_targets("cce19") == ("mi300a-u", "mi300a-c", "mi250x")
     assert reg.run_targets("cce21_4") == ("mi300a-u", "mi300a-c")
     assert reg.run_targets("nvhpc") == ("a100-s", "a100-m")
+    # GCC's MI300A rows are left out of the support tables (catalog table_targets), though the
+    # issue pages keep its MI300A cells (site_targets)
+    assert reg.run_targets("gcc") == ("mi250x", "mi300x", "mi350x") and reg.run_targets("gcc_sm80") == ("a100-s",)
+    assert {"mi300a-u", "mi300a-c"} <= set(reg.toolchains["gcc"].targets())
 
 
 def test_flags_come_from_the_family_templates():

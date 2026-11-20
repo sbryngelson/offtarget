@@ -23,6 +23,7 @@ Read in this order. Paths are relative to this folder.
 11. [tooling/regenerate](tooling/regenerate.md) lists every generated file with its inputs and how to check that it is current.
 12. [tooling/site](tooling/site.md) explains how the website is built from the findings.
 13. [tooling/publishing](tooling/publishing.md) explains how the site is deployed and the package is released.
+14. [tooling/new-release](tooling/new-release.md) gives the order of the runs that add a compiler release to the tables, the findings and the site.
 
 ## The maintainers' own machines
 

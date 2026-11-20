@@ -104,6 +104,7 @@ class Toolchain:
     site_version: str = ""     # the version label the site shows
     site_pill: str = ""        # the issue list's version pill
     site_targets: tuple[str, ...] = ()  # the site columns it has cells in ("" = all of its GPU kind)
+    table_targets: tuple[str, ...] = ()  # the support-table columns it has cells in ("" = site_targets)
     site_plan_runs: bool = False
     site_root_var: str = ""
     site_gpus: str = ""
@@ -365,6 +366,7 @@ class Registry:
             label=d.get("label") or "", site_version=str(d.get("site_version") or d["version"]),
             site_pill=str(d.get("site_pill") or d.get("site_version") or d["version"]),
             site_targets=tuple(d.get("site_targets") or ()),
+            table_targets=tuple(d.get("table_targets") or ()),
             site_plan_runs=bool(d.get("site_plan_runs")),
             site_root_var=d.get("site_root_var") or "",
             site_gpus=d.get("site_gpus") or fam.site_gpus,
@@ -589,10 +591,12 @@ class Registry:
 
     def run_targets(self, name: str) -> tuple[str, ...]:
         """The site targets a toolchain and its twins were measured on (their
-        machines' modes; the catalog's ``site_targets`` where it has them): the
-        feature-support cells it can have, any other being n/a."""
-        if self.toolchains[name].site_targets:
-            return self.toolchains[name].site_targets
+        machines' modes; the catalog's ``table_targets``, else ``site_targets``,
+        where it has them): the feature-support cells it can have, any other
+        being n/a."""
+        t = self.toolchains[name]
+        if t.table_targets or t.site_targets:
+            return t.table_targets or t.site_targets
         ran = {(t.machine, str(x)) for t in (self.toolchains[n] for n in (name, *self.twins_of(name)))
                for x in t.xnack_modes}
         return tuple(t for k, t in self.targets().items() if k in ran)
@@ -935,6 +939,8 @@ def compiler_version(tc: Toolchain) -> str:
     cached = _VERSIONS.get(key)
     if cached is not None:
         return cached
+    from offload.engine.provenance import refuse_spindle
+    refuse_spindle()
     try:
         res = subprocess.run(
             ["bash", "-c", f"{{ {tc.prelude or 'true'}\n}} >/dev/null 2>&1; "

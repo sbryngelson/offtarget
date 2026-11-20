@@ -1,13 +1,13 @@
 // # Finding (nested-data): AFAR and CCE (clang front end) reject a member access through a call result inside a target region:
 // # "expected addressable lvalue in 'map' clause"
 //
-// - toolchains and modes that fail: afar (AFAR 24.3.0), cce19 (CCE 19.0.0), cce20 (CCE 20.0.2), cce21 (CCE 21.0.3), cce21_4 (CCE
-//   21.0.4); modes: unified, copy; -O2
-// - build: amdclang -fopenmp --offload-arch=gfx942 -O2 (afar); craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa
+// - toolchains and modes that fail: afar (AFAR 24.3.0), afar244 (AFAR 24.4.0), cce19 (CCE 19.0.0), cce20 (CCE 20.0.2), cce21 (CCE
+//   21.0.3), cce21_4 (CCE 21.0.4); modes: unified, copy; -O2
+// - build: amdclang -fopenmp --offload-arch=gfx942 -O2 (afar, afar244); craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa
 //   -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -O2 (cce19, cce20, cce21, cce21_4)
 // - failure: rejected
 // - observed: `site-nested--afar-cce-c-call-result-member-in-target-rejected.c:48:50: error: expected addressable lvalue in 'map'
-//   clause`; identical signature on 10 of 10 failing cells
+//   clause`; identical signature on 12 of 12 failing cells
 // - expected: compiles and prints `tot= 10` with `check=pass`
 // - rule: only variables referenced in a target construct get an implicit data-mapping attribute: "the first matching
 //   rule from the following list determines the implicit data-mapping (or data-sharing) attribute for variables
@@ -19,22 +19,25 @@
 //   (one change from this file; correct on afar (AFAR 24.3.0), cce19 (CCE 19.0.0), cce20 (CCE 20.0.2), cce21 (CCE 21.0.3), cce21_4
 //   (CCE 21.0.4); rows results/nested/red/red7.jsonl, results/nested/red/tuo1.jsonl, results/nested/red/wgs.jsonl,
 //   results/nested/red/wnv.jsonl)
-// - other families: nvhpc (NVHPC 25.11), nvhpc269 (NVHPC 26.9), gcc_g90 (GCC 16.2.0), gcc_sm80 (GCC 16.2.0) run the file correctly
+// - other families: nvhpc (NVHPC 25.11), nvhpc269 (NVHPC 26.9), gcc (GCC 16.2.0), gcc_sm80 (GCC 16.2.0) run the file correctly
 //   (rows results/nested/red/red7.jsonl, results/nested/red/wgs.jsonl, results/nested/red/wnv.jsonl, site rows, check case
 //   site-nested--afar-cce-c-call-result-member-in-target-rejected)
-// - gate and confirmer: campaign gate of the programs below: 10 cells, 10 confirmed in the four environments (a-d; (c) on another
+// - gate and confirmer: campaign gate of the programs below: 12 cells, 12 confirmed in the four environments (a-d; (c) on another
 //   node or GPU; rows results/nested/big/gate_reruns.part.tuolumne1012.1040717.jsonl,
+//   results/nested/big/gate_reruns.part.tuolumne1016.689931.jsonl, results/nested/big/gate_reruns.part.tuolumne1022.3522710.jsonl,
 //   results/nested/big/gate_reruns.part.tuolumne1030.1284552.jsonl, results/nested/big/gate_reruns.part.tuolumne1176.1251749.jsonl,
 //   results/nested/big/gate_reruns.part.tuolumne1245.1517583.jsonl, results/nested/big/gate_reruns.part.tuolumne1246.1434668.jsonl,
-//   results/nested/big/rows.part.tuolumne1010.1956389.jsonl, results/nested/big/rows.part.tuolumne1040.1523848.jsonl,
-//   results/nested/big/rows.part.tuolumne1604.1239313.jsonl, results/nested/big/rows.part.tuolumne1624.1197409.jsonl,
-//   results/nested/big/rows.part.tuolumne1797.1146311.jsonl, results/nested/main/gate_reruns.part.tuolumne1095.961942.jsonl,
-//   results/nested/main/gate_reruns.part.tuolumne1789.919396.jsonl,
+//   results/nested/big/rows.part.tuolumne1010.1956389.jsonl, results/nested/big/rows.part.tuolumne1016.565902.jsonl,
+//   results/nested/big/rows.part.tuolumne1040.1523848.jsonl, results/nested/big/rows.part.tuolumne1604.1239313.jsonl,
+//   results/nested/big/rows.part.tuolumne1624.1197409.jsonl, results/nested/big/rows.part.tuolumne1797.1146311.jsonl,
+//   results/nested/main/gate_reruns.part.tuolumne1016.681421.jsonl, results/nested/main/gate_reruns.part.tuolumne1042.560519.jsonl,
+//   results/nested/main/gate_reruns.part.tuolumne1095.961942.jsonl, results/nested/main/gate_reruns.part.tuolumne1789.919396.jsonl,
 //   results/nested/main/gate_reruns.part.tuolumne1955.3910568.jsonl,
-//   results/nested/main/gate_reruns.part.tuolumne1955.4072524.jsonl, results/nested/main/rows.part.tuolumne1955.994167.jsonl)
+//   results/nested/main/gate_reruns.part.tuolumne1955.4072524.jsonl, results/nested/main/rows.part.tuolumne1016.558535.jsonl,
+//   results/nested/main/rows.part.tuolumne1955.994167.jsonl)
 // - programs (1): nd-fnres-c-child-pointer
-// - legality: the rules (offload.engine.rules) accept it; GCC compiles and runs it; the clang front ends of AFAR and CCE are
-//   the two compilers that reject it (they share a lineage, so neither witnesses the other)
+// - legality: the rules (offload.engine.rules) accept it; GCC compiles and runs it; the clang front ends of AFAR and CCE
+//   are the two compilers that reject it (they share a lineage, so neither witnesses the other)
 // - releases: CCE 19.0.0, 20.0.2, 21.0.3 and 21.0.4 fail it the same way; AFAR 24.3.0 and 24.4.0 fail it the same way
 #include <stdio.h>
 #include <stdlib.h>

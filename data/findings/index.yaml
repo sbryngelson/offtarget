@@ -2298,17 +2298,17 @@ findings:
     arch: [sm_80]
     programs: ['par-s1-nvhpc-nvhpc269:8930']
   - file: nested/afar-cce-c-update-struct-and-member-rejected.c
-    toolchains: [afar, cce19, cce20, cce21, cce21_4]
+    toolchains: [afar, afar244, cce19, cce20, cce21, cce21_4]
     lang: c
     outcome: rejected
-    message: 'site-nested--afar-cce-c-update-struct-and-member-rejected.c:: error: same pointer dereferenced'
+    message: 'error: same pointer dereferenced in multiple different ways in map clause expressions'
     modes: [unified, copy]
     arch: [gfx942]
     programs: [nd-c-omp-update-alias-d2-332dddeb, nd-c-omp-update-alias-d2-684cb0b8, nd-c-omp-update-alias-d2-7e63bd9c, nd-c-omp-update-aliassub-d2-7f474889, nd-c-omp-update-aliassub-d2-94cac870, nd-c-omp-update-aliassub-d2-c7c56309, nd-c-omp-update-chain-d1-7fac5787, nd-c-omp-update-chain-d1-a679e114, nd-c-omp-update-chain-d2-114e1ffc, nd-c-omp-update-chain-d2-1585f8af, nd-c-omp-update-chain-d2-15c71a46, nd-c-omp-update-chain-d2-1f314a7c, nd-c-omp-update-chain-d2-1fcc5e18, nd-c-omp-update-chain-d2-2b8c33ae, nd-c-omp-update-chain-d2-2d0d559e, nd-c-omp-update-chain-d2-44c37206, nd-c-omp-update-chain-d2-60aec85d, nd-c-omp-update-chain-d2-61da37e6, nd-c-omp-update-chain-d2-6af5c7e2, nd-c-omp-update-chain-d2-7f8add9c, nd-c-omp-update-chain-d2-86fbbf97, nd-c-omp-update-chain-d2-a3703a98, nd-c-omp-update-chain-d2-b6fcbb9f, nd-c-omp-update-chain-d2-b7041f75, nd-c-omp-update-chain-d2-bd065bcd, nd-c-omp-update-chain-d2-cca853ce, nd-c-omp-update-chain-d2-db6ed5e2, nd-c-omp-update-chain-d3-05025df3, nd-c-omp-update-chain-d3-0c64953c,
       nd-c-omp-update-chain-d3-0f5b4780, nd-c-omp-update-chain-d3-1f5ebce9, nd-c-omp-update-chain-d3-2620c220, nd-c-omp-update-chain-d3-2be3a628, nd-c-omp-update-chain-d3-4643770f, nd-c-omp-update-chain-d3-5648fa65, nd-c-omp-update-chain-d3-65936503, nd-c-omp-update-chain-d3-6bc24e3c, nd-c-omp-update-chain-d3-6f0b33d0, nd-c-omp-update-chain-d3-700e7c94, nd-c-omp-update-chain-d3-70128cef, nd-c-omp-update-chain-d3-8b59135d, nd-c-omp-update-chain-d3-8ba10689, nd-c-omp-update-chain-d3-8f2a97eb, nd-c-omp-update-chain-d3-97a31dfc, nd-c-omp-update-chain-d3-a29029aa, nd-c-omp-update-chain-d3-a9134361, nd-c-omp-update-chain-d3-b91a32d4, nd-c-omp-update-chain-d3-c5604bb2, nd-c-omp-update-chain-d4-19f9f60a, nd-c-omp-update-diamond-d3-3f65ce61, nd-c-omp-update-diamond-d3-41a1f708, nd-c-omp-update-diamond-d3-5b90e213, nd-c-omp-update-list-d2-58efae8c, nd-c-omp-update-list-d3-842299a3, nd-c-omp-update-tree-d2-5148e00e, nd-c-omp-update-tree-d2-78bc7f0b, nd-c-omp-update-tree-d2-bf7639b6, nd-c-omp-update-tree-d3-725ebde6,
       nd-c-omp-update-tree-d3-ca80229f]
   - file: nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90
-    toolchains: [afar]
+    toolchains: [afar, afar244]
     lang: f90
     outcome: crash
     message: 'Warning: Queue error - HSA_STATUS_ERROR_MEMORY_FAULT'
@@ -2398,10 +2398,10 @@ findings:
     arch: [gfx942]
     programs: [nd-f-omp-update-chain-d1-222d392b, nd-f-omp-update-chain-d1-eb999367, nd-f-omp-update-chain-d2-018eb6d9, nd-f-omp-update-chain-d2-3daf06e5, nd-f-omp-update-chain-d2-75e83840, nd-f-omp-update-chain-d2-9756b365, nd-f-omp-update-chain-d2-d90fc1ec, nd-f-omp-update-chain-d2-eb4cf5ae, nd-f-omp-update-chain-d3-3d5ca029, nd-f-omp-update-chain-d3-cf66ca90, nd-f-omp-update-chain-d3-f84ee81c, nd-f-omp-update-tree-d3-cef9276d]
   - file: nested/afar-cce-c-call-result-member-in-target-rejected.c
-    toolchains: [afar, cce19, cce20, cce21, cce21_4]
+    toolchains: [afar, afar244, cce19, cce20, cce21, cce21_4]
     lang: c
     outcome: rejected
-    message: 'site-nested--afar-cce-c-call-result-member-in-target-rejected.c:: error: expected addressable l'
+    message: 'error: expected addressable lvalue in ''map'' clause'
     modes: [unified, copy]
     arch: [gfx942]
     programs: [nd-fnres-c-child-pointer]

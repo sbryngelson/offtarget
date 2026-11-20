@@ -1,10 +1,10 @@
 ! # Finding (nested-data): AFAR flang, copy mode: a derived-type object reached through a pointer (the root, or a pointer
 ! # component) with an allocatable component, mapped by enter data, makes the kernel fault
 !
-! - toolchains and modes that fail: afar (AFAR 24.3.0); modes: copy; -O2
+! - toolchains and modes that fail: afar (AFAR 24.3.0), afar244 (AFAR 24.4.0); modes: copy; -O2
 ! - build: amdflang -fopenmp --offload-arch=gfx942 -O2
 ! - failure: crash
-! - observed: `Warning: Queue error - HSA_STATUS_ERROR_MEMORY_FAULT` (killed by signal 6); identical signature on 1 of 1 failing
+! - observed: `Warning: Queue error - HSA_STATUS_ERROR_MEMORY_FAULT` (killed by signal 6); identical signature on 2 of 2 failing
 !   cells
 ! - expected: compiles and prints `tot= 828`, `sum= 884` with `check=pass`
 ! - rule: the structure is mapped by the target enter data directive and "If a variable is not a scalar then it is
@@ -21,19 +21,22 @@
 !   controls/q3-ctl-allocatable-component-of-the-variable.f90 (one change from this file; correct on afar (AFAR 24.3.0); rows
 !   results/nested/red/tuo11.jsonl, results/nested/red/wgs.jsonl, results/nested/red/wnv.jsonl)
 ! - other families: cce19 (CCE 19.0.0), cce20 (CCE 20.0.2), cce21 (CCE 21.0.3), cce21_4 (CCE 21.0.4), nvhpc (NVHPC 25.11), nvhpc269
-!   (NVHPC 26.9), gcc_g90 (GCC 16.2.0), gcc_sm80 (GCC 16.2.0) run the file correctly in managed mode (rows
+!   (NVHPC 26.9), gcc (GCC 16.2.0), gcc_sm80 (GCC 16.2.0) run the file correctly in managed mode (rows
 !   results/nested/red/red7.jsonl, results/nested/red/tuo2.jsonl, results/nested/red/tuo3.jsonl, results/nested/red/tuo6.jsonl,
 !   results/nested/red/wgs.jsonl, results/nested/red/wnv.jsonl, site rows, check case
 !   site-nested--afar-flang-pointer-root-allocatable-component-enter-data-fault); nvhpc (NVHPC 25.11), nvhpc269 (NVHPC 26.9) fail it
 !   another way in copy mode, e.g. `Failing in Thread:1`
-! - gate and confirmer: campaign gate of the programs below: 123 cells, 123 confirmed in the four environments (a-d; (c) on another
+! - gate and confirmer: campaign gate of the programs below: 216 cells, 216 confirmed in the four environments (a-d; (c) on another
 !   node or GPU; rows results/nested/big/gate_reruns.part.tuolumne1010.3222831.jsonl,
-!   results/nested/big/gate_reruns.part.tuolumne1012.1040717.jsonl, results/nested/big/gate_reruns.part.tuolumne1176.1251749.jsonl,
+!   results/nested/big/gate_reruns.part.tuolumne1012.1040717.jsonl, results/nested/big/gate_reruns.part.tuolumne1016.689931.jsonl,
+!   results/nested/big/gate_reruns.part.tuolumne1022.3522710.jsonl, results/nested/big/gate_reruns.part.tuolumne1176.1251749.jsonl,
 !   results/nested/big/gate_reruns.part.tuolumne1246.1434668.jsonl, results/nested/big/rows.part.tuolumne1010.1956389.jsonl,
-!   results/nested/big/rows.part.tuolumne1040.1523848.jsonl, results/nested/big/rows.part.tuolumne1624.1197409.jsonl,
-!   results/nested/main/gate_reruns.part.tuolumne1095.961942.jsonl, results/nested/main/gate_reruns.part.tuolumne1789.919396.jsonl,
-!   results/nested/main/gate_reruns.part.tuolumne1955.3910568.jsonl,
-!   results/nested/main/gate_reruns.part.tuolumne1955.4072524.jsonl, results/nested/main/rows.part.tuolumne1955.994167.jsonl)
+!   results/nested/big/rows.part.tuolumne1016.565902.jsonl, results/nested/big/rows.part.tuolumne1040.1523848.jsonl,
+!   results/nested/big/rows.part.tuolumne1624.1197409.jsonl, results/nested/main/gate_reruns.part.tuolumne1016.681421.jsonl,
+!   results/nested/main/gate_reruns.part.tuolumne1022.3519361.jsonl, results/nested/main/gate_reruns.part.tuolumne1095.961942.jsonl,
+!   results/nested/main/gate_reruns.part.tuolumne1789.919396.jsonl, results/nested/main/gate_reruns.part.tuolumne1955.3910568.jsonl,
+!   results/nested/main/gate_reruns.part.tuolumne1955.4072524.jsonl, results/nested/main/rows.part.tuolumne1016.558535.jsonl,
+!   results/nested/main/rows.part.tuolumne1955.994167.jsonl)
 ! - programs (123): nd-f-omp-always-chain-d2-0b79aaa6, nd-f-omp-always-chain-d2-5b08a1dd, nd-f-omp-always-chain-d2-75ca3965,
 !   nd-f-omp-always-chain-d2-a1106ec3, nd-f-omp-always-chain-d2-af297865, nd-f-omp-always-chain-d2-b1ac0170,
 !   nd-f-omp-always-chain-d2-c87159f0, nd-f-omp-always-chain-d2-c931e678, nd-f-omp-always-chain-d3-0a19c378,

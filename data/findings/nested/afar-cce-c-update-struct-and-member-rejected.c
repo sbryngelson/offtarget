@@ -1,13 +1,13 @@
 // # Finding (nested-data): AFAR and CCE (clang front end) reject target update with a structure and one of its pointer members'
 // # arrays in one clause
 //
-// - toolchains and modes that fail: afar (AFAR 24.3.0), cce19 (CCE 19.0.0), cce20 (CCE 20.0.2), cce21 (CCE 21.0.3), cce21_4 (CCE
-//   21.0.4); modes: unified, copy; -O2
-// - build: amdclang -fopenmp --offload-arch=gfx942 -O2 (afar); craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa
+// - toolchains and modes that fail: afar (AFAR 24.3.0), afar244 (AFAR 24.4.0), cce19 (CCE 19.0.0), cce20 (CCE 20.0.2), cce21 (CCE
+//   21.0.3), cce21_4 (CCE 21.0.4); modes: unified, copy; -O2
+// - build: amdclang -fopenmp --offload-arch=gfx942 -O2 (afar, afar244); craycc -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa
 //   -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx942 -O2 (cce19, cce20, cce21, cce21_4)
 // - failure: rejected
 // - observed: `site-nested--afar-cce-c-update-struct-and-member-rejected.c:57:40: error: same pointer dereferenced in multiple
-//   different ways in map clause expressio`; identical signature on 10 of 10 failing cells
+//   different ways in map clause expressio`; identical signature on 12 of 12 failing cells
 // - expected: compiles and prints `tot= 105` with `check=pass`
 // - rule: the list items of a data-motion clause are locators; "The list items that appear in a map clause may include
 //   array sections and structure elements" (5.2 §5.8.3 p.151 l.13) and a to or from clause on target update names list
@@ -22,20 +22,25 @@
 //   results/nested/red/wnv.jsonl); controls/u5-ctl-same-list-in-map.c (one change from this file; correct on afar (AFAR 24.3.0),
 //   cce19 (CCE 19.0.0), cce20 (CCE 20.0.2), cce21 (CCE 21.0.3), cce21_4 (CCE 21.0.4); rows results/nested/red/red7.jsonl,
 //   results/nested/red/tuo1.jsonl, results/nested/red/wgs.jsonl, results/nested/red/wnv.jsonl)
-// - other families: nvhpc (NVHPC 25.11), nvhpc269 (NVHPC 26.9), gcc_g90 (GCC 16.2.0), gcc_sm80 (GCC 16.2.0) run the file correctly
-//   in managed mode (rows results/nested/red/red7.jsonl, results/nested/red/wgs.jsonl, results/nested/red/wnv.jsonl, site rows,
-//   check case site-nested--afar-cce-c-update-struct-and-member-rejected); nvhpc (NVHPC 25.11), nvhpc269 (NVHPC 26.9) fail it
-//   another way in copy mode, e.g. `Failing in Thread:1`
-// - gate and confirmer: campaign gate of the programs below: 590 cells, 590 confirmed in the four environments (a-d; (c) on another
+// - other families: nvhpc (NVHPC 25.11), nvhpc269 (NVHPC 26.9), gcc (GCC 16.2.0), gcc_sm80 (GCC 16.2.0) run the file correctly in
+//   managed mode (rows results/nested/red/red7.jsonl, results/nested/red/wgs.jsonl, results/nested/red/wnv.jsonl, site rows, check
+//   case site-nested--afar-cce-c-update-struct-and-member-rejected); nvhpc (NVHPC 25.11), nvhpc269 (NVHPC 26.9) fail it another way
+//   in copy mode, e.g. `Failing in Thread:1`
+// - gate and confirmer: campaign gate of the programs below: 708 cells, 708 confirmed in the four environments (a-d; (c) on another
 //   node or GPU; rows results/nested/big/gate_reruns.part.tuolumne1010.3222831.jsonl,
-//   results/nested/big/gate_reruns.part.tuolumne1012.1040717.jsonl, results/nested/big/gate_reruns.part.tuolumne1030.1284552.jsonl,
+//   results/nested/big/gate_reruns.part.tuolumne1012.1040717.jsonl, results/nested/big/gate_reruns.part.tuolumne1016.689931.jsonl,
+//   results/nested/big/gate_reruns.part.tuolumne1022.3522710.jsonl, results/nested/big/gate_reruns.part.tuolumne1030.1284552.jsonl,
 //   results/nested/big/gate_reruns.part.tuolumne1176.1251749.jsonl, results/nested/big/gate_reruns.part.tuolumne1245.1517583.jsonl,
 //   results/nested/big/gate_reruns.part.tuolumne1246.1434668.jsonl, results/nested/big/rows.part.tuolumne1010.1956389.jsonl,
-//   results/nested/big/rows.part.tuolumne1040.1523848.jsonl, results/nested/big/rows.part.tuolumne1604.1239313.jsonl,
-//   results/nested/big/rows.part.tuolumne1624.1197409.jsonl, results/nested/big/rows.part.tuolumne1797.1146311.jsonl,
-//   results/nested/main/gate_reruns.part.tuolumne1095.961942.jsonl, results/nested/main/gate_reruns.part.tuolumne1789.919396.jsonl,
+//   results/nested/big/rows.part.tuolumne1016.565902.jsonl, results/nested/big/rows.part.tuolumne1040.1523848.jsonl,
+//   results/nested/big/rows.part.tuolumne1604.1239313.jsonl, results/nested/big/rows.part.tuolumne1624.1197409.jsonl,
+//   results/nested/big/rows.part.tuolumne1797.1146311.jsonl, results/nested/main/gate_reruns.part.tuolumne1016.681421.jsonl,
+//   results/nested/main/gate_reruns.part.tuolumne1022.3519361.jsonl,
+//   results/nested/main/gate_reruns.part.tuolumne1042.560519.jsonl, results/nested/main/gate_reruns.part.tuolumne1095.961942.jsonl,
+//   results/nested/main/gate_reruns.part.tuolumne1789.919396.jsonl,
 //   results/nested/main/gate_reruns.part.tuolumne1955.3910568.jsonl,
-//   results/nested/main/gate_reruns.part.tuolumne1955.4072524.jsonl, results/nested/main/rows.part.tuolumne1955.994167.jsonl)
+//   results/nested/main/gate_reruns.part.tuolumne1955.4072524.jsonl, results/nested/main/rows.part.tuolumne1016.558535.jsonl,
+//   results/nested/main/rows.part.tuolumne1955.994167.jsonl)
 // - programs (59): nd-c-omp-update-alias-d2-332dddeb, nd-c-omp-update-alias-d2-684cb0b8, nd-c-omp-update-alias-d2-7e63bd9c,
 //   nd-c-omp-update-aliassub-d2-7f474889, nd-c-omp-update-aliassub-d2-94cac870, nd-c-omp-update-aliassub-d2-c7c56309,
 //   nd-c-omp-update-chain-d1-7fac5787, nd-c-omp-update-chain-d1-a679e114, nd-c-omp-update-chain-d2-114e1ffc,

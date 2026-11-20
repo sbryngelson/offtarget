@@ -850,6 +850,8 @@ def _execute_now(script: str, cwd: Path, timeout_s: float,
     # scripts set what they need); ROCR_*/other HSA_* stay, since a batch
     # allocation may use them to assign the GPU;
     # GCC's libgomp reads GOMP_* and GCN_* (GOMP_DEBUG, GCN_STACK_SIZE)
+    from offload.engine.provenance import refuse_spindle
+    refuse_spindle()
     env = {k: v for k, v in os.environ.items()
            if not k.startswith(("OMP_", "LIBOMPTARGET_", "CRAY_ACC_",
                                 "NVCOMPILER_", "ACC_", "GOMP_",

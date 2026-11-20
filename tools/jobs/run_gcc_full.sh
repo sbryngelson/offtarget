@@ -10,7 +10,7 @@
 #       TC=gcc_sm80 WORKERS=2 setsid nohup tools/jobs/run_gcc_full.sh f90 c+acc+accc &
 #   Tioga (TC=gcc_g90): inside ONE foreground interactive pdebug job of at
 #     most 60 minutes (one GCD per queue, ROCR_VISIBLE_DEVICES):
-#       flux run -q pdebug -N1 -n1 -t 60m --job-name=compile-test-gcc-catalog \
+#       flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 60m --job-name=compile-test-gcc-catalog \
 #         env TC=gcc_g90 WORKERS=8 LIMIT_S=3300 tools/jobs/run_gcc_full.sh f90 c acc+accc
 # Rows: results/gcc/$TC/matrix.<tag>.x0.jsonl (+ .meta.json, .log).
 . "$(dirname "$0")/wingtip_cap.sh" || exit 1

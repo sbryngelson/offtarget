@@ -101,3 +101,15 @@ def missing(row: dict) -> list[str]:
         elif f != "git_rev" and row[f] in ("", None):
             out.append(f)
     return out
+
+
+def refuse_spindle() -> None:
+    """Stop when Spindle is loaded into this process (its audit library in
+    LD_AUDIT; the flux shell of Tuolumne loads it into every `flux run`
+    job). Under it a burst of process starts stalls for good: the forked
+    children block on its FIFO and the compilers spin."""
+    audit = os.environ.get("LD_AUDIT", "")
+    if "spindle" in audit.lower():
+        raise SystemExit(
+            f"Spindle is loaded into this job (LD_AUDIT={audit}): parallel compiles and runs stall under it. "
+            "Submit the job with --env=SPINDLE_FLUXOPT=disable")

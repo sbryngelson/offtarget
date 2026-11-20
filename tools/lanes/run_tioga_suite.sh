@@ -43,7 +43,7 @@ timeout 1800 rsync -aL --from0 --files-from="$T/code.list" -e "$SSH" ./ "$HOST:$
   { echo "copying to $HOST:$DEST failed (left there)" >&2; exit 1; }
 
 # one foreground job; the outer bound allows ~10 minutes of queue wait
-timeout 4500 $SSH $HOST "builtin cd $DEST && flux run -q pdebug -N1 -n1 -t 60m --job-name=compile-test-tioga-suite bash tools/lanes/tioga_suite_job.sh"
+timeout 4500 $SSH $HOST "builtin cd $DEST && flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 60m --job-name=compile-test-tioga-suite bash tools/lanes/tioga_suite_job.sh"
 echo "tioga job exit $?"
 timeout 600 rsync -a -e "$SSH" "$HOST:$DEST/.tsuite/out/" "$OUT/" ||
   { echo "copying back failed: $HOST:$DEST left in place" >&2; exit 1; }

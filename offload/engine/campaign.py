@@ -796,7 +796,17 @@ class Run:
         return self.meta().get("gate_budget_s")
 
     def set_gate_budget(self, budget_s: float) -> None:
+        """Store the budget. Refused when the campaign has reruns planned
+        under another budget: the plan would sample other rows, and every
+        stored verdict outside the new sample would read as unchecked."""
         meta = self.meta()
+        old = meta.get("gate_budget_s")
+        if old != budget_s and read_jsonl(self.d / "gate_reruns.jsonl"):
+            was = f"under a budget of {old:g} s" if old else "for every failing row (no budget)"
+            raise ValueError(
+                f"{self.d}: the stored gate reruns were planned {was}; a budget of {budget_s:g} s "
+                "would change the sample and the verdicts of the rows outside it. Rerun without "
+                "a budget (the gate resumes: only rows without reruns run)")
         meta["gate_budget_s"] = budget_s
         (self.d / "meta.json").write_text(json.dumps(meta))
 

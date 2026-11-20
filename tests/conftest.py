@@ -204,6 +204,24 @@ def _gate_verdicts_file_is_put_back():
     gate.VERDICTS_FILE = saved
 
 
+@pytest.fixture(autouse=True)
+def _report_columns_are_put_back():
+    """offload.engine.report.load() narrows the module's column lists (TOOLCHAINS, G90, TWINS, MI300A,
+    NV) to the toolchains of the rows it read. A test that loads a few rows would leave every later
+    test of its worker without the other columns (the omp_vv mode-difference table lost its AFAR row,
+    in one parallel run of three). Whatever a test loads, the lists are the ones it started with."""
+    import sys
+    report = sys.modules.get("offload.engine.report")
+    names = ("TOOLCHAINS", "G90", "TWINS", "MI300A", "NV")
+    saved = {n: list(getattr(report, n)) for n in names} if report else {}
+    yield
+    report = sys.modules.get("offload.engine.report")
+    if report and not saved:               # imported by this test: the lists as the import leaves them
+        saved = {n: [] for n in names} | {"TOOLCHAINS": list(report.ALL_TOOLCHAINS)}
+    for n, v in saved.items():
+        getattr(report, n)[:] = v
+
+
 @pytest.fixture(scope="session")
 def offload_bundle(built_site_data):
     """The data bundle (offload._bundle.collect), built once per test run from the one site-data build:

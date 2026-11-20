@@ -15,12 +15,12 @@
 #     tools/jobs/run_campaign.sh CAMPAIGN "run abd" [NAME] [LIMIT_S] [WORKERS]
 # When pbatch is starved the same script runs as one foreground pdebug job
 # (<= 30 min, one at a time, named like a compile job):
-#   flux run -q pdebug -N1 -n1 --exclusive -t 30m --setattr=thp=always \
+#   flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive -t 30m --setattr=thp=always \
 #     --job-name=compile-test-CAMPAIGN-N [--requires=-host:NODE] \
 #     tools/jobs/run_campaign.sh CAMPAIGN STEPS [NAME] [LIMIT_S] [WORKERS]
 # Tioga (no pbatch for this account): from the copy tools/jobs/campaign_remote.sh
 # pushes, one foreground pdebug job (<= 60 min) at a time:
-#   ssh tio 'builtin cd LANE && MACHINE=tioga PY=/usr/tce/bin/python3 flux run -q pdebug -N1 -n1 \
+#   ssh tio 'builtin cd LANE && MACHINE=tioga PY=/usr/tce/bin/python3 flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 \
 #     --exclusive -t 60m --job-name=compile-test-CAMPAIGN-tio tools/jobs/run_campaign.sh CAMPAIGN STEP NAME LIMIT_S'
 # RUN_TCS=a,b limits the run step to those toolchains; RUN_SHARD=k/m takes
 # every m-th remaining cell (two jobs at once share the cells without overlap).

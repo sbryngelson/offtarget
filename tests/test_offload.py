@@ -69,6 +69,17 @@ def test_grid_maps_every_cell_to_its_compiler_label_and_target_name():
     assert "mi300x" in cols["runs"]["afar"] and "mi300x" not in cols["runs"]["cce19"]
 
 
+def test_a_target_a_compiler_ran_on_has_a_cell_for_some_feature():
+    """A column that is "unknown" for every feature is a GPU the tables have no rows of: it is n/a
+    (GCC on the MI300A). CCE 21.0.4 has no feature rows at all (regression runs only)."""
+    cols = data.load("canuse/columns.json")
+    seen = {key for i in sorted({f[0] for f in data.load("canuse/index.json")})
+            for rows in data.load(f"canuse/{i}.json").values() for row in rows for key in row["cells"]}
+    for tc, _ in cols["rows"]:
+        if tc != "cce21_4":
+            assert {f"{tc}|{t}" for t in cols["runs"][tc]} <= seen, tc
+
+
 def test_text_shows_each_compiler_target_and_state_of_the_grid(capsys):
     assert canuse.main([FEATURE]) == 0
     out = capsys.readouterr().out

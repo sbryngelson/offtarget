@@ -12,7 +12,7 @@
 #   of at most 60 minutes (the maintainer's limit for Tioga), one at a time,
 #   never chained, each named as a compile job; each resumes the last
 #   (STEP_LIMIT ends a step before the job's limit):
-#     flux run -q pdebug -N1 -n1 -t 60m --job-name=compile-gcc-amdgcn \
+#     flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 60m --job-name=compile-gcc-amdgcn \
 #       env TARGET=amdgcn DL=... WORK=/path/to/gcc-work/build \
 #       SRCROOT=/tmp/$USER-gcc-src PREFIX=/path/to/gcc-16.2 \
 #       STEP_LIMIT=55m JOBS=64 tools/jobs/gcc_offload_build.sh

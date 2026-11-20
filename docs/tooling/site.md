@@ -93,7 +93,7 @@ derived, run the reproducer only, and write `results/site-<machine>-gcc.<env>.js
 machines other than Tioga, `GCC_ROOT` and `GCC_ROCM` name the install and the ROCm it loads.
 
     GCC=1 tools/jobs/run_site_matrix.sh wingtip a 0
-    flux run -q pdebug -N1 -n1 -t 60m --job-name=compile-test-gcc-site-a \
+    flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 60m --job-name=compile-test-gcc-site-a \
       tools/jobs/run_site_matrix.sh tioga a
 
 Tioga has no batch queue for this account. Each environment is one supervised interactive
@@ -126,7 +126,7 @@ link and leak checks, and says so.
 Run the browser check as a short foreground job on a Tuolumne compute node, with node from
 `~/.nvm` on `PATH`:
 
-    flux run -q pdebug --job-name=compile-test-site -N1 -n1 -t 15m python3 -I tools/site/site_check.py results/site
+    flux run -q pdebug --env=SPINDLE_FLUXOPT=disable --job-name=compile-test-site -N1 -n1 -t 15m python3 -I tools/site/site_check.py results/site
 
 `pdebug` suits this job because you read the answer at once. Allow about 10 minutes of queue wait.
 wingtip has no Chrome, so its test lane skips the browser tests.

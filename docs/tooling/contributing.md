@@ -26,7 +26,7 @@ The machines below are the maintainers' own. The catalog names them by hardware.
 | `tools/` | command-line entry points (`campaign.py`, `confirm.py`, `fuzz.py`, `gate.py`, `reduce.py`, `new_finding.py`, `regenerate.py`, `site_build.py`, `site_publish.sh`, ...), `jobs/` (job scripts) |
 | `data/findings/` | one small program per compiler issue, with a header; `index.yaml`; `README.md`; `AUTHORING.md` |
 | `data/vendor/` | `checks/`, which re-runs the cases per compiler (`run_checks.py`); the draft report packets (`amd/`, `hpe/`, `nvidia/`) come from the private checkout |
-| `docs/tooling/` | how-to pages: [setup](setup.md), [regenerate](regenerate.md), [wingtip](wingtip.md), [confirm](confirm.md), [site](site.md), [publishing](publishing.md), [dashboard-publish](dashboard-publish.md), [toolchains](toolchains.md), [nested-data](nested-data.md), [expected-behaviour](expected-behaviour.md) |
+| `docs/tooling/` | how-to pages: [setup](setup.md), [regenerate](regenerate.md), [new-release](new-release.md), [wingtip](wingtip.md), [confirm](confirm.md), [site](site.md), [publishing](publishing.md), [dashboard-publish](dashboard-publish.md), [toolchains](toolchains.md), [nested-data](nested-data.md), [expected-behaviour](expected-behaviour.md) |
 | `site/` | static site template (`templates/`, `static/`) and its committed inputs (`inputs/`, from `tools/site/site_inputs.py`) |
 | `.github/workflows/site.yml` | builds, checks and deploys the site to GitHub Pages (CPU only) |
 | `tests/` | pytest; `data/` holds captured compiler messages and audit summaries |
@@ -93,7 +93,7 @@ Compilers and tests do not run on login nodes. CPU tests run on wingtip through 
 4. The log `results/offline/tests.<lane>.<time>.log` has the full tracebacks. After a pass, `results/offline/suite/<lane>.<time>/` holds `wingtip.txt` (the tests that ran), `tuolumne.txt` (the tests left for Tuolumne), `failed.txt` and `summary.json`.
 5. The tests left for Tuolumne (AFAR front end, GPU, application clones) run on a compute node as one foreground job:
 
-       flux run -q pdebug -N1 -n1 -t 10m --job-name=compile-test-<what> python3 -I -m pytest $(cat results/offline/suite/<lane>.<time>/tuolumne.txt)
+       flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 10m --job-name=compile-test-<what> python3 -I -m pytest $(cat results/offline/suite/<lane>.<time>/tuolumne.txt)
 
    Long runs go to pbatch, for example `flux batch -q pbatch -N1 -t 60 --setattr=thp=always --output=pytest.log --wrap 'python3 -I -m pytest -q'`. Allow about ten minutes of queue wait on pdebug. On Tuolumne, pass sealed-set tests by function-level id, without the `[...]` part.
 6. Most ids in `tuolumne.txt` also run on Tioga. `tools/lanes/run_tioga_suite.sh results/offline/suite/<lane>.<time>` writes `tioga/tuolumne.txt`, which lists the ids that must still run on Tuolumne (MI300A device runs and sealed-set tests).
@@ -151,7 +151,7 @@ The linter, its model and its tooling are kept on the `linter` branch.
 
 `catalog/toolchains.yaml` names every toolchain. Its header documents each key, and [toolchains.md](toolchains.md) shows the current table. `offload/engine/toolchains.py` reads the file and is the only code that knows the list. The matrix, gate, confirmer, support tables, site data and campaign orders ask it. `tools/derive/toolchains_gen.py` writes the files that cannot read YAML at run time: `site/static/toolchains.js`, `tools/jobs/toolchains.sh` and `docs/tooling/toolchains.md`.
 
-A release needs the catalog entry, the generated files and canaries (steps 1 to 4). A release of a vendor family (AFAR, CCE, NVHPC) also needs the vendor packet's recipe tables (step 5). A new family or vendor also needs message tables. Measuring the release takes runs, not configuration (step 6). `tests/cluster/test_reports.py::test_adding_a_compiler_is_a_config_edit` runs these steps on a copy of the catalog with fake compilers `cce99` and `nvhpc99`.
+A release needs the catalog entry, the generated files and canaries (steps 1 to 4). [new-release.md](new-release.md) gives the order of the runs that follow. A release of a vendor family (AFAR, CCE, NVHPC) also needs the vendor packet's recipe tables (step 5). A new family or vendor also needs message tables. Measuring the release takes runs, not configuration (step 6). `tests/cluster/test_reports.py::test_adding_a_compiler_is_a_config_edit` runs these steps on a copy of the catalog with fake compilers `cce99` and `nvhpc99`.
 
 1. Add the entry under `toolchains:` in `catalog/toolchains.yaml`. Copy the nearest release and change `version`, `label`, `merged_key` and the recipe fields.
    - A CCE release needs `modules` (`cce`, `rocm`). An NVHPC or GCC release needs `install` (`default` and the overriding `env` variable), `fc`, `cc` and `env`.
@@ -266,7 +266,7 @@ The site is built from committed data only (`MANIFEST` in `offload/engine/site/i
 
 `site_publish.sh` needs node 22 and Chrome or Chromium, so run it on a Tuolumne compute node as one short foreground job (wingtip has no Chrome):
 
-    flux run -q pdebug -N1 -n1 -t 20m --job-name=compile-test-site bash tools/site_publish.sh results/site-new
+    flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 20m --job-name=compile-test-site bash tools/site_publish.sh results/site-new
 
 Put `bash` in front, because a compute node can refuse to exec a freshly written script by path. Add `--repo-url URL` once the repository is public. On GitHub the same two steps run in `.github/workflows/site.yml` and deploy to GitHub Pages. [publishing.md](publishing.md) describes turning that on, [site.md](site.md) describes the site and its data, and [dashboard-publish.md](dashboard-publish.md) covers the preview artifact.
 
@@ -274,8 +274,8 @@ Put `bash` in front, because a compute node can refuse to exec a freshly written
 
 | machine | rule |
 |---|---|
-| Tuolumne (flux) | Batch work goes to pbatch. pdebug is for short attended work: one foreground `flux run -q pdebug -N1 -n1 -t <=60m --job-name=compile-<what>` at a time, never chained, never `flux batch`. Put scripts on Lustre; compute nodes do not see the login node's `/tmp`. Bound every wait |
-| Tioga (`ssh tio`) | The account has pdebug and pci, no pbatch. Each build, smoke or subset step is one supervised foreground `flux run -q pdebug -N1 -n1 -t <=60m --job-name=compile-...` from the copy on `/p/vast1`, one at a time. `ssh -O check tio` tests the ssh master from a Tuolumne login node |
+| Tuolumne (flux) | Batch work goes to pbatch. pdebug is for short attended work: one foreground `flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t <=60m --job-name=compile-<what>` at a time, never chained, never `flux batch`. Put scripts on Lustre; compute nodes do not see the login node's `/tmp`. Bound every wait. Every `flux run` carries `--env=SPINDLE_FLUXOPT=disable`: the flux shell loads Spindle into a `flux run` job, parallel compiles and runs stall under it for good, and the harness stops when it finds it loaded (`refuse_spindle` in `offload/engine/provenance.py`) |
+| Tioga (`ssh tio`) | The account has pdebug and pci, no pbatch. Each build, smoke or subset step is one supervised foreground `flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t <=60m --job-name=compile-...` from the copy on `/p/vast1`, one at a time. `ssh -O check tio` tests the ssh master from a Tuolumne login node |
 | wingtip (shared, no scheduler) | Everything runs inside `compliant.slice` through `tools/jobs/wingtip_cap.sh` or `tools/jobs/wingtip_capped.sh CMD`. Free GPUs only, one program per GPU (the run lock), at most 4 compiles across all users, `nice`. One step at a time per lane; a second step waits 30 s, then exits 75. Details in [wingtip.md](wingtip.md) |
 
 Sealed benchmark sets (`data/bench/<set>/SEAL` not listed in `catalog/sealed_spent.yaml`) stay on Tuolumne and are never read. Tooling never files, reports or posts anything externally. Write drafts instead.
@@ -333,14 +333,14 @@ Procedure:
      The script sources the cap, waits a bounded time for a free GPU, holds the run lock and runs under `nice` with `COMPLIANT_RUN_SLOTS=1`. Check `nvidia-smi` first, and copy `results/reduce/<name>/` back with rsync afterwards. For a hand-written wrong-answer program, add `--reference elision` (Fortran) or `--reference host:TC`.
    - Tuolumne (AFAR, CCE), one foreground job of at most 30 minutes:
 
-         flux run -q pdebug -N1 -n1 -t 30m --job-name=compile-reduce-<name> python3 -I tools/reduce.py --program FILE --target cce21/1 --name <name> --out results/reduce/<name> --budget-minutes 25
+         flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 30m --job-name=compile-reduce-<name> python3 -I tools/reduce.py --program FILE --target cce21/1 --name <name> --out results/reduce/<name> --budget-minutes 25
 
      Longer runs go to pbatch: `flux batch -q pbatch -N1 -t 120 --output=results/reduce/<name>.log --wrap 'python3 -I tools/reduce.py ... --budget-minutes 110'`. A run that stops at its budget resumes with the same command.
-   - Tioga (gfx90a): `ssh tio`, then from the copy on `/p/vast1` one foreground `flux run -q pdebug -N1 -n1 -t 30m --job-name=compile-reduce-<name> python3 -I tools/reduce.py ...`.
+   - Tioga (gfx90a): `ssh tio`, then from the copy on `/p/vast1` one foreground `flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 30m --job-name=compile-reduce-<name> python3 -I tools/reduce.py ...`.
 3. Read `OUT/report.md` (lines before and after, steps, controls and where they pass, the budget) and `OUT/<name>.f90` or `.c`. Check that every variable it reads is set and that the failure is the intended one.
 4. On Tuolumne, run the front-end witness on the reduction and the controls:
 
-       flux run -q pdebug -N1 -n1 -t 10m --job-name=compile-prerun-<name> python3 -I -c "import sys; sys.path.insert(0, '.'); from offload.engine import prerun; [print(f, prerun.check((open(f).read(), 'f90'))) for f in sys.argv[1:]]" OUT/<name>.f90 OUT/controls/*.f90
+       flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 10m --job-name=compile-prerun-<name> python3 -I -c "import sys; sys.path.insert(0, '.'); from offload.engine import prerun; [print(f, prerun.check((open(f).read(), 'f90'))) for f in sys.argv[1:]]" OUT/<name>.f90 OUT/controls/*.f90
 
    `python3 -I` leaves the working directory off `sys.path`, so the command inserts it. For a campaign program, also run the gate.
 5. Draft the finding from the rows the tool wrote, as in "Add a finding": `python3 -I tools/new_finding.py OUT/<name>.f90 --campaign NAME --rows OUT/rows.jsonl --control OUT/controls/*.f90 --name SLUG --dir DIR`, then replace the `TODO(human)` items.

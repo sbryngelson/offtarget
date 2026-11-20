@@ -2,7 +2,7 @@
 # fortran-oop on Tuolumne as single foreground pdebug jobs (one node, <= 30 min, one
 # at a time, named like compiler jobs: the maintainer's allowance for this campaign when
 # pbatch was starved, 2026-10-28; batch work otherwise goes to pbatch). STEP: run | abd | c | fuzz-run K | fuzz-abd K | fuzz-c K. Resumable.
-#   flux run -q pdebug -N1 -n1 --exclusive -t 30m --setattr=thp=always \
+#   flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 --exclusive -t 30m --setattr=thp=always \
 #     --job-name=compile-test-oop-N [--requires=host:H] tools/jobs/run_oop_pdebug.sh STEP [K]
 ulimit -c 0
 cd "$(dirname "$0")/../.." || exit 1

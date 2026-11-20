@@ -12,7 +12,7 @@ programs.jsonl sources are regenerated), or a directory of .f90 files. Each prog
 with the harness's AFAR recipe plus ``-O2 -save-temps -c`` in a scratch directory (a
 multi-file program file by file, in order); the device FIR (``*-gfx942-fir.mlir``) is read by
 ``offload.engine.devtemps.scan_fir``. Records -> results/devtemps/SET.jsonl (resumable).
-Run on a compute node (``flux run -q pdebug -N1 -n1 -t 30m --job-name=compile-test-devtemps``).
+Run on a compute node (``flux run -q pdebug --env=SPINDLE_FLUXOPT=disable -N1 -n1 -t 30m --job-name=compile-test-devtemps``).
 """
 from __future__ import annotations
 
