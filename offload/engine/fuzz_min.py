@@ -1025,7 +1025,7 @@ def finding_header(seed: int, failure: Failure, expected: str,
     lines = ([
         f"! Minimized by compliance.fuzz_min from fuzz seed {seed} "
         f"({gen_version}).",
-        f"! toolchain: {failure.toolchain} (-O2, HSA_XNACK={fe.XNACK}, "
+        f"! toolchain: {failure.toolchain} ({fe.OPT}, HSA_XNACK={fe.XNACK}, "
         "OMP_TARGET_OFFLOAD=mandatory)",
         f"! failure: {failure.kind}" + (f" ({failure.signature})"
                                         if failure.signature else ""),

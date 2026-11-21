@@ -73,3 +73,11 @@ def test_a_run_stopped_before_it_finishes_has_recorded_its_level(tmp_path, monke
     assert cli._run_opt(tmp_path / "results" / "fuzz" / "r" / "meta.json") == "-O3"
     with pytest.raises(SystemExit, match="-O3"):
         cli.cmd_run(_run_args(opt="-O2"))
+
+
+def test_a_minimized_programs_header_names_the_level_it_was_built_at(monkeypatch):
+    from offload.engine import fuzz_min
+    monkeypatch.setattr(fuzz_exec, "OPT", "-O3")
+    f = fuzz_min.Failure("cce21", "wrong_code")
+    head = fuzz_min.finding_header(7, f, "x", "y", "fuzz-4")
+    assert "! toolchain: cce21 (-O3, HSA_XNACK=" in head
