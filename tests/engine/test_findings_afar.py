@@ -1985,3 +1985,39 @@ end module m
     assert PR._construct_name("target teams map(to: a)") == ["target",
                                                              "teams"]
     assert PR._construct_name("parallel copy(a)") == ["parallel"]
+
+
+KERNELS_RED = """program p
+  implicit none
+  integer, parameter :: n = 3, m = 8
+  integer :: a(n), i, j, s
+  a = 1
+  s = 0
+  !$acc kernels
+    do i = 1, n
+      !$acc loop CLAUSES
+      do j = 1, m
+        s = s + a(i) + j
+      end do
+    end do
+  !$acc end kernels
+  print *, s
+end program p
+"""
+
+
+@pytest.mark.parametrize("clauses,race", [
+    ("independent", True),               # the programmer asserts independence: an unreduced sum races
+    ("gang vector", True),
+    ("independent reduction(+: s)", False),
+    ("", False),                          # a plain loop in kernels: the compiler decides
+    ("seq", False),
+])
+def test_an_asserted_parallel_loop_in_kernels_is_checked_for_races(clauses, race):
+    """OpenACC 3.4 §2.9.15: independent (or gang, worker, vector) on a loop in a kernels construct
+    asserts that its iterations are data-independent; a scalar summed with no reduction breaks it."""
+    ok, why = rules(KERNELS_RED.replace("CLAUSES", clauses))
+    if race:
+        assert ok is False and any("no clause makes it" in w for w in why), why
+    else:
+        assert ok, why

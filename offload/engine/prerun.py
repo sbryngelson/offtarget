@@ -265,16 +265,23 @@ def _threaded(tree, i, model: str) -> bool:
     if model == "acc":
         if "loop" not in leaves or any(c.name == "seq" for c in d.clauses):
             return False
-        if leaves[0] in ("kernels", "serial"):
-            return False        # kernels: the compiler decides
-        # a loop inside a kernels or serial construct: not a race
+        # independent, gang, worker or vector asserts that the iterations are data-independent
+        # (OpenACC 3.4 §2.9.15): checked in a kernels construct too
+        asserted = any(c.name in ("independent", "gang", "worker", "vector") for c in d.clauses)
+        if leaves[0] == "serial":
+            return False
+        if leaves[0] == "kernels":
+            return asserted     # otherwise the compiler decides
+        # a loop inside a serial construct, or one inside a kernels construct without an assertion
         par = _parents(tree)
         k = i
         while k in par:
             k = par[k]
             name = tree.directives[k].name.split()[0]
-            if name in ("kernels", "serial"):
+            if name == "serial":
                 return False
+            if name == "kernels":
+                return asserted
             if name == "parallel":
                 return True
         return leaves[0] == "parallel"
