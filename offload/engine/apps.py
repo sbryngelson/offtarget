@@ -313,6 +313,16 @@ def c_file_toolchain(tc, prog: AppProgram, path: Path):
     return ctc
 
 
+def include_path(app, inc: str) -> Path:
+    """An include directory of a program: absolute, under data/bench/apps/stubs/ ("stubs/..."), or
+    relative to the application's clone."""
+    if Path(inc).is_absolute():
+        return Path(inc)
+    if inc.startswith("stubs/"):
+        return BENCH / inc
+    return app.path / inc
+
+
 @dataclass
 class FileResult:
     file: str
@@ -350,9 +360,7 @@ def build(prog: AppProgram, app: App, toolchain_name: str, bdir: Path,
     compiled). Returns {files: [...], link: {...}, exe: path or None}."""
     from offload.engine import harness
     tc = toolchain(toolchain_name, prog, row_key)
-    prog = dataclasses.replace(prog, includes=[
-        str(i) if Path(i).is_absolute() else str(app.path / i)
-        for i in prog.includes])
+    prog = dataclasses.replace(prog, includes=[str(include_path(app, i)) for i in prog.includes])
     if bdir.exists():
         shutil.rmtree(bdir)
     bdir.mkdir(parents=True)

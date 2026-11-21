@@ -265,3 +265,11 @@ def test_a_c_file_without_openacc_in_a_fortran_openacc_program_is_plain_c(tmp_pa
         A.c_file_toolchain(cce, prog, acc).flags()
     gcc = dataclasses.replace(TOOLCHAINS["gcc"], model="acc")
     assert "-fopenacc" in A.c_file_toolchain(gcc, prog, plain).flags()
+
+
+def test_an_include_under_stubs_is_the_stubs_directory():
+    """A generated header the project writes (NPB's npbparams.h for one class) lives in
+    data/bench/apps/stubs/, not in the application's clone."""
+    app = A.load()["prk"]
+    assert A.include_path(app, "stubs/npb/cg-S") == A.BENCH / "stubs" / "npb" / "cg-S"
+    assert A.include_path(app, "src") == app.path / "src"
