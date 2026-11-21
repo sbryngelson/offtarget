@@ -55,3 +55,16 @@ def test_the_elided_run_of_an_acc_program_is_the_model():
         assert fuzz_exec.elision_value(p.source) == p.expected
     p = fuzz.generate(2, "fuzz-acc1")
     assert "the model" in fuzz_acc.check_defined_acc(p.source, p.expected + 1)
+
+
+def test_the_flang_check_runs_amd_flang_with_openacc(monkeypatch):
+    import subprocess
+    seen = {}
+
+    def run(cmd, **k):
+        seen["cmd"] = cmd
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(fuzz_acc.subprocess, "run", run)
+    assert fuzz_acc.check_flang_acc(fuzz.generate(2, "fuzz-acc1").source) is None
+    assert seen["cmd"][0].endswith("/amdflang") and "-fopenacc" in seen["cmd"]

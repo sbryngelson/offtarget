@@ -277,7 +277,7 @@ def check_gfortran_acc(source: str) -> str | None:
 
 def check_flang_acc(source: str) -> str | None:
     """AMD flang's front end with OpenACC (another compiler family than CCE and GCC)."""
-    from offload.engine.prerun import AFAR_BIN
+    from offload.engine.toolchains import AFAR_BIN
     with tempfile.TemporaryDirectory(prefix="fuzz_acc_") as d:
         (Path(d) / "p.f90").write_text(source)
         b = subprocess.run([f"{AFAR_BIN}/amdflang", "-fopenacc", "-fsyntax-only", "p.f90"], cwd=d,
