@@ -70,3 +70,13 @@ def test_the_flang_check_runs_amd_flang_with_openacc(monkeypatch):
     assert seen["cmd"][0].endswith("/amdflang") and "-fopenacc" in seen["cmd"]
     # AMD flang ships no openacc module: the declaration-only stub is read first
     assert seen["cmd"].index("openacc.f90") < seen["cmd"].index("p.f90")
+
+
+@pytest.mark.skipif(shutil.which("gfortran") is None, reason="needs gfortran (the elided run)")
+def test_the_shared_elision_builds_an_openacc_program():
+    """offload.engine.expected.run_elided (the minimizer's range guard and references) links an OpenACC
+    program's acc_on_device against the sequential openacc module."""
+    from offload.engine import expected as E
+    p = fuzz.generate(2, "fuzz-acc1")
+    value, note = E.run_elided(p.source, "gfortran", ("-ftrapv",))
+    assert value is not None, note

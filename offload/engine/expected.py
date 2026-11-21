@@ -2285,7 +2285,9 @@ def _build_elision_lib(compiler: str) -> tuple[str, str]:
     d = tempfile.mkdtemp(prefix=f"elision_{compiler}_")
     atexit.register(shutil.rmtree, d, True)
     src = Path(d) / "omp_lib_elision.f90"
-    src.write_text(ELISION_OMP_LIB)
+    # with the sequential openacc module, so an elided OpenACC program links too (acc_on_device)
+    from offload.engine.fuzz_acc import OPENACC_SEQ
+    src.write_text(ELISION_OMP_LIB + "\n" + OPENACC_SEQ)
     obj = str(Path(d) / "omp_lib_elision.o")
     if compiler == "gfortran":
         cmd = [GFORTRAN, "-c", str(src), "-o", obj, f"-J{d}"]
