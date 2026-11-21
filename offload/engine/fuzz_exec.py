@@ -192,7 +192,7 @@ def compile_program(tc: Toolchain, src: Path, exe: Path, tmp: Path,
         return "timeout", "compile_timeout", "", out
     if build.rc != 0:
         found = harness.classify_message(tc.name, build.stdout,
-                                         harness.CATEGORY_ORDER[:-1])
+                                         harness.CATEGORY_ORDER[:-1], tc.lang)
         if found is None:
             return "harness_error", \
                 f"unclassified_compile_failure: rc={build.rc}", "", out

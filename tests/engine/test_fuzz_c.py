@@ -69,3 +69,14 @@ def test_an_atomic_max_or_min_is_not_translated():
     for s in range(1, 300):
         src = fuzz.generate(s, "fuzz-6c", ()).source
         assert not re.search(r"#pragma omp atomic[^\n]*\n\s*(\w+) = \(\(?\1 [<>]", src), s
+
+
+def test_a_c_build_is_classified_with_the_c_compilers_messages(tmp_path, monkeypatch):
+    """A CCE C compiler crash is an ice (the cce:c table), not an unclassified failure."""
+    from offload.engine import harness
+    out = "PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace\n"
+    monkeypatch.setattr(harness, "_execute", lambda *a, **k: harness._Exec(1, out, ""))
+    src = tmp_path / "p.c"
+    src.write_text("int main(void) { return 0; }\n")
+    cls, reason, _, _ = fuzz_exec.compile_program(fuzz_exec.toolchain_for("cce21", "c"), src, tmp_path / "x", tmp_path)
+    assert cls == "ice", (cls, reason)
