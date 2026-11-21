@@ -1,25 +1,17 @@
-"""OpenACC fuzz programs (generator fuzz-acc1): random Fortran OpenACC 3.4
-programs with the fuzz generator's model, expressions and checksum frame.
+"""OpenACC fuzz programs (generator fuzz-acc1): Fortran OpenACC 3.4 programs with the fuzz
+generator's model, expressions and checksum frame, and no base-language groups.
 
-A program is built by offload.engine.fuzz._Gen with every kernel drawn by
-``k_acc`` instead of the OpenMP kernel flavors: a loop nest of one or two levels
-under a compute construct (parallel loop, kernels loop, serial loop, or parallel
-or kernels with nested loop directives), with gang/worker/vector, collapse,
-private, reduction (clause or atomic), data clauses or present inside a data
-region, and launch sizes. Statements appear only inside the innermost loop, so
-no statement runs gang-redundantly. The program frame the OpenMP generator
-writes (the data region or enter/exit data around the kernels, the host update,
-deferred tasks, device functions) is then rewritten line by line to its OpenACC
-counterpart (``acc_frame``); the deferred tasks become operations on one async
-queue (async(1)) and each taskwait an ``acc wait(1)``, so their order is the
-program order. No base-language groups. The model value is the sequential one,
-which every legal schedule prints.
+offload.engine.fuzz._Gen builds the program with every kernel drawn by ``k_acc``: a one- or
+two-level loop nest under parallel loop, kernels loop, serial loop, or parallel or kernels with a
+loop directive per level, with gang/worker/vector, collapse, private, reduction (clause or atomic),
+data clauses or present, and launch sizes. Statements appear only in the innermost loop, so none
+runs gang-redundantly. ``acc_frame`` rewrites the OpenMP frame (data regions, enter/exit data, host
+update, device functions) line by line; deferred tasks become async(1) and each taskwait wait(1),
+so their order is the program order and the sequential model value is every schedule's.
 
-check() of an OpenACC program (``check_acc``): the repository's OpenACC rules
-(version 34), gfortran -std=f2008 without OpenACC against the declaration-only
-openacc stub, AMD flang's front end with -fopenacc, and the sequential run of
-the program built without OpenACC against a sequential openacc module, which
-must print the model's checksum."""
+``check_acc``: the OpenACC rules (version 34), gfortran -std=f2008 and AMD flang -fopenacc against
+the declaration-only openacc stub, and two runs built without OpenACC against a sequential openacc
+module, which must print the model's checksum."""
 from __future__ import annotations
 
 import re
