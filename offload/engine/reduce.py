@@ -1121,10 +1121,18 @@ class FuzzContract:
         if not isinstance(ref, int):
             self.why = str(ref)
             return None
+        return self.rewrite(text, f"merge('pass', 'fail', {{cs}} == {ref}_8)")
+
+    @staticmethod
+    def rewrite(text: str, check: str = "'pass'") -> str:
+        """The RESULT line in the harness's form: the checksum on a line of its own, then the
+        RESULT line with `check` (a Fortran expression; {cs} names the checksum variable)."""
+        m = FUZZ_PRINT.search(text)
+        if m is None:
+            return text
         ind, cs, host = m.group(1), m.group(2), m.group(3)
         new = (f"{ind}print '(a,i0)', 'checksum= ', {cs}\n"
-               f"{ind}print '(a,i0,a,a)', 'RESULT ran_on_host=', {host}, ' check=', "
-               f"merge('pass', 'fail', {cs} == {ref}_8)")
+               f"{ind}print '(a,i0,a,a)', 'RESULT ran_on_host=', {host}, ' check=', {check.format(cs=cs)}")
         return text[:m.start()] + new + text[m.end():]
 
 
@@ -1633,10 +1641,30 @@ class Judge:
     def contract_for(self, text: str):
         if self.contract is None:
             self.contract = contract_for(text, self.lang)
+            if isinstance(self.contract, FuzzContract) and self.reference is not None:
+                # a fuzz program checked against the given reference (--reference host:TC) rather than
+                # the sequential elision, which cannot read every program (declare target module variables)
+                self.contract = FuzzContract(reference=self._reference_checksum)
         return self.contract
 
+    def _reference_checksum(self, text: str):
+        # the reference reads printed name= value pairs, not the RESULT line a fuzz program prints its
+        # checksum on: it runs the program with the checksum on a line of its own
+        vals, why = self.reference.values(FuzzContract.rewrite(text), self.lang)
+        if not vals or "checksum" not in vals:
+            return f"no reference checksum from {self.reference.name}: {why}"[:300]
+        return int(vals["checksum"])
+
     def prepared(self, text: str) -> str | None:
-        return self.contract_for(text).prepare(text)
+        """The candidate as it runs: a fuzz program's RESULT line checked against the reference. A
+        fuzz program with no reference value runs as it is unless the failure is a wrong answer (a
+        crash or a compiler crash prints no result to check; before the first run the class is open,
+        and a RESULT line without a check can never be a wrong answer)."""
+        out = self.contract_for(text).prepare(text)
+        if out is None and isinstance(self.contract, FuzzContract) and \
+                (self.signature is None or self.signature.cls != "wrong_answer"):
+            return FuzzContract.rewrite(text)       # the harness's form with no value check
+        return out
 
     def _check_text(self, text: str) -> tuple[str | None, str]:
         if self.require_device_flag and self.device_flag and not has_device_flag(text):

@@ -2358,6 +2358,38 @@ def test_fuzz_contract_rewrites_the_result_line_with_the_reference():
     assert RD.PlainContract().prepare(PADDED) == PADDED
 
 
+FUZZ_ELISION_INAPPLICABLE = "module m\n  integer :: g\n  !$omp declare target(g)\nend module m\n" + FUZZ_TAIL
+
+
+def test_a_given_reference_serves_a_fuzz_program(tmp_path):
+    """--reference host:TC on a fuzz program: its checksum is the reference value, not the sequential
+    elision (which cannot read declare target module variables)."""
+    # the reference reads the checksum the fuzz program prints on its RESULT line (rewritten as checksum= N)
+    ref = RD.FakeReference(lambda text: ({"checksum": "785692182"}, "") if "'checksum= ', cs" in text else (None, "x"))
+    judge = _judge(tmp_path, RD.FakeRunner(lambda t, g: "rejected"), reference=ref)
+    out = judge.prepared(FUZZ_ELISION_INAPPLICABLE)
+    assert out is not None and "cs == 785692182_8" in out
+
+
+def test_a_crash_of_a_fuzz_program_needs_no_reference(tmp_path):
+    """A crash or a compiler crash is no output: a fuzz program reduces without a reference value
+    (its RESULT line stays as it is). A wrong answer still needs one."""
+    crash = RD.Judge(RD.FakeRunner(lambda t, g: "rejected"), [NV], RD.Signature("crash", "SIGABRT"), "f90",
+                     witness=_witness_ok, rows_path=tmp_path / "c.jsonl", name="t")
+    crash.contract = RD.FuzzContract(reference=lambda text: "inapplicable: module variables")
+    out = crash.prepared(FUZZ_TAIL)
+    # the harness's RESULT form without a value check: a correct run reads as correct, a crash still crashes
+    assert "RESULT checksum=" not in out and "'checksum= ', cs" in out
+    assert "'RESULT ran_on_host=', max(hf1, hf2, 0), ' check=', 'pass'" in out
+    first = RD.Judge(RD.FakeRunner(lambda t, g: "rejected"), [NV], None, "f90",
+                     witness=_witness_ok, rows_path=tmp_path / "f.jsonl", name="t")
+    first.contract = RD.FuzzContract(reference=lambda text: "inapplicable: module variables")
+    assert first.prepared(FUZZ_TAIL) == out                # the first run decides the class
+    wrong = _judge(tmp_path, RD.FakeRunner(lambda t, g: "rejected"), reference=None)
+    wrong.contract = RD.FuzzContract(reference=lambda text: "inapplicable: module variables")
+    assert wrong.prepared(FUZZ_TAIL) is None
+
+
 def test_elision_reference_uses_only_installed_compilers(monkeypatch):
     from offload.engine import expected as E
     seen = {}
