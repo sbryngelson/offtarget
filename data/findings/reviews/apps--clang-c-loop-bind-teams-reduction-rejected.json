@@ -1,0 +1,87 @@
+{
+ "finding": "apps/clang-c-loop-bind-teams-reduction-rejected.c",
+ "readers": [
+  {
+   "run": "run-v2-apps1/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The loop construct with bind(teams) is strictly nested in the teams region of target teams, as required. The only reduction restriction for bind(teams) makes behavior unspecified when the loop is not nested inside a teams construct; here it is nested, so the reduction clause is permitted. No restriction forbids reduction on a loop bound to teams. r is shared in the teams region and only read after the region ends, so no race. The rejection is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-apps1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-apps1/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The loop construct with bind(teams) is strictly nested inside the teams construct, as required for bind(teams). The loop construct permits a reduction clause; the only reduction restriction is a modifier must be default, and unspecified reduction behavior applies only when the loop is not nested inside a teams construct, which is not the case here. Each iteration runs exactly once, and iterations complete before the end of the teams region, so r (mapped tofrom) holds 55 after the target region. A compiler refusing the reduction clause rejects a conforming program.",
+   "verifications": [
+    {
+     "run": "verify-apps1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "fe36a30fc2d5712a0469c1f0d9f4f915cf2f8005198a12e03b7d8ef03cca4f68",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -2553,3 +2553,10 @@ findings:
     modes: [unified, copy]
     arch: [gfx942]
     programs: ["acc1:188"]
+  - file: apps/clang-c-loop-bind-teams-reduction-rejected.c
+    toolchains: [afar, afar244, cce19, cce20, cce21, cce21_4]
+    lang: c
+    outcome: rejected
+    message: 'error: ''reduction'' clause not allowed with ''#pragma omp loop bind(teams)'''
+    modes: [unified, copy]
+    arch: [gfx942]

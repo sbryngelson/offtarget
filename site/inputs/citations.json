@@ -396,6 +396,26 @@
    "quote": "The target update directive makes the corresponding list items in the device data environment consistent with their original list items"
   }
  ],
+ "apps/clang-c-loop-bind-teams-reduction-rejected.c": [
+  {
+   "text": "OpenMP 5.2 §11.7 p.257 l.3-4",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "Clauses bind, collapse, lastprivate, order, private, reduction"
+  },
+  {
+   "text": "§11.7 p.257 l.33-34",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "If a reduction-modifier is specified in a reduction clause that appears on the directive then the reduction modifier must be default"
+  },
+  {
+   "text": "§11.7.1",
+   "version": "OpenMP 5.2",
+   "section": "11.7.1",
+   "quote": null
+  }
+ ],
  "apps/gcc-acc-c-tile-partial-tiles-wrong.c": [
   {
    "text": "OpenACC 3.4 §2.9.8 l.2486-2489",

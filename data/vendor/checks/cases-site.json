@@ -3659,6 +3659,34 @@
   ]
  },
  {
+  "id": "site-apps--clang-c-loop-bind-teams-reduction-rejected",
+  "finding": "apps/clang-c-loop-bind-teams-reduction-rejected.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "afar",
+   "cce21"
+  ],
+  "repro": "../../findings/apps/clang-c-loop-bind-teams-reduction-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
   "id": "site-fuzz--par-s1-2082-gcc_g90",
   "finding": "fuzz/par-s1-2082-gcc_g90.f90",
   "symptom": "compile:.",
