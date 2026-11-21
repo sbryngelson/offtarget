@@ -183,9 +183,7 @@ def main(argv=None) -> int:
         cd.mkdir(exist_ok=True)
         for c in kept:
             p = cd / f"{name}-{c.slug}-control{ext}"
-            lead = "//" if job.lang == "c" else "!"
-            p.write_text(f"{lead} Control of {name}{ext}: {c.what}; one change from the reduction; passes on "
-                         f"{', '.join(c.passed)}.\n{lead} {RD.witness_sentence(witness_name)}.\n"
+            p.write_text(RD.control_header(name, ext, c, job.lang, witness_name)
                          + (judge.prepared(c.text) or c.text))
             log(f"wrote {p}")
     # rewrite rows.jsonl with the file paths filled in

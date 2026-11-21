@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/cce-acc-kernels-nested-loop-reduction-lost.f90",
+ "readers": [
+  {
+   "run": "run-v2-accfuzz1/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "s appears in reduction(+:s) on both the gang loop and the nested independent loop, as required when two nested loops with loop directives share a reduction, and with the same operator. In a kernels construct a scalar in a reduction clause with no other data clause is treated as copy, so s is copied in and out. hf is written by a single iteration (i==1, j==1), so there is no race. The sum must equal want (2148); observed 420 is a wrong result, so a conforming compiler must produce the expected value.",
+   "verifications": [
+    {
+     "run": "verify-accfuzz1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 4,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 5,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-accfuzz1/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Both the gang loop and the nested independent loop carry reduction(+: s), as required when a reduction spans nested loops with loop directives. The operator is the same on both. The restriction on an explicit data clause applies only to parallel or serial parents, not kernels. The hf write happens in a single iteration, so there is no race. The spec requires s to be the sum over all iterations, 2148, so the observed 420 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-accfuzz1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 4,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 5,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9a988420a70aa8c786a04c44a0b8cc8f3bb05a897d79c3c30028b3ffe9c463f4",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

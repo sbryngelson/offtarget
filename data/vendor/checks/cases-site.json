@@ -3573,11 +3573,43 @@
   "model": "omp",
   "affected": [
    "cce19",
-   "cce21"
+   "cce20",
+   "cce21",
+   "cce21_4"
   ],
   "repro": "../../findings/fuzz/cce-c-simd-if-variable-ice.c",
   "derived": true,
   "control": "../../findings/fuzz/controls/cce-c-simd-if-variable-ice-delete-clause-if-c-control.c",
+  "control_what": "one change from the finding; correct on cce19, cce20, cce21, cce21_4",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce-acc-kernels-nested-loop-reduction-lost",
+  "finding": "fuzz/cce-acc-kernels-nested-loop-reduction-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "cce19",
+   "cce21"
+  ],
+  "repro": "../../findings/fuzz/cce-acc-kernels-nested-loop-reduction-lost.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/cce-acc-kernels-nested-loop-reduction-lost-delete-clause-independent-control.f90",
   "control_what": "one change from the finding; correct on cce19, cce21",
   "arch": [
    "gfx942",

@@ -2539,3 +2539,10 @@ findings:
     modes: [unified, copy]
     arch: [gfx942]
     programs: ["c6c1:1356"]
+  - file: fuzz/cce-acc-kernels-nested-loop-reduction-lost.f90
+    toolchains: [cce19, cce20, cce21, cce21_4]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ["acc1:320"]

@@ -1849,6 +1849,20 @@
    "quote": "The effect that a user-defined mapper has on either a map clause that maps a list item of the given base language type or a motion clause that invokes the mapper and updates a list item of the given base language type is to replace the map or update with a set of map clauses or updates derived from the map clauses specified by the mapper, as described in Section 5.8.3 and Section 5.9."
   }
  ],
+ "fuzz/cce-acc-kernels-nested-loop-reduction-lost.f90": [
+  {
+   "text": "OpenACC 3.4 §2.9.11 p.71 l.2551-2553",
+   "version": "OpenACC 3.4",
+   "section": "2.9.11",
+   "quote": "the result combined with the value of the original var and stored in the original var"
+  },
+  {
+   "text": "OpenACC 3.4 §2.6.2 p.41 l.1392-1393",
+   "version": "OpenACC 3.4",
+   "section": "2.6.2",
+   "quote": "will be treated as if it appears ... In a copy clause"
+  }
+ ],
  "fuzz/cce-c-simd-if-variable-ice.c": [
   {
    "text": "OpenMP 5.2 §10.4 p.235 l.5-7",

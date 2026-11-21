@@ -1975,16 +1975,32 @@ def witness_sentence(witness_name: str) -> str:
             "(offload.engine.prerun.check) is still to run on Tuolumne")
 
 
+def comment_lines(lang: str, sentences) -> str:
+    """Comment lines holding `sentences`, each wrapped within Fortran's 132-character free-form line."""
+    import textwrap
+    lead = "//" if lang == "c" else "!"
+    out = []
+    for text in sentences:
+        out += textwrap.wrap(text, 132 - len(lead) - 1, break_long_words=True, break_on_hyphens=False)
+    return "".join(f"{lead} {ln}\n" for ln in out)
+
+
 def reduction_header(name: str, origin: str, targets, res: "Reduction", out: Path, lang: str,
                      witness_name: str) -> str:
     """The comment header of a written reduction."""
-    lead = "//" if lang == "c" else "!"
     tgt = ", ".join(t.label for t in targets)
-    lines = [f"{lead} Reduced by tools/reduce.py from {origin} on {tgt}; failure signature: {res.signature}.",
-             f"{lead} {res.lines_before} -> {res.lines_after} lines in {len(res.steps)} steps, "
-             f"{res.candidates_judged} candidate runs; rows {out}/rows.jsonl; controls {out}/controls/.",
-             f"{lead} {witness_sentence(witness_name)}."]
-    return "\n".join(lines) + "\n"
+    return comment_lines(lang, [
+        f"Reduced by tools/reduce.py from {origin} on {tgt}; failure signature: {res.signature}.",
+        f"{res.lines_before} -> {res.lines_after} lines in {len(res.steps)} steps, "
+        f"{res.candidates_judged} candidate runs; rows {out}/rows.jsonl; controls {out}/controls/.",
+        f"{witness_sentence(witness_name)}."])
+
+
+def control_header(name: str, ext: str, control, lang: str, witness_name: str) -> str:
+    """The comment header of a written one-change control."""
+    return comment_lines(lang, [
+        f"Control of {name}{ext}: {control.what}; one change from the reduction; passes on "
+        f"{', '.join(control.passed)}.", f"{witness_sentence(witness_name)}."])
 
 
 # --- controls --------------------------------------------------------------------------------
