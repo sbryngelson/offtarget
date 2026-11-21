@@ -991,3 +991,38 @@ def test_fuzz6_defers_data_tasks_and_waits_on_dependences():
         if hit:
             assert fuzz.check_rules(p.source) is None, (s, fuzz.check_rules(p.source))
     assert all(v > 0 for v in seen.values()), seen
+
+
+# ---- generator fuzz-6c: the fuzz-6 program of the seed in C ----------------------------------------------
+
+def test_fuzz6c_is_the_fuzz6_program_in_c():
+    for s in range(1, 41):
+        f = fuzz.generate(s, "fuzz-6", ())
+        c = fuzz.generate(s, "fuzz-6c", ())
+        assert c.lang == "c" and f.lang == "f90"
+        assert c.expected == f.expected and c.features == f.features
+        if c.source.startswith(fuzz.UNTRANSLATED):
+            continue
+        assert "// generator: fuzz-6c" in c.source and "int main(void)" in c.source
+        assert "#pragma omp target" in c.source and "!$omp" not in c.source
+        assert fuzz.check_rules(c.source) is None, s
+
+
+def test_fuzz6c_needs_no_base_groups():
+    """The translation covers the fuzz-6 programs without base-language groups."""
+    with pytest.raises(ValueError, match="fuzz-6c translates no base"):
+        fuzz.generate(1, "fuzz-6c", ("types",))
+
+
+@pytest.mark.skipif(shutil.which("gcc") is None, reason="needs gcc (the C base-language check)")
+def test_fuzz6c_passes_the_c_checks_and_its_sequential_run_is_the_model():
+    """check() of a C program: scope, rules, the C11 base check, and the elided program's run (with
+    the undefined-behaviour sanitizer) printing the model's checksum. A wrong model value fails there."""
+    progs = [p for p in (fuzz.generate(s, "fuzz-6c", ()) for s in range(1, 40))
+             if not p.source.startswith(fuzz.UNTRANSLATED)][:4]
+    assert len(progs) == 4
+    for p in progs:
+        assert fuzz.check(p.source, expected=p.expected).ok, (p.seed, fuzz.check(p.source, expected=p.expected))
+    p = fuzz.generate(12, "fuzz-6c", ())
+    bad = fuzz.check(p.source, expected=p.expected + 1)
+    assert bad.stage == "defined", bad

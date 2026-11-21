@@ -320,7 +320,8 @@ def parse_declaration(stmt: str) -> list[Var] | None:
     ks = (kind_sel or "").strip("() ").lower()
     if b == "integer":
         ftype = {"": "integer", "omp_depend_kind": "depend",
-                 "omp_allocator_handle_kind": "alloc"}.get(ks)
+                 "omp_allocator_handle_kind": "alloc",
+                 "8": "int64"}.get(ks)       # the fuzz checksum (int64_t)
         if ftype is None:
             raise TranslateError(f"integer kind {ks!r}")
     elif b == "logical":
@@ -571,9 +572,27 @@ class Emitter:
             y = _paren(self.c(args[1], idx), right=True)
             return f"({x} % {y})"
         if low in ("max", "min"):
-            x, y = (self.c(a, idx) for a in args)
             op = ">" if low == "max" else "<"
-            return f"({x} {op} {y} ? {x} : {y})"
+            x = self.c(args[0], idx)
+            for a in args[1:]:      # max(a, b, c) is max(max(a, b), c)
+                y = self.c(a, idx)
+                x = f"({x} {op} {y} ? {x} : {y})"
+            return x
+        if low == "ishft" and len(args) == 2:
+            # a literal shift (the fuzz generator's form); left for k > 0, right for k < 0
+            k = self.c(args[1])
+            if not re.fullmatch(r"\(?-?\d+\)?", k):
+                raise TranslateError("ishft by a variable")
+            k = int(k.strip("()"))
+            x = _paren(self.c(args[0], idx))
+            return f"({x} << {k})" if k >= 0 else f"({x} >> {-k})"
+        if low == "int" and len(args) == 2 and self.c(args[1]) == "8":
+            return f"((int64_t){_paren(self.c(args[0], idx), right=True)})"
+        if low == "modulo":
+            # the result has the sign of the divisor (Fortran 2018 16.9.136); C's % truncates
+            x = _paren(self.c(args[0], idx))
+            y = _paren(self.c(args[1], idx), right=True)
+            return f"((({x} % {y}) + {y}) % {y})"
         if low in _INTRINSIC_BIN:
             x, y = (self.c(a, idx) for a in args)
             return f"({x} {_INTRINSIC_BIN[low]} {y})"
@@ -985,7 +1004,7 @@ def _split_name(text: str) -> tuple[str, str]:
 
 # --- the translator -------------------------------------------------------------
 
-_CTYPE = {"integer": "int", "logical": "bool", "double": "double",
+_CTYPE = {"integer": "int", "logical": "bool", "double": "double", "int64": "int64_t",
           "c_ptr": "void *", "depend": "omp_depend_t",
           "alloc": "omp_allocator_handle_t",
           "alloctrait": "omp_alloctrait_t"}
@@ -1177,7 +1196,12 @@ class Translator:
         self.pre = []
         low = text.lower().strip()
         out: list[str]
-        if low.startswith("print"):
+        if low.startswith("print") and "'result checksum='" in low:
+            # the fuzz frame (offload.engine.fuzz): checksum and host flag
+            flag = re.split(r"'\s*ran_on_host=\s*'\s*,", text, flags=re.I)[-1].strip()
+            out = [f'printf("RESULT checksum=%lld ran_on_host=%d\\n", (long long)cs, '
+                   f'{em.c(parse_expr(flag))});']
+        elif low.startswith("print"):
             if "result ran_on_host=" not in low:
                 raise TranslateError(f"print {text!r}")
             out = ['printf("RESULT ran_on_host=%d check=%s\\n", host_flag, '
@@ -1630,6 +1654,8 @@ class Translator:
         main += body + ["  return 0;", "}"]
         if self.needs_stdlib:
             includes.insert(1, "#include <stdlib.h>")
+        if any(v.ftype == "int64" for v in prog_scope.values()):
+            includes.insert(1, "#include <stdint.h>")
         out = [f"// {h}" for h in head] + includes + [""] + lines + (
             [""] if lines else []) + main
         return "\n".join(out) + "\n"

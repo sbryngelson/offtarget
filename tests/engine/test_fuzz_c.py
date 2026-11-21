@@ -1,0 +1,60 @@
+"""A C fuzz program (generator fuzz-6c) in the campaign runner: it is written as a .c file, built with
+each toolchain's C compiler, checked by the pre-run check as C, and its elision is the C program's."""
+import shutil
+from pathlib import Path
+
+import pytest
+
+from offload.engine import fuzz, fuzz_exec
+
+
+def _c_program():
+    return next(p for p in (fuzz.generate(s, "fuzz-6c", ()) for s in range(1, 40))
+                if not p.source.startswith(fuzz.UNTRANSLATED))
+
+
+def test_a_c_program_is_built_as_c(tmp_path, monkeypatch):
+    seen = {}
+
+    def compile_program(tc, src, exe, tmp, *a, **k):
+        seen["suffix"], seen["lang"] = Path(src).suffix, tc.lang
+        return "compile_error", "stub", "", ""
+
+    monkeypatch.setattr(fuzz_exec, "compile_program", compile_program)
+    monkeypatch.setattr(fuzz_exec, "_provenance", lambda tc, tmp, cls: {})
+    res, exe = fuzz_exec.run_toolchain(_c_program(), fuzz_exec.toolchain_for("afar", "c"), tmp_path)
+    assert seen == {"suffix": ".c", "lang": "c"} and exe is None
+
+
+def test_a_fortran_program_keeps_the_fortran_toolchain():
+    assert fuzz_exec.toolchain_for("afar", "f90").lang == "f90"
+    assert fuzz_exec.toolchain_for("cce21", "c").lang == "c"
+
+
+def test_the_prerun_check_reads_a_c_program_as_c(monkeypatch):
+    p = _c_program()
+    got = {}
+    from offload.engine import prerun
+    monkeypatch.setattr(fuzz_exec, "check", lambda src, expected=None: fuzz.CheckResult("ok"))
+    def prerun_check(prog):
+        got["lang"] = prog[1]
+        return False, ["stop"]
+
+    monkeypatch.setattr(prerun, "check", prerun_check)
+    monkeypatch.setattr(fuzz_exec, "generate", lambda *a, **k: p)
+    pr = fuzz_exec.run_program(p.seed, ("afar",), gen_version="fuzz-6c")
+    assert got["lang"] == "c" and pr.check == "prerun"
+
+
+@pytest.mark.skipif(shutil.which("gcc") is None, reason="needs gcc (the C elision)")
+def test_the_elision_of_a_c_program_is_its_sequential_c_run():
+    p = _c_program()
+    assert fuzz_exec.elision_value(p.source) == p.expected
+
+
+@pytest.mark.skipif(shutil.which("gcc") is None, reason="needs gcc (the C elision)")
+def test_the_elision_stubs_every_api_routine_a_c_program_calls():
+    """omp_get_thread_num and omp_get_team_num (the guard kernels) have their sequential values."""
+    p = next(p for p in (fuzz.generate(s, "fuzz-6c", ()) for s in range(1, 400))
+             if "omp_get_thread_num(" in p.source and "omp_get_team_num(" in p.source)
+    assert fuzz_exec.elision_value(p.source) == p.expected
