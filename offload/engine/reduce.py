@@ -1212,6 +1212,35 @@ def depends_kept(candidate: list, original: list) -> bool:
     return True
 
 
+_EXIT_OR_UPDATE = re.compile(r"^\s*(?:!\$omp|#\s*pragma\s+omp)\s+target\s+(exit\s+data|update)\b(.*)$", re.I | re.M)
+
+
+def copied_back(text: str) -> set:
+    """The variables a target exit data (map from or tofrom) or a target update from copies back to the host
+    (Fortran continuation lines joined)."""
+    joined = re.sub(r"&\s*\n\s*!\$omp&?", " ", text, flags=re.I)
+    out = set()
+    for m in _EXIT_OR_UPDATE.finditer(joined):
+        kind, rest = m.group(1).lower(), m.group(2)
+        if kind.startswith("exit"):
+            for mt, items in re.findall(r"\bmap\s*\(([^:()]*):([^)]*)\)", rest, re.I):
+                if re.search(r"\b(from|tofrom)\b", mt, re.I):
+                    out |= {re.split(r"[(%]", x.strip())[0].lower() for x in items.split(",") if x.strip()}
+        else:
+            for c in re.findall(r"\bfrom\s*\(((?:[^()]|\([^()]*\))*)\)", rest, re.I):
+                out |= {re.split(r"[(%\[]", x.strip())[0].lower() for x in c.split(",") if x.strip()}
+    return out
+
+
+def copybacks_kept(text: str, original: set) -> bool:
+    """Every variable the original copies back and the candidate still uses is still copied back: dropping a
+    copy-back leaves the host's stale values (the device's correct behaviour), which a host-run reference
+    would count as a wrong answer."""
+    have = copied_back(text)
+    body = "\n".join(ln for ln in text.splitlines() if not re.match(r"\s*(!|//)", ln) or re.match(r"\s*!\$", ln))
+    return all(v in have for v in original if re.search(rf"\b{re.escape(v)}\b", body, re.I))
+
+
 def flag_mapped(text: str) -> bool:
     """A host-execution flag variable appears in a map clause, so its device value reaches the host;
     a candidate that drops the map leaves it firstprivate and no run can tell device from host."""
@@ -1627,6 +1656,7 @@ class Judge:
         self.device_construct = True        # the original has a device compute construct
         self.wait_after_nowait = False      # the original waits for its nowait target tasks
         self.nowait_depends = None          # the original orders its nowait target tasks with depend
+        self.copybacks = set()              # the variables the original copies back (exit data from, update from)
         self.flag_mapped = False            # the original maps its host-execution flag back
         self._lock = threading.Lock()
 
@@ -1674,6 +1704,9 @@ class Judge:
         if self.nowait_depends is not None and not depends_kept(nowait_depends(text), self.nowait_depends):
             return None, ("a depend clause of a nowait target construct was dropped or changed (its deferred "
                           "target tasks would run unordered, a race)")
+        if self.copybacks and not copybacks_kept(text, self.copybacks):
+            return None, ("a variable the original copies back to the host (target exit data from, target update from) "
+                          "is no longer copied back (the host would read its stale values, the device's correct behaviour)")
         if self.wait_after_nowait and not waits_after_nowait(text):
             return None, ("a nowait target construct without the taskwait after it (the host would read "
                           "its results in a race)")
@@ -1907,6 +1940,7 @@ def reduce(text: str, lang: str, judge: Judge, levels=LEVELS, seed: int | None =
     judge.wait_after_nowait = waits_after_nowait(text)
     deps = nowait_depends(text)
     judge.nowait_depends = deps if any(deps) else None
+    judge.copybacks = copied_back(text)
     judge.flag_mapped = flag_mapped(text)
     steps: list[str] = []
     ck = load_checkpoint(checkpoint, origin, judge, levels) if checkpoint else None

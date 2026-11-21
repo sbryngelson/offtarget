@@ -3048,3 +3048,35 @@ def test_a_fuzz_run_of_a_compiler_under_test_is_summarized_and_minimized(tmp_pat
     assert {(r[0], r[1], r[2]) for r in reps} == {(2, "gcc_g90", "ice"), (3, "gcc_g90", "wrong_code")}
     s = FR.summarize(d)
     assert s["classes"]["gcc_g90"]["wrong_code"] == 1
+
+
+COPYBACK = """program p
+  implicit none
+  integer :: o(8), i
+  o = 0
+  !$omp target enter data map(to: o)
+  !$omp target teams distribute parallel do
+  do i = 1, 8
+    o(i) = 255
+  end do
+  !$omp target exit data map(from: o)
+  print *, sum(o)
+end program p
+"""
+
+
+def test_a_kept_variables_copy_back_stays(tmp_path):
+    """The original copies o back (target exit data map(from: o)); a candidate that still uses o but
+    drops that copy-back leaves the host's stale o, the device's correct behaviour, which a host-run
+    reference reads as a wrong answer. Refused; dropping o altogether is allowed."""
+    runner = RD.FakeRunner(lambda t, g: "rejected")
+    judge = _judge(tmp_path, runner)
+    judge.device_flag = False              # the snippet has no host-execution flag
+    judge.copybacks = RD.copied_back(COPYBACK)
+    assert judge.copybacks == {"o"}
+    gone = COPYBACK.replace("  !$omp target exit data map(from: o)\n", "")
+    ok, why = judge(gone)
+    assert not ok and "copied back" in why and runner.calls == 0
+    assert RD.copybacks_kept(COPYBACK.replace("map(from: o)", "map(tofrom: o)"), judge.copybacks)
+    assert RD.copybacks_kept("program p\nend program p\n", judge.copybacks)
+    assert RD.copied_back("  !$omp target update from(o(1:4))\n") == {"o"}
