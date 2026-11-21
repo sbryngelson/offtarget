@@ -1,5 +1,7 @@
-! Control of cce-acc-kernels-nested-loop-reduction-lost.f90: delete clause independent at line 20; one change from the reduction; passes on cce21/0, cce19/0.
-! Every step passed the legality rules witness (offload.engine.prerun rules); the front-end witness (offload.engine.prerun.check) is still to run on Tuolumne.
+! Control of cce-acc-kernels-nested-loop-reduction-lost.f90: delete clause independent at line 20; one change from the reduction;
+! passes on cce21/0, cce19/0.
+! Every step passed the legality rules witness (offload.engine.prerun rules); the front-end witness (offload.engine.prerun.check) is
+! still to run on Tuolumne.
 program kred
   use openacc, only: acc_on_device, acc_device_host
   implicit none
