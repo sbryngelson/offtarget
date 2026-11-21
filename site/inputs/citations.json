@@ -1849,6 +1849,20 @@
    "quote": "The effect that a user-defined mapper has on either a map clause that maps a list item of the given base language type or a motion clause that invokes the mapper and updates a list item of the given base language type is to replace the map or update with a set of map clauses or updates derived from the map clauses specified by the mapper, as described in Section 5.8.3 and Section 5.9."
   }
  ],
+ "fuzz/cce-c-simd-if-variable-ice.c": [
+  {
+   "text": "OpenMP 5.2 §10.4 p.235 l.5-7",
+   "version": "OpenMP 5.2",
+   "section": "10.4",
+   "quote": "Clauses aligned, collapse, if, lastprivate, linear, nontemporal, order, private, reduction, safelen, simdlen"
+  },
+  {
+   "text": "OpenMP 5.2 §10.4 p.235 l.20-21",
+   "version": "OpenMP 5.2",
+   "section": "10.4",
+   "quote": "When an if clause is present and evaluates to false, the preferred number of iterations to be executed concurrently is one, regardless of whether a simdlen clause is specified."
+  }
+ ],
  "fuzz/gcc-complex-pointer-do-simd-ice.f90": [
   {
    "text": "OpenMP 5.2 §17.5 p.343 l.25-27",

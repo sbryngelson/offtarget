@@ -3547,6 +3547,8 @@
   ],
   "repro": "../../findings/fuzz/gcc-signed-widening-multiply-o2-wrong.f90",
   "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-signed-widening-multiply-o2-wrong-direct-subscript-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
   "arch": [
    "gfx942",
    "gfx90a",
@@ -3560,8 +3562,37 @@
   "modes": [
    1,
    0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce-c-simd-if-variable-ice",
+  "finding": "fuzz/cce-c-simd-if-variable-ice.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "cce19",
+   "cce21"
   ],
-  "control": "../../findings/fuzz/controls/gcc-signed-widening-multiply-o2-wrong-direct-subscript-control.f90"
+  "repro": "../../findings/fuzz/cce-c-simd-if-variable-ice.c",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/cce-c-simd-if-variable-ice-delete-clause-if-c-control.c",
+  "control_what": "one change from the finding; correct on cce19, cce21",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
  },
  {
   "id": "site-fuzz--par-s1-2082-gcc_g90",

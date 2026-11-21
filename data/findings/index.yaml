@@ -2531,3 +2531,11 @@ findings:
     arch: [gfx942]
 
     programs: ["g1x0:303"]
+  - file: fuzz/cce-c-simd-if-variable-ice.c
+    toolchains: [cce19, cce20, cce21, cce21_4]
+    lang: c
+    outcome: ice
+    message: PLEASE submit a bug report to HPE at https://support.hpe.com/ and include the crash backtrace, prepr
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ["c6c1:1356"]

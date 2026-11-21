@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/cce-c-simd-if-variable-ice.c",
+ "readers": [
+  {
+   "run": "run-v2-cfuzz1/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The simd construct accepts an if clause in OpenMP 5.2 (section 10.4), and the clause expression c is a scalar int, valid in C. The simd directive is nested in a target region, which is permitted. The loop is canonical, has no data races (each iteration writes a distinct a[i]), and no restriction is violated. The semantics of a false if clause only reduce the preferred concurrency to one, so the program is conforming and a conforming compiler must accept it. The observed compiler crash is a compiler bug, not permitted behavior.",
+   "verifications": [
+    {
+     "run": "verify-cfuzz1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-cfuzz1/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The if clause is permitted on the simd directive in OpenMP 5.2, and its expression is any logical (scalar) expression, so the variable c is valid. The simd loop is canonical, with each iteration writing a distinct a[i], so there is no race. The array a is implicitly mapped, and a is never read afterward. A conforming compiler must accept and compile the program, so the compiler crash is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-cfuzz1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "b678dda6de57d49af72992231da68814ad1bacf8d6009545cdfe0efb5bdbdaf0",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}
