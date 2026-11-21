@@ -236,3 +236,32 @@ def test_mfc_records_skip_workaround_working_copies(tmp_path, monkeypatch):
     assert A.mfc_dir_key("nvhpc-mp-nolines") is None
     assert A.mfc_dir_key("cce20-mp-o0cbc") is None
     assert A.mfc_dir_key("nvhpc269-acc") == ("nvhpc269", "acc")
+
+
+def test_check_nwchem_compares_the_offload_norm_with_the_reference():
+    """nwchem-tce-triples-kernels prints sum-of-squares norms (%lf); the target (t3t) or OpenACC (t3a)
+    kernel's must match the reference (t3r) to the printed precision or a relative 1e-8."""
+    out = "norm: t3r = 1234.567890\nnorm: t3o = 1234.567890\nnorm: t3t = {t}\nnorm: t3a = {a}\n"
+    good = out.format(t="1234.567891", a="1234.567890")
+    assert A.CHECKS["nwchem_t3t"](good)[0] and A.CHECKS["nwchem_t3a"](good)[0]
+    bad = out.format(t="1234.600000", a="nan")
+    assert not A.CHECKS["nwchem_t3t"](bad)[0] and not A.CHECKS["nwchem_t3a"](bad)[0]
+    assert not A.CHECKS["nwchem_t3t"]("norm: t3r = 1.0\n")[0]
+
+
+def test_a_c_file_without_openacc_in_a_fortran_openacc_program_is_plain_c(tmp_path):
+    """CCE has no OpenACC for C: the C driver of a Fortran OpenACC program (no #pragma acc) is
+    compiled as plain C there; a C file with OpenACC directives keeps the model and is refused."""
+    import dataclasses
+    from offload.engine.toolchains import TOOLCHAINS
+    prog = A.AppProgram("x", "a", "f90", "acc", ["k.F", "d.c"])
+    plain, acc = tmp_path / "d.c", tmp_path / "e.c"
+    plain.write_text("int main(void) { return 0; }\n")
+    acc.write_text("void f(int *a) {\n#pragma acc parallel loop\nfor (int i = 0; i < 4; i++) a[i] = i;\n}\n")
+    cce = dataclasses.replace(TOOLCHAINS["cce21"], model="acc")
+    tc = A.c_file_toolchain(cce, prog, plain)
+    assert tc.lang == "c" and "-hacc" not in A.compile_flags(tc, prog, str(plain), "-O2")
+    with pytest.raises(Exception, match="OpenACC for Fortran only"):
+        A.c_file_toolchain(cce, prog, acc).flags()
+    gcc = dataclasses.replace(TOOLCHAINS["gcc"], model="acc")
+    assert "-fopenacc" in A.c_file_toolchain(gcc, prog, plain).flags()

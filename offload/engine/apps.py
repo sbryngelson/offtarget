@@ -288,6 +288,31 @@ def compile_flags(tc, prog: AppProgram, src: str, opt: str) -> str:
     return " ".join(p for p in parts if p)
 
 
+class PlainC:
+    """A toolchain's C compiler without the model's flags: the C driver (no OpenACC directive) of a
+    Fortran OpenACC program on a family without OpenACC for C (CCE)."""
+
+    def __init__(self, tc):
+        self._tc = dataclasses.replace(tc, lang="c")
+
+    def __getattr__(self, name):
+        return getattr(self._tc, name)
+
+    def flags(self) -> str:
+        return ""
+
+
+def c_file_toolchain(tc, prog: AppProgram, path: Path):
+    """The toolchain a C source of `prog` is compiled with: tc's C compiler with the program's model,
+    or PlainC for a C file without OpenACC directives in an OpenACC program the family compiles for
+    Fortran only."""
+    ctc = dataclasses.replace(tc, lang="c")
+    if prog.model == "acc" and ctc.family.why_unsupported("acc", "c") and \
+            not re.search(r"^\s*#\s*pragma\s+acc\b", Path(path).read_text(errors="replace"), re.M):
+        return PlainC(tc)
+    return ctc
+
+
 @dataclass
 class FileResult:
     file: str
@@ -344,7 +369,7 @@ def build(prog: AppProgram, app: App, toolchain_name: str, bdir: Path,
             failed.add(name)
             continue
         is_c = path.suffix in (".c",)
-        ftc = dataclasses.replace(tc, lang="c") if is_c else tc
+        ftc = c_file_toolchain(tc, prog, path) if is_c else tc
         obj = f"o{k:03d}_{path.stem}.o"
         flags = compile_flags(ftc, prog, str(path), opt)
         cmd = f"{ftc.compiler()} {flags} -c {shlex.quote(str(path))} -o {obj}"
@@ -536,7 +561,26 @@ def check_miniweather(out: str) -> tuple[bool, str]:
     return True, f"d_mass {dm} d_te {dte}"
 
 
-CHECKS = {"miniweather": check_miniweather}
+def check_nwchem(which: str):
+    """nwchem-tce-triples-kernels: the driver prints the sum-of-squares norm (%lf) of every kernel's
+    t3 next to the reference's (test_ccsd_t.c, norm_array); the offload kernel's (`which`: t3t for
+    OpenMP target, t3a for OpenACC) must equal t3r to the printed precision or a relative 1e-8. The
+    driver compares only the CPU kernels element by element, so this check is by norm."""
+    def check(out: str) -> tuple[bool, str]:
+        ref = _num(r"norm: t3r = (\S+)", out)
+        got = _num(rf"norm: {which} = (\S+)", out)
+        if ref is None or got is None:
+            return False, f"no t3r / {which} norm line"
+        if got != got or ref != ref:
+            return False, f"NaN: {which} {got} t3r {ref}"
+        if abs(got - ref) > max(2e-6, 1e-8 * abs(ref)):
+            return False, f"{which} norm {got} differs from the reference {ref}"
+        return True, f"{which} norm {got} = t3r {ref}"
+    return check
+
+
+CHECKS = {"miniweather": check_miniweather, "nwchem_t3t": check_nwchem("t3t"),
+          "nwchem_t3a": check_nwchem("t3a")}
 
 
 # --- records ----------------------------------------------------------------------------
