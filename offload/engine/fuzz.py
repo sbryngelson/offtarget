@@ -2404,9 +2404,11 @@ GCC_C = "gcc"     # the C base-language checker (no -fopenmp: never an OpenMP wi
 
 def check_cbase(source: str) -> str | None:
     """None, or why ``gcc -std=c11 -pedantic-errors -fsyntax-only`` (without OpenMP, as
-    offload.engine.c_gen checks the catalog's C programs) rejects the program."""
+    offload.engine.c_gen checks the catalog's C programs) rejects the program, with omp.h
+    replaced by the sequential stubs."""
     with tempfile.TemporaryDirectory(prefix="fuzz_c_") as d:
-        (Path(d) / "p.c").write_text(source)
+        # the API routines' declarations from the stubs: a compiler without OpenMP may ship no omp.h
+        (Path(d) / "p.c").write_text(_omp_stubs_c(source))
         r = subprocess.run([GCC_C, "-std=c11", "-pedantic-errors", "-fsyntax-only",
                             "-Wno-unknown-pragmas", "p.c"], cwd=d, capture_output=True,
                            text=True, timeout=120)

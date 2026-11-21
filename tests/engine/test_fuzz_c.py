@@ -80,3 +80,20 @@ def test_a_c_build_is_classified_with_the_c_compilers_messages(tmp_path, monkeyp
     src.write_text("int main(void) { return 0; }\n")
     cls, reason, _, _ = fuzz_exec.compile_program(fuzz_exec.toolchain_for("cce21", "c"), src, tmp_path / "x", tmp_path)
     assert cls == "ice", (cls, reason)
+
+
+def test_the_c_base_check_does_not_need_a_compilers_omp_h(monkeypatch):
+    """The C11 base check (without OpenMP) reads the API routines' declarations from the stubs, not
+    from omp.h, which a compiler without OpenMP (Apple clang as gcc) does not ship."""
+    import subprocess
+    seen = {}
+
+    def run(cmd, cwd=None, **k):
+        seen["text"] = (Path(cwd) / "p.c").read_text()
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(fuzz.subprocess, "run", run)
+    p = next(p for p in (fuzz.generate(s, "fuzz-6c", ()) for s in range(1, 60))
+             if "omp_is_initial_device(" in p.source)
+    assert fuzz.check_cbase(p.source) is None
+    assert "#include <omp.h>" not in seen["text"] and "omp_is_initial_device(void)" in seen["text"]
