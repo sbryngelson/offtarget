@@ -1863,6 +1863,32 @@
    "quote": "will be treated as if it appears ... In a copy clause"
   }
  ],
+ "fuzz/cce-acc-parallel-and-gang-loop-reduction-lost.f90": [
+  {
+   "text": "OpenACC 3.4 §2.5.15 p.39 l.1294-1296",
+   "version": "OpenACC 3.4",
+   "section": "2.5.15",
+   "quote": "At the end of the region, the values for each gang are combined using the reduction operator, and the result combined with the value of the original var and stored in the original var."
+  },
+  {
+   "text": "OpenACC 3.4 §2.9.11 p.71 l.2551-2553",
+   "version": "OpenACC 3.4",
+   "section": "2.9.11",
+   "quote": "and the result combined with the value of the original var and stored in the original var"
+  },
+  {
+   "text": "§2.5.15 l.1300-1301",
+   "version": "OpenACC 3.4",
+   "section": "2.5.15",
+   "quote": "The reduction result is available after the region."
+  },
+  {
+   "text": "OpenACC 3.4 §2.6.2",
+   "version": "OpenACC 3.4",
+   "section": "2.6.2",
+   "quote": null
+  }
+ ],
  "fuzz/cce-c-simd-if-variable-ice.c": [
   {
    "text": "OpenMP 5.2 §10.4 p.235 l.5-7",

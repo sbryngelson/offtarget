@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/cce-acc-parallel-and-gang-loop-reduction-lost.f90",
+ "readers": [
+  {
+   "run": "run-v2-accfuzz2/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The reduction(+: s) appears on both the parallel construct and the gang loop, as required for a reduction spanning loops; the inner j loop is sequential within each gang iteration. s is a scalar named in the parallel reduction clause. hf is written by a single iteration (i==1, j==1), so there is no race. Each gang's partial sum is combined, giving s equal to want (156). The observed s=0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-accfuzz2/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-accfuzz2/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The parallel construct carries reduction(+: s), so s has an explicit reduction clause on the compute construct, satisfying the restriction for a loop reduction on s. The gang loop reduction(+: s) gives each gang a private copy; the copies are combined into the original s by the end of the compute region and then into the host s. The inner j loop is sequential, hf is written by one iteration only, and a(i) is read only. The final s is therefore 156, and s=0 is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-accfuzz2/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "871b56b34c4d3ff3104053490bbc0c9e9788e89bb11fb17ae54e60a358e57227",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

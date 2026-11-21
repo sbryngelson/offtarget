@@ -2546,3 +2546,10 @@ findings:
     modes: [unified, copy]
     arch: [gfx942]
     programs: ["acc1:320"]
+  - file: fuzz/cce-acc-parallel-and-gang-loop-reduction-lost.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ["acc1:188"]
