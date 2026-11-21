@@ -1923,6 +1923,26 @@
    "quote": "When an if clause is present and evaluates to false, the preferred number of iterations to be executed concurrently is one, regardless of whether a simdlen clause is specified."
   }
  ],
+ "fuzz/cce21-target-teams-if-pointer-write-lost.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.1 p.149 l.4-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.1",
+   "quote": "it is treated as if it had appeared in a map clause with a map-type of tofrom"
+  },
+  {
+   "text": "OpenMP 5.2 §5.8.3 p.152 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If a list item in a map clause is an associated pointer and the pointer is not the base pointer of another list item in a map clause on the same construct, then it is treated as if its pointer target is implicitly mapped in the same clause"
+  },
+  {
+   "text": "OpenMP 5.2 §13.8 p.284 l.31-32",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "When an if clause is present and the if clause expression evaluates to false, the effect is as if a device clause that specifies omp_initial_device as the device number is present"
+  }
+ ],
  "fuzz/gcc-acc-async-kernels-reduction-lost.f90": [
   {
    "text": "OpenACC 3.4 §2.6.2 p.41 l.1392-1393",

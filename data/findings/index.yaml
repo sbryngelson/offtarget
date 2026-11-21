@@ -2567,3 +2567,10 @@ findings:
     modes: [copy]
     arch: [gfx942]
     programs: ["acc1:1762", "acc1:63", "acc1:1336"]
+  - file: fuzz/cce21-target-teams-if-pointer-write-lost.f90
+    toolchains: [cce21, cce21_4]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ["def1:7003"]

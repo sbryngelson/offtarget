@@ -1,0 +1,92 @@
+{
+ "finding": "fuzz/cce21-target-teams-if-pointer-write-lost.f90",
+ "readers": [
+  {
+   "run": "run-v2-def1/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "uncertain",
+   "result_required": "no",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o2 is a Fortran array pointer, a non-scalar variable, so on the target teams construct it is implicitly mapped tofrom, which maps the pointer itself. The memory it points to is not mapped (a pointer's target is not mapped), and no map, enter data or unified shared memory requirement establishes it on the device. The device writes o2(i) = 255 to storage with no corresponding device storage; the specification does not define that effect on the host data. With separate memories, checksum 0 (o2 unchanged) is therefore allowed.",
+   "verifications": [
+    {
+     "run": "verify-def1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The memory the pointer points to is not mapped (a pointer's target is not mapped).",
+      "Nothing establishes the pointee on the device, so the device write has no corresponding storage and checksum 0 is allowed."
+     ],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-def1/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "no",
+   "result_required": "no",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "o2 is a Fortran pointer array, so it is implicitly mapped tofrom as a non-scalar variable, but pointer types are mappable while the memory block the pointer refers to is not mapped. The target teams region writes o2(i) through the pointer, which dereferences unmapped host memory on a device with separate memory. Nothing maps the pointee (no map of o2(1:n)), so the access is invalid and the result is undefined; the zero checksum is permitted. The teams also all write the same elements without synchronization.",
+   "verifications": [
+    {
+     "run": "verify-def1/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": true,
+     "false_claims": [
+      "The memory block the pointer refers to is not mapped, so the access dereferences unmapped host memory."
+     ],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "57440134ec2ab05da3711bf44c67a8b77f4eb2146a3c46aba994f35300cde1de",
+ "instructions": "v2",
+ "verdict": "contested",
+ "why": "An independent reading finds the result not required: o2 is a Fortran array pointer, a non-scalar variable, so on the target teams construct it is implicitly mapped tofrom, which maps the pointer itself. The memory it points to is not mapped (a pointer's target is not mapped), and no map, enter data or unified shared memory requirement establishes it on the device."
+}

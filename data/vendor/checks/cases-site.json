@@ -3720,6 +3720,35 @@
   ]
  },
  {
+  "id": "site-fuzz--cce21-target-teams-if-pointer-write-lost",
+  "finding": "fuzz/cce21-target-teams-if-pointer-write-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/fuzz/cce21-target-teams-if-pointer-write-lost.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/cce21-target-teams-if-pointer-write-lost-no-if-control.f90",
+  "control_what": "one change from the finding; correct on cce21",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
   "id": "site-fuzz--par-s1-2082-gcc_g90",
   "finding": "fuzz/par-s1-2082-gcc_g90.f90",
   "symptom": "compile:.",
