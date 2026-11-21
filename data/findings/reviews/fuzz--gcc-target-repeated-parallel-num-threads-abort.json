@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/gcc-target-repeated-parallel-num-threads-abort.f90",
+ "readers": [
+  {
+   "run": "run-v2-gccfuzz2/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A parallel construct with num_threads(2) nested in a target region and inside a sequential loop is conforming. The inner loop is private to each thread and has no body, so there is no race. The check string is constant. Run-time aborts are a compiler or runtime bug.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz2/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-gccfuzz2/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "A parallel construct with num_threads(2) nested in a sequential loop inside a target region is legal. The empty inner loop is private to each thread, j is private, there are no races on hf (only the initial thread writes it before the loop). The num_threads clause is a request, so any team size is conforming, but the program must run and not abort. A device abort is a compiler or runtime error.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz2/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "eb24aede233d5bb39747c83966aea927a8901699e01fead44d45725d2961f11f",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

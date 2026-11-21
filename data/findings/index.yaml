@@ -2506,3 +2506,20 @@ findings:
     arch: [gfx942]
 
     programs: ["b1:251"]
+  - file: fuzz/gcc-target-repeated-parallel-num-threads-abort.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: crash
+    message: team master not responding; slave thread abortingteam master not responding; slave thread abortingte
+    modes: [copy]
+    arch: [gfx942]
+    programs: ["n1:806"]
+  - file: fuzz/gcc-complex-pointer-do-simd-ice.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: ice
+    message: Please submit a full bug report, with preprocessed source (by using -freport-bug).
+    modes: [copy]
+    arch: [gfx942]
+
+    programs: ["s1:6843"]

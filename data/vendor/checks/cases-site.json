@@ -3373,6 +3373,8 @@
   ],
   "repro": "../../findings/fuzz/gcc-int8-mod-narrowed-o2-wrong.f90",
   "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-int8-mod-narrowed-o2-wrong-integer8-result-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
   "arch": [
    "gfx942",
    "gfx90a",
@@ -3386,8 +3388,7 @@
   "modes": [
    1,
    0
-  ],
-  "control": "../../findings/fuzz/controls/gcc-int8-mod-narrowed-o2-wrong-integer8-result-control.f90"
+  ]
  },
  {
   "id": "site-fuzz--gcc-target-parallel-after-nowait-copyback-lost",
@@ -3460,6 +3461,64 @@
   "repro": "../../findings/fuzz/gcc-small-int-reduction-atomic-link.f90",
   "derived": true,
   "control": "../../findings/fuzz/controls/gcc-small-int-reduction-atomic-link-delete-clause-reduction-ieor-r2a-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-target-repeated-parallel-num-threads-abort",
+  "finding": "fuzz/gcc-target-repeated-parallel-num-threads-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-target-repeated-parallel-num-threads-abort.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-target-repeated-parallel-num-threads-abort-delete-clause-num-threads-2-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-complex-pointer-do-simd-ice",
+  "finding": "fuzz/gcc-complex-pointer-do-simd-ice.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-complex-pointer-do-simd-ice.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-complex-pointer-do-simd-ice-shorten-do-simd-to-do-control.f90",
   "control_what": "one change from the finding; correct on gcc",
   "arch": [
    "gfx942",

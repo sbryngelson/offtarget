@@ -1849,6 +1849,14 @@
    "quote": "The effect that a user-defined mapper has on either a map clause that maps a list item of the given base language type or a motion clause that invokes the mapper and updates a list item of the given base language type is to replace the map or update with a set of map clauses or updates derived from the map clauses specified by the mapper, as described in Section 5.8.3 and Section 5.9."
   }
  ],
+ "fuzz/gcc-complex-pointer-do-simd-ice.f90": [
+  {
+   "text": "OpenMP 5.2 §17.5 p.343 l.25-27",
+   "version": "OpenMP 5.2",
+   "section": "17.5",
+   "quote": "Composite constructs combine constructs that otherwise cannot be immediately nested. Specifically, composite constructs apply multiple loop-associated constructs to the same canonical loop nest."
+  }
+ ],
  "fuzz/gcc-declare-reduction-module-not-found.f90": [
   {
    "text": "5.2 §5.5.5 p.133 l.10-11",
@@ -1899,6 +1907,14 @@
    "version": "OpenMP 5.2",
    "section": "5.8.3",
    "quote": "the original list item is updated as if the list item appeared in a from clause on a target update directive"
+  }
+ ],
+ "fuzz/gcc-target-repeated-parallel-num-threads-abort.f90": [
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
   }
  ],
  "fuzz/gcc-target-simd-map-nontemporal-rejected.f90": [

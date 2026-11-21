@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/gcc-complex-pointer-do-simd-ice.f90",
+ "readers": [
+  {
+   "run": "run-v2-gccfuzz2/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 3,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The worksharing-loop SIMD construct is orphaned inside the target region; it binds to the implicit parallel region, which is permitted. The array pointer o1 is not a scalar, so it is implicitly mapped tofrom, and an associated pointer in a map clause has its target implicitly mapped, so o1t is on the device. The loop writes distinct elements, so there is no race. Nothing in the program breaks a rule, so a conforming compiler must compile it; an internal compiler error is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz2/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 4,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-gccfuzz2/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The do simd construct inside target has no enclosing parallel construct, so it binds to the implicit parallel region (one thread); that is a legal orphaned worksharing loop. o1 is a non-scalar Fortran pointer, so it is implicitly mapped tofrom, and its target is mapped with it. The j loop is a valid simd loop with no dependences (distinct o1(i,j) per iteration). A compiler ICE on a conforming program is an error.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz2/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 4,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 4,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ab42bb5014e336139e496c889759268dabea2c446f26917cf2efe32cd30810c5",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}
