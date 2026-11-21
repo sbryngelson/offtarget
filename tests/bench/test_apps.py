@@ -1,5 +1,6 @@
 """The application corpus harness (offload.engine.apps)."""
 import pytest
+from pathlib import Path
 
 from offload.engine import apps as A
 
@@ -270,6 +271,8 @@ def test_a_c_file_without_openacc_in_a_fortran_openacc_program_is_plain_c(tmp_pa
 def test_an_include_under_stubs_is_the_stubs_directory():
     """A generated header the project writes (NPB's npbparams.h for one class) lives in
     data/bench/apps/stubs/, not in the application's clone."""
-    app = A.load()["prk"]
+    from types import SimpleNamespace
+    app = SimpleNamespace(path=Path("/clones/app"))      # a public clone has no manifest (the private checkout)
     assert A.include_path(app, "stubs/npb/cg-S") == A.BENCH / "stubs" / "npb" / "cg-S"
-    assert A.include_path(app, "src") == app.path / "src"
+    assert A.include_path(app, "src") == Path("/clones/app/src")
+    assert A.include_path(app, "/abs/inc") == Path("/abs/inc")
