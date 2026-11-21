@@ -58,11 +58,22 @@ from offload.engine.fuzz_base import (ALL_GROUPS, BASE_GROUPS, TYPES, BaseMixin,
 #   functions, offload.engine.fuzz_base.setup_oop); without that group a fuzz-5
 #   program is the fuzz-4 program of its seed (only the header differs), and
 #   no older version's program changes.
+# fuzz-6 (deferred tasks): fuzz-5 plus, in a program whose kernels are
+#   nowait target tasks, deferred data tasks: target enter/exit data with nowait
+#   and depend around them (then a taskwait), a host update's target update with
+#   nowait and depend, and taskwait depend(inout: x) before a host statement
+#   that writes x (5.2 §13.6-13.9, §15.5, §15.9.5). Every new draw is on that
+#   path: a fuzz-6 program without nowait is the fuzz-5 program of its seed. The
+#   depend clauses order every pair of tasks that share a variable, so the
+#   sequential model stays the result.
 GEN_VERSIONS = ("fuzz-1", "fuzz-2", "fuzz-3", "fuzz-4", "fuzz-4s50",
-                "fuzz-5")
+                "fuzz-5", "fuzz-6")
 GEN_VERSION = "fuzz-4"
 # the generator behaviour (self.v) of a spelling variant
 _SPELL_OF = {"fuzz-4s50": "fuzz-4"}
+# self.v from which the deferred data tasks are drawn (fuzz-6; self.v is the
+# index in GEN_VERSIONS plus one, so the spelling variant shifts it)
+V_DEFERRED = GEN_VERSIONS.index("fuzz-6") + 1
 
 
 def spell50(source: str) -> str:
@@ -1840,6 +1851,11 @@ class _Gen(BaseMixin):
         wrapper = r.choice(("data", "enter")) if self.sw("wrapper", 0.7) \
             else "none"
         nowait = nk >= 2 and self.sw("nowait", 0.5)
+        if self.v >= V_DEFERRED and nowait and wrapper != "enter" and self.coin(0.6):
+            wrapper = "enter"      # fuzz-6: most nowait programs get the data tasks around them
+        # fuzz-6: the enter/exit data wrapper as deferred data tasks around the nowait kernels
+        deferred_data = self.v >= V_DEFERRED and nowait and wrapper == "enter" and \
+            not self.dvars and self.coin(0.8)
         self.in_data = wrapper != "none"
         ind = "    " if wrapper == "data" else "  "
         kerns: list[Kern] = []
@@ -1847,7 +1863,7 @@ class _Gen(BaseMixin):
         for flavor in flavors:
             self.k += 1
             if wrapper != "none" and not updated and self.k > 1 and \
-                    self.coin(0.4):
+                    self.coin(0.8 if self.v >= V_DEFERRED and nowait else 0.4):
                 kerns.append(self.host_update(ind))
                 updated = True
             kerns.append(self.kernel(flavor, ind))
@@ -1856,7 +1872,11 @@ class _Gen(BaseMixin):
                 if not kern.host and self.rb.random() < 0.6:
                     kern.lines = self.wrap_in_procedure(kern, ind)
         body: list[str] = []
-        pending = False
+        # a deferred enter data is a pending task: a synchronous statement after it waits for it
+        pending = deferred_data
+        # the new depend items name whole variables; a structure program's kernels name whole
+        # structures and its host update a component, which would overlap (5.2 §15.9.5)
+        deferred_host = self.v >= V_DEFERRED and nowait and not self.dvars
         for kern in kerns:
             plain = kern.host or kern.lines[0].lstrip().startswith(
                 "!$omp taskgroup")
@@ -1865,10 +1885,24 @@ class _Gen(BaseMixin):
                 pending = True
                 continue
             if pending:
-                body.append(f"{ind}!$omp taskwait")
-                pending = False
+                if deferred_host and kern.host and kern.writes and self.coin(0.5):
+                    # wait only for the tasks that touch what the host writes; the others run on
+                    body.append(f"{ind}!$omp taskwait depend(inout: "
+                                f"{', '.join(sorted(kern.writes))})")
+                    self.feat("tasking:taskwait_depend")
+                else:
+                    body.append(f"{ind}!$omp taskwait")
+                    pending = False
+            if deferred_host and kern.host and kern.writes and self.coin(0.5):
+                # the host update's target update as a deferred task, ordered on what it moves
+                body += kern.lines[:-1] + [
+                    f"{kern.lines[-1]} nowait depend(inout: "
+                    f"{', '.join(sorted(kern.writes))})"]
+                self.feat("tasking:update_nowait")
+                pending = True
+                continue
             body += kern.lines
-        if pending:
+        if pending and not deferred_data:
             body.append(f"{ind}!$omp taskwait")
         arrs = sorted(a.name for a in self.arrays.values()
                       if a.role in ("input", "output"))
@@ -1890,8 +1924,15 @@ class _Gen(BaseMixin):
             enter = [f"map(to: {', '.join(ins + outs)})"]
             ex = ([f"map(from: {', '.join(outs)})"] if outs else []) + [
                 f"map({r.choice(('release', 'delete'))}: {', '.join(ins)})"]
+            tail = []
+            if deferred_data:
+                every = ", ".join(ins + outs)
+                enter += ["nowait", f"depend(out: {every})"]
+                ex += ["nowait", f"depend(inout: {every})"]
+                tail = ["  !$omp taskwait"]
+                self.feat("tasking:data_nowait")
             body = wrap_directive("  ", "target enter data", enter) + body \
-                + wrap_directive("  ", "target exit data", ex)
+                + wrap_directive("  ", "target exit data", ex) + tail
             self.feat("wrap:enter_exit_data")
         expected = self.checksum()
         src = self.source(body, expected)
@@ -1923,13 +1964,13 @@ class _Gen(BaseMixin):
                          f"{ind}  {name}(i) = {name}(i) + {c}",
                          f"{ind}end do",
                          f"{ind}!$omp target update to({name}(1:n:2))"],
-                        set(), set(), host=True)
+                        set(), {name} if self.v >= V_DEFERRED else set(), host=True)
         for t in self.arrs[name]:
             self.arrs[name][t] += c
         self.feat("wrap:host_update_to")
         return Kern([f"{ind}do i = 1, n", f"{ind}  {name}(i) = {name}(i) + {c}",
                      f"{ind}end do", f"{ind}!$omp target update to({name})"],
-                    set(), set(), host=True)
+                    set(), {name} if self.v >= V_DEFERRED else set(), host=True)
 
     def with_nowait(self, kern: Kern) -> list[str]:
         """The kernel's target directive with nowait and depend clauses

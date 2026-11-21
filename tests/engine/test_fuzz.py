@@ -955,3 +955,39 @@ def test_eval_rows(tmp_path):
     rows = S_5.eval_rows([line], BASE, [log])
     assert [(r["predicted"], r["aborted"], r["dir"]) for r in rows] == [
         (True, True, "/tmp/base"), (False, False, "/tmp/other")]
+
+
+# ---- generator fuzz-6: deferred data tasks and partial waits --------------------------------------------
+
+def test_fuzz6_without_deferred_tasks_is_the_fuzz5_program():
+    """fuzz-6 draws only on the nowait path: a fuzz-6 program with no deferred task (no nowait, no
+    taskwait depend) is the fuzz-5 program of its seed, line for line."""
+    assert "fuzz-6" in fuzz.GEN_VERSIONS
+    same = 0
+    for s in range(1, 61):
+        b = fuzz.generate(s, "fuzz-6", ("types",))
+        if "nowait" in b.source or "taskwait depend" in b.source:
+            continue
+        a = fuzz.generate(s, "fuzz-5", ("types",))
+        assert _body(a.source) == _body(b.source) and a.expected == b.expected
+        same += 1
+    assert same > 10
+
+
+def test_fuzz6_defers_data_tasks_and_waits_on_dependences():
+    """Across seeds fuzz-6 emits enter/exit data with nowait and depend, target update with nowait and
+    depend, and taskwait with depend; each such program passes the repository's rules."""
+    seen = {"enter": 0, "update": 0, "waitdep": 0}
+    for s in range(1, 401):
+        p = fuzz.generate(s, "fuzz-6", ())
+        src = p.source.lower()
+        hit = False
+        if re.search(r"!\$omp target enter data[^\n]*nowait", src) and "depend(out" in src:
+            seen["enter"] += 1; hit = True
+        if re.search(r"!\$omp target update to\([^\n]*nowait", src):
+            seen["update"] += 1; hit = True
+        if "!$omp taskwait depend(" in src:
+            seen["waitdep"] += 1; hit = True
+        if hit:
+            assert fuzz.check_rules(p.source) is None, (s, fuzz.check_rules(p.source))
+    assert all(v > 0 for v in seen.values()), seen

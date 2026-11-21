@@ -4,7 +4,7 @@
 Run from anywhere; the script puts the project root on sys.path itself.
 
     python3 -I tools/campaigns/fuzz.py gen --seed 17 [--check] [--base-features types ...]
-    python3 -I tools/campaigns/fuzz.py run --run-id r1 --start 1 --count 2500 --workers 6
+    python3 -I tools/campaigns/fuzz.py run --run-id r1 --start 1 --count 2500 --workers 6 [--opt=-O3]
     python3 -I tools/campaigns/fuzz.py minimize --run-id r1 --workers 6
     python3 -I tools/campaigns/fuzz.py report --run-id r1
     python3 -I tools/campaigns/fuzz.py host-check --run-id r1 [--elision-only]
@@ -41,11 +41,25 @@ def cmd_gen(args) -> int:
     return 0
 
 
+def _run_opt(meta_path) -> str | None:
+    """The optimization level a run's sessions built with (None: a new run)."""
+    if not meta_path.exists():
+        return None
+    sessions = json.loads(meta_path.read_text()).get("sessions") or []
+    levels = {s.get("opt") for s in sessions if s.get("opt")}
+    return levels.pop() if len(levels) == 1 else (sorted(levels)[-1] if levels else None)
+
+
 def cmd_run(args) -> int:
     fuzz_exec.XNACK = args.xnack     # inherited by the forked workers
     out = ROOT / "results" / "fuzz" / args.run_id
     out.mkdir(parents=True, exist_ok=True)
     meta = out / "meta.json"
+    had = _run_opt(meta)
+    if had is not None and had != args.opt:
+        # one level per run: a second session at another level would mix them in programs.jsonl
+        raise SystemExit(f"{out}: the run builds at {had}; start another run id for {args.opt}")
+    fuzz_exec.OPT = args.opt         # inherited by the forked workers
     seeds = args.seeds or range(args.start, args.start + args.count)
     info = {"run_id": args.run_id, "gen_version": args.gen_version,
             "base": list(_base(args)),
@@ -86,6 +100,10 @@ def cmd_run(args) -> int:
 
 
 def cmd_minimize(args) -> int:
+    # the run's optimization level: a reduction rebuilds with the flags the failure was found with
+    opt = _run_opt(ROOT / "results" / "fuzz" / args.run_id / "meta.json")
+    if opt:
+        fuzz_exec.OPT = opt
     if args.xnack is not None:
         # the memory mode of the runs (a toolchain with separate memory
         # only, gcc_g90 and gcc_sm80: 0); inherited by the workers
@@ -363,6 +381,8 @@ def main() -> int:
                    "mode, needs a flux allocation)")
     p.add_argument("--toolchains", nargs="+",
                    default=list(fuzz_exec.TOOLCHAIN_ORDER))
+    p.add_argument("--opt", default=fuzz_exec.OPT,
+                   help="the optimization flag of every build (default -O2); one level per run id")
     p.add_argument("--canaries-exempt", metavar="REASON",
                    help="Run no canaries (the reason is recorded)")
     p.set_defaults(fn=cmd_run)
