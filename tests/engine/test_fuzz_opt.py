@@ -57,3 +57,19 @@ def test_the_minimizer_rebuilds_at_the_runs_level(tmp_path, monkeypatch):
     monkeypatch.setattr(cli.fuzz_report, "minimize_run", lambda *a, **k: got.setdefault("opt", fuzz_exec.OPT))
     cli.cmd_minimize(SimpleNamespace(run_id="r", xnack=None, only=None, workers=1, limit=4, also=None))
     assert got["opt"] == "-O0"
+
+
+def test_a_run_stopped_before_it_finishes_has_recorded_its_level(tmp_path, monkeypatch):
+    """A campaign killed at its time limit (a scheduler job) still leaves meta.json with the level,
+    so a resumed run and the minimizer see it."""
+    cli, _ = _fuzz_cli(tmp_path, monkeypatch)
+
+    def killed(*a, **k):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(fuzz_exec, "campaign", killed)
+    with pytest.raises(KeyboardInterrupt):
+        cli.cmd_run(_run_args(opt="-O3"))
+    assert cli._run_opt(tmp_path / "results" / "fuzz" / "r" / "meta.json") == "-O3"
+    with pytest.raises(SystemExit, match="-O3"):
+        cli.cmd_run(_run_args(opt="-O2"))

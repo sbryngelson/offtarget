@@ -74,6 +74,11 @@ def cmd_run(args) -> int:
     info["thp"] = detect_thp()
     info["compilers"] = {t: compiler_version(TOOLCHAINS[t])
                          for t in args.toolchains}
+    # the session is recorded before it runs: a campaign stopped at a job's time limit still
+    # leaves its level and settings for a resumed run and the minimizer
+    old = json.loads(meta.read_text()) if meta.exists() else {}
+    old.setdefault("sessions", []).append(info)
+    meta.write_text(json.dumps(old, indent=1) + "\n")
     t0 = time.time()
     fuzz_exec.campaign(out, seeds, args.workers, tuple(args.toolchains),
                        args.reruns, log=lambda m: print(m, flush=True),
@@ -92,8 +97,7 @@ def cmd_run(args) -> int:
             log=lambda m: print(m, flush=True)))
     info["seconds"] = round(time.time() - t0)
     info["finished"] = time.strftime("%Y-%m-%dT%H:%M:%S")
-    old = json.loads(meta.read_text()) if meta.exists() else {}
-    old.setdefault("sessions", []).append(info)
+    old["sessions"][-1] = info
     meta.write_text(json.dumps(old, indent=1) + "\n")
     print(f"done in {info['seconds']} s -> {out}")
     return 0
