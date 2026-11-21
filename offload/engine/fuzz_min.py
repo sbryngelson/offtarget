@@ -752,6 +752,7 @@ class Failure:
     kind: str          # wrong_code | ice | run_error
     signature: str = ""
     host: int = 0      # ran_on_host of the failing device run
+    model: str = "omp"  # the program's model: "acc" builds the device run with OpenACC
 
 
 def ice_signature(reason: str, output: str = "") -> str:
@@ -803,7 +804,7 @@ class Oracle:
 
     def __init__(self, failure: Failure, refs=None):
         self.failure = failure
-        self.tc = TOOLCHAINS[failure.toolchain]
+        self.tc = fe.toolchain_for(failure.toolchain, "f90", failure.model)
         if isinstance(refs, str):
             refs = [refs]
         if not refs:  # the first gfx942 toolchain of another family

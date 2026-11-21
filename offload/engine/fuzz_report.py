@@ -502,7 +502,7 @@ def minimize_run(run_dir: Path, workers: int = 6, limit: int = 4,
             log(f"seed {seed} on {tc}: covered by {same['file']}")
             continue
         t0 = time.time()
-        failure = fm.Failure(tc, kind, sig, host)
+        failure = fm.Failure(tc, kind, sig, host, model=prog.model)
         log(f"minimize seed {seed} on {tc} ({kind}) ...")
         try:
             refs = fm.trusted_refs(prog.source, prog.expected, tc) \

@@ -80,3 +80,11 @@ def test_the_shared_elision_builds_an_openacc_program():
     p = fuzz.generate(2, "fuzz-acc1")
     value, note = E.run_elided(p.source, "gfortran", ("-ftrapv",))
     assert value is not None, note
+
+
+def test_the_minimizer_builds_an_acc_failure_with_the_openacc_model():
+    """fuzz_min's oracle compiles the failing toolchain's device build of an OpenACC program with OpenACC."""
+    from offload.engine import fuzz_min
+    oracle = fuzz_min.Oracle(fuzz_min.Failure("gcc", "wrong_code", model="acc"), refs=["cce21"])
+    assert oracle.tc.model == "acc"
+    assert fuzz_min.Oracle(fuzz_min.Failure("gcc", "wrong_code"), refs=["cce21"]).tc.model == "omp"
