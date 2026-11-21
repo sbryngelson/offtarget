@@ -68,3 +68,5 @@ def test_the_flang_check_runs_amd_flang_with_openacc(monkeypatch):
     monkeypatch.setattr(fuzz_acc.subprocess, "run", run)
     assert fuzz_acc.check_flang_acc(fuzz.generate(2, "fuzz-acc1").source) is None
     assert seen["cmd"][0].endswith("/amdflang") and "-fopenacc" in seen["cmd"]
+    # AMD flang ships no openacc module: the declaration-only stub is read first
+    assert seen["cmd"].index("openacc.f90") < seen["cmd"].index("p.f90")

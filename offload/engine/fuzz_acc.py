@@ -277,10 +277,13 @@ def check_gfortran_acc(source: str) -> str | None:
 
 def check_flang_acc(source: str) -> str | None:
     """AMD flang's front end with OpenACC (another compiler family than CCE and GCC)."""
+    from offload.engine.acc_gen import OPENACC_STUB
     from offload.engine.toolchains import AFAR_BIN
     with tempfile.TemporaryDirectory(prefix="fuzz_acc_") as d:
+        # AMD flang ships no openacc module: the declaration-only stub resolves `use openacc`
+        (Path(d) / "openacc.f90").write_text(OPENACC_STUB)
         (Path(d) / "p.f90").write_text(source)
-        b = subprocess.run([f"{AFAR_BIN}/amdflang", "-fopenacc", "-fsyntax-only", "p.f90"], cwd=d,
+        b = subprocess.run([f"{AFAR_BIN}/amdflang", "-fopenacc", "-fsyntax-only", "openacc.f90", "p.f90"], cwd=d,
                            capture_output=True, text=True, timeout=300)
     return None if b.returncode == 0 else (b.stderr or b.stdout).strip()[:500]
 
