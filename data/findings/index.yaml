@@ -2560,3 +2560,10 @@ findings:
     message: 'error: ''reduction'' clause not allowed with ''#pragma omp loop bind(teams)'''
     modes: [unified, copy]
     arch: [gfx942]
+  - file: fuzz/gcc-acc-async-kernels-reduction-lost.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]
+    programs: ["acc1:1762", "acc1:63", "acc1:1336"]

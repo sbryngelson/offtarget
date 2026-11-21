@@ -1923,6 +1923,26 @@
    "quote": "When an if clause is present and evaluates to false, the preferred number of iterations to be executed concurrently is one, regardless of whether a simdlen clause is specified."
   }
  ],
+ "fuzz/gcc-acc-async-kernels-reduction-lost.f90": [
+  {
+   "text": "OpenACC 3.4 §2.6.2 p.41 l.1392-1393",
+   "version": "OpenACC 3.4",
+   "section": "2.6.2",
+   "quote": "will be treated as if it appears ... In a copy clause"
+  },
+  {
+   "text": "OpenACC 3.4 §2.9.11 p.71 l.2551-2555",
+   "version": "OpenACC 3.4",
+   "section": "2.9.11",
+   "quote": null
+  },
+  {
+   "text": "OpenACC 3.4 §2.16.3 p.100 l.3721-3722",
+   "version": "OpenACC 3.4",
+   "section": "2.16.3",
+   "quote": "The wait directive causes the local thread ... to wait for completion of asynchronous operations"
+  }
+ ],
  "fuzz/gcc-complex-pointer-do-simd-ice.f90": [
   {
    "text": "OpenMP 5.2 §17.5 p.343 l.25-27",

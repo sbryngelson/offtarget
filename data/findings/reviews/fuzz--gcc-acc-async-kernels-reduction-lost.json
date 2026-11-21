@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/gcc-acc-async-kernels-reduction-lost.f90",
+ "readers": [
+  {
+   "run": "run-v2-accfuzz3/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The scalar r in a kernels construct is treated as in a copy clause, and hf is explicitly copy. The loop reduction on r combines per-gang values with the original and stores the result. The async queue 1 is waited on before r is read, so the host sees the final value. hf is written by a single iteration, so there is no race. AND of (i+256) over i=1..64 is 256 (bit 8 common, 1&2=0). A conforming compiler must give r == 256; the wrong answer is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-accfuzz3/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 4,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 6,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-accfuzz3/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The reduction variable r appears in a reduction clause on the enclosed loop and has no other data clause. Section 2.6.2 makes the appearance in the loop reduction an exposed access, and a scalar on a kernels construct is treated as copy. Section 2.9.11 says the combined result is stored in the original var by the end of the compute region. The async copy-out completes before the wait(1) returns. hf has an explicit copy and is written by one iteration only. The AND of (i+256) for i=1..64 is 256, so r==256 is required. Observed r differs, so compiler A is wrong.",
+   "verifications": [
+    {
+     "run": "verify-accfuzz3/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 4,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 6,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9e9346da9e0cc1f15b87f3035f72227922d84edaaba5937272788ed4e5f51e7d",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

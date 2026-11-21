@@ -3667,10 +3667,43 @@
   "model": "omp",
   "affected": [
    "afar",
-   "cce21"
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
   ],
   "repro": "../../findings/apps/clang-c-loop-bind-teams-reduction-rejected.c",
   "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-acc-async-kernels-reduction-lost",
+  "finding": "fuzz/gcc-acc-async-kernels-reduction-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "acc",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-acc-async-kernels-reduction-lost.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-acc-async-kernels-reduction-lost-no-async-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
   "arch": [
    "gfx942",
    "gfx90a",
