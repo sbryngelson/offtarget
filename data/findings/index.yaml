@@ -2523,3 +2523,11 @@ findings:
     arch: [gfx942]
 
     programs: ["s1:6843"]
+  - file: fuzz/gcc-signed-widening-multiply-o2-wrong.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]
+
+    programs: ["g1x0:303"]

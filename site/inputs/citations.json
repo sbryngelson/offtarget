@@ -1873,6 +1873,14 @@
    "quote": "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated as if the list item appeared in a from clause on a target update directive."
   }
  ],
+ "fuzz/gcc-signed-widening-multiply-o2-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.3 p.154 l.2-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated as if the list item appeared in a from clause on a target update directive."
+  }
+ ],
  "fuzz/gcc-small-int-reduction-atomic-link.f90": [
   {
    "text": "OpenMP 5.2 §5.5.1 p.124 l.22-24",

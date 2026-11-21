@@ -3536,6 +3536,34 @@
   ]
  },
  {
+  "id": "site-fuzz--gcc-signed-widening-multiply-o2-wrong",
+  "finding": "fuzz/gcc-signed-widening-multiply-o2-wrong.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-signed-widening-multiply-o2-wrong.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "control": "../../findings/fuzz/controls/gcc-signed-widening-multiply-o2-wrong-direct-subscript-control.f90"
+ },
+ {
   "id": "site-fuzz--par-s1-2082-gcc_g90",
   "finding": "fuzz/par-s1-2082-gcc_g90.f90",
   "symptom": "compile:.",

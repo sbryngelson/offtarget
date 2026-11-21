@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/gcc-signed-widening-multiply-o2-wrong.f90",
+ "readers": [
+  {
+   "run": "run-v2-gccfuzz3/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The arrays a, b and r are non-scalar variables referenced in the target region without a map clause, so they are implicitly mapped tofrom; r is copied back after the region. The loop computes the same products as the host reference ref, and ref is not referenced in the region. i is a scalar referenced in the region (firstprivate, and the sequential loop variable is private). Products are small, no overflow. The device result must equal ref, so bad must be 0 and a nonzero bad is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz3/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-gccfuzz3/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "Arrays a, b, r are non-scalars referenced in the target region, so they are implicitly mapped tofrom; hf is mapped explicitly and i is an implicitly firstprivate scalar. Each iteration writes a distinct r(i), and the loop is sequential on the device, so there is no race. The int8 conversions make the products exact, with no overflow, so r must equal ref on any device. The mismatch (bad=4) is a compiler error.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz3/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "3f3a42ad586a87fc6d26d5ee9626c0baa277b9275269ea4aaa8f00dde8779dc2",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}
