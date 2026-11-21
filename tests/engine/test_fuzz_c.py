@@ -1,5 +1,6 @@
 """A C fuzz program (generator fuzz-6c) in the campaign runner: it is written as a .c file, built with
 each toolchain's C compiler, checked by the pre-run check as C, and its elision is the C program's."""
+import re
 import shutil
 from pathlib import Path
 
@@ -58,3 +59,13 @@ def test_the_elision_stubs_every_api_routine_a_c_program_calls():
     p = next(p for p in (fuzz.generate(s, "fuzz-6c", ()) for s in range(1, 400))
              if "omp_get_thread_num(" in p.source and "omp_get_team_num(" in p.source)
     assert fuzz_exec.elision_value(p.source) == p.expected
+
+
+def test_an_atomic_max_or_min_is_not_translated():
+    """Fortran's atomic update takes max and min (5.2 §15.8.4); C's does not, so such a program
+    is refused at translation, not written as a conditional the C front end rejects."""
+    p = fuzz.generate(75, "fuzz-6c", ())
+    assert p.source.startswith(fuzz.UNTRANSLATED) and "atomic" in p.source
+    for s in range(1, 300):
+        src = fuzz.generate(s, "fuzz-6c", ()).source
+        assert not re.search(r"#pragma omp atomic[^\n]*\n\s*(\w+) = \(\(?\1 [<>]", src), s

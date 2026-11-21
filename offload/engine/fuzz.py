@@ -2278,6 +2278,9 @@ def to_c(source: str, gen_version: str) -> str:
     m = re.search(r"defaultmap\([^)]*:\s*(allocatable|pointer)\b", source, re.I)
     if m:
         return f"{UNTRANSLATED}defaultmap category {m.group(1).lower()} has no C counterpart\n"
+    m = re.search(r"!\$omp atomic[^\n]*\n\s*(\w+)\s*=\s*(max|min)\s*\(", source, re.I)
+    if m:
+        return f"{UNTRANSLATED}an atomic {m.group(2).lower()} update has no C counterpart\n"
     try:
         c = f2c.translate(source, VERSION)
     except f2c.TranslateError as e:
