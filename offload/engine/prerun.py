@@ -179,6 +179,7 @@ def rules_witness(program) -> tuple[bool | None, list[str]]:
         found = violations(tree, version)
         reasons += [f"rules: violates {r}" for r in found]
         reasons += [f"race: {r}" for r in races(tree, text, lang)]
+        reasons += [f"restriction: {r}" for r in acc_nested_reductions(tree)]
         reasons += [f"restriction: {r}" for r in extra(text, lang, tree)]
     return not reasons, reasons
 
@@ -334,10 +335,13 @@ def races(tree, text: str, lang: str) -> list[str]:
                     priv |= _dsa_names(tree.directives[k])
                     break
         if model == "acc":
+            # the compute construct's clauses; an enclosing loop directive's reduction does not
+            # cover this loop's own updates (OpenACC 3.4 §2.9.11: a clause on each loop directive)
             k = i
             while k in par:
                 k = par[k]
-                priv |= _dsa_names(tree.directives[k])
+                if "loop" not in tree.directives[k].name.split():
+                    priv |= _dsa_names(tree.directives[k])
                 if tree.directives[k].name.split()[0] == "parallel":
                     break
         protected = []
@@ -367,6 +371,42 @@ def races(tree, text: str, lang: str) -> list[str]:
         if model == "omp":
             out += array_races(tree, text, lang, lines, body, d, a, priv,
                                protected)
+    return out
+
+
+def _reduction_names(d) -> set:
+    out = set()
+    for c in d.clauses:
+        if c.name == "reduction":
+            for a in c.args:
+                m = re.match(r"\s*(?:[\w+*\-.]+\s*:\s*)*([A-Za-z_]\w*)", a.strip())
+                if m:
+                    out.add(m.group(1).lower())
+    return out
+
+
+def acc_nested_reductions(tree) -> list[str]:
+    """OpenACC: a variable reduced on a loop directive nested in another loop directive of the same
+    compute construct must be in a reduction (or private) clause of the outer one too."""
+    out = []
+    par = _parents(tree)
+    for i, d in enumerate(tree.directives):
+        if not d.atoms or not next(iter(d.atoms)).startswith("acc.") or "loop" not in d.name.split():
+            continue
+        reduced = _reduction_names(d)
+        k = i
+        while reduced and k in par:
+            k = par[k]
+            outer = tree.directives[k]
+            leaves = outer.name.split()
+            if "loop" in leaves and not any(c.name == "seq" for c in outer.clauses):
+                missing = reduced - _reduction_names(outer) - {n for n in _dsa_names(outer) if isinstance(n, str)}
+                for v in sorted(missing):
+                    out.append(f"{v} is reduced on the loop directive at line {tree.assoc[i].line} inside the loop "
+                               f"directive at line {tree.assoc[k].line}, which has no reduction clause for it: OpenACC "
+                               "3.4 §2.9.11 p.71 l.2560-2562 (a reduction clause on each loop directive it spans)")
+            if leaves[0] in ("parallel", "kernels", "serial"):
+                break
     return out
 
 

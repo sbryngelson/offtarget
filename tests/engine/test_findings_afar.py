@@ -2021,3 +2021,43 @@ def test_an_asserted_parallel_loop_in_kernels_is_checked_for_races(clauses, race
         assert ok is False and any("no clause makes it" in w for w in why), why
     else:
         assert ok, why
+
+
+NESTED_RED = """program p
+  implicit none
+  integer, parameter :: n = 3, m = 8
+  integer :: a(n), i, j, s
+  a = 1
+  s = 0
+  !$acc CONSTRUCT
+    !$acc loop gang OUTER
+    do i = 1, n
+      !$acc loop vector INNER
+      do j = 1, m
+        s = s + a(i) + j
+      end do
+    end do
+  !$acc end ENDNAME
+  print *, s
+end program p
+"""
+
+
+@pytest.mark.parametrize("construct,outer,inner,bad", [
+    ("parallel copy(s)", "reduction(+: s)", "reduction(+: s)", None),
+    ("parallel reduction(+: s)", "reduction(+: s)", "reduction(+: s)", None),
+    ("kernels", "reduction(+: s)", "reduction(+: s)", None),
+    ("parallel copy(s)", "", "reduction(+: s)", "§2.9.11"),     # the outer loop directive lacks the reduction
+    ("parallel reduction(+: s)", "", "reduction(+: s)", "§2.9.11"),
+    ("parallel copy(s)", "reduction(+: s)", "", "no clause makes it"),  # the inner loop's own updates race
+])
+def test_a_reduction_over_nested_loop_directives_is_on_each_of_them(construct, outer, inner, bad):
+    """OpenACC 3.4 §2.9.11 p.71 l.2560-2562: a reduction that spans nested loops with loop directives
+    needs a reduction clause on each of those loop directives."""
+    src = NESTED_RED.replace("CONSTRUCT", construct).replace("OUTER", outer).replace("INNER", inner) \
+        .replace("ENDNAME", construct.split()[0])
+    ok, why = rules(src)
+    if bad is None:
+        assert ok, why
+    else:
+        assert ok is False and any(bad in w for w in why), why
