@@ -2481,6 +2481,41 @@ def test_a_deferred_target_task_keeps_its_wait(tmp_path):
     assert RD.waits_after_nowait(gone.replace(" nowait", ""))
 
 
+DEPEND_NOWAIT = """program p
+  use omp_lib, only: omp_is_initial_device
+  integer :: a(64), hf
+  a = 0
+  !$omp target nowait depend(out: a) map(tofrom: hf)
+    hf = merge(1, 0, omp_is_initial_device())
+    a = 30011
+  !$omp end target
+  !$omp target parallel map(to: a(1:64)) nowait depend(in: a)
+  !$omp end target parallel
+  !$omp taskwait
+  print *, a(1)
+end program p
+"""
+
+
+def test_the_depend_clauses_of_a_kept_nowait_target_stay(tmp_path):
+    """Two nowait target tasks ordered by depend(out: a) and depend(in: a): a candidate that drops a
+    depend clause (or a list item of one) leaves the tasks unordered, a race whose result is not
+    required. Refused when the original orders its nowait target constructs; deleting a whole
+    construct, with its clauses, is allowed."""
+    runner = RD.FakeRunner(lambda t, g: "rejected")
+    judge = _judge(tmp_path, runner)
+    judge.nowait_depends = RD.nowait_depends(DEPEND_NOWAIT)
+    assert judge.nowait_depends == [("in: a",), ("out: a",)]
+    for gone in (DEPEND_NOWAIT.replace(" depend(in: a)", ""), DEPEND_NOWAIT.replace(" depend(out: a)", ""),
+                 DEPEND_NOWAIT.replace("depend(in: a)", "depend(in: hf)")):
+        ok, why = judge(gone)
+        assert not ok and "depend" in why, gone
+    assert runner.calls == 0
+    whole = DEPEND_NOWAIT.replace("  !$omp target parallel map(to: a(1:64)) nowait depend(in: a)\n  !$omp end target parallel\n", "")
+    assert RD.depends_kept(RD.nowait_depends(whole), judge.nowait_depends)
+    assert RD.nowait_depends("program p\nend program p\n") == []
+
+
 def test_the_host_flag_stays_mapped_back(tmp_path):
     """A candidate that drops the map of the host-execution flag variable leaves it firstprivate
     in the target region, so no run can show the device ran it: refused when the original maps it."""

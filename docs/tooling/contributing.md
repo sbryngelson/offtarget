@@ -300,6 +300,7 @@ A candidate is accepted only when:
 
 - the legality witness accepts it (`offload.engine.prerun.rules_witness` checks grammar, restriction rules and the race rule, and never uses the compiler under test, gfortran or `gcc -fopenmp`);
 - a device compute construct and a call of the host-execution flag stay;
+- a nowait target construct that stays keeps its depend clauses unchanged, and a wait follows the last one (`depends_kept`, `waits_after_nowait`): without them the deferred target tasks run unordered, a race;
 - the run on every target is evidence: no harness error, no compile at the harness's time limit, no flaky row whose repeats disagree;
 - the outcome class is the recorded one and the key is identical, where the key is:
   - for a compile failure, the normalized message;

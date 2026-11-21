@@ -1180,6 +1180,30 @@ def waits_after_nowait(text: str) -> bool:
     return last is None or any(_WAIT.match(ln) for ln in lines[last + 1:])
 
 
+def nowait_depends(text: str) -> list:
+    """The depend clauses of each nowait target construct, one sorted tuple of normalized clause
+    arguments per construct, the constructs sorted (Fortran continuation lines joined)."""
+    joined = re.sub(r"&\s*\n\s*!\$omp&?", " ", text, flags=re.I).splitlines()
+    out = []
+    for ln in joined:
+        if _NOWAIT_TARGET.match(ln):
+            deps = re.findall(r"\bdepend\s*\(([^)]*)\)", ln, re.I)
+            out.append(tuple(sorted(" ".join(d.lower().split()) for d in deps)))
+    return sorted(out)
+
+
+def depends_kept(candidate: list, original: list) -> bool:
+    """Every nowait target construct of the candidate has the depend clauses of one of the
+    original's (each used once): whole constructs may go, but a kept one keeps its ordering. A
+    dropped or narrowed depend clause leaves deferred target tasks unordered, a race."""
+    pool = list(original)
+    for c in candidate:
+        if c not in pool:
+            return False
+        pool.remove(c)
+    return True
+
+
 def flag_mapped(text: str) -> bool:
     """A host-execution flag variable appears in a map clause, so its device value reaches the host;
     a candidate that drops the map leaves it firstprivate and no run can tell device from host."""
@@ -1594,6 +1618,7 @@ class Judge:
         self.device_flag = True             # the original calls the host-execution flag
         self.device_construct = True        # the original has a device compute construct
         self.wait_after_nowait = False      # the original waits for its nowait target tasks
+        self.nowait_depends = None          # the original orders its nowait target tasks with depend
         self.flag_mapped = False            # the original maps its host-execution flag back
         self._lock = threading.Lock()
 
@@ -1618,6 +1643,9 @@ class Judge:
             return None, "the host-execution flag (omp_is_initial_device) must stay"
         if self.device_construct and not has_device_construct(text):
             return None, "no device construct left (the failure must stay a device-offload failure)"
+        if self.nowait_depends is not None and not depends_kept(nowait_depends(text), self.nowait_depends):
+            return None, ("a depend clause of a nowait target construct was dropped or changed (its deferred "
+                          "target tasks would run unordered, a race)")
         if self.wait_after_nowait and not waits_after_nowait(text):
             return None, ("a nowait target construct without the taskwait after it (the host would read "
                           "its results in a race)")
@@ -1849,6 +1877,8 @@ def reduce(text: str, lang: str, judge: Judge, levels=LEVELS, seed: int | None =
     judge.device_flag = has_device_flag(text)
     judge.device_construct = has_device_construct(text)
     judge.wait_after_nowait = waits_after_nowait(text)
+    deps = nowait_depends(text)
+    judge.nowait_depends = deps if any(deps) else None
     judge.flag_mapped = flag_mapped(text)
     steps: list[str] = []
     ck = load_checkpoint(checkpoint, origin, judge, levels) if checkpoint else None
