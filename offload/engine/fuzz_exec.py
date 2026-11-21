@@ -218,11 +218,14 @@ def compile_program(tc: Toolchain, src: Path, exe: Path, tmp: Path,
     return None, "", "; ".join(notes), out
 
 
-def toolchain_for(name: str, lang: str) -> Toolchain:
-    """The campaign toolchain `name` for a program in `lang` ("c": its C compiler)."""
+def toolchain_for(name: str, lang: str, model: str = "omp") -> Toolchain:
+    """The campaign toolchain `name` for a program in `lang` ("c": its C compiler) and
+    `model` ("acc": its OpenACC flags)."""
     import dataclasses
     tc = TOOLCHAINS[name]
-    return dataclasses.replace(tc, lang="c") if lang == "c" else tc
+    if lang == "c":
+        tc = dataclasses.replace(tc, lang="c")
+    return dataclasses.replace(tc, model="acc") if model == "acc" else tc
 
 
 def _scrub(text: str, tmp: Path) -> str:
@@ -368,7 +371,7 @@ def run_program(seed: int, toolchains=TOOLCHAIN_ORDER,
         # offload.engine.prerun); a refused program is never compiled or run
         from offload.engine import prerun
         from offload.engine.fuzz import CheckResult
-        ok, why = prerun.check((prog.source, prog.lang, "omp"))
+        ok, why = prerun.check((prog.source, prog.lang, prog.model))
         if not ok:
             chk = CheckResult("prerun", "; ".join(why)[:600])
     pr = ProgramResult(seed, prog.gen_version, chk.stage, chk.detail,
@@ -382,7 +385,7 @@ def run_program(seed: int, toolchains=TOOLCHAIN_ORDER,
     try:
         exes: dict[str, tuple[Path, Path]] = {}
         for name in toolchains:
-            tc = toolchain_for(name, prog.lang)
+            tc = toolchain_for(name, prog.lang, prog.model)
             tmp = base / name
             tmp.mkdir()
             res, exe = run_toolchain(prog, tc, tmp, reruns)
@@ -429,6 +432,9 @@ def elision_value(source: str):
     from offload.engine import fuzz
     if fuzz.is_c(source):
         return fuzz.elided_checksum_c(source)
+    if fuzz.is_acc(source):
+        from offload.engine import fuzz_acc
+        return fuzz_acc.elided_checksum_acc(source)
     from offload.engine import expected as E
     ev = E.elision_evidence(source)
     if ev.status == "value":
@@ -462,7 +468,7 @@ def host_reference(pr: ProgramResult, prog: FuzzProgram,
         if name not in exes:
             continue
         exe, tmp = exes[name]
-        run = execute(toolchain_for(name, prog.lang), exe, tmp, "disabled", HOST_TIMEOUT_S)
+        run = execute(toolchain_for(name, prog.lang, prog.model), exe, tmp, "disabled", HOST_TIMEOUT_S)
         pr.host_ref_tc = name
         pr.host_ref, why = _host_value(run)
         pr.results[name].host_checksum = pr.host_ref
@@ -477,7 +483,7 @@ def host_reference(pr: ProgramResult, prog: FuzzProgram,
     for name, (exe, tmp) in exes.items():
         if name == pr.host_ref_tc:
             continue
-        run = execute(toolchain_for(name, prog.lang), exe, tmp, "disabled", HOST_TIMEOUT_S)
+        run = execute(toolchain_for(name, prog.lang, prog.model), exe, tmp, "disabled", HOST_TIMEOUT_S)
         r = pr.results[name]
         r.host_checksum, r.host_why = _host_value(run)
     el, pr.elision = _elision(prog.source, elision)
@@ -498,7 +504,7 @@ def recheck_host(prog: FuzzProgram, toolchains=TOOLCHAIN_ORDER,
     base = Path(tempfile.mkdtemp(prefix=f"fuzzhost_{prog.seed}_"))
     try:
         for name in toolchains:
-            tc = toolchain_for(name, prog.lang)
+            tc = toolchain_for(name, prog.lang, prog.model)
             tmp = base / name
             tmp.mkdir()
             src, exe = tmp / f"{prog.id}{prog.suffix}", tmp / f"{prog.id}.out"

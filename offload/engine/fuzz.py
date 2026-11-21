@@ -75,8 +75,10 @@ from offload.engine.fuzz_base import (ALL_GROUPS, BASE_GROUPS, TYPES, BaseMixin,
 #   sequential run of the elided program under the undefined-behaviour
 #   sanitizer, which must print the model's checksum (check_defined_c): a
 #   translation that changed the program's value never reaches a compiler.
+# fuzz-acc1 (OpenACC): offload.engine.fuzz_acc; no base-language groups.
 GEN_VERSIONS = ("fuzz-1", "fuzz-2", "fuzz-3", "fuzz-4", "fuzz-4s50",
-                "fuzz-5", "fuzz-6", "fuzz-6c")
+                "fuzz-5", "fuzz-6", "fuzz-6c", "fuzz-acc1")
+ACC_VERSIONS = ("fuzz-acc1",)
 # the Fortran version a C version translates
 _C_OF = {"fuzz-6c": "fuzz-6"}
 UNTRANSLATED = "// untranslated: "
@@ -567,6 +569,10 @@ class FuzzProgram:
         return "c" if self.gen_version in _C_OF else "f90"
 
     @property
+    def model(self) -> str:
+        return "acc" if self.gen_version in ACC_VERSIONS else "omp"
+
+    @property
     def suffix(self) -> str:
         return ".c" if self.lang == "c" else ".f90"
 
@@ -586,8 +592,8 @@ class _Gen(BaseMixin):
                  base: tuple = ()):
         if gen_version not in GEN_VERSIONS:
             raise ValueError(f"unknown generator version {gen_version!r}")
-        if gen_version in _C_OF:
-            raise ValueError(f"{gen_version} is a translation: generate() builds it")
+        if gen_version in _C_OF or gen_version in ACC_VERSIONS:
+            raise ValueError(f"{gen_version} is built by generate()")
         self.gen_version = gen_version
         self.v = GEN_VERSIONS.index(_SPELL_OF.get(gen_version,
                                                   gen_version)) + 1
@@ -2251,6 +2257,11 @@ def generate(seed: int, gen_version: str = GEN_VERSION,
     """The program of `seed` (deterministic for one generator version and
     set of base-language groups, offload.engine.fuzz_base; groups need
     fuzz-3). A C version is the program of its Fortran version, translated."""
+    if gen_version in ACC_VERSIONS:
+        if base:
+            raise ValueError(f"{gen_version} has no base-language groups")
+        from offload.engine import fuzz_acc
+        return fuzz_acc.generate(seed)
     if gen_version in _C_OF:
         if base:
             raise ValueError(f"{gen_version} translates no base-language groups")
@@ -2274,6 +2285,10 @@ def to_c(source: str, gen_version: str) -> str:
     c = c.replace("(OpenMP 5.2, free-form Fortran)",
                   "(OpenMP 5.2, C11; offload.engine.f2c of the Fortran program of the seed)", 1)
     return c.replace(f"// generator: {_C_OF[gen_version]}\n", f"// generator: {gen_version}\n", 1)
+
+
+def is_acc(source: str) -> bool:
+    return re.search(r"^! generator: fuzz-acc\d", source, re.M) is not None
 
 
 def is_c(source: str) -> bool:
@@ -2581,6 +2596,9 @@ def check(source: str, defined: bool | None = None,
     says fuzz-3") the definedness check; the first "no" wins."""
     if source.startswith(UNTRANSLATED):
         return CheckResult("translate", source[len(UNTRANSLATED):].strip())
+    if is_acc(source):
+        from offload.engine import fuzz_acc
+        return fuzz_acc.check_acc(source, expected)
     if is_c(source):
         stages = ([("scope", check_scope)] if scope else []) + [
             ("rules", check_rules), ("cbase", check_cbase),
