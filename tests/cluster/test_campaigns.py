@@ -1216,10 +1216,11 @@ def test_every_parity_gcc_finding_file_is_indexed_and_scoped():
     files = sorted(f"{s}/{p.name}" for s in SOURCES for p in (FINDINGS / s).glob("gcc-*.*")
                    if p.suffix in (".c", ".f90"))
     assert files and sorted(entries) == files
+    # GCC on Tioga's MI250X and wingtip's A100, and (owner, 2026-11-20) on Tuolumne's MI300A in copy memory only
     for e in entries.values():
-        assert set(e["toolchains"]) <= {"gcc_g90", "gcc_sm80"} and e["toolchains"], e["file"]
+        assert set(e["toolchains"]) <= {"gcc", "gcc_g90", "gcc_sm80"} and e["toolchains"], e["file"]
         assert e["modes"] == ["copy"], e["file"]
-        assert set(e["arch"]) <= {"gfx90a", "sm_80"}, e["file"]
+        assert set(e["arch"]) <= {"gfx942", "gfx90a", "sm_80"}, e["file"]
         assert e["lang"] == ("c" if e["file"].endswith(".c") else "f90"), e["file"]
         assert e.get("programs"), e["file"]
 
@@ -2963,3 +2964,20 @@ def test_flang_timeout_kills_the_whole_process_group(monkeypatch):
     with pytest.raises(FO.FlangError, match="timed out"):
         FO._dump("program p\nend program p\n", 52, sema=True)
     assert time.monotonic() - t < 15
+
+
+def test_a_fuzz_run_of_a_compiler_under_test_is_summarized_and_minimized(tmp_path):
+    """GCC is never a legality witness, but it is a compiler under test: a run of gcc_g90 alone (the
+    parity runs) has its failures counted and picked for minimization like any other toolchain's."""
+    from offload.engine import fuzz_report as FR
+    d = tmp_path / "par-x-gcc_g90"
+    d.mkdir()
+    (d / "programs.jsonl").write_text(
+        json.dumps(_fuzz_rec(1, "agree", tc="gcc_g90")) + "\n"
+        + json.dumps(_fuzz_rec(2, "ice", tc="gcc_g90", reason="ice: internal compiler error: in f, at x.cc:1")) + "\n"
+        + json.dumps(_fuzz_rec(3, "wrong_code", tc="gcc_g90")) + "\n")
+    progs, _ = FR.load(d)
+    reps = FR.representatives(progs, 4)
+    assert {(r[0], r[1], r[2]) for r in reps} == {(2, "gcc_g90", "ice"), (3, "gcc_g90", "wrong_code")}
+    s = FR.summarize(d)
+    assert s["classes"]["gcc_g90"]["wrong_code"] == 1

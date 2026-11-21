@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/gcc-thread-limit-target-and-teams-fault.f90",
+ "readers": [
+  {
+   "run": "run-v2-gccfuzz/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target contains only the teams construct, satisfying the nesting restriction. hf is written by a single iteration, parallel inside distribute is allowed, and the teams thread_limit applies to its own contention groups. No data race and no unspecified behavior, so the program must run to completion; the GPU fault is a compiler bug.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-gccfuzz/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The target region contains only the teams construct, as required. teams distribute with its own thread_limit(16) is permitted (thread_limit is unique per construct, and an explicit clause overrides the target's). hf is written by a single iteration (i == 1), so there is no race. The parallel region nested in distribute is allowed. The expected output (check=pass) does not depend on where it runs, so a device memory fault is a compiler fault.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 3,
+      "wrong_section": 0,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 1,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "ee2370a5e4bac0c1834a8bfcfabfd1788ef52df93de28cd1f1d68a64573e8968",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

@@ -2741,6 +2741,7 @@
   "model": "omp",
   "affected": [
    "afar",
+   "afar244",
    "cce19",
    "cce20",
    "cce21",
@@ -2771,7 +2772,8 @@
   "lang": "f90",
   "model": "omp",
   "affected": [
-   "afar"
+   "afar",
+   "afar244"
   ],
   "repro": "../../findings/nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90",
   "derived": true,
@@ -3084,6 +3086,7 @@
   "model": "omp",
   "affected": [
    "afar",
+   "afar244",
    "cce19",
    "cce20",
    "cce21",
@@ -3305,6 +3308,33 @@
   ]
  },
  {
+  "id": "site-catalog--afar-flang-deprecated-minus-reduction-rejected",
+  "finding": "catalog/afar-flang-deprecated-minus-reduction-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "afar244"
+  ],
+  "repro": "../../findings/catalog/afar-flang-deprecated-minus-reduction-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
   "id": "site-catalog--afar-flang-linear-ref-assumed-shape-rejected",
   "finding": "catalog/afar-flang-linear-ref-assumed-shape-rejected.f90",
   "symptom": "compile:.",
@@ -3332,17 +3362,105 @@
   ]
  },
  {
-  "id": "site-catalog--afar-flang-deprecated-minus-reduction-rejected",
-  "finding": "catalog/afar-flang-deprecated-minus-reduction-rejected.f90",
+  "id": "site-fuzz--gcc-int8-mod-narrowed-o2-wrong",
+  "finding": "fuzz/gcc-int8-mod-narrowed-o2-wrong.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-int8-mod-narrowed-o2-wrong.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ],
+  "control": "../../findings/fuzz/controls/gcc-int8-mod-narrowed-o2-wrong-integer8-result-control.f90"
+ },
+ {
+  "id": "site-fuzz--gcc-target-parallel-after-nowait-copyback-lost",
+  "finding": "fuzz/gcc-target-parallel-after-nowait-copyback-lost.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-target-parallel-after-nowait-copyback-lost.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-target-parallel-after-nowait-copyback-lost-plain-target-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-thread-limit-target-and-teams-fault",
+  "finding": "fuzz/gcc-thread-limit-target-and-teams-fault.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-thread-limit-target-and-teams-fault.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-thread-limit-target-and-teams-fault-delete-clause-thread-limit-1-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-small-int-reduction-atomic-link",
+  "finding": "fuzz/gcc-small-int-reduction-atomic-link.f90",
   "symptom": "compile:.",
   "expect": "ok",
   "lang": "f90",
   "model": "omp",
   "affected": [
-   "afar244"
+   "gcc"
   ],
-  "repro": "../../findings/catalog/afar-flang-deprecated-minus-reduction-rejected.f90",
+  "repro": "../../findings/fuzz/gcc-small-int-reduction-atomic-link.f90",
   "derived": true,
+  "control": "../../findings/fuzz/controls/gcc-small-int-reduction-atomic-link-delete-clause-reduction-ieor-r2a-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
   "arch": [
    "gfx942",
    "gfx90a",

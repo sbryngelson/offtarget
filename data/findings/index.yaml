@@ -2475,3 +2475,34 @@ findings:
     modes: [unified, copy]
     arch: [gfx942, gfx90a]
     programs: ["omp52-clause-linear-ref", "omp60-clause-linear-ref"]
+  - file: fuzz/gcc-int8-mod-narrowed-o2-wrong.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]
+    programs: ["b1:34", "s1:7575"]
+  - file: fuzz/gcc-target-parallel-after-nowait-copyback-lost.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]
+    programs: ["n0:586"]
+  - file: fuzz/gcc-thread-limit-target-and-teams-fault.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: crash
+    message: 'crash: SIGABRT; without mandatory: crash: SIGABRT'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ["c1:1589"]
+  - file: fuzz/gcc-small-int-reduction-atomic-link.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: rejected
+    message: 'ld: error: undefined symbol: __atomic_fetch_xor_1'
+    modes: [copy]
+    arch: [gfx942]
+
+    programs: ["b1:251"]

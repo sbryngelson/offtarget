@@ -35,6 +35,14 @@ REPORT_ORDER = fe.TOOLCHAIN_ORDER + tuple(
     and _registry().toolchains[t].family_id not in _registry().under_test_only())
 from offload.engine.fuzz import generate
 
+
+def run_order(progs) -> tuple:
+    """REPORT_ORDER, then any other toolchain the programs ran on (a compiler under test only,
+    such as GCC in the parity runs: its failures are counted and minimized, though it is never a
+    legality witness)."""
+    seen = {t for p in progs for t in p.results}
+    return REPORT_ORDER + tuple(sorted(seen - set(REPORT_ORDER)))
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 FINDINGS = ROOT / "data" / "findings" / "fuzz"
 FAILS = ("wrong_code", "ice", "run_error", "timeout", "host_fallback")
@@ -214,7 +222,7 @@ def summarize(run_dir: Path) -> dict:
     # failure, not a generator reject
     rejects = [p for p in progs if p.check not in ("ok", "error")]
     checker_errors = [p.seed for p in progs if p.check == "error"]
-    tcs = [t for t in REPORT_ORDER if any(t in p.results for p in ran)]
+    tcs = [t for t in run_order(ran) if any(t in p.results for p in ran)]
     counts = {t: Counter() for t in tcs}
     flaky = {t: Counter() for t in tcs}
     for p in ran:
@@ -356,7 +364,7 @@ def _host_path_failures(progs) -> dict:
     """toolchain -> seeds of valid programs whose host build on it failed
     or printed another checksum than the model (finding class
     host_path_failure)."""
-    out = {t: [] for t in REPORT_ORDER}
+    out = {t: [] for t in run_order(progs)}
     for p in progs:
         for t in p.host_path_failure:
             out.setdefault(t, []).append(p.seed)
@@ -414,8 +422,9 @@ def representatives(progs, limit: int) -> list[tuple]:
                   and p.validity != "noncompliant"),
                  key=lambda p: (len(p.kernels), p.lines))
     out, seen = [], set()
+    order = run_order(ran)
     for p in ran:
-        for t in REPORT_ORDER:
+        for t in order:
             r = p.results.get(t)
             if r is None or r.cls != "ice":
                 continue
@@ -424,7 +433,7 @@ def representatives(progs, limit: int) -> list[tuple]:
                 seen.add(_ice_key(sig))
                 out.append((p.seed, t, "ice", sig, 0))
     for kind in ("wrong_code", "run_error"):
-        for t in REPORT_ORDER:
+        for t in order:
             keys = set()
             for p in ran:
                 r = p.results.get(t)

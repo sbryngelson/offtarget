@@ -1857,6 +1857,22 @@
    "quote": "If the reduction identifier is defined in a declare reduction directive, the declare reduction directive must be in the same subprogram, or accessible by host or use association"
   }
  ],
+ "fuzz/gcc-int8-mod-narrowed-o2-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.3 p.154 l.2-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated as if the list item appeared in a from clause on a target update directive."
+  }
+ ],
+ "fuzz/gcc-small-int-reduction-atomic-link.f90": [
+  {
+   "text": "OpenMP 5.2 §5.5.1 p.124 l.22-24",
+   "version": "OpenMP 5.2",
+   "section": "5.5.1",
+   "quote": "A reduction identifier is either a base language identifier, or a user-defined operator, or one of the following operators: +, - (deprecated), *, .and., .or., .eqv., .neqv., or one of the following intrinsic procedure names: max, min, iand, ior, ieor."
+  }
+ ],
  "fuzz/gcc-strided-target-update-rejected.f90": [
   {
    "text": "5.2 §B.4 p.634 l.3-4",
@@ -1871,12 +1887,40 @@
    "quote": null
   }
  ],
+ "fuzz/gcc-target-parallel-after-nowait-copyback-lost.f90": [
+  {
+   "text": "OpenMP 5.2 §15.9.5 p.323 l.21-24",
+   "version": "OpenMP 5.2",
+   "section": "15.9.5",
+   "quote": "For the in task-dependence-type, if the storage location of at least one of the list items matches the storage location of a list item appearing in a depend clause with an out, inout, mutexinoutset, or inoutset task-dependence-type on a construct from which a sibling task was previously generated, then the generated task will be a dependent task of that sibling task."
+  },
+  {
+   "text": "5.2 §5.8.3 p.154 l.3-5",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "the original list item is updated as if the list item appeared in a from clause on a target update directive"
+  }
+ ],
  "fuzz/gcc-target-simd-map-nontemporal-rejected.f90": [
   {
    "text": "5.2 §17.2 p.341",
    "version": "OpenMP 5.2",
    "section": "17.2",
    "quote": null
+  }
+ ],
+ "fuzz/gcc-thread-limit-target-and-teams-fault.f90": [
+  {
+   "text": "OpenMP 5.2 §13.3 p.277",
+   "version": "OpenMP 5.2",
+   "section": "13.3",
+   "quote": null
+  },
+  {
+   "text": "5.2 §2.4 p.46 l.1-3",
+   "version": "OpenMP 5.2",
+   "section": "2.4",
+   "quote": "If a teams construct with a thread_limit clause is encountered, the thread-limit-var ICV from the data environment of the initial task for each team is instead set to an implementation defined value between one and the value specified in the clause."
   }
  ],
  "fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90": [

@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/gcc-target-parallel-after-nowait-copyback-lost.f90",
+ "readers": [
+  {
+   "run": "run-v2-gccfuzz/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The two nowait target tasks are siblings with depend(out: a) then depend(in: a), so the second depends on the first. The first copies a back as 30011 before the second starts; the second maps a with to only and never writes it back. The taskwait completes both, so bad must be 0.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-gccfuzz/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 0,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 3,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "The second target task has depend(in: a) and the first depend(out: a), so it is a dependent task and runs after the first completes, including its tofrom copy-back of a (implicitly mapped, array). The second target only maps a to the device with no copy-back, and taskwait ensures completion before the host reads a. Expected bad = 0.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 2,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 2,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "d083404ee76f49fd575bf3fbfbbb27c6b5a13319cb188351ec8c78492a5e22e1",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}

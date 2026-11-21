@@ -16,7 +16,8 @@
 #       tools/jobs/run_site_matrix.sh tioga ENV
 #   GCC on the other AMD GPUs (the install's device libraries cover gfx942 and gfx950; GCC_ROOT and
 #   GCC_ROCM name the install and the ROCm it loads): Tuolumne's MI300A in both memory modes, the
-#   MI300X and MI350X (Slurm on the AMD cluster; PY names its Python) in copy memory:
+#   MI300X and MI350X (Slurm on the AMD cluster; PY names its Python) in copy memory (GCC_MODES=0 runs
+#   Tuolumne in copy memory only):
 #     GCC=1 GCC_ROOT=... GCC_ROCM=... flux batch -q pbatch -N1 -t 120 tools/jobs/run_site_matrix.sh tuolumne ENV
 #     GCC=1 GCC_ROOT=... GCC_ROCM=... PY=... GPUS=0 sbatch -p mi3001x ... tools/jobs/run_site_matrix.sh mi300x ENV
 # Writes data/vendor/checks/results/site-<machine>.<env>.jsonl; `tools/derive/finding_matrix.py pack`
@@ -61,7 +62,7 @@ if [ "$M" = tioga ]; then
   done
 elif [ -n "${GCC:-}" ] && [ "$M" != wingtip ]; then
   unset ROCR_VISIBLE_DEVICES
-  modes=0; [ "$M" = tuolumne ] && modes=1,0
+  modes=0; [ "$M" = tuolumne ] && modes=${GCC_MODES:-1,0}   # GCC_MODES=0: MI300A copy memory only
   gpus=${GPUS:-0,1,2,3}
   for cf in $GCC_FILES; do
     timeout --kill-after=30 "${LIMIT_S:-6600}" "${PY:-python3}" -I run_checks.py run --cases-file $cf \

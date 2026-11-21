@@ -1,0 +1,87 @@
+{
+ "finding": "fuzz/gcc-small-int-reduction-atomic-link.f90",
+ "readers": [
+  {
+   "run": "run-v2-gccfuzz/batch-01",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 1,
+    "wrong_section": 1,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "ieor is a valid Fortran reduction identifier for integers, and an empty teams region with a reduction is legal. masked inside target is legal. r2a is firstprivate in the target, so the host value stays 3 and cs==3. The link failure for __atomic_fetch_xor_1 is a toolchain defect, so acceptance is required.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  },
+  {
+   "run": "run-v2-gccfuzz/batch-02",
+   "model": "claude-sonnet",
+   "instructions": "v2",
+   "batch_decoy": "caught",
+   "legal": "yes",
+   "result_required": "yes",
+   "quotes": {
+    "ok": 2,
+    "wrong_section": 0,
+    "not_found": 0
+   },
+   "program": {
+    "ok": 2,
+    "not_found": 0,
+    "contradicted": 0
+   },
+   "reasoning": "ieor is a valid Fortran reduction identifier and applies to integer(1). The reduction on the empty teams region leaves r2a = 3 (initial value combined with ieor-identity 0); r2a is an implicit firstprivate scalar in the second target, so host r2a stays 3, cs == 3. masked within target is allowed. A link failure on atomics is a compiler/runtime limitation, not permitted by the specification.",
+   "verifications": [
+    {
+     "run": "verify-gccfuzz/batch-01",
+     "model": "claude-sonnet",
+     "batch_decoys": "caught",
+     "refuted": false,
+     "false_claims": [],
+     "quotes": {
+      "ok": 1,
+      "wrong_section": 1,
+      "not_found": 0
+     },
+     "program": {
+      "ok": 3,
+      "not_found": 0,
+      "contradicted": 0
+     }
+    }
+   ]
+  }
+ ],
+ "prior_art": [],
+ "external": [],
+ "program_sha": "9e73b6cacb5dcac5e1c8518735de56b3a7fed815be06ba0869f267b2fd8d384d",
+ "instructions": "v2",
+ "verdict": "confirmed",
+ "why": "2 independent readings find the program legal and the result required."
+}
