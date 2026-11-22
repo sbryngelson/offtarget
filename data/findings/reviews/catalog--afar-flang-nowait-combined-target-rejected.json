@@ -82,6 +82,27 @@
  "external": [],
  "program_sha": "4005a3f2711fb3fb925707b6f9d0ccba6f7916ba6f83efb55b8b75cbc40dfe9a",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, gcc of another compiler family build and run it as expected.",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "afar"
+  ],
+  "witnesses": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "gcc"
+  ],
+  "program_sha": "4005a3f2711fb3fb925707b6f9d0ccba6f7916ba6f83efb55b8b75cbc40dfe9a"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

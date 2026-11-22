@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "51665b21e160e5fccdda89f349a333a678e058d04ead8df522653e372f2e3d08",
  "instructions": "v2",
- "verdict": "unconfirmed",
- "why": "Independent readings are uncertain: Whether map(to: r) maps the allocated allocatable component nx and its elements, so that the later maps of r%nx(1)%a and r%nx(2)%a attach correctly, is not settled by the text; the allocatable-component rule only says the map may treat allocation status as unallocated. An ICE is undesirable but a required result cannot be established.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269 of another compiler family build and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-02",
@@ -213,5 +213,29 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "ice",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "51665b21e160e5fccdda89f349a333a678e058d04ead8df522653e372f2e3d08"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "Independent readings are uncertain: Whether map(to: r) maps the allocated allocatable component nx and its elements, so that the later maps of r%nx(1)%a and r%nx(2)%a attach correctly, is not settled by the text; the allocatable-component rule only says the map may treat allocation status as unallocated. An ICE is undesirable but a required result cannot be established."
 }

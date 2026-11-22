@@ -82,6 +82,24 @@
  "external": [],
  "program_sha": "fe36a30fc2d5712a0469c1f0d9f4f915cf2f8005198a12e03b7d8ef03cca4f68",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required."
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "same-family",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "afar",
+   "cce"
+  ],
+  "witnesses": [
+   "gcc"
+  ],
+  "program_sha": "fe36a30fc2d5712a0469c1f0d9f4f915cf2f8005198a12e03b7d8ef03cca4f68"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

@@ -26,13 +26,19 @@ FINDINGS = ROOT / "data" / "findings"
 # made under it. v2: each answer quotes the program lines it relies on and names what it says the
 # program lacks, both checked against the program (check_program).
 INSTRUCTIONS = "v2"
-VERDICTS = ("confirmed", "supported", "ruled", "contested", "unconfirmed")
+# The legality verdict comes from mechanical evidence and people only (``verdict``); the AI readings
+# give an advisory verdict (``advisory``, ADVISORY) that is kept in the record and never decides.
+VERDICTS = ("ruled", "refuted", "supported", "checked", "open")
 # what each verdict says on the site and in `offload issues`
-WORDS = {"confirmed": "independently confirmed",
+WORDS = {"ruled": "settled by a maintainer's ruling",
+         "refuted": "refuted by the rules engine",
          "supported": "supported by outside evidence",
-         "ruled": "settled by a maintainer's ruling",
-         "contested": "contested",
-         "unconfirmed": "not independently confirmed"}
+         "checked": "checked by the rules engine and another compiler family",
+         "open": "not yet settled"}
+ADVISORY = ("confirmed", "supported", "ruled", "contested", "unconfirmed")
+# the outcomes whose requirement is acceptance, so they need no expected value
+ACCEPTANCE = ("rejected", "ice", "compile_reject", "link")
+EXPECTED_SOURCES = ("other-family", "self-check", "generator-model")
 _SPEC_FILE = {"openmp-4.5": "OpenMP 4.5", "openmp-5.0": "OpenMP 5.0", "openmp-5.1": "OpenMP 5.1",
               "openmp-5.2": "OpenMP 5.2", "openmp-6.0": "OpenMP 6.0", "openacc-3.4": "OpenACC 3.4"}
 
@@ -145,7 +151,28 @@ def ruling_holds(rec: dict) -> bool:
 
 
 def verdict(rec: dict) -> str:
-    """The fixed rule. Counted adjudicators decide first: two that find the program legal and the
+    """The legality verdict from mechanical evidence and people (no AI reading counts):
+    ruled (a maintainer's ruling that holds), refuted (the rules engine rejects the program, or a
+    result hazard applies to a wrong answer), supported (outside evidence: a vendor's or upstream
+    acknowledgement), checked (the rules engine accepts it, a front end or build of another compiler
+    family accepts it, and a wrong answer's expected value comes from another family's run, the
+    program's own check or the generator's model), else open (a maintainer's ruling decides)."""
+    if ruling_holds(rec):
+        return "ruled"
+    m = rec.get("mechanical") or {}
+    wrong = m.get("outcome") not in ACCEPTANCE
+    if m.get("rules") == "reject" or (wrong and m.get("hazards")):
+        return "refuted"
+    if rec.get("external"):
+        return "supported"
+    if m.get("rules") == "accept" and m.get("witness") == "accept" and \
+            (not wrong or m.get("expected") in EXPECTED_SOURCES):
+        return "checked"
+    return "open"
+
+
+def advisory(rec: dict) -> str:
+    """The AI readings' verdict, advisory only (it never decides the legality verdict). Counted adjudicators decide first: two that find the program legal and the
     result required confirm it, one that finds it not legal or not required contests it. Then the
     readers: confirmed (two counted readers, both legal and required), contested (a counted reader
     says not legal or not required), supported (a contest or an uncertainty settled by outside
@@ -172,15 +199,18 @@ def verdict(rec: dict) -> str:
 
 
 def status(finding_id: str) -> tuple[str, str]:
-    """(verdict, why) of a finding now: its record's verdict, or unconfirmed when there is no
-    record or the program changed since its readers saw it."""
+    """(verdict, why) of a finding now: its record's verdict, or open when there is no record or
+    the program changed since it was checked (or since its ruling)."""
     rec = load(finding_id)
     f = finding_file(finding_id)
     if rec is None or f is None:
-        return "unconfirmed", "no independent review yet"
-    if rec.get("program_sha") != program_sha(f):
-        return "unconfirmed", "the program changed since its review"
-    return rec.get("verdict", "unconfirmed"), rec.get("why", "")
+        return "open", "not yet checked"
+    if (rec.get("mechanical") or {}).get("program_sha", rec.get("program_sha")) != program_sha(f) \
+            and not rec.get("ruling"):
+        return "open", "the program changed since it was checked"
+    if rec.get("ruling") and rec.get("program_sha") != program_sha(f):
+        return "open", "the program changed since the maintainer's ruling"
+    return rec.get("verdict", "open"), rec.get("why", "")
 
 
 SPEC_TEXT = ROOT / "results" / "spec_cache"     # the plain text readers search

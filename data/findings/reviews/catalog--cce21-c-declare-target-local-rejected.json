@@ -1,0 +1,26 @@
+{
+ "readers": [],
+ "program_sha": "20c0caa83c785d72ca1304a51425b08cca70ae24ebe553fac30e726ff22e93d1",
+ "mechanical": {
+  "rules": "unreadable",
+  "rules_why": [
+   "rules: cannot read it: GrammarError: version: local on declare target is not valid in OpenMP 5.2"
+  ],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244"
+  ],
+  "program_sha": "20c0caa83c785d72ca1304a51425b08cca70ae24ebe553fac30e726ff22e93d1"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "open",
+ "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it."
+}

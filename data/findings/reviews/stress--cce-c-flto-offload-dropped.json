@@ -121,8 +121,8 @@
  "external": [],
  "program_sha": "757c4ca662c833d0bbdea910c85d765bf2a8fc8a01e4fc4c9f3cc4d6c9abd178",
  "instructions": "v2",
- "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: The program is conforming. The specification says the initial thread may execute on the requested device if it is available and supported, and that with OMP_TARGET_OFFLOAD=mandatory a device that is unavailable or not supported by the implementation is treated as omp_invalid_device. The implementation (here with -flto) may not support offloading the region, so the abort is permitted.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-02",
@@ -200,5 +200,26 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "crash",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80",
+   "nvhpc269"
+  ],
+  "program_sha": "757c4ca662c833d0bbdea910c85d765bf2a8fc8a01e4fc4c9f3cc4d6c9abd178"
+ },
+ "advisory": "contested",
+ "advisory_why": "An independent adjudicating reading finds the result not required: The program is conforming. The specification says the initial thread may execute on the requested device if it is available and supported, and that with OMP_TARGET_OFFLOAD=mandatory a device that is unavailable or not supported by the implementation is treated as omp_invalid_device. The implementation (here with -flto) may not support offloading the region, so the abort is permitted."
 }

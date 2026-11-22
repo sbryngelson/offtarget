@@ -9,7 +9,7 @@ the GPUs are AMD's MI300A, MI250X, MI300X and MI350X and NVIDIA's A100.
 - `offload can-use FEATURE` shows which compilers and versions support a clause, directive or construct
   (`--list` prints the feature names).
 - `offload issues [QUERY]` lists the known problems, each with its reproducer, the evidence for it and the
-  independent review of its legality (`--legality contested` lists the disputed ones).
+  basis of its legality verdict (`--legality open` lists the ones a maintainer's ruling would settle).
 
 ```
 $ offload can-use clause.map.present

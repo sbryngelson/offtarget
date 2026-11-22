@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "3b5c5aa9593e8f773628f33f1b8704168c61f9c07cfe48584e603318509ba924",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-03",
@@ -137,5 +137,25 @@
    },
    "reasoning": "The program is conforming. linear(x: 1) with x++ in the body changes x by exactly the linear step per iteration, satisfying the restriction. Reading A is right that all 64 iterations must run under schedule(static), that lastprivate(t) yields 63, and that the observed 'static 1 of 64', t=-1 and x=0 are compiler errors. Reading B is right on one detail only: the specification assigns original + 63*step = 63 to x, not 64, so the stated expected x=64 is itself unsupported. Observed x=0 is wrong under either value, so the observed result is an error."
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "3b5c5aa9593e8f773628f33f1b8704168c61f9c07cfe48584e603318509ba924"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

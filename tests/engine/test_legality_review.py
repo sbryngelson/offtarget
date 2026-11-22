@@ -17,28 +17,28 @@ def reader(legal="yes", required="yes", decoy="caught", not_found=0, lines_missi
 
 
 def test_two_counted_readers_that_agree_confirm():
-    assert L.verdict({"readers": [reader(), reader()]}) == "confirmed"
-    assert L.verdict({"readers": [reader()]}) == "unconfirmed"          # one reading is not enough
+    assert L.advisory({"readers": [reader(), reader()]}) == "confirmed"
+    assert L.advisory({"readers": [reader()]}) == "unconfirmed"          # one reading is not enough
 
 
 def test_a_reader_that_missed_its_decoy_or_cited_missing_text_does_not_count():
-    assert L.verdict({"readers": [reader(), reader(decoy="missed")]}) == "unconfirmed"
-    assert L.verdict({"readers": [reader(), reader(not_found=1)]}) == "unconfirmed"
-    assert L.verdict({"readers": [reader(legal="no", decoy="missed"), reader(), reader()]}) == "confirmed"
+    assert L.advisory({"readers": [reader(), reader(decoy="missed")]}) == "unconfirmed"
+    assert L.advisory({"readers": [reader(), reader(not_found=1)]}) == "unconfirmed"
+    assert L.advisory({"readers": [reader(legal="no", decoy="missed"), reader(), reader()]}) == "confirmed"
 
 
 def test_a_counted_no_is_contested_unless_outside_evidence_settles_it():
     rs = [reader(), reader(legal="uncertain", required="no")]
-    assert L.verdict({"readers": rs}) == "contested"
-    assert L.verdict({"readers": rs, "prior_art": [{"strength": "strong"}]}) == "supported"
-    assert L.verdict({"readers": rs, "prior_art": [{"strength": "partial"}]}) == "contested"
-    assert L.verdict({"readers": rs, "external": [{"kind": "fixed_in", "what": "CCE 22"}]}) == "supported"
+    assert L.advisory({"readers": rs}) == "contested"
+    assert L.advisory({"readers": rs, "prior_art": [{"strength": "strong"}]}) == "supported"
+    assert L.advisory({"readers": rs, "prior_art": [{"strength": "partial"}]}) == "contested"
+    assert L.advisory({"readers": rs, "external": [{"kind": "fixed_in", "what": "CCE 22"}]}) == "supported"
 
 
 def test_uncertain_readers_are_unconfirmed_until_outside_evidence():
     rs = [reader(required="uncertain"), reader()]
-    assert L.verdict({"readers": rs}) == "unconfirmed"
-    assert L.verdict({"readers": rs, "prior_art": [{"strength": "strong"}]}) == "supported"
+    assert L.advisory({"readers": rs}) == "unconfirmed"
+    assert L.advisory({"readers": rs, "prior_art": [{"strength": "strong"}]}) == "supported"
 
 
 def test_a_reader_sees_the_program_without_the_header(tmp_path):
@@ -58,14 +58,14 @@ def test_a_changed_program_makes_its_record_stale(tmp_path, monkeypatch):
     f = tmp_path / "x.f90"
     f.write_text("program p\nend program p\n")
     rec = {"finding": "x.f90", "program_sha": L.program_sha(f), "readers": [reader(), reader()],
-           "verdict": "confirmed", "why": "w"}
+           "verdict": "checked", "why": "w"}
     L.record_path("x").write_text(json.dumps(rec))
-    assert L.status("x") == ("confirmed", "w")
-    f.write_text("! a header edit keeps the review\nprogram p\nend program p\n")
-    assert L.status("x")[0] == "confirmed"
+    assert L.status("x") == ("checked", "w")
+    f.write_text("! a header edit keeps the record\nprogram p\nend program p\n")
+    assert L.status("x")[0] == "checked"
     f.write_text("program p\n  print *, 1\nend program p\n")
-    assert L.status("x") == ("unconfirmed", "the program changed since its review")
-    assert L.status("nothing") == ("unconfirmed", "no independent review yet")
+    assert L.status("x") == ("open", "the program changed since it was checked")
+    assert L.status("nothing") == ("open", "not yet checked")
 
 
 @pytest.mark.needs_spec
@@ -96,12 +96,12 @@ def test_every_committed_record_follows_the_rule_and_names_a_finding():
 
 def test_two_adjudicators_that_weigh_a_dispute_settle_it():
     rs = [reader(), reader(legal="yes", required="no")]
-    assert L.verdict({"readers": rs, "adjudicators": [reader(), reader()]}) == "confirmed"
-    assert L.verdict({"readers": rs, "adjudicators": [reader(), reader(decoy="missed")]}) == "contested"
-    assert L.verdict({"readers": rs, "adjudicators": [reader(), reader(required="no")]}) == "contested"
+    assert L.advisory({"readers": rs, "adjudicators": [reader(), reader()]}) == "confirmed"
+    assert L.advisory({"readers": rs, "adjudicators": [reader(), reader(decoy="missed")]}) == "contested"
+    assert L.advisory({"readers": rs, "adjudicators": [reader(), reader(required="no")]}) == "contested"
     unsure = [reader(), reader(required="uncertain")]
-    assert L.verdict({"readers": unsure, "adjudicators": [reader(), reader()]}) == "confirmed"
-    assert L.verdict({"readers": unsure, "adjudicators": [reader(), reader(legal="uncertain")]}) == "unconfirmed"
+    assert L.advisory({"readers": unsure, "adjudicators": [reader(), reader()]}) == "confirmed"
+    assert L.advisory({"readers": unsure, "adjudicators": [reader(), reader(legal="uncertain")]}) == "unconfirmed"
 
 
 def test_a_case_says_whether_the_failing_runs_kept_host_and_device_storage_apart():
@@ -134,15 +134,16 @@ def test_ingest_records_readers_then_adjudicators(tmp_path, monkeypatch):
         batch("run", b, {"round": "read", "instructions": L.INSTRUCTIONS,
                          "cases": [case(1, "finding"), case(2, "decoy", "illegal")]}, [ans(1, "yes", req), ans(2, "no", "no")])
     R.ingest(tmp_path / "run")
-    assert L.load("x")["verdict"] == "contested" and len(L.load("x")["readers"]) == 2
+    assert L.load("x")["advisory"] == "contested" and len(L.load("x")["readers"]) == 2
     for b in ("batch-01", "batch-02"):
         batch("adj", b, {"round": "adjudicate", "instructions": L.INSTRUCTIONS,
                          "cases": [case(1, "finding"), case(2, "decoy", "result_not_required")]},
               [ans(1, "yes", "yes"), ans(2, "yes", "no")])
     R.ingest(tmp_path / "adj")
     rec = L.load("x")
-    assert rec["verdict"] == "confirmed" and len(rec["adjudicators"]) == 2 and len(rec["readers"]) == 2
-    assert rec["why"].startswith("One independent reading disputed it")
+    assert rec["advisory"] == "confirmed" and len(rec["adjudicators"]) == 2 and len(rec["readers"]) == 2
+    assert rec["advisory_why"].startswith("One independent reading disputed it")
+    assert rec["verdict"] == "open"         # the readings decide nothing
     assert "Reading" not in R._clip("Reading B fails. The rule holds. Reading A is right; it cites 5.8.1.")
     assert R._clip("Both readings are right. The map restriction forbids it.") == "The map restriction forbids it."
     kept = "Both readings are right that bind(thread) is allowed inside teams in 5.2. But the loop races."
@@ -184,8 +185,8 @@ def test_a_reader_counts_only_if_its_program_quotes_hold():
     calls = "if (omp_is_initial_device()) x = 1;\n#pragma omp target map(tofrom: x)\n"
     assert L.check_program({"program_lines": ["omp_is_initial_device"], "absent": ["device("]}, calls)["contradicted"] == 0
     assert L.check_program({"program_lines": ["omp_is_initial_device"], "absent": ["map(tofrom: x)"]}, calls)["contradicted"] == 1
-    assert L.verdict({"readers": [reader(), reader(legal="no", contradicted=1), reader()]}) == "confirmed"
-    assert L.verdict({"readers": [reader(), reader(lines_missing=1)]}) == "unconfirmed"
+    assert L.advisory({"readers": [reader(), reader(legal="no", contradicted=1), reader()]}) == "confirmed"
+    assert L.advisory({"readers": [reader(), reader(lines_missing=1)]}) == "unconfirmed"
 
 
 def test_a_reader_that_quotes_no_program_line_does_not_count():
@@ -196,8 +197,8 @@ def test_a_reader_that_quotes_no_program_line_does_not_count():
 
 def test_the_verdict_counts_only_readings_under_the_current_instructions():
     old = [reader(legal="no", instructions="v1"), reader(instructions="v1")]
-    assert L.verdict({"readers": old}) == "unconfirmed"
-    assert L.verdict({"readers": old + [reader(), reader()]}) == "confirmed"
+    assert L.advisory({"readers": old}) == "unconfirmed"
+    assert L.advisory({"readers": old + [reader(), reader()]}) == "confirmed"
 
 
 def test_a_dispute_adjudicated_only_under_older_instructions_is_still_open(tmp_path, monkeypatch):
@@ -236,7 +237,7 @@ def test_a_reading_two_counted_verifiers_refute_does_not_count():
         assert L.counted(r), bad                                # an uncounted or upholding verifier: no refutation
     rs = [reader(), reader(legal="no"), reader()]
     rs[1]["verifications"] = [verification(), verification()]
-    assert L.verdict({"readers": rs}) == "confirmed"           # the refuted dissent no longer contests it
+    assert L.advisory({"readers": rs}) == "confirmed"           # the refuted dissent no longer contests it
 
 
 def test_a_verifier_counts_only_if_it_gets_both_decoys_right():
@@ -258,7 +259,7 @@ def test_verification_attaches_to_the_reading_and_two_refutations_drop_it(tmp_pa
     no = dict(reader(legal="no"), run="r/batch-01", reasoning="c is a scalar.")
     rec = {"finding": "x.f90", "program_sha": sha, "readers": [dict(reader(), run="r/batch-02"), no,
                                                               dict(reader(), run="r/batch-03")]}
-    rec["verdict"] = L.verdict(rec)
+    rec["verdict"] = L.advisory(rec)
     L.record_path("x").write_text(json.dumps(rec))
     assert rec["verdict"] == "contested"
     assert [(t["id"], t["run"]) for t in R.verify_targets()] == [("x", "r/batch-01"), ("x", "r/batch-02"),
@@ -277,7 +278,7 @@ def test_verification_attaches_to_the_reading_and_two_refutations_drop_it(tmp_pa
     rec = L.load("x")
     dropped = rec["readers"][1]
     assert len(dropped["verifications"]) == 2 and L.refuted(dropped)
-    assert rec["verdict"] == "confirmed" and not L.problems("x", rec)
+    assert rec["advisory"] == "confirmed" and not L.problems("x", rec)
 
 
 def ruling(ok=1, wrong_section=0, not_found=0):
@@ -288,17 +289,17 @@ def ruling(ok=1, wrong_section=0, not_found=0):
 
 def test_a_maintainers_ruling_with_checked_passages_settles_a_finding_as_ruled():
     contested = [reader(), reader(legal="no")]
-    assert L.verdict({"readers": contested, "adjudicators": [reader(legal="no")]}) == "contested"
-    assert L.verdict({"readers": contested, "adjudicators": [reader(legal="no")], "ruling": ruling()}) == "ruled"
+    assert L.advisory({"readers": contested, "adjudicators": [reader(legal="no")]}) == "contested"
+    assert L.advisory({"readers": contested, "adjudicators": [reader(legal="no")], "ruling": ruling()}) == "ruled"
     assert "ruled" in L.VERDICTS and "ruling" in L.WORDS["ruled"]
-    assert L.WORDS["ruled"] != L.WORDS["confirmed"]          # never shown as independent confirmation
+    assert L.WORDS["ruled"] != L.WORDS["checked"]          # never shown as mechanical evidence
 
 
 def test_a_ruling_whose_passages_do_not_check_out_is_ignored_and_reported():
     contested = [reader(), reader(legal="no")]
     for bad in (ruling(ok=0, not_found=1), ruling(ok=1, wrong_section=1), ruling(ok=0)):
         rec = {"readers": contested, "ruling": bad, "program_sha": "x"}
-        assert L.verdict(rec) == "contested"
+        assert L.advisory(rec) == "contested"
         rec["verdict"] = "contested"
         assert any("ruling" in p for p in L.problems("f", rec))
 

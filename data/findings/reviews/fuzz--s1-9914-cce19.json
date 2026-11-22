@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "5135102ff17f69a49da3d41b9af6a41cdfb6ae5fe6c57452ce43511295f9dbff",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-02",
@@ -137,5 +137,25 @@
    },
    "reasoning": "Reading A fails: the OpenMP parts are fine, but the submodule defines gs1 with a full function-stmt, so the dummy argument x must be declared in the function body. With implicit none and no declaration of x (nor a module procedure statement form), the Fortran program violates the base-language rules. A non-conforming program need not be accepted, so the hang is not a required-result failure. Reading B is right."
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "timeout",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "5135102ff17f69a49da3d41b9af6a41cdfb6ae5fe6c57452ce43511295f9dbff"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

@@ -1,0 +1,25 @@
+{
+ "readers": [],
+ "program_sha": "42b5fcefe18a8634f2e26507f26208c2f31768f1ca141167622ff53376a7bafb",
+ "mechanical": {
+  "rules": "unreadable",
+  "rules_why": [
+   "rules: cannot read it: GrammarError: version: device_safesync on requires is not valid in OpenMP 5.2"
+  ],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "afar244"
+  ],
+  "program_sha": "42b5fcefe18a8634f2e26507f26208c2f31768f1ca141167622ff53376a7bafb"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "open",
+ "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it."
+}

@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "905bccf76a70024abe28438530c50460463e908c4bb6ca412832af49c81d9e3d",
  "instructions": "v2",
- "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: Section 5.8.7 defines pointer as variables of pointer type and aggregate as variables of aggregate type (arrays or structures). The Fortran pointer array wp is a pointer and also an array, so it fits both categories. The text gives no precedence between them. If aggregate applies, the implicit tofrom rule of 5.8.1 maps wp and the observed copy-back is permitted. If pointer applies, to-only mapping is permitted too.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-01",
@@ -213,5 +213,28 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "gcc",
+   "nvhpc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "program_sha": "905bccf76a70024abe28438530c50460463e908c4bb6ca412832af49c81d9e3d"
+ },
+ "advisory": "contested",
+ "advisory_why": "An independent adjudicating reading finds the result not required: Section 5.8.7 defines pointer as variables of pointer type and aggregate as variables of aggregate type (arrays or structures). The Fortran pointer array wp is a pointer and also an array, so it fits both categories. The text gives no precedence between them. If aggregate applies, the implicit tofrom rule of 5.8.1 maps wp and the observed copy-back is permitted. If pointer applies, to-only mapping is permitted too."
 }

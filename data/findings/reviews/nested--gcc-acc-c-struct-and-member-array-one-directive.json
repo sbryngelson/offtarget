@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "bbb29dac870dda430ed39511fd261a05159dee2f0cc254f1784f935199857814",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-02",
@@ -137,5 +137,23 @@
    },
    "reasoning": "Both readings agree the program is conforming: a struct and a subarray of a pointer member of a struct may appear in data clauses. Reading A overreaches: the attach pointer action occurs only when var is a pointer reference, a term the specification does not define for a member subarray, so the text does not clearly require the device r.a to be attached to the device copy of r.a[0:4]. Reading B is right that this is not pinned down. The intent is plausible (attach), but the normative text stops short."
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "bbb29dac870dda430ed39511fd261a05159dee2f0cc254f1784f935199857814"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

@@ -108,6 +108,27 @@
  "external": [],
  "program_sha": "69c57dac8b816891aae5d1a36e522485ad244195a0639e046e273d3a433daa3f",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required."
+ "verdict": "open",
+ "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it.",
+ "mechanical": {
+  "rules": "unreadable",
+  "rules_why": [
+   "rules: cannot read it: GrammarError: bad_argument: linear(x: for, step(2)) on parallel for does not match \"list [':' modifiers[linear-modifier, step-complex-modifier, step-simple-modifier]]\" (OpenMP 5.2 \u00a75.4.6, p.117)"
+  ],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "timeout",
+  "failing": [
+   "afar",
+   "cce"
+  ],
+  "witnesses": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "69c57dac8b816891aae5d1a36e522485ad244195a0639e046e273d3a433daa3f"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

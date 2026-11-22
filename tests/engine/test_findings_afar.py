@@ -2141,3 +2141,65 @@ def test_a_reduction_of_an_unmapped_scalar_nested_in_target_is_found(target, bad
     assert any("omp-unmapped-scalar-reduction" in w for w in why) == bad, why
     ok, legal = rules(src, "c")      # a result hazard, not a legality restriction
     assert not any("omp-unmapped-scalar-reduction" in w for w in legal)
+
+
+def test_a_loop_bound_to_its_thread_is_run_by_one_thread_and_is_no_race():
+    """loop bind(thread): the encountering thread runs every iteration (OpenMP 5.2 §11.7.1), so an
+    update of a variable the enclosing teams construct privatizes is not a race."""
+    src = """program p
+  use omp_lib, only: omp_get_team_num
+  implicit none
+  integer :: tot(4), tm, mine, i
+  tot = 0
+  !$omp target map(tofrom: tot)
+    !$omp teams num_teams(4) private(tm, mine)
+      tm = omp_get_team_num()
+      mine = 0
+      !$omp loop bind(thread)
+        do i = 1, 8
+          mine = mine + 1
+        end do
+      !$omp end loop
+      tot(tm + 1) = mine
+    !$omp end teams
+  !$omp end target
+  print *, tot
+end program p
+"""
+    ok, why = rules(src)
+    assert not any("race:" in w for w in why), why
+
+
+def test_every_declarator_of_a_c_declaration_in_the_loop_body_is_private():
+    src = """#include <stdio.h>
+int main(void) {
+  int a[64];
+  #pragma omp target teams distribute parallel for map(from: a)
+  for (int c = 0; c < 64; c++) {
+    int i = c / 8, j = c % 8, k = i + j;
+    a[c] = k;
+  }
+  printf("%d\\n", a[3]);
+  return 0;
+}
+"""
+    ok, why = rules(src, "c")
+    assert not any("race:" in w for w in why), why
+
+
+def test_an_element_of_a_pointer_declared_in_the_loop_body_is_private_storage():
+    src = """#include <stdio.h>
+#include <stdlib.h>
+int main(void) {
+  int a[64];
+  #pragma omp target teams distribute parallel for map(from: a)
+  for (int c = 0; c < 64; c++) {
+    int *tmp = (int *)malloc(2 * sizeof(int)); tmp[0] = c;
+    a[c] = tmp[0]; free(tmp);
+  }
+  printf("%d\\n", a[3]);
+  return 0;
+}
+"""
+    ok, why = rules(src, "c")
+    assert not any("race:" in w for w in why), why

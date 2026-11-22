@@ -108,6 +108,27 @@
  "external": [],
  "program_sha": "de4e99f619bf267f9ccdf428915bba4e071a3ad9eae24bfe87cd5afc81b54750",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "cce",
+   "nvhpc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "de4e99f619bf267f9ccdf428915bba4e071a3ad9eae24bfe87cd5afc81b54750"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "c7d1be751b7b2685167bc8a8214c9198ee9d28557b76453845cc41144a23fb4d",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269 of another compiler family build and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-04",
@@ -137,5 +137,27 @@
    },
    "reasoning": "A member of a composite variable is a valid var, and no OpenACC 3.4 restriction forbids a derived-type variable and one of its members in data clauses of the same directive. The array-notation restriction on parents of members is for update and does not apply (no subarray notation here). Copying x does not copy data behind allocatable member a, so copy(x%a) transfers it. The gfortran message is an implementation limit. Reading A is right; Reading B's doubt rests on thin text, not on a rule against it."
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "c7d1be751b7b2685167bc8a8214c9198ee9d28557b76453845cc41144a23fb4d"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

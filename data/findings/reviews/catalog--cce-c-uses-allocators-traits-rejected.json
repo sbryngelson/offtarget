@@ -1,0 +1,24 @@
+{
+ "readers": [],
+ "program_sha": "dada9e040e039bf7724ec60cab650764130c2452c0fc346e93f4d3b03040091c",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244"
+  ],
+  "program_sha": "dada9e040e039bf7724ec60cab650764130c2452c0fc346e93f4d3b03040091c"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected."
+}

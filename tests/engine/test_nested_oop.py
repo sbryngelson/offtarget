@@ -1543,17 +1543,14 @@ def test_host_builds_of_the_variants_are_clean(tmp_path):
 
 
 def test_the_rules_witness_on_the_variants():
-    """offload.engine.prerun's rules (restrictions and the race rule): the controls are accepted; the malloc'd block
-    `tmp[0] = i` is reported as a shared element, which it is not (tmp is declared in the loop body and points to a
-    block the iteration allocated): a limit of the race rule, recorded here so that the finding's legality line can
-    say so."""
+    """offload.engine.prerun's rules (restrictions and the race rule) accept the program and its controls: the
+    malloc'd block `tmp[0] = i` is no shared element (tmp is declared in the loop body and points to a block the
+    iteration allocated)."""
     from offload.engine import prerun
     base = replace(D.minimal(), marker="none")
-    for f in (replace(base, store="direct"), replace(base, store="stack"), replace(base, store="direct", warm=1000)):
+    for f in (base, replace(base, store="direct"), replace(base, store="stack"), replace(base, store="direct", warm=1000)):
         ok, why = prerun.rules_witness((D.source(f), "c"))
         assert ok, why
-    ok, why = prerun.rules_witness((D.source(base), "c"))
-    assert not ok and len(why) == 1 and "tmp(0)" in why[0], why
 
 
 def test_the_fence_variants_are_one_change():

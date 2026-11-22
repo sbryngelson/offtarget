@@ -114,9 +114,9 @@ section { margin-top: 26px; }
 .browse .one { padding: 1px 0; }
 
 .legality { margin: 0; padding: 8px 12px; border-left: 3px solid var(--line); color: var(--muted); max-width: 72ch; }
-.legality.lg-confirmed, .legality.lg-supported, .legality.lg-ruled { border-left-color: var(--accent); }
-.legality.lg-contested { border-left-color: currentColor; color: var(--ink); }
-.lg-contested { font-weight: 500; }
+.legality.lg-checked, .legality.lg-supported, .legality.lg-ruled { border-left-color: var(--accent); }
+.legality.lg-refuted { border-left-color: currentColor; color: var(--ink); }
+.lg-refuted { font-weight: 500; }
 
 /* compilers: per family, its releases left to right; a release's bar splits its issues by when they fail */
 .seg-run { background: var(--fail); }

@@ -1,0 +1,23 @@
+{
+ "readers": [],
+ "program_sha": "f59e9b1b5ea7389c39a9a346cc9bf17ba331d083fae96967541327c91426022e",
+ "mechanical": {
+  "rules": "unreadable",
+  "rules_why": [
+   "rules: cannot read it: GrammarError: bad_argument: device_type(declare target: any) on declare target does not match 'enum[any, host, nohost]' (OpenMP 5.2 \u00a713.1, p.275)"
+  ],
+  "hazards": [],
+  "witness": "same-family",
+  "expected": "self-check",
+  "outcome": "ice",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [],
+  "program_sha": "f59e9b1b5ea7389c39a9a346cc9bf17ba331d083fae96967541327c91426022e"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "open",
+ "why": "Not yet settled: the rules engine cannot read it; no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
+}

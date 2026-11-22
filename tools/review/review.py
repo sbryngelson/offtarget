@@ -158,7 +158,7 @@ def disputed() -> list[str]:
     for p in sorted(L.REVIEWS.glob("*.json")):
         rec = json.loads(p.read_text())
         current = [a for a in rec.get("adjudicators", []) if a.get("instructions", "v1") == L.INSTRUCTIONS]
-        if rec["verdict"] in ("contested", "unconfirmed") and not current \
+        if rec.get("advisory", rec["verdict"]) in ("contested", "unconfirmed") and not current \
                 and sum(L.counted(r) for r in rec["readers"]) >= 2:
             out.append(p.stem.replace("--", "/"))
     return out
@@ -329,8 +329,9 @@ def _ruling_text(rec: dict) -> str:
     return f"A maintainer's ruling, citing {cites}. {r['reasoning']}"
 
 
-def why_of(rec: dict) -> str:
-    v = rec["verdict"]
+def advisory_why(rec: dict) -> str:
+    """The AI readings' explanation (advisory; never published)."""
+    v = rec.get("advisory") or rec.get("verdict")
     if v == "ruled":
         rs = [r for r in rec.get("adjudicators", []) + rec["readers"] if L.counted(r)]
         dissent = next((r for r in rs if r["legal"] == "no" or r["result_required"] == "no"), None)
@@ -417,12 +418,91 @@ def ingest(run: Path) -> int:
                                    "reasoning": a.get("reasoning", "")})
     L.REVIEWS.mkdir(parents=True, exist_ok=True)
     for fid, rec in records.items():
-        rec["verdict"] = L.verdict(rec)
-        rec["why"] = why_of(rec)
+        settle(fid, rec)
         L.record_path(fid).write_text(json.dumps(rec, indent=1) + "\n")
     from collections import Counter
     print(dict(Counter(r["verdict"] for r in records.values())), f"{len(records)} records")
     return 0
+
+
+_SOURCE_WORDS = {"other-family": "another compiler family's run", "self-check": "the program's own check",
+                 "generator-model": "the generator's model"}
+
+
+def why_of(rec: dict) -> str:
+    """What the site says of the verdict: only its mechanical basis or the maintainer's ruling."""
+    v = rec["verdict"]
+    m = rec.get("mechanical") or {}
+    if v == "ruled":
+        return _ruling_text(rec)
+    if v == "refuted":
+        if m.get("rules") == "reject":
+            return "The rules engine rejects the program: " + _clip("; ".join(m.get("rules_why") or []), 300)
+        return "The result the program checks is not required: " + _clip("; ".join(m.get("hazards") or []), 300)
+    if v == "supported":
+        return "Outside evidence supports it: " + _clip("; ".join(str(e.get("source", e)) for e in rec["external"]), 300)
+    if v == "checked":
+        w = ", ".join(m.get("witnesses") or []) or "another family's front end"
+        exp = "" if m.get("outcome") in L.ACCEPTANCE else f"; the expected result comes from {_SOURCE_WORDS[m['expected']]}"
+        return f"The rules engine accepts the program and {w} of another compiler family build{'s' if ',' not in w else ''} and run it as expected{exp}."
+    if not m:
+        return "Not yet checked."
+    gaps = []
+    if m.get("rules") != "accept":
+        gaps.append("the rules engine cannot read it" if m.get("rules") == "unreadable" else "the rules engine does not accept it")
+    if m.get("witness") != "accept":
+        gaps.append("no compiler of another family (GCC does not count) has accepted it")
+    if m.get("outcome") not in L.ACCEPTANCE and m.get("expected") not in L.EXPECTED_SOURCES:
+        gaps.append("no independent source gives the expected result")
+    return "Not yet settled: " + "; ".join(gaps) + ". A maintainer's ruling decides it."
+
+
+def settle(fid: str, rec: dict) -> dict:
+    """Recompute a record's verdicts: the legality verdict (mechanical), the advisory one (AI readings)."""
+    rec["advisory"] = L.advisory(rec)
+    rec["advisory_why"] = advisory_why(rec) if rec.get("readers") else ""
+    rec["verdict"] = L.verdict(rec)
+    rec["why"] = why_of(rec)
+    return rec
+
+
+def mechanical(ids: list[str], frontend: bool = False) -> int:
+    """Compute each finding's mechanical evidence (offload.engine.legality_mechanical) from its program
+    and the committed rows, and its verdicts; every finding of the index when ids is empty."""
+    from collections import Counter
+    from offload.engine import legality_mechanical as LM
+    from offload.engine.confirm.findings import load_index
+    from offload.engine.site import matrix as M
+    rows, cases = M._rows(), M._cases()
+    index = {str(Path(f.file).relative_to("data/findings").with_suffix("")): f for f in load_index()}
+    out = Counter()
+    for fid in ids or sorted(index):
+        f, path = index.get(fid), L.finding_file(fid)
+        if f is None or path is None:
+            print(f"{fid}: not a finding of the index"); continue
+        text = path.read_text(errors="replace")
+        model = "acc" if re.search(r"^\s*(?:!\$acc|#\s*pragma\s+acc)\b", text, re.M | re.I) else "omp"
+        lang = "c" if path.suffix in (".c", ".cpp") else "f90"
+        rec = L.load(fid) or {"readers": [], "program_sha": L.program_sha(path)}
+        rec["mechanical"] = LM.evidence(text, lang, model, f.outcome, M.cells(fid, rows, cases), frontend)
+        rec["mechanical"]["program_sha"] = L.program_sha(path)
+        settle(fid, rec)
+        L.REVIEWS.mkdir(parents=True, exist_ok=True)
+        L.record_path(fid).write_text(json.dumps(rec, indent=1) + "\n")
+        out[rec["verdict"]] += 1
+    print(dict(out), f"{sum(out.values())} findings")
+    return 0
+
+
+def queue() -> list[tuple[str, str, str]]:
+    """(finding, gap, advisory) of every open finding: what a maintainer's ruling would settle."""
+    out = []
+    for p in sorted(L.REVIEWS.glob("*.json")):
+        rec = json.loads(p.read_text())
+        if rec.get("verdict") == "open":
+            out.append((p.stem.replace("--", "/"), rec.get("why", "").removeprefix("Not yet settled: "),
+                        rec.get("advisory", "")))
+    return out
 
 
 def rule(fid: str, spec: str, section: str, quotes: list[str], why: str, date: str) -> int:
@@ -442,8 +522,7 @@ def rule(fid: str, spec: str, section: str, quotes: list[str], why: str, date: s
         print(f"{fid}: refused, the program changed since its review; review it again first")
         return 1
     rec["ruling"] = {"by": "maintainer", "date": date, "passages": passages, "quotes": checked, "reasoning": why}
-    rec["verdict"] = L.verdict(rec)
-    rec["why"] = why_of(rec)
+    settle(fid, rec)
     L.record_path(fid).write_text(json.dumps(rec, indent=1) + "\n")
     print(f"{fid}: {rec['verdict']}")
     return 0
@@ -480,7 +559,22 @@ def main(argv=None) -> int:
     r.add_argument("--quote", action="append", required=True, help="a verbatim passage (repeatable)")
     r.add_argument("--why", required=True, help="the reasoning, one or two sentences")
     r.add_argument("--date", default=__import__("datetime").date.today().isoformat())
+    mc = sub.add_parser("mechanical", help="the mechanical legality evidence and verdicts (no AI reading)")
+    mc.add_argument("--frontend", action="store_true", help="also run AMD's front end (a compute node)")
+    mc.add_argument("ids", nargs="*")
+    sub.add_parser("queue", help="the open findings a maintainer's ruling would settle, by gap")
     a = ap.parse_args(argv)
+    if a.cmd == "queue":
+        from itertools import groupby
+        rows = sorted(queue(), key=lambda r: r[1])
+        for gap, grp in groupby(rows, key=lambda r: r[1]):
+            grp = list(grp)
+            print(f"{len(grp)}: {gap}")
+            for fid, _, adv in grp:
+                print(f"    {fid}" + (f"  (AI readings: {adv})" if adv else ""))
+        return 0
+    if a.cmd == "mechanical":
+        return mechanical(a.ids, a.frontend)
     if a.cmd == "rule":
         return rule(a.id, a.spec, a.section, a.quote, a.why, a.date)
     if a.cmd == "select":

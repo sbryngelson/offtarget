@@ -230,24 +230,24 @@ console.log(JSON.stringify(sorted([mk('ice-reg', 'compile', true), mk('wrong', '
     assert json.loads(out[0]) == ["wrong", "ice-reg"]
 
 
-def test_the_default_sort_puts_confirmed_legality_before_contested_among_wrong_answers():
-    """Among wrong answers, confirmed (or supported) legality comes first, then unconfirmed, then
-    contested, before regressions and reach; the compiler pages' order agrees."""
+def test_the_default_sort_puts_checked_legality_before_refuted_among_wrong_answers():
+    """Among wrong answers, checked (or supported, or ruled) legality comes first, then open, then
+    refuted, before regressions and reach; the compiler pages' order agrees."""
     out = _js("""
 S = fromQuery('?fam=cce');
 const v = (reg) => ({versions: ['cce21'], targets: ['mi300a-u'], status: 'open', status_version: null, regression: reg});
 const mk = (id, legality, reg) => ({id, defect: id, kind: 'incorrect', kinds: ['incorrect'], phase: 'offload',
   lang: 'f90', model: 'omp', title: id, constructs: [], regression: reg, legality, fams: {cce: v(reg)}});
-console.log(JSON.stringify(sorted([mk('contested-reg', 'contested', true), mk('unconf', 'unconfirmed', false),
-  mk('conf', 'confirmed', false), mk('supp', 'supported', true)]).map((i) => i.id)));
+console.log(JSON.stringify(sorted([mk('contested-reg', 'refuted', true), mk('unconf', 'open', false),
+  mk('conf', 'checked', false), mk('supp', 'supported', true)]).map((i) => i.id)));
 """)
     assert json.loads(out[0]) == ["supp", "conf", "unconf", "contested-reg"]
     from offload.engine.site import data as D
     mk = lambda i, legality, reg: {"id": i, "title": i, "phase": "offload", "kind": "incorrect",  # noqa: E731
                                    "kinds": ["incorrect"], "regression": reg, "legality": legality,
                                    "fams": {"cce": {"versions": ["cce21"], "targets": ["mi300a-u"]}}}
-    got = D.fixed_order([mk("contested-reg", "contested", True), mk("unconf", "unconfirmed", False),
-                         mk("conf", "confirmed", False), mk("supp", "supported", True)], "cce")
+    got = D.fixed_order([mk("contested-reg", "refuted", True), mk("unconf", "open", False),
+                         mk("conf", "checked", False), mk("supp", "supported", True)], "cce")
     assert [i["id"] for i in got] == ["supp", "conf", "unconf", "contested-reg"]
 
 
@@ -1317,15 +1317,15 @@ def test_each_issue_says_when_and_how_it_fails():
 
 
 def test_each_issue_carries_its_legality_review(tmp_path, monkeypatch):
-    """legality: the verdict of its independent review (offload.engine.legality_review.status),
-    in the site's words with the reason; an issue with no review is not independently confirmed."""
+    """legality: its verdict (offload.engine.legality_review.status), in the site's words with the
+    basis; an issue not yet checked is open."""
     from offload.engine import legality_review as L
-    monkeypatch.setattr(L, "status", lambda fid: ("confirmed", "two readings agree") if fid == "c"
-                        else ("unconfirmed", "no independent review yet"))
+    monkeypatch.setattr(L, "status", lambda fid: ("checked", "the rules engine accepts it") if fid == "c"
+                        else ("open", "not yet checked"))
     r = D.records([finding("c"), finding("u")])
     got = {i["id"]: (i["legality"], i["legality_words"], i["legality_why"]) for i in r["issues"]}
-    assert got["c"] == ("confirmed", "independently confirmed", "two readings agree")
-    assert got["u"] == ("unconfirmed", "not independently confirmed", "no independent review yet")
+    assert got["c"] == ("checked", "checked by the rules engine and another compiler family", "the rules engine accepts it")
+    assert got["u"] == ("open", "not yet settled", "not yet checked")
 
 
 def test_the_compilers_index_shows_each_release_and_what_changed_between_them():

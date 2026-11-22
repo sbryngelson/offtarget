@@ -5,8 +5,9 @@ const CSV_COLUMNS = ['id', 'title', 'kind', 'phase', 'stage', 'symptom', 'legali
 const KIND_NAME = { incorrect: 'Appears to behave incorrectly', unsupported: 'Appears not to support' };
 const KIND_TAG = KIND_NAME;
 const STAGE_NAME = { compile: 'At compile time', link: 'At link time', run: 'At run time' };
-const LEGAL_NAME = { confirmed: 'Independently confirmed', supported: 'Supported by outside evidence',
-  ruled: "Settled by a maintainer's ruling", contested: 'Contested', unconfirmed: 'Not independently confirmed' };
+const LEGAL_NAME = { checked: 'Checked by the rules engine and another compiler family',
+  supported: 'Supported by outside evidence', ruled: "Settled by a maintainer's ruling", open: 'Not yet settled',
+  refuted: 'Refuted by the rules engine' };
 const STATE_WORD = { 'fails-like': 'behaves incorrectly', 'fails-differently': 'fails another way', correct: 'correct',
   unknown: 'unknown', na: 'n/a' };
 const ST_NAME = { open: 'Open', changed: 'Changed in a newer release', mixed: 'Mixed evidence', fixed: 'Fixed in a newer release',
@@ -84,9 +85,9 @@ function searchRank(i, q) {
 // Wrong answers: an issue of the offload phase that appears to behave incorrectly.
 function wrongAnswer(i) { return i.phase === 'offload' && (i.kinds || [i.kind]).includes('incorrect'); }
 
-// How settled an issue's legality is: confirmed or supported, then unconfirmed, then contested
+// How settled an issue's legality is: checked, supported or ruled, then open, then refuted
 // (offload/engine/site/data.py LEGALITY_RANK).
-const LEGALITY_RANK = { confirmed: 2, supported: 2, ruled: 2, unconfirmed: 1, contested: 0 };
+const LEGALITY_RANK = { checked: 2, supported: 2, ruled: 2, open: 1, refuted: 0 };
 function legalityRank(i) { return LEGALITY_RANK[i.legality] ?? 1; }
 
 function sorted(rows) {
@@ -199,7 +200,7 @@ function renderFilters() {
     gpuChecks('GPU and memory mode', 'tg', [...new Set(S.fams.flatMap((f) => TARGETS[f]))], TG_NAME),
     checks('Kind', 'kinds', ['incorrect', 'unsupported'], KIND_NAME),
     checks('When it fails', 'stages', ['compile', 'link', 'run'], STAGE_NAME),
-    checks('Legality', 'legal', ['confirmed', 'supported', 'ruled', 'contested', 'unconfirmed'], LEGAL_NAME),
+    checks('Legality', 'legal', ['checked', 'supported', 'ruled', 'open', 'refuted'], LEGAL_NAME),
     checks('Language', 'langs', ['f90', 'c'], { f90: 'Fortran', c: 'C' }),
     checks('Model', 'models', ['omp', 'acc'], { omp: 'OpenMP', acc: 'OpenACC' }),
     checks('Status', 'st', ['open', 'changed', 'mixed', 'fixed', 'not-reproduced', 'not-run'], ST_NAME),

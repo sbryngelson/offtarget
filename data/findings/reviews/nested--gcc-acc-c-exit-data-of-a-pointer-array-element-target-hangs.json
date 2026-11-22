@@ -121,8 +121,8 @@
  "external": [],
  "program_sha": "6d8d656b48251f16a07cc41d5cce8467c3128f6932b8b988322c5f9a561c953b",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: Struct member r.nx with subarray r.nx[0:2] is allowed because the parent r is not a subarray; r.nx[0][0:1] is a subarray of a pointer element, not a member of a subarray. Copying r copies the pointer members without their targets, so the later member copyins attach them. Deletes run in reverse order. The serial region reads only r.v, so tot=6 is required; the UNHANDLED kind hang is a runtime defect.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-06",
@@ -200,5 +200,23 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "timeout",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "6d8d656b48251f16a07cc41d5cce8467c3128f6932b8b988322c5f9a561c953b"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: Struct member r.nx with subarray r.nx[0:2] is allowed because the parent r is not a subarray; r.nx[0][0:1] is a subarray of a pointer element, not a member of a subarray. Copying r copies the pointer members without their targets, so the later member copyins attach them. Deletes run in reverse order. The serial region reads only r.v, so tot=6 is required; the UNHANDLED kind hang is a runtime defect."
 }

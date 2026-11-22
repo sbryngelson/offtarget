@@ -376,14 +376,14 @@ def test_compiler_filter_takes_a_family_or_a_toolchain():
 
 
 def test_the_legality_filter_and_the_list_say_the_verdict(capsys):
-    contested = issues.search("", legality="contested")
-    assert contested and all(i["legality"] == "contested" for i in contested)
+    contested = issues.search("", legality="open")
+    assert contested and all(i["legality"] == "open" for i in contested)
     from offload.engine.legality_review import VERDICTS
     assert {i["legality"] for i in issues.search("")} <= set(VERDICTS)
     ruled = issues.search("", legality="ruled")
     assert ruled and all(i["legality"] == "ruled" for i in ruled)
     assert "maintainer's ruling" in issues.show(ruled[0]["page"])
-    assert issues.main(["--legality", "contested"]) == 0
+    assert issues.main(["--legality", "open"]) == 0
     assert contested[0]["page"] in capsys.readouterr().out
 
 

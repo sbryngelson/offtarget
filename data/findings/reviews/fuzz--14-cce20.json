@@ -1,0 +1,27 @@
+{
+ "readers": [],
+ "program_sha": "271586d22060a8fbe786505a7c02b24db2b316ef1fd1fd29fa7ce2a15a1b2436",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "cce",
+   "nvhpc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "271586d22060a8fbe786505a7c02b24db2b316ef1fd1fd29fa7ce2a15a1b2436"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+}

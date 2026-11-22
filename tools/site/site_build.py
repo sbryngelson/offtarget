@@ -374,30 +374,30 @@ as evidence too.</p></section>
 <dt>At link time</dt><dd>the link step refuses it (an undefined symbol, a missing library) or the offload or LTO tool crashes.</dd>
 <dt>At run time</dt><dd>the program crashes or aborts, stops with a run-time error, hangs, or finishes with a wrong answer.</dd>
 </dl>
-<h2 id="legality">Legality review</h2>
-<p>Each issue's program is also read by independent readers that see the program, the specification text and the
-observed result, but not the argument written for the issue. The readers are language models (Claude Sonnet), each
-run on its own with no access to the catalog. Every batch of programs a reader gets holds one decoy whose answer is
-known, an illegal program or a result the specification does not require; a reader that misses its decoy does not
-count, and neither does one that quotes a passage the specification does not contain, quotes a program line the
-program does not contain, or says the program lacks something that is there. Two readers read each program.
-When they disagree or one is uncertain, two more readers adjudicate: they see both readings and check each against the
-specification, in batches that hold a decoy dispute whose right side is known. Every reading that counts, for an
-issue or against it, is then fact-checked: a verifier lists the premises the reading rests on and checks each
-against the specification and the program, in batches that hold a reading with a known false premise and a sound
-one. A reading two verifiers refute, each with quotes that check out, no longer counts. An argument against an issue's
-legality, filed from the link on its page, goes to adjudicators the same way. An issue's legality is one of:</p>
+<h2 id="legality">Legality</h2>
+<p>A program counts as legal only on evidence that does not come from the compiler under test. The rules engine
+checks each program against rules written from the specification (data races, the nesting of constructs and
+reductions, data that a construct maps or privatizes, and the clause restrictions it implements). A second witness
+is a compiler of another family that builds and runs the program as expected, or AMD's front end when AFAR is not
+a failing compiler; GCC is never a witness of legality. A wrong answer also needs an expected value from outside the
+failing compiler: another family's run, the program's own check, or the model of the generator that wrote it. A
+result the specification leaves on the device, such as a reduction of a scalar its target construct neither maps nor
+reduces, is not a required result. Readings by language models are kept with each issue's record but decide
+nothing and are not shown. An issue's legality is one of:</p>
 <dl class="terms">
-<dt>independently confirmed</dt><dd>two readers, or two adjudicators of a dispute, find the program legal and the
-result required.</dd>
-<dt>supported by outside evidence</dt><dd>the readers find the specification unclear, and an official example, a vendor's
-own bug tracker or a fix in a later release settles it.</dd>
-<dt>settled by a maintainer's ruling</dt><dd>the readers got the specification wrong, and a maintainer's ruling
-quotes the passage that decides it. The quotes are checked against the specification text like the readers', the ruling
-is shown in full on the issue, and it lapses when the program changes.</dd>
-<dt>contested</dt><dd>an adjudicator (or, before adjudication, a reader) finds the program not legal or the result
-not required, and nothing outside settles it. The reason is shown on the issue.</dd>
-<dt>not independently confirmed</dt><dd>no review yet, readers uncertain, or the program changed since its review.</dd>
+<dt>checked by the rules engine and another compiler family</dt><dd>the rules engine accepts the program, a
+compiler of another family accepts it, and a wrong answer's expected value comes from outside the failing
+compiler.</dd>
+<dt>supported by outside evidence</dt><dd>a vendor's own bug tracker, an official example or a fix in a later
+release supports it.</dd>
+<dt>settled by a maintainer's ruling</dt><dd>a maintainer's ruling quotes the passage that decides it. The quotes are
+checked against the specification text, the ruling is shown in full on the issue, and it lapses when the program
+changes.</dd>
+<dt>not yet settled</dt><dd>some evidence is missing (no other family accepts it, the rules engine cannot read it,
+or no outside source gives the expected value); the gap is shown on the issue, and a maintainer's ruling decides
+it.</dd>
+<dt>refuted by the rules engine</dt><dd>the rules engine rejects the program, or the checked result is one the
+specification does not require. The reason is shown on the issue.</dd>
 </dl>
 <p>An issue's status on a compiler release X is one of:</p>
 <dl class="terms">

@@ -1,0 +1,28 @@
+{
+ "readers": [],
+ "program_sha": "3e5c2f1e791aa167e9b8520fa89950170af7ae5579d43b409a228798ed6ad606",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "afar"
+  ],
+  "witnesses": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "3e5c2f1e791aa167e9b8520fa89950170af7ae5579d43b409a228798ed6ad606"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+}

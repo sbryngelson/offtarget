@@ -121,6 +121,27 @@
  "external": [],
  "program_sha": "6253346d807f7929c5e6d81b6d2f1dcd56b816223e13929b4e0689689c9b2cf0",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required."
+ "verdict": "open",
+ "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it.",
+ "mechanical": {
+  "rules": "unreadable",
+  "rules_why": [
+   "rules: cannot read it: GrammarError: version: 'target loop' is not valid in OpenMP 5.2"
+  ],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "ice",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar244",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "6253346d807f7929c5e6d81b6d2f1dcd56b816223e13929b4e0689689c9b2cf0"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

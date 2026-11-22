@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "02d8f7c9c935a132dc253fd11b9a7e690ac8200cbb5e36060fd1c6ae70b51561",
  "instructions": "v2",
- "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: _Float16 is not part of the base languages OpenMP names; section 1.6 says an implementation need not support a construct the base language implementation does not support. Whether the device compiler handles _Float16 conversions is not specified, so the ICE is not a violation of a required result.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269 of another compiler family build and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-04",
@@ -213,5 +213,29 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "ice",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "02d8f7c9c935a132dc253fd11b9a7e690ac8200cbb5e36060fd1c6ae70b51561"
+ },
+ "advisory": "contested",
+ "advisory_why": "An independent adjudicating reading finds the result not required: _Float16 is not part of the base languages OpenMP names; section 1.6 says an implementation need not support a construct the base language implementation does not support. Whether the device compiler handles _Float16 conversions is not specified, so the ICE is not a violation of a required result."
 }

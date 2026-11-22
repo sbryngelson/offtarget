@@ -1,0 +1,24 @@
+{
+ "readers": [],
+ "program_sha": "49c57f10267bfecb91bce961d0aa16a027370560d3e298d9132df097758015d1",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "run_error",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "49c57f10267bfecb91bce961d0aa16a027370560d3e298d9132df097758015d1"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+}

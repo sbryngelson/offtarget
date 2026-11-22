@@ -142,8 +142,8 @@
  "external": [],
  "program_sha": "7618b2f0d7acd60131c8ee7e973aa7314bc1e13dc6d76ebc57609fe1726abd64",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-01",
@@ -171,5 +171,28 @@
    },
    "reasoning": "Reading B fails: it ignores the Fortran rule that a scalar with the TARGET attribute is treated as mapped tofrom. s has TARGET, is not in a map clause and no earlier rule applies, so it is mapped tofrom; s=2*s+1 on the device is copied back, giving s=203. Observed s=101 is a compiler error (the rule is also in 5.0/6.0 per Reading A; checked here in 5.2)."
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "afar",
+   "nvhpc"
+  ],
+  "witnesses": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "7618b2f0d7acd60131c8ee7e973aa7314bc1e13dc6d76ebc57609fe1726abd64"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

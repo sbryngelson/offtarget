@@ -125,8 +125,8 @@
  "external": [],
  "program_sha": "6e4420b0f80802a55567852647fdb915704ec036e79928179c1c3274990303a4",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80, nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-05",
@@ -154,5 +154,27 @@
    },
    "reasoning": "Reading B fails: a procedure referenced in a target construct is treated as declare target, and add42, referenced in wrap, is covered by the transitive rule. No host-associated variables are referenced, so the internal-procedure unspecified-behavior sentence does not apply. a is mapped tofrom; values are 43 44 and 6 7. Reading A is right."
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "run_error",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "6e4420b0f80802a55567852647fdb915704ec036e79928179c1c3274990303a4"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

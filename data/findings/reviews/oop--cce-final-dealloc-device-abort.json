@@ -125,8 +125,8 @@
  "external": [],
  "program_sha": "71a48548132ce5291b00eb5d67543cda13a44b595fbe8891fabf46e4430bb20e",
  "instructions": "v2",
- "verdict": "unconfirmed",
- "why": "Independent readings are uncertain: Nothing forbids ALLOCATE, DEALLOCATE or finalization in a declare target procedure called from target, and ft_fin is declare target. The spec requires ALLOCATE and DEALLOCATE to be thread-safe but sets no device heap or support level. A device runtime stop at the allocate is not clearly a violation.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-04",
@@ -204,5 +204,25 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "crash",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "71a48548132ce5291b00eb5d67543cda13a44b595fbe8891fabf46e4430bb20e"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "Independent readings are uncertain: Nothing forbids ALLOCATE, DEALLOCATE or finalization in a declare target procedure called from target, and ft_fin is declare target. The spec requires ALLOCATE and DEALLOCATE to be thread-safe but sets no device heap or support level. A device runtime stop at the allocate is not clearly a violation."
 }

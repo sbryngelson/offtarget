@@ -127,8 +127,8 @@
  "external": [],
  "program_sha": "f291e10383fcfb60d06c380264ab5d7f738b0410b6bb411f58f4ab0a28fde77c",
  "instructions": "v2",
- "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: The failure is in device-side malloc, memcpy and free, which the specification treats only as procedures referenced in a target construct. Nothing in the specification defines their device behavior, heap size or failure handling for millions of threads, so wrong results from an exhausted device heap are not excluded.",
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-01",
@@ -266,5 +266,23 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "same-family",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "afar",
+   "cce"
+  ],
+  "witnesses": [
+   "gcc_sm80"
+  ],
+  "program_sha": "f291e10383fcfb60d06c380264ab5d7f738b0410b6bb411f58f4ab0a28fde77c"
+ },
+ "advisory": "contested",
+ "advisory_why": "An independent adjudicating reading finds the result not required: The failure is in device-side malloc, memcpy and free, which the specification treats only as procedures referenced in a target construct. Nothing in the specification defines their device behavior, heap size or failure handling for millions of threads, so wrong results from an exhausted device heap are not excluded."
 }

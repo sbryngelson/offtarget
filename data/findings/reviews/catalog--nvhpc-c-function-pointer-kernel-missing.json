@@ -159,8 +159,8 @@
  "external": [],
  "program_sha": "90fbe430d1a261b6c0ab23b4b9450ccba0e919df996ff8715edbd3d3251cb8d1",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "One independent reading disputed it; 2 adjudicating readings that weighed both find the program legal and the result required: An indirect device invocation is defined as a call through a pointer that refers to the host version of the procedure. Here f is assigned inside the target region from tw and th, which are in declare target, so f refers to the device versions and the call is an ordinary device call. The indirect clause rules do not apply. No restriction is violated, and base-language semantics give the expected result.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113b/batch-01",
@@ -264,5 +264,29 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "run_error",
+  "failing": [
+   "nvhpc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "90fbe430d1a261b6c0ab23b4b9450ccba0e919df996ff8715edbd3d3251cb8d1"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "One independent reading disputed it; 2 adjudicating readings that weighed both find the program legal and the result required: An indirect device invocation is defined as a call through a pointer that refers to the host version of the procedure. Here f is assigned inside the target region from tw and th, which are in declare target, so f refers to the device versions and the call is an ordinary device call. The indirect clause rules do not apply. No restriction is violated, and base-language semantics give the expected result."
 }

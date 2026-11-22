@@ -168,8 +168,8 @@
  "external": [],
  "program_sha": "6b8f41ad357e5b57d956caac520e1db71247be8b28c60243a99d3b7eb4a62775",
  "instructions": "v2",
- "verdict": "unconfirmed",
- "why": "Independent readings are uncertain: The statement x = x + v + 1 parses as (x + v) + 1, so it does not match x = x binop expr with x as the left operand of the top-level operator. The spec requires only that x binop expr be mathematically equivalent to x binop (expr), and the precedence condition is given as a sufficient case. For integer addition, x + (v + 1) is equivalent, so the form can be read as admitted.",
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-05",
@@ -273,5 +273,20 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "same-family",
+  "expected": "none",
+  "outcome": "ice",
+  "failing": [
+   "nvhpc"
+  ],
+  "witnesses": [],
+  "program_sha": "6b8f41ad357e5b57d956caac520e1db71247be8b28c60243a99d3b7eb4a62775"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "Independent readings are uncertain: The statement x = x + v + 1 parses as (x + v) + 1, so it does not match x = x binop expr with x as the left operand of the top-level operator. The spec requires only that x binop expr be mathematically equivalent to x binop (expr), and the precedence condition is given as a sufficient case. For integer addition, x + (v + 1) is equivalent, so the form can be read as admitted."
 }

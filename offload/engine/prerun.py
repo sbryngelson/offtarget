@@ -286,6 +286,9 @@ def _threaded(tree, i, model: str) -> bool:
             if name == "parallel":
                 return True
         return leaves[0] == "parallel"
+    if "loop" in leaves and any(c.name == "bind" and "thread" in " ".join(map(str, c.args)).lower()
+                                for c in d.clauses):
+        return False        # bind(thread): the encountering thread runs every iteration (5.2 §11.7.1)
     return bool(_OMP_THREADED & set(leaves))
 
 
@@ -728,6 +731,10 @@ def array_races(tree, text, lang, lines, body, d, a, priv,
             m = _C_LOCAL_ARRAY.match(st)
             if m:
                 local.add(m.group(1).lower())
+            # a pointer declared in the body to storage it allocates: each iteration's own block
+            for m in re.finditer(r"\*\s*([A-Za-z_]\w*)\s*=\s*(?:\([^()]*\)\s*)?"
+                                 r"(?:malloc|calloc|aligned_alloc)\s*\(", st):
+                local.add(m.group(1).lower())
     for ln, name, sub, guarded, update in writes:
         low = name.lower()
         if low in priv or low in local:
@@ -815,6 +822,20 @@ def _writes(lines: list[str], body, lang: str, protected) -> dict:
                 loopv.add(m.group(1))
             for m in _C_DECL.finditer(code):
                 local.add(m.group(1))
+                # the other declarators of the same declaration (int i = a, j = b, k;)
+                rest, depth, cur, parts = code[m.end(1):].split(";", 1)[0], 0, "", []
+                for ch in rest:
+                    depth += ch in "([{"
+                    depth -= ch in ")]}"
+                    if ch == "," and depth == 0:
+                        parts.append(cur); cur = ""
+                    else:
+                        cur += ch
+                parts.append(cur)
+                for piece in parts[1:]:
+                    d = re.match(r"\s*\**\s*([A-Za-z_]\w*)\s*(?:=|\[|$)", piece)
+                    if d:
+                        local.add(d.group(1))
             guarded = any(cstack) or re.search(r"\b(?:if|else)\b",
                                                 code) is not None
             for m in _C_ASSIGN.finditer(code):

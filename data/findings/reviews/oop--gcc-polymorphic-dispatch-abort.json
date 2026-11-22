@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
  "instructions": "v2",
- "verdict": "contested",
- "why": "An independent adjudicating reading finds the result not required: The spec requires only that type-bound procedures accessed in a target region appear in a declare target directive. The specific bindings sq_area, rect_area and area_of carry declare target, so that rule is met. Neither reading finds a rule on making the dynamic type information (descriptor or vtable) of a CLASS dummy usable on the device. q and rr are mapped as non-polymorphic objects whose passed class descriptors point to host data.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-02",
@@ -213,5 +213,23 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "crash",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244"
+  ],
+  "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4"
+ },
+ "advisory": "contested",
+ "advisory_why": "An independent adjudicating reading finds the result not required: The spec requires only that type-bound procedures accessed in a target region appear in a declare target directive. The specific bindings sq_area, rect_area and area_of carry declare target, so that rule is met. Neither reading finds a rule on making the dynamic type information (descriptor or vtable) of a CLASS dummy usable on the device. q and rr are mapped as non-polymorphic objects whose passed class descriptors point to host data."
 }

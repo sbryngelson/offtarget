@@ -1,0 +1,19 @@
+{
+ "readers": [],
+ "program_sha": "60ad3f69431a75c57f2b5d7797585fe3e05969815fd9c091dd653f7f674efdd4",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "same-family",
+  "expected": "none",
+  "outcome": "wrong_answer",
+  "failing": [],
+  "witnesses": [],
+  "program_sha": "60ad3f69431a75c57f2b5d7797585fe3e05969815fd9c091dd653f7f674efdd4"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it; no independent source gives the expected result. A maintainer's ruling decides it."
+}

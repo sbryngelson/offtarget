@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "9586e066db0c1746a3229fea947f29b28239778c0f81a109647cd48540ab1afc",
  "instructions": "v2",
- "verdict": "unconfirmed",
- "why": "Independent readings are uncertain: The program is race-free: distinct dr%o1(i) per iteration, t1 private. dr%o1 is explicitly mapped tofrom, and the data-environment attribute clause is stated to take precedence over implicit rules.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-02",
@@ -213,5 +213,25 @@
     }
    ]
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "gcc",
+   "gcc_sm80"
+  ],
+  "program_sha": "9586e066db0c1746a3229fea947f29b28239778c0f81a109647cd48540ab1afc"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "Independent readings are uncertain: The program is race-free: distinct dr%o1(i) per iteration, t1 private. dr%o1 is explicitly mapped tofrom, and the data-environment attribute clause is stated to take precedence over implicit rules."
 }

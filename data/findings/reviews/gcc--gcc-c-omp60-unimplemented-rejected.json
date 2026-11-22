@@ -203,8 +203,8 @@
  "external": [],
  "program_sha": "4881fc09441baa8136ed371b152fc836eba85cbd9df8d09fee23b7aafabd8039",
  "instructions": "v2",
- "verdict": "confirmed",
- "why": "2 independent readings find the program legal and the result required.",
+ "verdict": "open",
+ "why": "Not yet settled: the rules engine cannot read it; no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-04",
@@ -232,5 +232,22 @@
    },
    "reasoning": "induction is allowed on for in 6.0 and the values are right. But induction lacks the all-leaf rules for adding shared on parallel (only firstprivate, lastprivate, reduction are specified as adding shared), so x has no explicit attribute on the parallel construct under default(none). Whether the inner for's induction counts is not settled by the text; Reading A asserts without a passage, Reading B is closer."
   }
- ]
+ ],
+ "mechanical": {
+  "rules": "unreadable",
+  "rules_why": [
+   "rules: cannot read it: GrammarError: version: induction on parallel for is not valid in OpenMP 5.2"
+  ],
+  "hazards": [],
+  "witness": "same-family",
+  "expected": "self-check",
+  "outcome": "rejected",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [],
+  "program_sha": "4881fc09441baa8136ed371b152fc836eba85cbd9df8d09fee23b7aafabd8039"
+ },
+ "advisory": "confirmed",
+ "advisory_why": "2 independent readings find the program legal and the result required."
 }

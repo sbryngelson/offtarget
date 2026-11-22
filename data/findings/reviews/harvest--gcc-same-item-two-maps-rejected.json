@@ -1,0 +1,30 @@
+{
+ "readers": [],
+ "program_sha": "214cc40d520d6ebaf2605ca8ca9e69536e5cc7cebd07b40cf9f2c7c9ebb35dc6",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "program_sha": "214cc40d520d6ebaf2605ca8ca9e69536e5cc7cebd07b40cf9f2c7c9ebb35dc6"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269 of another compiler family build and run it as expected."
+}

@@ -26,7 +26,7 @@ offload can-use clause.map.present
 ```
 offload issues [--compiler cce|afar|nvhpc|gcc|cce19|...] [--kind incorrect|unsupported]
                [--stage compile|link|run] [--status open|fixed|changed|not-reproduced]
-               [--legality confirmed|supported|contested|unconfirmed] [--show ID] [--format text|json] [QUERY...]
+               [--legality checked|supported|ruled|open|refuted] [--show ID] [--format text|json] [QUERY...]
 ```
 
 Every query word must appear in the id, title, constructs or messages. Without `--show`, the command lists the
@@ -40,6 +40,6 @@ spec reference, the legality verdict and its reason, the state per compiler and 
 offload issues dist_schedule
 offload issues --compiler nvhpc --kind unsupported
 offload issues --stage link
-offload issues --legality contested
+offload issues --legality open
 offload issues --show cce-c-dist-schedule-segv
 ```

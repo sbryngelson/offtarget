@@ -80,8 +80,8 @@ def _stage(outcome: str, cells: list[Cell]) -> str:
 
 
 def _legality(fid: str) -> dict:
-    """The verdict of the issue's independent legality review (offload.engine.legality_review),
-    in the site's words, with the reason."""
+    """The issue's legality verdict (offload.engine.legality_review.verdict: mechanical evidence and
+    maintainers' rulings), in the site's words, with its basis. The AI readings are not published."""
     from offload.engine import legality_review as L
     v, why = L.status(fid)
     return {"legality": v, "legality_words": L.WORDS[v], "legality_why": S.scrub(why)}
@@ -517,13 +517,13 @@ def _read(path: Path) -> str:
 
 
 # how settled an issue's legality is (the list's sort, site/static/issues.js LEGALITY_RANK)
-LEGALITY_RANK = {"confirmed": 2, "supported": 2, "ruled": 2, "unconfirmed": 1, "contested": 0}
+LEGALITY_RANK = {"checked": 2, "supported": 2, "ruled": 2, "open": 1, "refuted": 0}
 
 
 def fixed_order(issues: list[dict], fam: str, regressions: set | None = None) -> list[dict]:
     """The spec's fixed order: wrong answers first (an offload-phase issue that appears to
-    behave incorrectly), then how settled its legality is (confirmed or supported, unconfirmed,
-    contested), then regressions, then reach (versions and targets it fails on in the family),
+    behave incorrectly), then how settled its legality is (checked, supported or ruled; open;
+    refuted), then regressions, then reach (versions and targets it fails on in the family),
     then title."""
     def key(i):
         v = i["fams"].get(fam) or {"versions": [], "targets": []}
