@@ -912,6 +912,9 @@ EXTRA_CITES = {
         "OpenMP 5.2 §13.8 p.286 l.31-32 (\"A variable referenced in a "
         "target region but not the target construct that is not declared "
         "in the target region must appear in a declare target directive.\")",
+    "omp-unmapped-scalar-reduction":
+        "OpenMP 5.2 §5.8.1 (a scalar referenced in a target construct and not in a data clause is "
+        "firstprivate), so the result of a reduction on a construct nested in it stays on the device",
     "acc-constant-copy":
         "OpenACC 3.4 §1.6 l.423-424 (a data action that writes to an unwritable or constant location is "
         "undefined) and §2.6.2 p.41 l.1392-1393 (a scalar in a kernels construct is treated as copy)",
@@ -1086,6 +1089,69 @@ def extra(text: str, lang: str, tree=None) -> list[str]:
         out += _acc_reduction(text, lang)
         if lang != "c":
             out += _acc_constant_copy(text)
+    return out
+
+
+def _clause_names(d, names) -> set:
+    out = set()
+    for c in d.clauses:
+        if c.name in names:
+            for a in c.args:
+                for item in str(a).split(","):
+                    m = re.match(r"\s*(?:[\w+*\-.]+\s*:\s*)*([A-Za-z_]\w*)", item.strip())
+                    if m:
+                        out.add(m.group(1).lower())
+    return out
+
+
+def result_hazards(program) -> list[str]:
+    """Reasons a legal program's expected result is not required (not legality: the witness does not use
+    them): a reduction whose result the specification keeps on the device. A wrong-answer finding whose
+    checked value depends on one is not a compiler error."""
+    from offload.engine.grammar import GrammarError
+    from offload.engine.rules import ProgramError, parse_program
+    files, lang, model, version = _files_of(program)
+    out = []
+    for _, text in files:
+        if _model_of(text) != "omp":
+            continue
+        try:
+            tree = parse_program(text, version, lang)
+        except (GrammarError, ProgramError):
+            continue
+        out += _unmapped_reduction(tree)
+    return out
+
+
+def _unmapped_reduction(tree) -> list[str]:
+    """A reduction on a construct nested in a target construct, of a scalar the target construct
+    neither maps nor reduces: the scalar is firstprivate in the target region (OpenMP 5.2 §5.8.1), so
+    the host's variable never receives the result."""
+    out = []
+    par = _parents(tree)
+    for i, d in enumerate(tree.directives):
+        if "target" in d.name.split():
+            continue
+        red = _clause_names(d, ("reduction",))
+        if not red:
+            continue
+        k = i
+        while k in par and "target" not in tree.directives[k].name.split():
+            k = par[k]
+        t = tree.directives[k]
+        if "target" not in t.name.split():
+            continue
+        if any(c.name == "defaultmap" and re.search(r"\b(tofrom|from)\b", " ".join(map(str, c.args)), re.I)
+               and re.search(r"scalar|all", " ".join(map(str, c.args)), re.I) or
+               (c.name == "defaultmap" and not re.search(r":", " ".join(map(str, c.args)))
+                and re.search(r"\b(tofrom|from)\b", " ".join(map(str, c.args)), re.I)) for c in t.clauses):
+            continue
+        covered = _clause_names(t, ("map", "reduction", "in_reduction"))
+        for v in sorted(red - covered):
+            if _scalar(tree, v):
+                out.append(_cite("omp-unmapped-scalar-reduction").format(
+                    f"{v} is reduced on '{d.name}' (line {tree.assoc[i].line}) inside '{t.name}' "
+                    f"(line {tree.assoc[k].line}), which does not map it"))
     return out
 
 

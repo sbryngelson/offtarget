@@ -2108,3 +2108,36 @@ def test_a_constant_actual_copied_by_an_acc_compute_construct_is_found(dummy, ke
         assert ok is False and any("acc-constant-copy" in w for w in why), why
     else:
         assert not any("acc-constant-copy" in w for w in why), why
+
+
+UNMAPPED_RED_C = """#include <stdio.h>
+int main(void) {
+  double a[64], d = 0.0;
+  for (int i = 0; i < 64; i++) a[i] = 1.0;
+  #pragma omp target TARGET map(to: a)
+  {
+    #pragma omp loop reduction(+: d)
+    for (int i = 0; i < 64; i++) d += a[i];
+  }
+  printf("%f\\n", d);
+  return 0;
+}
+"""
+
+
+@pytest.mark.parametrize("target,bad", [
+    ("teams", True),                         # d is firstprivate in the target region: the result stays on the device
+    ("teams map(tofrom: d)", False),
+    ("teams defaultmap(tofrom: scalar)", False),
+    ("teams reduction(+: d)", False),        # a reduction on the combined target teams maps d tofrom
+])
+def test_a_reduction_of_an_unmapped_scalar_nested_in_target_is_found(target, bad):
+    """OpenMP 5.2 §5.8.1: a scalar referenced in a target construct without a data clause is
+    firstprivate, so a reduction on a construct nested in it never updates the host's variable
+    (NPB CG's OpenMP translation). The program is legal; its host value of d is not the reduction."""
+    from offload.engine import prerun
+    src = UNMAPPED_RED_C.replace("TARGET", target)
+    why = prerun.result_hazards((src, "c", "omp"))
+    assert any("omp-unmapped-scalar-reduction" in w for w in why) == bad, why
+    ok, legal = rules(src, "c")      # a result hazard, not a legality restriction
+    assert not any("omp-unmapped-scalar-reduction" in w for w in legal)
