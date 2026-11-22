@@ -17,14 +17,15 @@
    "gcc_sm80"
   ],
   "front_ends": {
+   "intel_c": "reject",
    "nvhpc269_c": "reject",
    "nvhpc_c": "reject"
   },
   "program_sha": "e9e0bf352b43ec57012e6af6f671ac0adc6d0cedf45f74e66097a2c16f0691de",
-  "inputs": "b0a6dbb2aee0d335e64481bccdd1a5b39f832ca0195d368e3c4cabce0446d612"
+  "inputs": "e568f7e2037c4afa9c6e098b640589c0e736813606c5f43a439cf4f33c9ba344"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: NVHPC's front end, of another family, rejects it. A maintainer's ruling decides it."
+ "why": "Not yet settled: Intel's and NVHPC's front ends, of another family, reject it. A maintainer's ruling decides it."
 }

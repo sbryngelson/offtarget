@@ -210,7 +210,7 @@
   ],
   "front_ends": {},
   "program_sha": "9271f17e8f59997005f99169e8efa08630323f76fb2a17e711e784125c06a72a",
-  "inputs": "74aa405f7542ea8d979cdb45b4932d2e5b49ce5dab0fd631950e9f1a674952c8"
+  "inputs": "bf683b626467d5bffbcf64f5a9e54d952b7af0b03ab152cb118713a0ce479164"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Both mappings are legal in separate constructs. The text does not say a pointer member inside a larger list item keeps its host value, so the device pointer value may overwrite host r->a."

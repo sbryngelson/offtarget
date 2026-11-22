@@ -10,13 +10,18 @@ evidence is gathered by [offload/engine/legality_mechanical.py](../../offload/en
 - a second witness: a toolchain of another family (never GCC) built and ran it correctly in the committed rows, or a
   front end of a family that does not fail accepted it (`catalog/finding_witness.yaml`): AMD's, run on a compute node
   by `tools/jobs/run_mechanical.sh`, or NVHPC's (`catalog/machines.yaml` `independent_checkers`), run over ssh from a
-  login node by `review.py mechanical --nvhpc`. NVHPC dropping a directive with a warning ("ignored") is no accept;
+  login node by `review.py mechanical --nvhpc`, or Intel's (`--intel`, a compute node). A front end of the lineage
+  of a failing compiler does not count (`LINEAGE`: AMD's clang, CCE's C compiler and Intel's icx share one), nor
+  does a correct run of one when the finding is a refusal. A checker that drops a directive with a warning
+  ("ignored"), crashes ("ice") or says the feature is not supported ("unsupported", the harness message patterns)
+  gives no verdict;
 - for a wrong answer, an expected value from another family's run, the program's own check or the generator's model.
 
 Verdicts: `ruled` (a maintainer's ruling that holds), `refuted`, `supported` (outside evidence), `checked`, `open`.
 
     python3 -I tools/review/review.py mechanical [ID ...]   # recompute the records (every finding without IDs)
     python3 -I tools/review/review.py mechanical --nvhpc    # first run NVHPC's front ends where needed (ssh)
+    python3 -I tools/review/review.py mechanical --intel    # first run Intel's front ends (a compute node)
     python3 -I tools/review/review.py queue                 # the open findings, grouped by what is missing
 
 Each record stamps the hash of its inputs (program, outcome, cells, stored front-end rows, verdict code);

@@ -66,7 +66,10 @@ def validate(entries: dict) -> dict:
             # the cases of other families; `family` names its own, whose
             # cases it never witnesses (accepted(family=...))
             from offload.engine.confirm.machines import family_of
-            members = {family_of(t) for t in TOOLCHAINS}
+            from offload.engine.toolchains import registry
+            # a family of catalog/toolchains.yaml, with or without toolchains
+            # under test (Intel is a witness only)
+            members = {family_of(t) for t in TOOLCHAINS} | set(registry().families)
             if fam not in members:
                 raise ValueError(f"independent checker {name}: family "
                                  f"{fam} is not a compiler family")

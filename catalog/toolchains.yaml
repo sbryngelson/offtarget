@@ -107,6 +107,19 @@ families:
     # runtime-library line (site_runtime_env: the commands export it)
     site_public: {"{root}/": "", "{root_grandparent}": "${var}"}
     site_runtime_env: true
+  # Intel oneAPI: a legality witness only (catalog/machines.yaml independent_checkers), no
+  # toolchain under test
+  intel:
+    name: Intel
+    long_name: Intel oneAPI
+    site_name: "Intel oneAPI (ifx, icx)"
+    vendor: null                    # no vendor packet: nothing of it is under test
+    kind: intel
+    message_table: intel            # offload.engine.harness PATTERNS, captured from 2025.3
+    compile_s: 10.0
+    flags:                          # the checkers' (catalog/machines.yaml intel_f90, intel_c); no OpenACC
+      omp: {f90: "-fiopenmp -fopenmp-targets=spir64", c: "-fiopenmp -fopenmp-targets=spir64 -std=c11"}
+    witness: other_families
   gcc:
     name: GCC
     long_name: GNU GCC

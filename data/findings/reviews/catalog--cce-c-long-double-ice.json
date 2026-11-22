@@ -227,11 +227,12 @@
   "witnesses": [],
   "front_ends": {
    "afar-frontend": "accept",
+   "intel_c": "unsupported",
    "nvhpc269_c": "accept",
    "nvhpc_c": "accept"
   },
   "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
-  "inputs": "61e9288235777a0c1950d638678a1b3015316bb15d3b639409188cabe5542c88"
+  "inputs": "065943cd1c7257d424b4f4dff2f9473093df17c695cc6522a96b83b75ed0023b"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: The only mapping restriction is a mappable type, and the specification does not exclude long double or require a device to support it. The program is race-free. Whether a compiler must accept long double in a target region is not stated, and no compiler is recorded as passing, so requiring acceptance is not supported."

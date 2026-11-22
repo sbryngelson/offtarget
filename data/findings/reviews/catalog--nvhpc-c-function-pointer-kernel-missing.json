@@ -287,7 +287,7 @@
   ],
   "front_ends": {},
   "program_sha": "90fbe430d1a261b6c0ab23b4b9450ccba0e919df996ff8715edbd3d3251cb8d1",
-  "inputs": "4ee7fe85008ba3d8ca5b88a3b353988e5a236d9e7431f349ab49c06cc12ba4f1"
+  "inputs": "74231048da342d3ec785f996d3ad0048b831ae3f9b93f86ff55eb4f1657beb7a"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading disputed it; 2 adjudicating readings that weighed both find the program legal and the result required: An indirect device invocation is defined as a call through a pointer that refers to the host version of the procedure. Here f is assigned inside the target region from tw and th, which are in declare target, so f refers to the device versions and the call is an ordinary device call. The indirect clause rules do not apply. No restriction is violated, and base-language semantics give the expected result."

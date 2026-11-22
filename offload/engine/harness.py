@@ -296,6 +296,26 @@ PATTERNS["nvhpc"] = {
         r"^NVFORTRAN-W-\d+-Unrecognized OpenMP directive",  # nvhpc_ignored_unrecognized
     ),
 }
+# Intel oneAPI (ifx, icx): a legality witness only (offload.engine.legality_mechanical), never under
+# test. A crash or a feature it does not support is no verdict on a program.
+PATTERNS["intel"] = {
+    "ice": (
+        r"error #\d+: \*\*Internal compiler error",        # intel_ice_segv, intel_ice_abort
+    ),
+    "not_implemented": (
+        r"error #\d+: .*is not supported (?:on this platform|in a TARGET region)",
+        # intel_not_supported_platform, intel_not_supported_ordered
+    ),
+}
+PATTERNS["intel:c"] = {
+    "ice": (
+        r"^\d+\.\s+Program arguments: \S+/clang -cc1",      # intel_c_ice_crash
+    ),
+    "not_implemented": (
+        r"error: '[\w ]+' is unsupported in target region",    # intel_c_unsupported_in_target
+        r"error: .*but target 'spir64' does not support it",  # intel_c_target_type_support
+    ),
+}
 PATTERNS["nvhpc:c"] = {
     "environment": COMMON_ENVIRONMENT + _NV_KILLED,
     "ice": _NV_ICE + (

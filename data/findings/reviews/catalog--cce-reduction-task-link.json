@@ -126,11 +126,12 @@
   ],
   "front_ends": {
    "afar-frontend": "accept",
+   "intel_f90": "ice",
    "nvhpc269_f90": "reject",
    "nvhpc_f90": "reject"
   },
   "program_sha": "fbb48545f931e6e9cd9ae81a96acbb8beda010c48b8b600c5688253674c419d7",
-  "inputs": "9bb5ac419f0e38edc559bba38cc140c7114d1406da90084fef09f0ca528f13ff"
+  "inputs": "f26aa9888e23d5a040004e8f9ed8d63654d0075c011683a49c4638b5a7b7e335"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

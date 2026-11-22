@@ -230,7 +230,7 @@
   ],
   "front_ends": {},
   "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
-  "inputs": "7d467d34b507fd62b16f5d43fedd6963a3a7a5e53262e8c8fbdc3fc368a1c8da"
+  "inputs": "ab82fa723f25592f0b6c03e996b60ffe04f2e72d47056b4664bc4681605009cc"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The spec requires only that type-bound procedures accessed in a target region appear in a declare target directive. The specific bindings sq_area, rect_area and area_of carry declare target, so that rule is met. Neither reading finds a rule on making the dynamic type information (descriptor or vtable) of a CLASS dummy usable on the device. q and rr are mapped as non-polymorphic objects whose passed class descriptors point to host data."

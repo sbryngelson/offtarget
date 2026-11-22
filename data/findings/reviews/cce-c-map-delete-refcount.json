@@ -166,7 +166,7 @@
   ],
   "front_ends": {},
   "program_sha": "363d69954e6a028a5aa7c62139f861042fc673313fe89805a9e8fb8fdb97e01c",
-  "inputs": "e997da4161512665c122caceca4de079a148a856dbba0ebd3971f6edd7513f92"
+  "inputs": "23f197d4cc25a4920d7f87878044d4c749f2b69a9334b7cacd605a603405479b"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

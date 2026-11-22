@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "a6505cb66ed3e3210a0014eba0decf3f40be152d7f18ee783ed422ee42a56803",
  "instructions": "v2",
- "verdict": "checked",
- "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected.",
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-01",
@@ -218,7 +218,7 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "accept",
+  "witness": "same-family",
   "expected": "other-family",
   "outcome": "rejected",
   "failing": [
@@ -234,7 +234,7 @@
   ],
   "front_ends": {},
   "program_sha": "a6505cb66ed3e3210a0014eba0decf3f40be152d7f18ee783ed422ee42a56803",
-  "inputs": "1184ded140253f510b83720ffc639dd28b8d6fc973db5e48cf971616d72b7fd5"
+  "inputs": "f00ff020268b75da9a788e4204566f7b92b24288d560aafe214003b02c8f3f43"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The error directive with at(compilation) and severity(warning) displays an implementation-defined message; only fatal aborts compilation. The observed output is a warning, which is the specified action, and nothing restricts the directive inside a target region (it is pure when at is compilation). The observed result is permitted."

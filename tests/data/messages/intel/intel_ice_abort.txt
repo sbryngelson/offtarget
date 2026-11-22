@@ -1,0 +1,27 @@
+# Verbatim compiler output (stdout and stderr merged) captured on a Tuolumne compute node, 2026-11-22.
+# source: ifx -fiopenmp -fopenmp-targets=spir64 -c -o /dev/null (ifx (IFX) 2025.3.3 20260319) on data/findings/catalog/cce-iterator-link.f90 (the finding's program, OpenMP version 52), legality witness run
+# exit status: 3
+==== verbatim output below ====
+ #0 0x0000555558f0ff47 f90_abort1 me_globals.c:0
+ #1 0x0000555558efae1a (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x39a6e1a)
+ #2 0x0000555558f95922 me__generate_offload_spec (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a41922)
+ #3 0x0000555558f68955 me__parallel_options_with_children (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a14955)
+ #4 0x0000555558f8b37c process_standalone_data_movement_directive(tilnode_struct*, llfort_stmt*, llfort_stmt*, unsigned short, void*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a3737c)
+ #5 0x0000555558f8ba9c me_dir_parallel_region (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a37a9c)
+ #6 0x0000555558f5ee51 me_stmt (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a0ae51)
+ #7 0x0000555558f5f387 me_stmts (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a0b387)
+ #8 0x0000555558f61fa7 emit_generic_prunit me_stmt.c:0
+ #9 0x0000555558f5ee51 me_stmt (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a0ae51)
+#10 0x0000555558f5c22e emit_fortrn_stmt me_stmt.c:0
+#11 0x0000555558f5ee51 me_stmt (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a0ae51)
+#12 0x0000555558deae8d me_comp_prunit (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3896e8d)
+#13 0x0000555558dea83f gem_xx_compile (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x389683f)
+#14 0x0000555558fd138f main (/opt/intel/oneapi/compiler/2025.3/bin/compiler/xfortcom+0x3a7d38f)
+#15 0x00001555541aa865 __libc_start_main (/lib64/libc.so.6+0x3a865)
+#16 0x0000555558c221de _start start.S:122
+
+t.f90(59): error #5623: **Internal compiler error: internal abort** Please report this error along with the circumstances in which it occurred in a Software Problem Report.  Note: File and line given may not be explicit cause of this error.
+  !$omp target update from(iterator(k = 1:1): b(k:n))
+--------^
+ifx: error #10442: Could not remove '/dev/null'
+compilation aborted for t.f90 (code 3)

@@ -1,0 +1,8 @@
+# Verbatim compiler output (stdout and stderr merged) captured on a Tuolumne compute node, 2026-11-22.
+# source: icx -fiopenmp -fopenmp-targets=spir64 -std=c11 -c -o /dev/null (Intel(R) oneAPI DPC++/C++ Compiler 2025.3.3 (2025.3.3.20260319)) on data/findings/catalog/afar-c-ordered-doacross-link.c (the finding's program, OpenMP version 52), legality witness run
+# exit status: 1
+==== verbatim output below ====
+t.c:48:57: error: 'ordered' is unsupported in target region
+   48 |     #pragma omp parallel for default(none) shared(a, b) ordered(1)
+      |                                                         ^
+1 error generated.

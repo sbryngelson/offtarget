@@ -18,6 +18,7 @@ TC_MACHINE_wingtip="nvhpc nvhpc269 gcc_sm80"
 TC_FAMILY_afar="afar afar244 afar_g90 afar_mi300x afar_mi350x afar244_g90 afar244_mi300x afar244_mi350x"
 TC_FAMILY_cce="cce19 cce20 cce21 cce21_4 cce19_g90 cce20_g90 cce21_g90"
 TC_FAMILY_nvhpc="nvhpc nvhpc269"
+TC_FAMILY_intel=""
 TC_FAMILY_gcc="gcc gcc_g90 gcc_mi300x gcc_mi350x gcc_sm80"
 TC_REGRESSION="cce21_4"
 tc_machine() {  # the machine of a toolchain

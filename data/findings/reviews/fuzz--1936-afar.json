@@ -5,7 +5,7 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "reject",
+  "witness": "accept",
   "expected": "other-family",
   "outcome": "wrong_answer",
   "failing": [
@@ -16,14 +16,15 @@
    "gcc_sm80"
   ],
   "front_ends": {
-   "nvhpc269_f90": "reject",
-   "nvhpc_f90": "reject"
+   "intel_f90": "accept",
+   "nvhpc269_f90": "unsupported",
+   "nvhpc_f90": "unsupported"
   },
   "program_sha": "2803131b91ebb42f22c2296d02dba4f1aa175d42dc4b25672330fddafe555186",
-  "inputs": "4fe9f7953561b0cd136ce145b3674060bdd29b5c7f4857ecbaec3cd1ac9ddaa4"
+  "inputs": "c9527bcae7bca5f65d4894beea4b1a6daa99f0dbd01ea05b1e493dc60a16bee4"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "open",
- "why": "Not yet settled: NVHPC's front end, of another family, rejects it. A maintainer's ruling decides it."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
 }

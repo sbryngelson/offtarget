@@ -82,13 +82,13 @@
  "external": [],
  "program_sha": "b678dda6de57d49af72992231da68814ad1bacf8d6009545cdfe0efb5bdbdaf0",
  "instructions": "v2",
- "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, gcc of another compiler family build and run it as expected.",
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "accept",
+  "witness": "same-family",
   "expected": "other-family",
   "outcome": "ice",
   "failing": [
@@ -101,7 +101,7 @@
   ],
   "front_ends": {},
   "program_sha": "b678dda6de57d49af72992231da68814ad1bacf8d6009545cdfe0efb5bdbdaf0",
-  "inputs": "749f14317ddb35f00b65abd0bd291ef38a48b566fee95dcb984ca06b1a05ad20"
+  "inputs": "026e030aa5e988de81988ca7920118d8998e92cbc15e530299891b7bfe0c246e"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

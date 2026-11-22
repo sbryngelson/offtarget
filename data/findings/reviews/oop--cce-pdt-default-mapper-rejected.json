@@ -205,7 +205,7 @@
   ],
   "front_ends": {},
   "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
-  "inputs": "cce3bf22b760bdf24e8535834f6d75d6f0fb40b1eba39d637bcee969febf7937"
+  "inputs": "55d9011e2d73655f47fabe17873bf3463e88e100bf644e2b73283db01a67c91a"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The program is valid Fortran 2003 and breaks no OpenMP restriction. The error is on the module's parameterized type definition, a base-language feature. The specification does not require an implementation to support a construct its base-language implementation lacks, so the refusal violates no requirement."

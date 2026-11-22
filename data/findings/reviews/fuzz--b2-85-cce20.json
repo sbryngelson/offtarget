@@ -232,7 +232,7 @@
   ],
   "front_ends": {},
   "program_sha": "9586e066db0c1746a3229fea947f29b28239778c0f81a109647cd48540ab1afc",
-  "inputs": "c678faacf9f93f140b6d7aa96e985feb98ab1e72ebbc2468030b928a0571f7c7"
+  "inputs": "a204a182e19f29c3bb54908396be312657fb32acc536303f678331168f3918d2"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: The program is race-free: distinct dr%o1(i) per iteration, t1 private. dr%o1 is explicitly mapped tofrom, and the data-environment attribute clause is stated to take precedence over implicit rules."

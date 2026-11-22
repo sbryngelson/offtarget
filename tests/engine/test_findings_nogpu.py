@@ -940,6 +940,15 @@ EXPECTED = {
     "gcc_c_ice_offload_lto1": ("gcc:c", "ice"),
     # a reduced HeCBench program: the offload assembler refuses the compiler's own .s
     "gcc_c_ice_offload_assembler": ("gcc:c", "ice"),
+    # Intel oneAPI 2025.3, a legality witness (offload.engine.legality_mechanical): a crash or a
+    # feature it does not support is no verdict on the program
+    "intel_ice_segv": ("intel", "ice"),
+    "intel_ice_abort": ("intel", "ice"),
+    "intel_not_supported_platform": ("intel", "not_implemented"),
+    "intel_not_supported_ordered": ("intel", "not_implemented"),
+    "intel_c_ice_crash": ("intel:c", "ice"),
+    "intel_c_unsupported_in_target": ("intel:c", "not_implemented"),
+    "intel_c_target_type_support": ("intel:c", "not_implemented"),
 }
 # messages used by shell-level (COMMON) patterns for any toolchain
 SHELL_MESSAGES = {"shell_no_module", "lmod_unknown_module",

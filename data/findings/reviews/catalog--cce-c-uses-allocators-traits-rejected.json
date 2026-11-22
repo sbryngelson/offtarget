@@ -5,7 +5,7 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "accept",
+  "witness": "same-family",
   "expected": "other-family",
   "outcome": "rejected",
   "failing": [
@@ -17,10 +17,10 @@
   ],
   "front_ends": {},
   "program_sha": "dada9e040e039bf7724ec60cab650764130c2452c0fc346e93f4d3b03040091c",
-  "inputs": "a3720255dab82c1a7e266e28424f18459d4815a681ee17c6b6f0edd07d05c0d5"
+  "inputs": "390d589c99b7918a9982910cef52493ebeed21cae11d0df55756722ecceb70eb"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected."
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
 }

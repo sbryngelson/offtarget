@@ -235,7 +235,7 @@
   ],
   "front_ends": {},
   "program_sha": "905bccf76a70024abe28438530c50460463e908c4bb6ca412832af49c81d9e3d",
-  "inputs": "dcad0900ee1bcdd803d9e1c260d15189000ef8279d39369432fa23aeaedf1941"
+  "inputs": "9d40d7ebf2f670738f852dcf8fd6aebab073100313a4b156bb3285c8b6a98720"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: Section 5.8.7 defines pointer as variables of pointer type and aggregate as variables of aggregate type (arrays or structures). The Fortran pointer array wp is a pointer and also an array, so it fits both categories. The text gives no precedence between them. If aggregate applies, the implicit tofrom rule of 5.8.1 maps wp and the observed copy-back is permitted. If pointer applies, to-only mapping is permitted too."

@@ -114,7 +114,8 @@ def test_nvhpc_is_a_witness_even_where_afar_fails_and_ignoring_directives_is_no_
 
 def test_an_nvhpc_check_becomes_a_finding_row_and_an_unreachable_machine_gives_none(monkeypatch):
     from offload.engine.confirm import witness as W
-    monkeypatch.setattr(W, "names_for", lambda lang, model="omp": ["nvhpc269_f90"])
+    monkeypatch.setattr(W, "names_for", lambda lang, model="omp": ["nvhpc269_f90", "intel_f90"])
+    monkeypatch.setattr(W, "checkers", lambda: {"nvhpc269_f90": {"family": "nvhpc"}, "intel_f90": {"family": "intel"}})
     monkeypatch.setattr(W, "check", lambda *a, **k: {"program": "x", "sha256": "s", "checker": "nvhpc269_f90",
                                                      "version": "26.9", "result": "accept", "message": "",
                                                      "date": "d", "command": "c"})
@@ -133,3 +134,56 @@ def test_the_evidence_names_the_front_ends_that_saw_the_program():
             {"finding": "x", "sha256": "old", "checker": "afar-frontend", "family": "afar", "result": "accept"}]
     m = LM.evidence(PROG, "f90", "omp", "rejected", [cell("cce21", "fails-like")], rows=rows, fid="x", sha="s")
     assert m["front_ends"] == {"nvhpc_c": "reject"} and m["witness"] == "reject"
+
+
+CPROG = PROG   # the language passed decides the lineage; the text does not matter here
+
+
+def row(checker, family, result, message=""):
+    return {"finding": "x", "sha256": "s", "checker": checker, "family": family, "result": result, "message": message}
+
+
+def test_a_front_end_of_a_failing_compilers_lineage_is_no_witness():
+    cce_c_fails = [cell("cce21", "fails-like")]
+    afar_ok = [row("afar-frontend", "afar", "accept")]
+    # C: AFAR's clang and CCE's C compiler share a front end
+    assert LM.evidence(CPROG, "c", "omp", "rejected", cce_c_fails, rows=afar_ok, fid="x", sha="s")["witness"] == "same-family"
+    # Fortran: flang and Cray Fortran do not
+    assert LM.evidence(PROG, "f90", "omp", "rejected", cce_c_fails, rows=afar_ok, fid="x", sha="s")["witness"] == "accept"
+    icx = [row("intel_c", "intel", "accept")]
+    assert LM.evidence(CPROG, "c", "omp", "rejected", cce_c_fails, rows=icx, fid="x", sha="s")["witness"] == "same-family"
+    nv = [row("nvhpc_c", "nvhpc", "accept")]
+    assert LM.evidence(CPROG, "c", "omp", "rejected", cce_c_fails, rows=nv, fid="x", sha="s")["witness"] == "accept"
+
+
+def test_a_correct_run_of_the_same_front_end_lineage_does_not_witness_a_refusal():
+    cells = [cell("afar", "fails-like"), cell("cce21", "correct")]
+    assert LM.evidence(CPROG, "c", "omp", "rejected", cells)["witness"] == "same-family"
+    assert LM.evidence(CPROG, "c", "omp", "wrong_answer", cells)["witness"] == "accept"   # the back end failed
+
+
+def test_a_refusal_for_an_unsupported_feature_is_no_evidence():
+    rows = [row("nvhpc_f90", "nvhpc", "reject", "NVFORTRAN-F-1196-OpenMP - omp task is not supported in GPU region (t.f90: 7)")]
+    m = LM.evidence(PROG, "f90", "omp", "rejected", [cell("cce21", "fails-like")], rows=rows, fid="x", sha="s")
+    assert m["front_ends"] == {"nvhpc_f90": "unsupported"} and m["witness"] == "same-family"
+    plain = [row("nvhpc_f90", "nvhpc", "reject", "NVFORTRAN-S-0034-Syntax error at or near + (t.f90: 52)")]
+    m = LM.evidence(PROG, "f90", "omp", "rejected", [cell("cce21", "fails-like")], rows=plain, fid="x", sha="s")
+    assert m["front_ends"] == {"nvhpc_f90": "reject"} and m["witness"] == "reject"
+
+
+def test_a_checker_of_a_family_not_under_test_is_valid():
+    from offload.engine.confirm import witness as W
+    ok = {"intel_f90": {"kind": "offload_compiler", "witness_only": True, "family": "intel", "lang": "f90",
+                        "command": "/opt/intel/oneapi/compiler/2025.3/bin/ifx -fiopenmp -c", "version": "ifx --version"}}
+    assert W.validate(ok) == ok
+
+
+def test_a_checker_that_crashes_gives_no_verdict():
+    crash = [row("intel_f90", "intel", "reject",
+                 "t.f90: error #5633: **Internal compiler error: segmentation violation signal raised** Please report")]
+    m = LM.evidence(PROG, "f90", "omp", "rejected", [cell("cce21", "fails-like")], rows=crash, fid="x", sha="s")
+    assert m["front_ends"] == {"intel_f90": "ice"} and m["witness"] == "same-family"
+    # a stored message joins its lines with " | "; a pattern anchored at a line start still sees each line
+    joined = [row("intel_f90", "intel", "reject", "t.f90(3): warning: x | t.f90(7): error #5541: A TASK or TASKGROUP "
+                  "construct inside of a TARGET or DECLARE TARGET region is not supported on this platform.")]
+    assert LM.evidence(PROG, "f90", "omp", "rejected", [], rows=joined, fid="x", sha="s")["front_ends"] == {"intel_f90": "unsupported"}

@@ -109,7 +109,7 @@
  "program_sha": "ff5357859a7dee339406440985db81414b04914b0ea21b543a7fa55aea2078c8",
  "instructions": "v2",
  "verdict": "open",
- "why": "Not yet settled: NVHPC's front end, of another family, rejects it. A maintainer's ruling decides it.",
+ "why": "Not yet settled: Intel's and NVHPC's front ends, of another family, reject it. A maintainer's ruling decides it.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
@@ -125,11 +125,12 @@
    "gcc_sm80"
   ],
   "front_ends": {
+   "intel_c": "reject",
    "nvhpc269_c": "reject",
    "nvhpc_c": "reject"
   },
   "program_sha": "ff5357859a7dee339406440985db81414b04914b0ea21b543a7fa55aea2078c8",
-  "inputs": "90cfe6175bf3a4ccaa119c53a2ff9b80f9c6f83996fe81a7793a9e4b0967d33f"
+  "inputs": "70a0adce2d0c5f5b5f26de6601b31735fc27f336a9a18142290d96d207711411"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

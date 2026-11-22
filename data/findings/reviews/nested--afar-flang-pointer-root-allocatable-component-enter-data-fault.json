@@ -210,7 +210,7 @@
   ],
   "front_ends": {},
   "program_sha": "6bb7031f041de4687923656110b91cb7bc3951eae9cb5d94bab968f421628df7",
-  "inputs": "2eb51a4f03c967a387a07d2769cd53f7d0307f27900600e644556083ad8a5b24"
+  "inputs": "e3d5aeed8960c74a4d9519a5b8c553ac7cb55b83bc919a889ba515105a812026"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: r is an associated pointer in a map clause, so its pointer target is implicitly mapped in the same clause, using the predefined default mapper, which maps each structure element including the allocated component a. The loop touches distinct elements and tot is a reduction, so tot=828 and sum=884 follow. The memory fault is a compiler or runtime defect."

@@ -41,10 +41,35 @@ def write_rows(rows: list[dict], path: Path = WITNESS) -> None:
     path.write_text(HEAD + yaml.safe_dump({"witnesses": rows}, sort_keys=False, width=1000))
 
 
-def stored(rows: list, fid: str, sha: str, failing: set) -> str | None:
-    """accept | reject of a stored front end of a family that does not fail, on the current source."""
-    got = [r["result"] for r in rows if r["finding"] == fid and r["sha256"] == sha and r["family"] not in failing
-           and r["result"] in ("accept", "reject")]       # "ignored" is neither
+# the front end of a family per language: compilers that share one are not independent of each other
+LINEAGE = {"c": {"afar": "clang", "cce": "clang", "intel": "clang"},
+           "f90": {"afar": "flang", "cce": "cray-fortran", "intel": "intel-fortran"}}
+# the outcomes a front end decides: a correct run of a failing compiler's front end does not witness them
+REFUSALS = ("rejected", "compile_reject", "ice")
+
+
+def lineage(family: str, lang: str) -> str:
+    return LINEAGE["c" if lang == "c" else "f90"].get(family, family)
+
+
+def result_of(r: dict, lang: str) -> str:
+    """A stored row's result: a refusal whose message is a crash of the checker (offload.engine.harness
+    patterns, ice) is "ice", one that says the feature is not implemented or not supported
+    (not_implemented) "unsupported"; neither is a verdict on the program."""
+    if r["result"] != "reject" or not r.get("message"):
+        return r["result"]
+    from offload.engine.harness import classify_message
+    found = classify_message(r["family"], r["message"].replace(" | ", "\n"), ("ice", "not_implemented"), lang)
+    return {"ice": "ice", "not_implemented": "unsupported"}[found[0]] if found else "reject"
+
+
+def stored(rows: list, fid: str, sha: str, failing: set, lang: str = "f90") -> str | None:
+    """accept | reject of a stored front end on the current source, of a family that does not fail
+    and a lineage no failing compiler shares; "ignored" and "unsupported" are neither."""
+    bad = {lineage(f, lang) for f in failing}
+    got = [result_of(r, lang) for r in rows if r["finding"] == fid and r["sha256"] == sha
+           and r["family"] not in failing and lineage(r["family"], lang) not in bad]
+    got = [g for g in got if g in ("accept", "reject")]
     return "accept" if "accept" in got else ("reject" if got else None)
 
 
@@ -57,19 +82,24 @@ def needs_frontend(findings: dict, rows: list, witnessed: set, family: str = "af
                               for r in rows))
 
 
-def nvhpc_rows(fid: str, sha: str, text: str, lang: str, model: str) -> list[dict] | None:
-    """NVHPC's front ends (catalog/machines.yaml independent_checkers, over ssh) on a finding: its rows,
-    or None when a checker cannot be reached. "ignored" (directives dropped with a warning) is no accept."""
+def checker_rows(fid: str, sha: str, text: str, lang: str, model: str, family: str = "nvhpc") -> list[dict] | None:
+    """The front ends of a checker family (catalog/machines.yaml independent_checkers: NVHPC over ssh,
+    Intel on a compute node) on a finding: its rows, or None when a checker cannot run or be reached.
+    "ignored" (directives dropped with a warning) is no accept."""
     from offload.engine.confirm import witness as W
     out = []
-    for name in W.names_for(lang, model):
+    for name in [n for n in W.names_for(lang, model) if W.checkers()[n].get("family") == family]:
         try:
             r = W.check(fid, text, lang, sha, model, name)
         except (RuntimeError, OSError, ValueError, subprocess.TimeoutExpired):
             return None
-        out.append({"finding": fid, "sha256": sha, "checker": name, "family": "nvhpc", "version": r["version"],
+        out.append({"finding": fid, "sha256": sha, "checker": name, "family": family, "version": r["version"],
                     "result": r["result"], "message": r["message"], "date": r["date"]})
     return out
+
+
+def nvhpc_rows(fid: str, sha: str, text: str, lang: str, model: str) -> list[dict] | None:
+    return checker_rows(fid, sha, text, lang, model, "nvhpc")
 
 
 def frontend_row(fid: str, sha: str, text: str, lang: str, model: str) -> dict | None:
@@ -111,9 +141,11 @@ def evidence(text: str, lang: str, model: str, outcome: str, cells: list, rows: 
         hazards = prerun.result_hazards((text, lang, model, 60))
     failing = {_family(c.tc) for c in cells if c.state == "fails-like"}
     others = [c for c in cells if c.state == "correct" and _family(c.tc) not in failing]
-    witness = "accept" if any(_family(c.tc) not in NOT_A_WITNESS for c in others) else "same-family"
+    bad = {lineage(f, lang) for f in failing} if outcome in REFUSALS else set()
+    witness = "accept" if any(_family(c.tc) not in NOT_A_WITNESS and lineage(_family(c.tc), lang) not in bad
+                              for c in others) else "same-family"
     if witness != "accept":
-        witness = stored(rows, fid, sha, failing) or witness
+        witness = stored(rows, fid, sha, failing, lang) or witness
     if others:
         expected = "other-family"
     elif re.search(r"RESULT[^\n]*check=", text):
@@ -123,12 +155,12 @@ def evidence(text: str, lang: str, model: str, outcome: str, cells: list, rows: 
     return {"rules": rules, "rules_why": list(why)[:6], "hazards": hazards, "witness": witness,
             "expected": expected, "outcome": outcome, "failing": sorted(failing),
             "witnesses": sorted({c.tc for c in others}),
-            "front_ends": {r["checker"]: r["result"] for r in rows if r["finding"] == fid and r["sha256"] == sha}}
+            "front_ends": {r["checker"]: result_of(r, lang) for r in rows if r["finding"] == fid and r["sha256"] == sha}}
 
 
 # the code a verdict depends on: a change to any of it makes every record stale
 CODE = ("offload/engine/prerun.py", "offload/engine/rules.py", "offload/engine/grammar.py",
-        "offload/engine/legality_mechanical.py", "offload/engine/legality_review.py", "tools/review/review.py")
+        "offload/engine/legality_mechanical.py", "offload/engine/harness.py", "offload/engine/legality_review.py", "tools/review/review.py")
 
 
 def code_hash() -> str:

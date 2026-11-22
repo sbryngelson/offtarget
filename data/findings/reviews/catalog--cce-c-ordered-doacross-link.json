@@ -17,11 +17,12 @@
   ],
   "front_ends": {
    "afar-frontend": "accept",
+   "intel_c": "unsupported",
    "nvhpc269_c": "accept",
    "nvhpc_c": "accept"
   },
   "program_sha": "5782c17e3a0b767886fbb87b923aa401d8fa471d3eccbf899279413b289fc3a7",
-  "inputs": "688a686344cb185127637254c6fda28c29401c82ff3b9e021ac0c1837539411a"
+  "inputs": "be8675e9dba35c04aa4ae7415a5734c11ee9b62908a77983c462384fcbb16125"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

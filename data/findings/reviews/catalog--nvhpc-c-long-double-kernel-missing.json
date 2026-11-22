@@ -13,10 +13,11 @@
   ],
   "witnesses": [],
   "front_ends": {
-   "afar-frontend": "accept"
+   "afar-frontend": "accept",
+   "intel_c": "unsupported"
   },
   "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
-  "inputs": "b925a5c8727b2ea23d378a2df80435a68be091864108117d99ba4f3ccd70f079"
+  "inputs": "d6b0573e42e30008589460e1316ef4e1817c910c888bcafc48f35fc7c6f5c0d7"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

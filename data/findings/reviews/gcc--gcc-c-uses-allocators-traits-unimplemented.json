@@ -123,11 +123,12 @@
   "witnesses": [],
   "front_ends": {
    "afar-frontend": "accept",
+   "intel_c": "reject",
    "nvhpc269_c": "reject",
    "nvhpc_c": "reject"
   },
   "program_sha": "dada9e040e039bf7724ec60cab650764130c2452c0fc346e93f4d3b03040091c",
-  "inputs": "89bf642acaa2162cbc06956675c56244c1d0ed80ba6fbf45e914e5023b6485d5"
+  "inputs": "b324f5f95a2761b47f5fbfdde06bce264c9b8e6300c2864cae42286571fd8447"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

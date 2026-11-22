@@ -17,10 +17,11 @@
    "gcc_sm80"
   ],
   "front_ends": {
-   "afar-frontend": "accept"
+   "afar-frontend": "accept",
+   "intel_f90": "accept"
   },
   "program_sha": "619f0d4d77a59fdf29458f11a90c04e1c7d2b2832e7354c54f2b43e7bc3cbc64",
-  "inputs": "e5427ddd559fb5af4128aea4da2d5a91b7405f6115783359fac3532d4e8f84f2"
+  "inputs": "e24431f7ee768778a50ca0b6b6c4de87eec01a98711297cf5476c948e515fff5"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

@@ -1,0 +1,8 @@
+# Verbatim compiler output (stdout and stderr merged) captured on a Tuolumne compute node, 2026-11-22.
+# source: ifx -fiopenmp -fopenmp-targets=spir64 -c -o /dev/null (ifx (IFX) 2025.3.3 20260319) on data/findings/afar-cce19-task-in-target-ice.f90 (the finding's program, OpenMP version 52), legality witness run
+# exit status: 1
+==== verbatim output below ====
+t.f90(7): error #5541: A TASK or TASKGROUP construct inside of a TARGET or DECLARE TARGET region is not supported on this platform.
+    !$omp task default(shared)
+----------^
+compilation aborted for t.f90 (code 1)

@@ -38,6 +38,7 @@ docs/tooling/contributing.md, "Add a compiler or a compiler release".
 | afar | AMD AFAR | amd | afar | afar | 8 | its front end checks other families' cases |
 | cce | Cray CCE | hpe | cce | cce19 | 30 |  |
 | nvhpc | NVIDIA HPC SDK | nvidia | nvhpc | nvhpc | 15 | witnesses other families' cases |
+| intel | Intel oneAPI | - | intel | intel | 10 | witnesses other families' cases |
 | gcc | GNU GCC | - | gcc | gcc | 2 | never (under test only) |
 
 ## Lanes

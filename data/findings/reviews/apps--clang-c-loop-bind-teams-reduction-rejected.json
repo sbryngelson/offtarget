@@ -99,11 +99,12 @@
    "gcc"
   ],
   "front_ends": {
+   "intel_c": "accept",
    "nvhpc269_c": "accept",
    "nvhpc_c": "accept"
   },
   "program_sha": "fe36a30fc2d5712a0469c1f0d9f4f915cf2f8005198a12e03b7d8ef03cca4f68",
-  "inputs": "4b0dc78e75e9175a0e7ed7d042f24b4078e60375b8689426896406200ac72cd7"
+  "inputs": "1e147737f7848e32b0611cc1453d012fae006d8a0877994916b70167b5acb3ac"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

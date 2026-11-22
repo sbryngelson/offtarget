@@ -255,7 +255,7 @@
   ],
   "front_ends": {},
   "program_sha": "f36cec15c51244ce0b789708876372d49a9f8d37d7f7a7e33be7b7c619bf8b0d",
-  "inputs": "3214ad2b20550e02ab3277adf44d9422a7973498e2b98e3172a1f5811bb8aee2"
+  "inputs": "ea6b396ca999264974573372efc0c2935fa5ccd1f3aa66d39146e771f71fa079"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The task, target region and taskwait are conforming. The failure message shows OMP_TARGET_OFFLOAD=mandatory with no usable device; section 21.2.8 says a device construct using an unavailable device behaves as if omp_invalid_device were used, so aborting is permitted."

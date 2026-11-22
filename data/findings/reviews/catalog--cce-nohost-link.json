@@ -12,11 +12,12 @@
   "witnesses": [],
   "front_ends": {
    "afar-frontend": "accept",
+   "intel_f90": "accept",
    "nvhpc269_f90": "reject",
    "nvhpc_f90": "reject"
   },
   "program_sha": "eeb51b2a1a40135f9265fac4d01b4a4b0336c1a5b34f30ebbab4aaadfcbceab0",
-  "inputs": "0a5180e63ff757506b0c6855bdab8d3361b1934f8605e5c7132790cbf5e2fdc2"
+  "inputs": "3a4997f847bf9a67d19026e7afbc16cf95e3b82497fa3c881c95b0c1c7d58765"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

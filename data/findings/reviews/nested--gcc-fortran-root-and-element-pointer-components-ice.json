@@ -236,7 +236,7 @@
   ],
   "front_ends": {},
   "program_sha": "51665b21e160e5fccdda89f349a333a678e058d04ead8df522653e372f2e3d08",
-  "inputs": "e6fdb5cf1bd3fae8c2ce180104168a1162bb681320e35e3ab7c7c90a99deaccc"
+  "inputs": "d080abe066ce9232d134ac32b250ace2e474aca9d7c4367c61f1de7d5b251aad"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Whether map(to: r) maps the allocated allocatable component nx and its elements, so that the later maps of r%nx(1)%a and r%nx(2)%a attach correctly, is not settled by the text; the allocatable-component rule only says the map may treat allocation status as unallocated. An ICE is undesirable but a required result cannot be established."

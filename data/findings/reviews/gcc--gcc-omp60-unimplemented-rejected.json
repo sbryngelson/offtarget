@@ -14,14 +14,15 @@
   "witnesses": [],
   "front_ends": {
    "afar-frontend": "reject",
+   "intel_f90": "reject",
    "nvhpc269_f90": "reject",
    "nvhpc_f90": "reject"
   },
   "program_sha": "9eb40cf7f0270d84cbb3c8b42e561f25b9d863ca48eba1e577e95cf57a8902b1",
-  "inputs": "d786da4dce1adaffe0475cca7da449c51100d826bbe3c1dcc751b460fe701946"
+  "inputs": "1763bae575de643e3751e6fb1bbd43b9abdf689c8d64df6fa85f79991815d0c7"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: AMD's and NVHPC's front ends, of another family, reject it. A maintainer's ruling decides it."
+ "why": "Not yet settled: AMD's, Intel's and NVHPC's front ends, of another family, reject it. A maintainer's ruling decides it."
 }

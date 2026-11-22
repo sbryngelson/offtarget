@@ -2464,12 +2464,14 @@ from offload.engine.confirm import witness as W
 from offload.engine.toolchains import TOOLCHAINS
 
 
-def test_only_nvhpc_is_trusted_now():
+def test_only_nvhpc_and_intel_are_trusted_now():
     """gfortran/gcc -fopenmp are
     withdrawn as legality witnesses; NVHPC (another offload
-    compiler) is the replacement; every witness row is one of its."""
+    compiler) is the replacement, and Intel oneAPI (owner, 2026-11-22) a
+    third family; every witness row is one of theirs."""
     assert set(W.checkers()) == {"nvhpc_f90", "nvhpc_acc", "nvhpc_c",
-                                 "nvhpc269_f90", "nvhpc269_acc", "nvhpc269_c"}
+                                 "nvhpc269_f90", "nvhpc269_acc", "nvhpc269_c",
+                                 "intel_f90", "intel_c"}
     assert {r["checker"] for r in W._rows()} <= set(W.checkers())
 
 
@@ -2566,12 +2568,15 @@ def test_a_witness_never_counts_for_its_own_family(monkeypatch):
 
 
 def test_nvhpc_witnesses_are_configured_for_the_other_families():
-    """NVHPC on wingtip is the configured witness (Fortran
-    OpenMP, Fortran OpenACC, C OpenMP), family nvhpc, run over ssh."""
+    """NVHPC on wingtip is a configured witness (Fortran
+    OpenMP, Fortran OpenACC, C OpenMP), family nvhpc, run over ssh; Intel
+    (family intel, OpenMP only) runs on the machine of the run."""
     cs = W.checkers()
     assert {"nvhpc_f90", "nvhpc_acc", "nvhpc_c", "nvhpc269_f90"} <= set(cs)
-    assert {c["family"] for c in cs.values()} == {"nvhpc"}
-    assert {c["machine"] for c in cs.values()} == {"wingtip"}
+    assert {c["family"] for c in cs.values()} == {"nvhpc", "intel"}
+    assert {c["machine"] for c in cs.values() if c["family"] == "nvhpc"} == {"wingtip"}
+    assert not any(c.get("machine") for c in cs.values() if c["family"] == "intel")
+    assert {c.get("model", "omp") for c in cs.values() if c["family"] == "intel"} == {"omp"}
     assert cs["nvhpc_acc"]["model"] == "acc" and \
         "-acc=gpu" in cs["nvhpc_acc"]["command"]
 

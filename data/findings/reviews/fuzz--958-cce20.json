@@ -17,11 +17,12 @@
   ],
   "front_ends": {
    "afar-frontend": "accept",
+   "intel_f90": "ice",
    "nvhpc269_f90": "reject",
    "nvhpc_f90": "reject"
   },
   "program_sha": "86b16dea9789640f680742a589ce653ce750c717c4e0024a669ed9fb6b344063",
-  "inputs": "ba178a38e9726a54e7c3f123c48d0edba063ede3b4a8d6fe363220ca5a9075a6"
+  "inputs": "e9c9fbf85922a4c5b48d88c35daa1593ba78a06832783cb5c78dee169b1a5c8f"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

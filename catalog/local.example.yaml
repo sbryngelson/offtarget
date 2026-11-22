@@ -17,6 +17,9 @@ machines.yaml:
     nvhpc_f90:
       command: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran -mp=gpu -gpu=cc80 -c -o /dev/null
       version: /opt/nvidia/hpc_sdk/Linux_x86_64/25.11/compilers/bin/nvfortran --version
+    intel_f90:                       # Intel oneAPI, run on a compute node (no machine:)
+      command: /opt/intel/oneapi/compiler/2025.3/bin/ifx -fiopenmp -fopenmp-targets=spir64 -c -o /dev/null
+      version: /opt/intel/oneapi/compiler/2025.3/bin/ifx --version
 
 toolchains.yaml:
   families:                          # only to change a family's flags (docs/tooling/setup.md)

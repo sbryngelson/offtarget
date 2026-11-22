@@ -253,7 +253,7 @@ def test_gen_refuses_an_undeclared_draw_option(toy, tmp_path):
 def test_a_campaign_the_catalog_cannot_satisfy_is_refused_with_the_reason(monkeypatch):
     class Bad(C.Campaign):
         name = "bad"
-        caps = C.Capabilities(("f90",), ("omp",), families={"mars": None, "wingtip": ("intel",)})
+        caps = C.Capabilities(("f90",), ("omp",), families={"mars": None, "wingtip": ("nosuch",)})
 
         def programs(self, seed=0, n=0, **opts):
             return []
@@ -261,7 +261,7 @@ def test_a_campaign_the_catalog_cannot_satisfy_is_refused_with_the_reason(monkey
         C.register(Bad())
     msg = str(e.value)
     assert "machine mars is not in catalog/machines.yaml" in msg
-    assert "family intel is not in catalog/toolchains.yaml" in msg
+    assert "family nosuch is not in catalog/toolchains.yaml" in msg
     assert "no toolchain of wingtip compiles the campaign" in msg
     assert "bad" not in C.names()
     # the command line reports it instead of a traceback

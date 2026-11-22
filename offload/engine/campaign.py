@@ -634,7 +634,8 @@ class Run:
                      w.get("message", ""), nav)
             fe = {"afar": afar, "nvhpc": nv, "cce": cce.get(p.id)}
             legal_for = {}
-            for fam in reg.families:
+            # the families a program is run on: those with a toolchain under test (Intel is a witness only)
+            for fam in [f for f in reg.families if any(t.family.id == f for t in reg.toolchains.values())]:
                 others = [v for f, v in fe.items() if f != fam and v is not None]
                 legal_for[fam] = bool(rules) and any(others) and all(others)
             out[p.id] = {"rules": rules, "afar_fe": afar, "nvhpc_fe": nv,

@@ -108,13 +108,13 @@
  "external": [],
  "program_sha": "cdee32980c1cb3edacc3d46f71023f2f8d9fad591b5eb8f40bc83c34faf2176a",
  "instructions": "v2",
- "verdict": "open",
- "why": "Not yet settled: NVHPC's front end, of another family, rejects it. A maintainer's ruling decides it.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "reject",
+  "witness": "accept",
   "expected": "other-family",
   "outcome": "wrong_answer",
   "failing": [
@@ -125,11 +125,12 @@
    "gcc_sm80"
   ],
   "front_ends": {
-   "nvhpc269_f90": "reject",
-   "nvhpc_f90": "reject"
+   "intel_f90": "accept",
+   "nvhpc269_f90": "unsupported",
+   "nvhpc_f90": "unsupported"
   },
   "program_sha": "cdee32980c1cb3edacc3d46f71023f2f8d9fad591b5eb8f40bc83c34faf2176a",
-  "inputs": "a9d44f495c2ea17f3eb53286c584d26439f73163245415002d0514a266596a2f"
+  "inputs": "7bb5737fb5d422a5780150f1665e2004a18949b6bb1883e2df47d153bab54239"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

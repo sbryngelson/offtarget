@@ -109,7 +109,7 @@
  "program_sha": "be1b05e30b7b0090dd46a7c22f52ebe15185dd58501d9d8fd110165b4aeee69c",
  "instructions": "v2",
  "verdict": "open",
- "why": "Not yet settled: NVHPC's front end, of another family, rejects it. A maintainer's ruling decides it.",
+ "why": "Not yet settled: Intel's and NVHPC's front ends, of another family, reject it. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-02",
@@ -150,11 +150,12 @@
   ],
   "witnesses": [],
   "front_ends": {
+   "intel_f90": "reject",
    "nvhpc269_f90": "reject",
    "nvhpc_f90": "reject"
   },
   "program_sha": "be1b05e30b7b0090dd46a7c22f52ebe15185dd58501d9d8fd110165b4aeee69c",
-  "inputs": "e9dd6541bbf0610bab153134ead237e4e3b2ce35b1923a475bbe91ffea1e353c"
+  "inputs": "4b8147377e683c011d9693d9098b358379bde334049642d0e4a4769ce7a7249f"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

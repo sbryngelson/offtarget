@@ -1,0 +1,8 @@
+# Verbatim compiler output (stdout and stderr merged) captured on a Tuolumne compute node, 2026-11-22.
+# source: ifx -fiopenmp -fopenmp-targets=spir64 -c -o /dev/null (ifx (IFX) 2025.3.3 20260319) on data/findings/catalog/afar-flang-ordered-wrong.f90 (the finding's program, OpenMP version 52), legality witness run
+# exit status: 1
+==== verbatim output below ====
+t.f90(54): error #9142: An OpenMP* ORDERED directive is not supported in a TARGET region.
+        !$omp ordered
+--------------^
+compilation aborted for t.f90 (code 1)

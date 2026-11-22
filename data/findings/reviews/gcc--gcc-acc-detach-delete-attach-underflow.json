@@ -331,7 +331,7 @@
   ],
   "front_ends": {},
   "program_sha": "9986a74fc4c6d36efdf5bf7954111f6fc71237e33df6eb193969a7319bf03707",
-  "inputs": "e5ec4298ab7dd08789b904aef4ba71018bf37a8a8b406b44b50aa8830203f278"
+  "inputs": "d84c0f12eb26ba3fd9d0e6f2f171fd661fd45deaa19d4d7f31223deb817a4b24"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The attach and detach clauses accept Fortran allocatable variables, which suggests allocatable components count as pointer references. But the attach pointer action is defined only for a pointer reference, and that term is never defined. Whether copyin(h%v) sets the attachment counter to one is therefore not settled."

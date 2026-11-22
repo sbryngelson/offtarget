@@ -1,0 +1,50 @@
+# Verbatim compiler output (stdout and stderr merged) captured on a Tuolumne compute node, 2026-11-22.
+# source: icx -fiopenmp -fopenmp-targets=spir64 -std=c11 -c -o /dev/null (Intel(R) oneAPI DPC++/C++ Compiler 2025.3.3 (2025.3.3.20260319)) on data/findings/catalog/afar-c-reduction-task-link.c (the finding's program, OpenMP version 52), legality witness run
+# exit status: 1
+==== verbatim output below ====
+PLEASE append the compiler options "-save-temps -v", rebuild the application to get the full command which is failing and submit a bug report to https://software.intel.com/en-us/support/priority-support which includes the failing command, input files for the command and the crash backtrace (if any).
+Stack dump:
+0.	Program arguments: /opt/intel/oneapi/compiler/2025.3/bin/compiler/clang -cc1 -triple spir64 -O2 -aux-triple x86_64-unknown-linux-gnu -disable-lifetime-markers -Wspir-compat -fno-offload-use-alloca-addrspace-for-srets -emit-llvm-bc -emit-llvm-uselists -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name t.c -mrelocation-model pic -pic-level 2 -fhalf-no-semantic-interposition -fveclib=SVML -faltmathlib=LibDeviceIMFAltMathLibrary -mframe-pointer=all -fapprox-func -funsafe-math-optimizations -fno-signed-zeros -mreassociate -freciprocal-math -fdenormal-fp-math=preserve-sign,preserve-sign -ffp-contract=fast-honor-pragmas -fno-rounding-math -complex-range=basic -fno-offload-fp32-prec-div -fno-offload-fp32-prec-sqrt -fno-verbose-asm -no-integrated-as -mconstructor-aliases -debugger-tuning=gdb -fno-dwarf-directory-asm -fdebug-compilation-dir=/tmp/<user>/tmpwj_036gw -fcoverage-compilation-dir=/tmp/<user>/tmpwj_036gw -fclang-abi-compat=17 -resource-dir /opt/intel/oneapi/compiler/2025.3/lib/clang/21 -internal-isystem /opt/intel/oneapi/compiler/2025.3/bin/compiler/../../opt/compiler/include -internal-isystem /opt/intel/oneapi/compiler/2025.3/lib/clang/21/include/llvm_libc_wrappers -internal-isystem /opt/intel/oneapi/compiler/2025.3/lib/clang/21/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/8/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -std=c11 -ferror-limit 19 -fvisibility=protected -fopenmp-late-outline -fopenmp-threadprivate-legacy -fopenmp -fsycl-instrument-device-code -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -mllvm -disable-hir-generate-mkl-call -mllvm -disable-hir-vec-dir-insert -mllvm -enable-o0-vectorization=false -mllvm -vplan-driver=false -mllvm -vplan-driver-hir=false -mllvm -intel-abi-compatible=true -fopenmp-is-target-device -fopenmp-host-ir-file-path /var/tmp/<user>/icx-5f9b5ea288/t-986b82.bc -mllvm -paropt=63 -mllvm -spirv-opt --offload-targets=spir64 -fintel-compatibility -fintel-libirc-allowed -fintel-libimf-allowed -o /var/tmp/<user>/icx-5f9b5ea288/t-4c55da.bc -x c t.c
+1.	<eof> parser at end of file
+2.	Optimizer
+3.	Running pass "vpo-paropt" on module "t.c"
+ #0 0x000055555b97a5dd llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x64265dd)
+ #1 0x000055555b9791a7 llvm::sys::RunSignalHandlers() (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x64251a7)
+ #2 0x000055555b97af5c SignalHandler(int, siginfo_t*, void*) Signals.cpp:0:0
+ #3 0x0000155554558990 __restore_rt (/lib64/libpthread.so.0+0x12990)
+ #4 0x0000555559444f4b llvm::Value::setName(llvm::Twine const&) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x3ef0f4b)
+ #5 0x000055555bb1af96 llvm::vpo::VPOParoptTransform::genAtomicFreeReductionLocalFini(llvm::vpo::WRegionNode*, llvm::vpo::ReductionItem*, std::__1::unique_ptr<llvm::vpo::VPOParoptTransform::ReductionCombiner, std::__1::default_delete<llvm::vpo::VPOParoptTransform::ReductionCombiner>>, llvm::IRBuilder<llvm::ConstantFolder, llvm::IRBuilderDefaultInserter>&, llvm::DominatorTree*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65c6f96)
+ #6 0x000055555bb1e5bd llvm::vpo::VPOParoptTransform::genReductionScalarFini(llvm::vpo::WRegionNode*, llvm::vpo::ReductionItem*, llvm::Value*, llvm::Value*, llvm::Type*, llvm::IRBuilder<llvm::ConstantFolder, llvm::IRBuilderDefaultInserter>&, llvm::DominatorTree*, bool) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65ca5bd)
+ #7 0x000055555bb1ebd4 llvm::vpo::VPOParoptTransform::genReductionFini(llvm::vpo::WRegionNode*, llvm::vpo::ReductionItem*, llvm::Value*, llvm::Instruction*, llvm::DominatorTree*, bool, llvm::Value*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65cabd4)
+ #8 0x000055555bafe740 llvm::vpo::VPOParoptTransform::genTaskLoopRedCombFunc(llvm::vpo::WRegionNode*, llvm::vpo::ReductionItem*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65aa740)
+ #9 0x000055555baffe0b llvm::vpo::VPOParoptTransform::genTaskTRedRec(llvm::vpo::WRegionNode*, llvm::Instruction*, unsigned int&) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65abe0b)
+#10 0x000055555bb000e2 llvm::vpo::VPOParoptTransform::genTaskRedModifierInit(llvm::vpo::WRegionNode*, llvm::Instruction*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65ac0e2)
+#11 0x000055555bb0f50f llvm::vpo::VPOParoptTransform::genReductionCode(llvm::vpo::WRegionNode*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65bb50f)
+#12 0x000055555bb07b27 llvm::vpo::VPOParoptTransform::paroptTransforms() (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x65b3b27)
+#13 0x000055555bad8539 llvm::vpo::VPOParoptModuleTransform::doParoptTransforms(std::__1::function<llvm::vpo::WRegionInfo& (llvm::Function&, bool*)>) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x6584539)
+#14 0x000055555bacee74 llvm::VPOParoptPass::runImpl(llvm::Module&, std::__1::function<llvm::vpo::WRegionInfo& (llvm::Function&, bool*)>, unsigned int, llvm::LoopOptLimiter) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x657ae74)
+#15 0x000055555bacef95 llvm::VPOParoptPass::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x657af95)
+#16 0x000055555c538f41 llvm::detail::PassModel<llvm::Module, llvm::VPOParoptPass, llvm::AnalysisManager<llvm::Module>>::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) PassBuilder.cpp:0:0
+#17 0x000055555a2e4250 llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module>>::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x4d90250)
+#18 0x000055555a5f4774 (anonymous namespace)::EmitAssemblyHelper::RunOptimizationPipeline(clang::BackendAction, std::__1::unique_ptr<llvm::raw_pwrite_stream, std::__1::default_delete<llvm::raw_pwrite_stream>>&, std::__1::unique_ptr<llvm::ToolOutputFile, std::__1::default_delete<llvm::ToolOutputFile>>&, clang::BackendConsumer*) BackendUtil.cpp:0:0
+#19 0x0000555559a1d8d2 clang::emitBackendOutput(clang::CompilerInstance&, clang::CodeGenOptions&, llvm::StringRef, llvm::Module*, clang::BackendAction, llvm::IntrusiveRefCntPtr<llvm::vfs::FileSystem>, std::__1::unique_ptr<llvm::raw_pwrite_stream, std::__1::default_delete<llvm::raw_pwrite_stream>>, clang::BackendConsumer*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x44c98d2)
+#20 0x00005555599d6399 clang::BackendConsumer::HandleTranslationUnit(clang::ASTContext&) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x4482399)
+#21 0x00005555598eb8a7 clang::ParseAST(clang::Sema&, bool, bool) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x43978a7)
+#22 0x0000555559a1b26c clang::CodeGenAction::ExecuteAction() (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x44c726c)
+#23 0x000055555a415a1f clang::FrontendAction::Execute() (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x4ec1a1f)
+#24 0x000055555a41556e clang::CompilerInstance::ExecuteAction(clang::FrontendAction&) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x4ec156e)
+#25 0x000055555a653815 clang::ExecuteCompilerInvocation(clang::CompilerInstance*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x50ff815)
+#26 0x000055555a1ee18e cc1_main(llvm::ArrayRef<char const*>, char const*, void*) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x4c9a18e)
+#27 0x0000555559a4f5fb ExecuteCC1Tool(llvm::SmallVectorImpl<char const*>&, llvm::ToolContext const&) driver.cpp:0:0
+#28 0x000055555a1f152c clang_main(int, char**, llvm::ToolContext const&) (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x4c9d52c)
+#29 0x000055555a653cc9 main (/opt/intel/oneapi/compiler/2025.3/bin/compiler/clang+0x50ffcc9)
+#30 0x00001555541aa865 __libc_start_main (/lib64/libc.so.6+0x3a865)
+#31 0x000055555abb611e _start /export/project/tools-build/toolchain-cross/src/glibc/csu/../sysdeps/x86_64/start.S:122:0
+icx: error: unable to execute command: Segmentation fault (core dumped)
+icx: error: clang frontend command failed due to signal (use -v to see invocation)
+Intel(R) oneAPI DPC++/C++ Compiler 2025.3.3 (2025.3.3.20260319)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /opt/intel/oneapi/compiler/2025.3/bin/compiler
+Configuration file: /opt/intel/oneapi/compiler/2025.3/bin/compiler/../icx.cfg
+icx: note: diagnostic msg: Error generating preprocessed source(s).

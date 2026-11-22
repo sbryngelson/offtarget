@@ -5,7 +5,7 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "accept",
+  "witness": "same-family",
   "expected": "other-family",
   "outcome": "rejected",
   "failing": [
@@ -21,10 +21,10 @@
   ],
   "front_ends": {},
   "program_sha": "45f379ea2b0a21d6c9ad47d9a623825ba1ae6aba488ed4157a8b384f998353ce",
-  "inputs": "37c182e9530c650e31701d7b4275e70d6014f2c044490f58d1ec957c509e2281"
+  "inputs": "af35af7e49f435fbdecef01e53a9991eb3bbd12bccf356710431eb48be7e3d94"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "checked",
- "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected."
+ "verdict": "open",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
 }

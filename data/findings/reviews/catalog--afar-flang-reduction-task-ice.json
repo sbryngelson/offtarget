@@ -16,11 +16,12 @@
    "gcc_sm80"
   ],
   "front_ends": {
+   "intel_f90": "ice",
    "nvhpc269_f90": "reject",
    "nvhpc_f90": "reject"
   },
   "program_sha": "fbb48545f931e6e9cd9ae81a96acbb8beda010c48b8b600c5688253674c419d7",
-  "inputs": "35324abd55ea94b2a72fbb5a6440efbc1e9abcc84f354c7d22b8d36f77dcec07"
+  "inputs": "f147d8c1b37588f2eb4c5088c691937ebff6a12e8207a42cbbe6eb22f82e9747"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

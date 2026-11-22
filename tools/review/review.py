@@ -451,10 +451,11 @@ def why_of(rec: dict) -> str:
     if m.get("rules") != "accept":
         gaps.append("the rules engine cannot read it" if m.get("rules") == "unreadable" else "the rules engine does not accept it")
     if m.get("witness") == "reject":
-        names = {"afar-frontend": "AMD's", "nvhpc": "NVHPC's"}
-        who = sorted({names["nvhpc" if k.startswith("nvhpc") else k] for k, v in (m.get("front_ends") or {}).items()
-                      if v == "reject" and (k.startswith("nvhpc") or k in names)}) or ["a"]
-        gaps.append(f"{' and '.join(who)} front end{'s' if len(who) > 1 else ''}, of another family, reject{'' if len(who) > 1 else 's'} it")
+        names = {"afar": "AMD's", "nvhpc": "NVHPC's", "intel": "Intel's"}
+        who = sorted({names[p] for k, v in (m.get("front_ends") or {}).items() if v == "reject"
+                      for p in names if k.startswith(p)}) or ["a"]
+        said = who[0] if len(who) == 1 else ", ".join(who[:-1]) + " and " + who[-1]
+        gaps.append(f"{said} front end{'s' if len(who) > 1 else ''}, of another family, reject{'' if len(who) > 1 else 's'} it")
     elif m.get("witness") != "accept":
         gaps.append("no compiler of another family (GCC does not count) has accepted it")
     if m.get("outcome") not in L.ACCEPTANCE and m.get("expected") not in L.EXPECTED_SOURCES:
@@ -504,12 +505,12 @@ def stale_records() -> list[str]:
     return out
 
 
-def mechanical(ids: list[str], frontend: bool = False, nvhpc: bool = False) -> int:
+def mechanical(ids: list[str], frontend: bool = False, nvhpc: bool = False, intel: bool = False) -> int:
     """Each finding's mechanical evidence (offload.engine.legality_mechanical) from its program, the
     committed rows and the stored front-end rows, and its verdicts; every finding of the index when
     ids is empty. --frontend (a compute node) first runs AMD's front end on the findings that need
     it and stores the rows (catalog/finding_witness.yaml); --nvhpc does the same with NVHPC's front ends
-    (catalog/machines.yaml independent_checkers, over ssh)."""
+    (catalog/machines.yaml independent_checkers, over ssh), --intel with Intel's (a compute node)."""
     from collections import Counter
     from offload.engine import legality_mechanical as LM
     from offload.engine.site import matrix as M
@@ -518,7 +519,7 @@ def mechanical(ids: list[str], frontend: bool = False, nvhpc: bool = False) -> i
     ids = ids or sorted(index)
     wit = LM.load_rows()
     cells = {fid: M.cells(fid, rows, cases) for fid in ids if fid in index}
-    if frontend or nvhpc:
+    if frontend or nvhpc or intel:
         want, witnessed = {}, set()
         for fid, cs in cells.items():
             path = index[fid][1]
@@ -528,7 +529,7 @@ def mechanical(ids: list[str], frontend: bool = False, nvhpc: bool = False) -> i
             if any(c.state == "correct" and LM._family(c.tc) not in failing | LM.NOT_A_WITNESS for c in cs):
                 witnessed.add(fid)
             want[fid] = (L.program_sha(path), failing)
-        for fam, on in (("afar", frontend), ("nvhpc", nvhpc)):
+        for fam, on in (("afar", frontend), ("nvhpc", nvhpc), ("intel", intel)):
             if not on:
                 continue
             need = LM.needs_frontend(want, wit, witnessed, family=fam)
@@ -538,10 +539,10 @@ def mechanical(ids: list[str], frontend: bool = False, nvhpc: bool = False) -> i
                 lang, model = _lang_model(path)
                 text = path.read_text(errors="replace")
                 got = LM.frontend_row(fid, want[fid][0], text, lang, model) if fam == "afar" \
-                    else LM.nvhpc_rows(fid, want[fid][0], text, lang, model)
+                    else LM.checker_rows(fid, want[fid][0], text, lang, model, fam)
                 if got is None:
                     print(f"{fid}: the {fam} front end cannot run or be reached here")
-                    if fam == "nvhpc":
+                    if fam != "afar":
                         break           # an unreachable machine stays unreachable for the rest
                     continue
                 got = got if isinstance(got, list) else [got]
@@ -638,6 +639,7 @@ def main(argv=None) -> int:
     mc = sub.add_parser("mechanical", help="the mechanical legality evidence and verdicts (no AI reading)")
     mc.add_argument("--frontend", action="store_true", help="also run AMD's front end (a compute node)")
     mc.add_argument("--nvhpc", action="store_true", help="also run NVHPC's front ends (over ssh)")
+    mc.add_argument("--intel", action="store_true", help="also run Intel's front ends (a compute node)")
     mc.add_argument("ids", nargs="*")
     sub.add_parser("queue", help="the open findings a maintainer's ruling would settle, by gap")
     a = ap.parse_args(argv)
@@ -651,7 +653,7 @@ def main(argv=None) -> int:
                 print(f"    {fid}" + (f"  (AI readings: {adv})" if adv else ""))
         return 0
     if a.cmd == "mechanical":
-        return mechanical(a.ids, a.frontend, a.nvhpc)
+        return mechanical(a.ids, a.frontend, a.nvhpc, a.intel)
     if a.cmd == "rule":
         return rule(a.id, a.spec, a.section, a.quote, a.why, a.date)
     if a.cmd == "select":
