@@ -232,8 +232,9 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {},
   "program_sha": "a6505cb66ed3e3210a0014eba0decf3f40be152d7f18ee783ed422ee42a56803",
-  "inputs": "22f1fb77d288fc920b8193dd360a2522904ddbb8b8fd46c4c1a5718579606422"
+  "inputs": "1184ded140253f510b83720ffc639dd28b8d6fc973db5e48cf971616d72b7fd5"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The error directive with at(compilation) and severity(warning) displays an implementation-defined message; only fatal aborts compilation. The observed output is a warning, which is the specified action, and nothing restricts the directive inside a target region (it is pure when at is compilation). The observed result is permitted."

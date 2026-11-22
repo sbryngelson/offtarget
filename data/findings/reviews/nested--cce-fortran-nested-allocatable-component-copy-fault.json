@@ -229,8 +229,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "da31c01bcac4514de0ba96d38b885cbf49bcf346e6cb77fb95684c47b81b3b53",
-  "inputs": "e945fc18e28a5b10b004da8d155617b8caa4a04bb61eb86073f51ca6c786dbe3"
+  "inputs": "401e3bcdfdd03e9464f7859ac4b15cf002b701f8a659018b102172c8246d8fda"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The target region only references r, which is present from enter data; the structure-element restriction concerns map list items on the target construct, which has none. the fault is a compiler or runtime defect."

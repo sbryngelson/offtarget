@@ -253,8 +253,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "f36cec15c51244ce0b789708876372d49a9f8d37d7f7a7e33be7b7c619bf8b0d",
-  "inputs": "ff7f5db85aace5d07e24baaa7ecfc8f02ee1bf88f9f802af4d473f97c9939db3"
+  "inputs": "3214ad2b20550e02ab3277adf44d9422a7973498e2b98e3172a1f5811bb8aee2"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The task, target region and taskwait are conforming. The failure message shows OMP_TARGET_OFFLOAD=mandatory with no usable device; section 21.2.8 says a device construct using an unavailable device behaves as if omp_invalid_device were used, so aborting is permitted."

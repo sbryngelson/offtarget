@@ -221,8 +221,9 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {},
   "program_sha": "4bf96f45458e819c9e1b33ed210c0903dfb76ca4a12eb1eed0da2e0f63c4ef94",
-  "inputs": "368e55b247f1975115e4d3366cb3a459eb604f49fed2bf20cb83e7b6df8a20ee"
+  "inputs": "4a8ef5204e4875599f5f8f7105bf685793accceed01772492e0ab9c9e1417d7c"
  },
  "advisory": "contested",
  "advisory_why": "An independent reading finds the result not required: r->nx[0:1] is mapped before r[0:1] on the same construct. The attached-pointer rule applies when a corresponding pointer for the base pointer r->nx exists upon entry to the region. Here r->nx lives in r[0:1], which is created by this same construct, so the rule does not clearly guarantee attachment. The device r->nx may hold the host address, so acceptance is not clearly required and the observed illegal address is not clearly a bug."

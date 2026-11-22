@@ -126,3 +126,10 @@ def test_an_nvhpc_check_becomes_a_finding_row_and_an_unreachable_machine_gives_n
         raise RuntimeError("ssh to wingtip failed")
     monkeypatch.setattr(W, "check", down)
     assert LM.nvhpc_rows("x", "s", PROG, "f90", "omp") is None
+
+
+def test_the_evidence_names_the_front_ends_that_saw_the_program():
+    rows = [{"finding": "x", "sha256": "s", "checker": "nvhpc_c", "family": "nvhpc", "result": "reject"},
+            {"finding": "x", "sha256": "old", "checker": "afar-frontend", "family": "afar", "result": "accept"}]
+    m = LM.evidence(PROG, "f90", "omp", "rejected", [cell("cce21", "fails-like")], rows=rows, fid="x", sha="s")
+    assert m["front_ends"] == {"nvhpc_c": "reject"} and m["witness"] == "reject"

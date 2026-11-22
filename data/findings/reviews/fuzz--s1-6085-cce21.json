@@ -15,8 +15,9 @@
    "afar",
    "afar244"
   ],
+  "front_ends": {},
   "program_sha": "9430f0b4777e105daada4c0051dd84e5487eff433854b4b84ea1091d353076bc",
-  "inputs": "1935b092716b7e4e8054fa888dc89e27aa22c8507b5ee0685046522fabe75acc"
+  "inputs": "2cf3a27617afec65a59467fba9f086e568cf698c8a44021c1ee5f1144e7ed36c"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

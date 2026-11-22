@@ -10,8 +10,13 @@
   "outcome": "rejected",
   "failing": [],
   "witnesses": [],
+  "front_ends": {
+   "afar-frontend": "accept",
+   "nvhpc269_acc": "accept",
+   "nvhpc_acc": "accept"
+  },
   "program_sha": "6eaf50afcea9ab987d5346a209d5a080f9e96681bd4aaefbb025566f1e8c0217",
-  "inputs": "add71558c4ac4f8ce9c0348deedb846f64d1e1f0e156fe5dae904bfea71bbfe5"
+  "inputs": "0951ecc078da3c11ae3a4bc9cfab9b4a044f133e0a9c4e11552deaae5bccef01"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

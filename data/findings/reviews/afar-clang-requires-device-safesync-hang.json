@@ -109,7 +109,7 @@
  "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46",
  "instructions": "v2",
  "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it; no independent source gives the expected result. A maintainer's ruling decides it.",
+ "why": "Not yet settled: NVHPC's front end, of another family, rejects it; no independent source gives the expected result. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-03",
@@ -192,15 +192,19 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "reject",
   "expected": "none",
   "outcome": "timeout",
   "failing": [
    "afar"
   ],
   "witnesses": [],
+  "front_ends": {
+   "nvhpc269_c": "reject",
+   "nvhpc_c": "reject"
+  },
   "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46",
-  "inputs": "cc025754980bccf5d2575dd150e189064719ac49311c5c1275255167c6febc6e"
+  "inputs": "21155096fab77e062606e59e0f7f5090232a5c29f28f5b17a48073a3386280bc"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The directive is conforming, but support for a given requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. A compiler may thus refuse the program, so acceptance is not required."

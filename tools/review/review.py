@@ -451,7 +451,10 @@ def why_of(rec: dict) -> str:
     if m.get("rules") != "accept":
         gaps.append("the rules engine cannot read it" if m.get("rules") == "unreadable" else "the rules engine does not accept it")
     if m.get("witness") == "reject":
-        gaps.append("AMD's front end, of another family, rejects it")
+        names = {"afar-frontend": "AMD's", "nvhpc": "NVHPC's"}
+        who = sorted({names["nvhpc" if k.startswith("nvhpc") else k] for k, v in (m.get("front_ends") or {}).items()
+                      if v == "reject" and (k.startswith("nvhpc") or k in names)}) or ["a"]
+        gaps.append(f"{' and '.join(who)} front end{'s' if len(who) > 1 else ''}, of another family, reject{'' if len(who) > 1 else 's'} it")
     elif m.get("witness") != "accept":
         gaps.append("no compiler of another family (GCC does not count) has accepted it")
     if m.get("outcome") not in L.ACCEPTANCE and m.get("expected") not in L.EXPECTED_SOURCES:

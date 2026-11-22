@@ -12,8 +12,11 @@
    "nvhpc"
   ],
   "witnesses": [],
+  "front_ends": {
+   "afar-frontend": "accept"
+  },
   "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
-  "inputs": "0d15e81245827d614a9689c5e56861d071ac0800fd3d1caf6ce489e9a6e34976"
+  "inputs": "b925a5c8727b2ea23d378a2df80435a68be091864108117d99ba4f3ccd70f079"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

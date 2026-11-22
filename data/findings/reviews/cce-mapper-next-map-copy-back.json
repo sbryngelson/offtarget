@@ -219,8 +219,9 @@
    "afar",
    "afar244"
   ],
+  "front_ends": {},
   "program_sha": "b387642834134bfe5207f98b911b2ae0392ece980ab6e62fa939a563dd1941eb",
-  "inputs": "8c796ad8cd44ab3a7c100c0e7fd37f2d59c78679d59a70fbf8b37d1410bf2351"
+  "inputs": "feec1bb3bf1ff1c0308870a014b89f18dc12d9997444c1e04aee34dbcc70fcdc"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: Mapper decay is correct (to with tofrom gives to), so sv=1 is right. The host_flag difference is not required: default-device-var is implementation-defined and target regions may execute on the host when the device does not exist or is unsupported."

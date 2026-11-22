@@ -5,16 +5,21 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "reject",
+  "witness": "accept",
   "expected": "none",
   "outcome": "rejected",
   "failing": [],
   "witnesses": [],
+  "front_ends": {
+   "afar-frontend": "reject",
+   "nvhpc269_f90": "accept",
+   "nvhpc_f90": "accept"
+  },
   "program_sha": "359e4809149f4c668dd6de05adafc854db5f3da3b0c8ccf205257d5051caf51a",
-  "inputs": "e2217e58ff6a9417f77bf03224cb95e1dd20524da2fc64aaa71722304d02f774"
+  "inputs": "4a10b93857cae7b5666976ef746d116830878c15283079a6cf238c367359af99"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "open",
- "why": "Not yet settled: AMD's front end, of another family, rejects it. A maintainer's ruling decides it."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected."
 }

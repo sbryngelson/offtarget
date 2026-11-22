@@ -203,8 +203,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "0eb4d743bab627b467a9ca784e35a09915a13fd0a8a3613ca120bfef2680e06c",
-  "inputs": "5c8e9a0e8836b78430e9f65fb1323b15ac9b45a3372969c838aeb222fea3ec41"
+  "inputs": "461b5e9f7e6c56d074b5ae2efe0b8982aa2e8d08acdcd4e1de1b50998292db20"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The two host threads map disjoint sections a(lo:hi) and b(lo:hi), and the target region references only elements inside the mapped sections. The only stated restriction (whole-array reference to a partly mapped array) is not triggered, and the variable is not allocated, deallocated or reshaped meanwhile. i, lo and hi are private."

@@ -122,7 +122,8 @@ def evidence(text: str, lang: str, model: str, outcome: str, cells: list, rows: 
         expected = "none"
     return {"rules": rules, "rules_why": list(why)[:6], "hazards": hazards, "witness": witness,
             "expected": expected, "outcome": outcome, "failing": sorted(failing),
-            "witnesses": sorted({c.tc for c in others})}
+            "witnesses": sorted({c.tc for c in others}),
+            "front_ends": {r["checker"]: r["result"] for r in rows if r["finding"] == fid and r["sha256"] == sha}}
 
 
 # the code a verdict depends on: a change to any of it makes every record stale

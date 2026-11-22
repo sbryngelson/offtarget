@@ -311,6 +311,9 @@ def _check_remote(ident, source, lang, sha, name, c) -> dict:
                        capture_output=True, text=True, timeout=600)
     if r.returncode == 255:
         raise RuntimeError(f"ssh to {m.name} failed: {r.stderr[-200:]}")
+    if r.returncode in (126, 127):
+        # the checker (or its cap) could not start there: no verdict
+        raise RuntimeError(f"{name} did not start on {m.name}: {(r.stdout + r.stderr)[-200:]}")
     err = r.stdout + r.stderr
     msg = " | ".join(x.strip() for x in err.splitlines()
                      if re.search(r"error|NVFORTRAN-[SFW]|NVC\+\+-[SFW]",
@@ -325,6 +328,9 @@ def _check_remote(ident, source, lang, sha, name, c) -> dict:
                        capture_output=True,
                        text=True, timeout=120)
     first = next((ln for ln in v.stdout.splitlines() if ln.strip()), "")
+    if not first:
+        # a checker whose version probe prints nothing did not run: no verdict
+        raise RuntimeError(f"{name} on {m.name}: the version probe printed nothing: {v.stderr[-200:]}")
     return {"program": ident, "sha256": sha, "checker": name,
             "version": first.strip(), "command": public(c["command"]),
             "result": ("ignored" if ign else "accept") if r.returncode == 0

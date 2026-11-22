@@ -16,8 +16,11 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {
+   "afar-frontend": "accept"
+  },
   "program_sha": "619f0d4d77a59fdf29458f11a90c04e1c7d2b2832e7354c54f2b43e7bc3cbc64",
-  "inputs": "532bc75be84db471f8eaac00744c2a9a7139e4aa917283a9a0dda8bfa38ffcae"
+  "inputs": "e5427ddd559fb5af4128aea4da2d5a91b7405f6115783359fac3532d4e8f84f2"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

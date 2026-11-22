@@ -102,8 +102,9 @@
    "cce21",
    "cce21_4"
   ],
+  "front_ends": {},
   "program_sha": "d083404ee76f49fd575bf3fbfbbb27c6b5a13319cb188351ec8c78492a5e22e1",
-  "inputs": "13918dd3007fcb3337b768d70d5e0e922ea5472a76288df1f8c913c55d972e92"
+  "inputs": "6c8261e89d0eb9678c21b3e85c78f429382b1d00f0bba5a72094c5e86de9d81a"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

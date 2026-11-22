@@ -227,8 +227,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "3af8afb353d7b6b82e34f857d9adb70fc159af34eb75f829be2ad76308f23236",
-  "inputs": "a54c4b9ee25aea774d77ef5f92e9d0883786eeb7e7a42e674150ce9668ef7d0a"
+  "inputs": "06e7e564b2f27630b73db397427c25789c2aae1da7d18e0675791135bc3f79e3"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: dr, ib and ic are non-scalars implicitly mapped tofrom; the predefined default mapper maps each structure element of dr, including the allocatable component q, and 5.2 added support for allocatable components. j is a Fortran loop variable inside a teams construct and so private; i is the distribute loop variable. r1b is a max reduction and the ic index stays in 1..5, so the program is race free. A device fault is a compiler or runtime error."

@@ -5,7 +5,7 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "reject",
   "expected": "other-family",
   "outcome": "ice",
   "failing": [
@@ -15,11 +15,15 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {
+   "nvhpc269_f90": "reject",
+   "nvhpc_f90": "reject"
+  },
   "program_sha": "fbb48545f931e6e9cd9ae81a96acbb8beda010c48b8b600c5688253674c419d7",
-  "inputs": "f00e15f32c4f9440baa288a9e7d43607a7a9d1d7d301ced59a3232f8834f61e8"
+  "inputs": "35324abd55ea94b2a72fbb5a6440efbc1e9abcc84f354c7d22b8d36f77dcec07"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
+ "why": "Not yet settled: NVHPC's front end, of another family, rejects it. A maintainer's ruling decides it."
 }

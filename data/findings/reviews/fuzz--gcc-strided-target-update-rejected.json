@@ -12,8 +12,13 @@
    "gcc"
   ],
   "witnesses": [],
+  "front_ends": {
+   "afar-frontend": "accept",
+   "nvhpc269_f90": "reject",
+   "nvhpc_f90": "reject"
+  },
   "program_sha": "277915601af930b151ab93598fdce24e2ac8715c2efd7d1a955cbd37dbe3b5ae",
-  "inputs": "300f3dd2b44d1a489264be97468a4a30d78d28b9ba7b26f4e5d852f60e49ef0c"
+  "inputs": "f51289b31946fd1ac80223406cccf7afae95c8313903a33c0dbab931002beff4"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

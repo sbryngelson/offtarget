@@ -245,8 +245,11 @@
    "nvhpc"
   ],
   "witnesses": [],
+  "front_ends": {
+   "afar-frontend": "accept"
+  },
   "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
-  "inputs": "c4d1b44609823c025c254e9b70ea5aba5bdd5ecd8413193eeaf2b43f3d2febf9"
+  "inputs": "887e976b6d0daf51e0394e95c4c644a404955d27bce336876806fd3bc369ee60"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Fortran 2003 is a cited base language, so a parameterized derived type is not excluded."

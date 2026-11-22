@@ -218,8 +218,9 @@
    "gcc_sm80",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "757c4ca662c833d0bbdea910c85d765bf2a8fc8a01e4fc4c9f3cc4d6c9abd178",
-  "inputs": "bb16ed556464560cbfd1efd7907e9488d5b1fe9c79c2873708332535f59a6c8d"
+  "inputs": "f122b1d4ec95eb52b4eb789fbe08c905a86774eac873dd553e131b9fb371a6fa"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The program is conforming. The specification says the initial thread may execute on the requested device if it is available and supported, and that with OMP_TARGET_OFFLOAD=mandatory a device that is unavailable or not supported by the implementation is treated as omp_invalid_device. The implementation (here with -flto) may not support offloading the region, so the abort is permitted."

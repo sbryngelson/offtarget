@@ -232,8 +232,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "043808ae5911eb5fd915be8254fb896c4136d64d7a7e9245dc8a01b9e4112084",
-  "inputs": "343274b98629f9d381d614de8c4f043dbb7019fed2a4ac404d6e34284356fb67"
+  "inputs": "a8e1d8dae075a5e1cbc8d4045345593bd1f6f530d70ed1ce996f32aaa4507b91"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: Both readings agree the program is conforming: a print statement is base-language code and nothing forbids it in a target region."

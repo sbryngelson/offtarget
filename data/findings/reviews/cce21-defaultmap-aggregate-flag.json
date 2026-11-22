@@ -225,8 +225,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "36cbd813b85fd0fec15fca19fc3b8db83aa4bd87531e26b60914afbf57e2d7be",
-  "inputs": "3ec8c15c0a634504ed91c7332237ecfbcbd87fba6b5fbb71f930630b619fdfcf"
+  "inputs": "7ef816b6eb5ef62e080ad3a1e09dc4fc7e42c2f9a41fdfffb3ac7417e2204286"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: defaultmap(to: aggregate) is a valid implicit-behavior (a map type) and only affects implicitly mapped aggregates; x and a are explicitly mapped, so the program is conforming and race free."

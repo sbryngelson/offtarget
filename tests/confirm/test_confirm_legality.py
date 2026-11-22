@@ -250,3 +250,18 @@ def test_fuzz_program_with_a_known_generator_defect_is_illegal():
                                         "declare", "multitu")).source
     assert L.gate(ProgramRef(**{**ref.__dict__, "text": src4}),
                   "ok").status == "legal"
+
+
+def test_a_remote_checker_that_never_starts_records_nothing(monkeypatch):
+    """A checker whose command cannot start there (a missing cap script, exit 127, or a version probe
+    that prints nothing) has neither accepted nor rejected the program: no row, an error."""
+    import subprocess
+    from types import SimpleNamespace
+    from offload.engine.confirm import machines, witness as W
+    m = SimpleNamespace(name="far", access={"ssh": "far", "root": "/r", "cap": "tools/jobs/wingtip_capped.sh"})
+    monkeypatch.setattr(machines, "load", lambda: {"far": m})
+    c = {"machine": "far", "command": "nvc -c", "version": "nvc --version", "family": "nvhpc", "lang": "c"}
+    for rc, out in ((127, "bash: /r/tools/jobs/wingtip_capped.sh: No such file or directory"), (1, "")):
+        monkeypatch.setattr(subprocess, "run", lambda *a, **k: SimpleNamespace(returncode=rc, stdout="", stderr=out))
+        with pytest.raises(RuntimeError):
+            W._check_remote("p", "int main(){}", "c", "s", "nvhpc_c", c)

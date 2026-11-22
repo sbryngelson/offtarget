@@ -109,12 +109,12 @@
  "program_sha": "5f8a132c0583e42079f40248239c57c736f18367e25ba3c13de1714fb524d0f3",
  "instructions": "v2",
  "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
+ "why": "Not yet settled: NVHPC's front end, of another family, rejects it. A maintainer's ruling decides it.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "reject",
   "expected": "other-family",
   "outcome": "wrong_answer",
   "failing": [
@@ -125,8 +125,12 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {
+   "nvhpc269_c": "reject",
+   "nvhpc_c": "reject"
+  },
   "program_sha": "5f8a132c0583e42079f40248239c57c736f18367e25ba3c13de1714fb524d0f3",
-  "inputs": "0cb43298d2052209948548bdd4ac69b9e19e3c32946870ac5c05c95369497ae1"
+  "inputs": "5d03b3a1d21c0bd794629ffce092fc971f047690494dcc4a6ffffeb772dba686"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

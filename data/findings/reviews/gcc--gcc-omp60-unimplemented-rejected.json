@@ -12,11 +12,16 @@
    "gcc"
   ],
   "witnesses": [],
+  "front_ends": {
+   "afar-frontend": "reject",
+   "nvhpc269_f90": "reject",
+   "nvhpc_f90": "reject"
+  },
   "program_sha": "9eb40cf7f0270d84cbb3c8b42e561f25b9d863ca48eba1e577e95cf57a8902b1",
-  "inputs": "ad7fb39ed03e2b94abacc175971e88bc3ac4c8231adce4613b7cc1fbfd7112ae"
+  "inputs": "d786da4dce1adaffe0475cca7da449c51100d826bbe3c1dcc751b460fe701946"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: AMD's front end, of another family, rejects it. A maintainer's ruling decides it."
+ "why": "Not yet settled: AMD's and NVHPC's front ends, of another family, reject it. A maintainer's ruling decides it."
 }

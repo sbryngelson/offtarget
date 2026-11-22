@@ -12,8 +12,11 @@
    "gcc"
   ],
   "witnesses": [],
+  "front_ends": {
+   "afar-frontend": "accept"
+  },
   "program_sha": "bc6ecbc7e4ed863022073f1e0eb9bbd92db2dcbe0569747eeec9de4237e07aed",
-  "inputs": "ec608c86f792fbc06076a413a17408f08ee38291b47a97410a544adf9d46184b"
+  "inputs": "961d3b5a6871b6d3ec3dfbe11904a5684cdb5b984a7f6f6a10c1d801aa59fa8e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

@@ -124,8 +124,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "c0fe696c89cad024d44073f7fb6cd3971a393d66446646863bcb8b4fc220fc29",
-  "inputs": "9742a0dd87b24aa29fe627c5c4ef491c70c6b1a704a1de3672556e2564af3436"
+  "inputs": "5aaefa1027a5ace0e00ff2a4d9404a641a3652d4719a9546d8f6a77214737537"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

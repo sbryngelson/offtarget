@@ -128,8 +128,9 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {},
   "program_sha": "7851f4784a4a54362e4625e5bb982109bdd87a24e2d735c7ee480acfc911f8dc",
-  "inputs": "19462686d9418c2be5c8b350d2d6f753826daec71f2f5e22fe217fb0ccb2a201"
+  "inputs": "5d076e6ff677d39983f5a60fc0303fadab4f9b4d138d68b5444c7a34db42b597"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

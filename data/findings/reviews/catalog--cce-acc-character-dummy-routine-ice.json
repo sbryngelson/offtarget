@@ -124,8 +124,13 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {
+   "afar-frontend": "accept",
+   "nvhpc269_acc": "reject",
+   "nvhpc_acc": "reject"
+  },
   "program_sha": "e245406be736ba1fbdca4dda831d4048ff27405fc528b01299c4614f5f847fab",
-  "inputs": "875c4ce4440ad4192e2bb3bdc42367ed1885e35a491d03a092def1e5473f5490"
+  "inputs": "69b5042cf46bf74bf4b1bf5e5ae62710e4dd444d64b3fd0d41ceea4bbba87bf8"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

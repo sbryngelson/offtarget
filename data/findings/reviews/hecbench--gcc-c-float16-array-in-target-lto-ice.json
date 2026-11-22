@@ -234,8 +234,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "02d8f7c9c935a132dc253fd11b9a7e690ac8200cbb5e36060fd1c6ae70b51561",
-  "inputs": "fffc2abd01888564a67fd9b1c6f523c9b2afcb35af91a633ac036d7131563025"
+  "inputs": "d69f685d1d9d43cc91d317056168d24e7ca9f3d0f908cb5602e5410870cc44a3"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: _Float16 is not part of the base languages OpenMP names; section 1.6 says an implementation need not support a construct the base language implementation does not support. Whether the device compiler handles _Float16 conversions is not specified, so the ICE is not a violation of a required result."

@@ -215,8 +215,9 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "front_ends": {},
   "program_sha": "6d8d656b48251f16a07cc41d5cce8467c3128f6932b8b988322c5f9a561c953b",
-  "inputs": "606ef191e87982157af4f1b5fe806ffd003f99854f8e402bf51007a4d9837154"
+  "inputs": "277c48062433e50a3e4cc9846753d90f3baec0260b5dac386f61c3d68dace77e"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: Struct member r.nx with subarray r.nx[0:2] is allowed because the parent r is not a subarray; r.nx[0][0:1] is a subarray of a pointer element, not a member of a subarray. Copying r copies the pointer members without their targets, so the later member copyins attach them. Deletes run in reverse order. The serial region reads only r.v, so tot=6 is required; the UNHANDLED kind hang is a runtime defect."

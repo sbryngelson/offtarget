@@ -104,8 +104,9 @@
    "afar244",
    "gcc"
   ],
+  "front_ends": {},
   "program_sha": "57440134ec2ab05da3711bf44c67a8b77f4eb2146a3c46aba994f35300cde1de",
-  "inputs": "082e70c64b168df14fa96c5e596e2b690189d64ce09ef5715c67b4ec63b85f6e"
+  "inputs": "c15f2a79b075f028ba3292541bb2ad5ff5611645d8fd84eed6cd59cf699555b1"
  },
  "advisory": "contested",
  "advisory_why": "An independent reading finds the result not required: o2 is a Fortran array pointer, a non-scalar variable, so on the target teams construct it is implicitly mapped tofrom, which maps the pointer itself. The memory it points to is not mapped (a pointer's target is not mapped), and no map, enter data or unified shared memory requirement establishes it on the device."

@@ -15,8 +15,13 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {
+   "afar-frontend": "accept",
+   "nvhpc269_f90": "reject",
+   "nvhpc_f90": "reject"
+  },
   "program_sha": "86b16dea9789640f680742a589ce653ce750c717c4e0024a669ed9fb6b344063",
-  "inputs": "2c13deacc44725b21584b314cc9f5c7f18345eaa1fe2c61df56f9adf5d66c25d"
+  "inputs": "ba178a38e9726a54e7c3f123c48d0edba063ede3b4a8d6fe363220ca5a9075a6"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

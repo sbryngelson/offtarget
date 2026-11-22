@@ -221,8 +221,9 @@
    "gcc",
    "gcc_sm80"
   ],
+  "front_ends": {},
   "program_sha": "71a48548132ce5291b00eb5d67543cda13a44b595fbe8891fabf46e4430bb20e",
-  "inputs": "086b3da2f5a1a41b22da16fdbb4c6a3f535df88cf3d6b93d431e21c339b7ff41"
+  "inputs": "3adaf4312940932019166a0d993903270f4aed0a048977339d0b2603393ece6b"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Nothing forbids ALLOCATE, DEALLOCATE or finalization in a declare target procedure called from target, and ft_fin is declare target. The spec requires ALLOCATE and DEALLOCATE to be thread-safe but sets no device heap or support level. A device runtime stop at the allocate is not clearly a violation."

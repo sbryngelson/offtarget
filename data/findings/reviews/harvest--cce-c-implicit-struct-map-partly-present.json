@@ -228,8 +228,9 @@
    "afar",
    "afar244"
   ],
+  "front_ends": {},
   "program_sha": "fe5fc42dea725edbce348e712f94ae99d51c6605cb03c84fb2b6b86b9a1f04ed",
-  "inputs": "0136904659964b57f2175b6446289f4b73b54476fbb42e6d0be1e92bfd8f7a0e"
+  "inputs": "dffcaf704253e09f855f9b803a80df1a1350c988d8dc16aece63e341b33aa94d"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The restriction on partially present storage covers only list items with an explicit data-mapping attribute, so it does not apply to the implicit map of s, and no passage requires success when a larger overlapping object is implicitly mapped."
