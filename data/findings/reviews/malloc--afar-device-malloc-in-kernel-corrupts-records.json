@@ -282,7 +282,7 @@
    "gcc_sm80"
   ],
   "program_sha": "f291e10383fcfb60d06c380264ab5d7f738b0410b6bb411f58f4ab0a28fde77c",
-  "inputs": "efd1d85a387d9e7c9cd41ef76537da35fc1dc3aa0ebbe90add68e37740154e5c"
+  "inputs": "19ad183ae96dd4ec65fd2d0ddf66a92e5ed019a7d64450da701d4b1cd104fba2"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The failure is in device-side malloc, memcpy and free, which the specification treats only as procedures referenced in a target construct. Nothing in the specification defines their device behavior, heap size or failure handling for millions of threads, so wrong results from an exhausted device heap are not excluded."

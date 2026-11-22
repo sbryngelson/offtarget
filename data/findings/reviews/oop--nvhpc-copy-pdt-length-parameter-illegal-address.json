@@ -246,7 +246,7 @@
   ],
   "witnesses": [],
   "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
-  "inputs": "4b414473a743f2eae30391e8b6da156a17aa1bc915bd6482f3a0cd1a843bc034"
+  "inputs": "c4d1b44609823c025c254e9b70ea5aba5bdd5ecd8413193eeaf2b43f3d2febf9"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Fortran 2003 is a cited base language, so a parameterized derived type is not excluded."

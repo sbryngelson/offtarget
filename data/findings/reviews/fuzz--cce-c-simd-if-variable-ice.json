@@ -100,7 +100,7 @@
    "gcc"
   ],
   "program_sha": "b678dda6de57d49af72992231da68814ad1bacf8d6009545cdfe0efb5bdbdaf0",
-  "inputs": "67dd4a77ffb6d6b227ad143ea272132c07e40495a1b7c3241b1c89d58370ef91"
+  "inputs": "ca759c669d13650fc16d3b79bc63832e60208b36c3e6547489d75f4a97a423e1"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

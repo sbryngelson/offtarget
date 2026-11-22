@@ -209,7 +209,7 @@
    "nvhpc269"
   ],
   "program_sha": "ecfc5b97cd2da11c460ef9dbff88114b2f1e47c9620f51917dd37577b06f3eba",
-  "inputs": "266931fbfd6e6ff22275993c3640d27d3159212c52f4d8691ab182ada85b122b"
+  "inputs": "d9be397baa2cfe8b7594f24d78436fe796ffb8eb28cefd86279ddb94ad7e23c3"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: gq%v1 is allocated before the enter data map and not reallocated or deallocated while mapped, satisfying the allocation restriction. The target region maps out and host_flag; gq is declare target. Only iteration 1 writes host_flag and each iteration writes a distinct out(i), so there is no race. Acceptance is required, so the ICE is a compiler bug."

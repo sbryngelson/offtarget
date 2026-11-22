@@ -109,7 +109,7 @@
  "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46",
  "instructions": "v2",
  "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it; no compiler of another family (GCC does not count) has accepted it; no independent source gives the expected result. A maintainer's ruling decides it.",
+ "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it; no independent source gives the expected result. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-03",
@@ -189,10 +189,8 @@
   }
  ],
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: version: device_safesync on requires is not valid in OpenMP 5.2"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "same-family",
   "expected": "none",
@@ -202,7 +200,7 @@
   ],
   "witnesses": [],
   "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46",
-  "inputs": "ec47811c316f77529276ea34340b7aff20d3b997b03bb29abed71ab675eb2c9d"
+  "inputs": "cc025754980bccf5d2575dd150e189064719ac49311c5c1275255167c6febc6e"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The directive is conforming, but support for a given requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. A compiler may thus refuse the program, so acceptance is not required."

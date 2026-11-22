@@ -2,10 +2,8 @@
  "readers": [],
  "program_sha": "f59e9b1b5ea7389c39a9a346cc9bf17ba331d083fae96967541327c91426022e",
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: bad_argument: device_type(declare target: any) on declare target does not match 'enum[any, host, nohost]' (OpenMP 5.2 \u00a713.1, p.275)"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "reject",
   "expected": "self-check",
@@ -15,10 +13,10 @@
   ],
   "witnesses": [],
   "program_sha": "f59e9b1b5ea7389c39a9a346cc9bf17ba331d083fae96967541327c91426022e",
-  "inputs": "2cab2fab39fac2297c66c038180bc32ce4168c3e73f9ab59350dd876c52ed617"
+  "inputs": "6535ac6396d4b6a0c200fe0402ff8abdf588b68968a1b4fe48a7808aa30109d8"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it; AMD's front end, of another family, rejects it. A maintainer's ruling decides it."
+ "why": "Not yet settled: AMD's front end, of another family, rejects it. A maintainer's ruling decides it."
 }

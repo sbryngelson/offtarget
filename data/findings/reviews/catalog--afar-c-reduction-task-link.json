@@ -125,7 +125,7 @@
    "gcc_sm80"
   ],
   "program_sha": "048a8998e7bb6fd7880460859829d30ff8d43e19623a55ac83020a97cbb2bc3f",
-  "inputs": "0ea722bd2b2cf1f0477eb1012a2f862a0fedf7d2e1b3272423cb68cde030027c"
+  "inputs": "b236822847e0c1d310e532b91cf6a9da72b26251aa150b8a03c8fa9e2897e0b2"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

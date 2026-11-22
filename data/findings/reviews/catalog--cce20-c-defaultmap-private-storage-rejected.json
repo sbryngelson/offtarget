@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "c784ec9f2e11e75b5dfa1154cfb7506df5c131397b1e6f251041223f8185ced9",
  "instructions": "v2",
- "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-01",
@@ -215,10 +215,8 @@
   }
  ],
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: bad_argument: defaultmap(private) on target does not match \"enum[alloc, default, firstprivate, from, none, present, to, tofrom] [':' modifiers[variable-category]]\" (OpenMP 5.2 \u00a75.8.7, p.161)"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "accept",
   "expected": "other-family",
@@ -231,7 +229,7 @@
    "afar244"
   ],
   "program_sha": "c784ec9f2e11e75b5dfa1154cfb7506df5c131397b1e6f251041223f8185ced9",
-  "inputs": "40b8aac2b1cc19784f7873a9f393988d79c5d8f76c637d04132f1d2fd1e382d1"
+  "inputs": "985ee660da516a0a46eb34bb000ab08917c4b06fab9676c775c6c73957006e9c"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: OpenMP 6.0 lists private among the implicit-behavior keywords of defaultmap, with variable-category defaulting to all. The program is therefore conforming and a 6.0 compiler must accept the keyword. a, b and host_flag are explicitly mapped. c and w are implicitly private on the target, so the host w stays 0 and b gets 2a+1, as expected. The refusal is a compiler error."

@@ -121,8 +121,8 @@
  "external": [],
  "program_sha": "f51bf6d6b6072933b5f3edfebb6c81ab4aa32d2209c73ced0c3904c679bb32a4",
  "instructions": "v2",
- "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-01",
@@ -202,10 +202,8 @@
   }
  ],
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: bad_argument: map(self: a) on target does not match \"[modifiers[map-type-modifier, mapper, iterator, map-type] ':'] list\" (OpenMP 5.2 \u00a75.8.3, p.150)"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "accept",
   "expected": "other-family",
@@ -218,7 +216,7 @@
    "afar244"
   ],
   "program_sha": "f51bf6d6b6072933b5f3edfebb6c81ab4aa32d2209c73ced0c3904c679bb32a4",
-  "inputs": "9a1e836382afafd749d299736fac35859d2188930c4c2b4e102f56b7fa001562"
+  "inputs": "9e95a18f40db6f36dfdc7f256e62bd7ffacaa2fd8065204abb3f78ebc4a53563"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: In 6.0 self is a map-type-modifier and map-type is optional (default), so map(self: a) is syntactically valid and the compiler error reflects the pre-6.0 rule. A self map causes runtime error termination when the original item is not accessible from the target device and cannot be made so. With separate memory the allocatable a may not be accessible, so successful execution is not required."

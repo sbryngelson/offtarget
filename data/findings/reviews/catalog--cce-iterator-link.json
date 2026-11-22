@@ -122,7 +122,7 @@
   ],
   "witnesses": [],
   "program_sha": "6b2feb588c4c56fc33206169a481e0ce459a313a181a2487b4e02450807ec9ee",
-  "inputs": "1585a5ab95a0fc3e77afbaceb7cf4b358dc14701322a7dd72666b56ad274b908"
+  "inputs": "b51cfcebd9577acb965340cf80fba7759828ec6b1edc38bb09239368c9acd048"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

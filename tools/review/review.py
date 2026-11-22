@@ -501,11 +501,12 @@ def stale_records() -> list[str]:
     return out
 
 
-def mechanical(ids: list[str], frontend: bool = False) -> int:
+def mechanical(ids: list[str], frontend: bool = False, nvhpc: bool = False) -> int:
     """Each finding's mechanical evidence (offload.engine.legality_mechanical) from its program, the
     committed rows and the stored front-end rows, and its verdicts; every finding of the index when
     ids is empty. --frontend (a compute node) first runs AMD's front end on the findings that need
-    it and stores the rows (catalog/finding_witness.yaml)."""
+    it and stores the rows (catalog/finding_witness.yaml); --nvhpc does the same with NVHPC's front ends
+    (catalog/machines.yaml independent_checkers, over ssh)."""
     from collections import Counter
     from offload.engine import legality_mechanical as LM
     from offload.engine.site import matrix as M
@@ -514,9 +515,8 @@ def mechanical(ids: list[str], frontend: bool = False) -> int:
     ids = ids or sorted(index)
     wit = LM.load_rows()
     cells = {fid: M.cells(fid, rows, cases) for fid in ids if fid in index}
-    if frontend:
-        want = {}
-        witnessed = set()
+    if frontend or nvhpc:
+        want, witnessed = {}, set()
         for fid, cs in cells.items():
             path = index[fid][1]
             if path is None:
@@ -525,16 +525,25 @@ def mechanical(ids: list[str], frontend: bool = False) -> int:
             if any(c.state == "correct" and LM._family(c.tc) not in failing | LM.NOT_A_WITNESS for c in cs):
                 witnessed.add(fid)
             want[fid] = (L.program_sha(path), failing)
-        need = LM.needs_frontend(want, wit, witnessed)
-        print(f"front end: {len(need)} findings")
-        for fid in need:
-            path = index[fid][1]
-            lang, model = _lang_model(path)
-            r = LM.frontend_row(fid, want[fid][0], path.read_text(errors="replace"), lang, model)
-            if r is None:
-                print(f"{fid}: the front end cannot run here"); continue
-            wit = [x for x in wit if x["finding"] != fid] + [r]
-            print(f"{fid}: {r['result']}")
+        for fam, on in (("afar", frontend), ("nvhpc", nvhpc)):
+            if not on:
+                continue
+            need = LM.needs_frontend(want, wit, witnessed, family=fam)
+            print(f"{fam} front end: {len(need)} findings")
+            for fid in need:
+                path = index[fid][1]
+                lang, model = _lang_model(path)
+                text = path.read_text(errors="replace")
+                got = LM.frontend_row(fid, want[fid][0], text, lang, model) if fam == "afar" \
+                    else LM.nvhpc_rows(fid, want[fid][0], text, lang, model)
+                if got is None:
+                    print(f"{fid}: the {fam} front end cannot run or be reached here")
+                    if fam == "nvhpc":
+                        break           # an unreachable machine stays unreachable for the rest
+                    continue
+                got = got if isinstance(got, list) else [got]
+                wit = [x for x in wit if not (x["finding"] == fid and x.get("family", "afar") == fam)] + got
+                print(f"{fid}: {', '.join(r['checker'] + ' ' + r['result'] for r in got) or 'no checker'}")
         LM.write_rows(wit)
     code = LM.code_hash()
     out = Counter()
@@ -625,6 +634,7 @@ def main(argv=None) -> int:
     r.add_argument("--date", default=__import__("datetime").date.today().isoformat())
     mc = sub.add_parser("mechanical", help="the mechanical legality evidence and verdicts (no AI reading)")
     mc.add_argument("--frontend", action="store_true", help="also run AMD's front end (a compute node)")
+    mc.add_argument("--nvhpc", action="store_true", help="also run NVHPC's front ends (over ssh)")
     mc.add_argument("ids", nargs="*")
     sub.add_parser("queue", help="the open findings a maintainer's ruling would settle, by gap")
     a = ap.parse_args(argv)
@@ -638,7 +648,7 @@ def main(argv=None) -> int:
                 print(f"    {fid}" + (f"  (AI readings: {adv})" if adv else ""))
         return 0
     if a.cmd == "mechanical":
-        return mechanical(a.ids, a.frontend)
+        return mechanical(a.ids, a.frontend, a.nvhpc)
     if a.cmd == "rule":
         return rule(a.id, a.spec, a.section, a.quote, a.why, a.date)
     if a.cmd == "select":

@@ -4,15 +4,19 @@ The legality verdicts of the findings. A finding's verdict is computed from mech
 rulings only (`verdict` in [offload/engine/legality_review.py](../../offload/engine/legality_review.py)); the
 evidence is gathered by [offload/engine/legality_mechanical.py](../../offload/engine/legality_mechanical.py):
 
-- the rules engine (`prerun.rules_witness`) accepts or rejects the program; a result hazard (`prerun.result_hazards`)
+- the rules engine (`prerun.rules_witness`, at OpenMP 6.0 when 5.2 cannot read a program whose header names 6.0) accepts
+  or rejects the program; a result hazard (`prerun.result_hazards`)
   is a checked result the specification does not require;
-- a second witness: a toolchain of another family (never GCC) built and ran it correctly in the committed rows, or AMD's
-  front end accepted it (`catalog/finding_witness.yaml`, written on a compute node by `tools/jobs/run_mechanical.sh`);
+- a second witness: a toolchain of another family (never GCC) built and ran it correctly in the committed rows, or a
+  front end of a family that does not fail accepted it (`catalog/finding_witness.yaml`): AMD's, run on a compute node
+  by `tools/jobs/run_mechanical.sh`, or NVHPC's (`catalog/machines.yaml` `independent_checkers`), run over ssh from a
+  login node by `review.py mechanical --nvhpc`. NVHPC dropping a directive with a warning ("ignored") is no accept;
 - for a wrong answer, an expected value from another family's run, the program's own check or the generator's model.
 
 Verdicts: `ruled` (a maintainer's ruling that holds), `refuted`, `supported` (outside evidence), `checked`, `open`.
 
     python3 -I tools/review/review.py mechanical [ID ...]   # recompute the records (every finding without IDs)
+    python3 -I tools/review/review.py mechanical --nvhpc    # first run NVHPC's front ends where needed (ssh)
     python3 -I tools/review/review.py queue                 # the open findings, grouped by what is missing
 
 Each record stamps the hash of its inputs (program, outcome, cells, stored front-end rows, verdict code);

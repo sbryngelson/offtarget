@@ -2,10 +2,8 @@
  "readers": [],
  "program_sha": "9eb40cf7f0270d84cbb3c8b42e561f25b9d863ca48eba1e577e95cf57a8902b1",
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: version: induction on parallel do is not valid in OpenMP 5.2"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "reject",
   "expected": "self-check",
@@ -15,10 +13,10 @@
   ],
   "witnesses": [],
   "program_sha": "9eb40cf7f0270d84cbb3c8b42e561f25b9d863ca48eba1e577e95cf57a8902b1",
-  "inputs": "6e2a145298e1f309addf261d42e82c344f095c7087dbce08e1214c8fcd232cae"
+  "inputs": "ad7fb39ed03e2b94abacc175971e88bc3ac4c8231adce4613b7cc1fbfd7112ae"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it; AMD's front end, of another family, rejects it. A maintainer's ruling decides it."
+ "why": "Not yet settled: AMD's front end, of another family, rejects it. A maintainer's ruling decides it."
 }

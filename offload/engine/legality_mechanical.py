@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import datetime
 import re
+import subprocess
 from pathlib import Path
 
 import yaml
@@ -42,16 +43,33 @@ def write_rows(rows: list[dict], path: Path = WITNESS) -> None:
 
 def stored(rows: list, fid: str, sha: str, failing: set) -> str | None:
     """accept | reject of a stored front end of a family that does not fail, on the current source."""
-    got = [r["result"] for r in rows if r["finding"] == fid and r["sha256"] == sha and r["family"] not in failing]
+    got = [r["result"] for r in rows if r["finding"] == fid and r["sha256"] == sha and r["family"] not in failing
+           and r["result"] in ("accept", "reject")]       # "ignored" is neither
     return "accept" if "accept" in got else ("reject" if got else None)
 
 
-def needs_frontend(findings: dict, rows: list, witnessed: set) -> list[str]:
-    """The findings ({id: (sha, failing families)}) with no witness from a run and no stored front-end
-    row on their current source, whose failing families leave AMD's front end as a witness."""
+def needs_frontend(findings: dict, rows: list, witnessed: set, family: str = "afar") -> list[str]:
+    """The findings ({id: (sha, failing families)}) with no witness from a run and no stored row of
+    the checker family on their current source, whose failing families leave it as a witness."""
     return sorted(f for f, (sha, failing) in findings.items()
-                  if f not in witnessed and "afar" not in failing
-                  and not any(r["finding"] == f and r["sha256"] == sha for r in rows))
+                  if f not in witnessed and family not in failing
+                  and not any(r["finding"] == f and r["sha256"] == sha and r.get("family", "afar") == family
+                              for r in rows))
+
+
+def nvhpc_rows(fid: str, sha: str, text: str, lang: str, model: str) -> list[dict] | None:
+    """NVHPC's front ends (catalog/machines.yaml independent_checkers, over ssh) on a finding: its rows,
+    or None when a checker cannot be reached. "ignored" (directives dropped with a warning) is no accept."""
+    from offload.engine.confirm import witness as W
+    out = []
+    for name in W.names_for(lang, model):
+        try:
+            r = W.check(fid, text, lang, sha, model, name)
+        except (RuntimeError, OSError, ValueError, subprocess.TimeoutExpired):
+            return None
+        out.append({"finding": fid, "sha256": sha, "checker": name, "family": "nvhpc", "version": r["version"],
+                    "result": r["result"], "message": r["message"], "date": r["date"]})
+    return out
 
 
 def frontend_row(fid: str, sha: str, text: str, lang: str, model: str) -> dict | None:
@@ -65,12 +83,32 @@ def frontend_row(fid: str, sha: str, text: str, lang: str, model: str) -> dict |
             "date": datetime.date.today().isoformat()}
 
 
+_V60 = re.compile(r"version 60\b|-fopenmp-version=60\b|OpenMP 6\.0", re.I)
+
+
+def spec_version(text: str) -> int:
+    """60 when the program's header names OpenMP 6.0 (its catalog version, -fopenmp-version=60 or the
+    generator's line), else 52."""
+    return 60 if _V60.search(text) else 52
+
+
+def _rules(text: str, lang: str, model: str):
+    """The rules engine at OpenMP 5.2, and at 6.0 when 5.2 cannot read a program the header says is 6.0."""
+    from offload.engine import prerun
+    ok, why = prerun.rules_witness((text, lang, model))
+    if ok is None and model == "omp" and spec_version(text) == 60:
+        ok, why = prerun.rules_witness((text, lang, model, 60))
+    return ok, why
+
+
 def evidence(text: str, lang: str, model: str, outcome: str, cells: list, rows: list = (),
              fid: str = "", sha: str = "") -> dict:
     from offload.engine import prerun
-    ok, why = prerun.rules_witness((text, lang, model))
+    ok, why = _rules(text, lang, model)
     rules = "accept" if ok else ("reject" if ok is False else "unreadable")
     hazards = prerun.result_hazards((text, lang, model))
+    if not hazards and model == "omp" and spec_version(text) == 60:
+        hazards = prerun.result_hazards((text, lang, model, 60))
     failing = {_family(c.tc) for c in cells if c.state == "fails-like"}
     others = [c for c in cells if c.state == "correct" and _family(c.tc) not in failing]
     witness = "accept" if any(_family(c.tc) not in NOT_A_WITNESS for c in others) else "same-family"

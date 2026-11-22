@@ -2,10 +2,8 @@
  "readers": [],
  "program_sha": "42b5fcefe18a8634f2e26507f26208c2f31768f1ca141167622ff53376a7bafb",
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: version: device_safesync on requires is not valid in OpenMP 5.2"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "accept",
   "expected": "other-family",
@@ -17,10 +15,10 @@
    "afar244"
   ],
   "program_sha": "42b5fcefe18a8634f2e26507f26208c2f31768f1ca141167622ff53376a7bafb",
-  "inputs": "47ae394c1061b304436507163a5518eda8119d61077cb7fd0a5efbb88a177e29"
+  "inputs": "b080f6927f40f6ca0927885f61288bc66e27447a9e8fd00d138181651b3e438b"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar244 of another compiler family builds and run it as expected."
 }

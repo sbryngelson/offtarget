@@ -235,7 +235,7 @@
    "nvhpc269"
   ],
   "program_sha": "51665b21e160e5fccdda89f349a333a678e058d04ead8df522653e372f2e3d08",
-  "inputs": "8f76a88b255a6d8fecb7be373182be83506663ad2f1c05852d58f4d4630f56a9"
+  "inputs": "6dcb5e597e0e46a56f99075ba777782504417c19dd27a226592b38a33d994189"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Whether map(to: r) maps the allocated allocatable component nx and its elements, so that the later maps of r%nx(1)%a and r%nx(2)%a attach correctly, is not settled by the text; the allocatable-component rule only says the map may treat allocation status as unallocated. An ICE is undesirable but a required result cannot be established."

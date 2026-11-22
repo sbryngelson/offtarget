@@ -176,7 +176,7 @@
    "afar244"
   ],
   "program_sha": "15c79b9ac415a8240c42bf0d63e4dcb92d952d65597fe648f842648b2c98501d",
-  "inputs": "6be9a4be13712b119b56718e166d76348254f4e451b1b1a0aa8d8845aff71ccb"
+  "inputs": "54486b907ec641f9cc7ee7d8f34b2bd5b6e66f1241e34a90024b15c9e4abc09e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "No counted independent reading yet."

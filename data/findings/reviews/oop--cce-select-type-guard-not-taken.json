@@ -203,7 +203,7 @@
    "afar244"
   ],
   "program_sha": "2f9a62f0d763e74a8ab8c424f321cef23b10c1bdcc6166a09188f3711389a7f2",
-  "inputs": "1e25345f7541399b11d4c33abbd8604e94a2102d4b164f536d878b5ed6c96cac"
+  "inputs": "123b042b143df574c9655a23ca6b436fb352af1385f12f547344beb77f2364a1"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The only OpenMP polymorphism restrictions concern ALLOCATABLE polymorphic list items (map clause) or C++ types with mismatched static and dynamic types; none applies since e1, e2, b0 are non-polymorphic variables mapped tofrom. A declare target procedure with CLASS dummy and SELECT TYPE is plain Fortran, so the values are determined."

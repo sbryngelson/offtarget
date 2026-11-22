@@ -226,7 +226,7 @@
   ],
   "witnesses": [],
   "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
-  "inputs": "28f0164041a0047c8faeb9b1a5dcd906266f83e1c2d5961a45784812bd274aff"
+  "inputs": "87da3ce3c4fc1b6669cdfce13bcd6027545fa8bbcbd2532223e3a8a06eb9a6a8"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: The only mapping restriction is a mappable type, and the specification does not exclude long double or require a device to support it. The program is race-free. Whether a compiler must accept long double in a target region is not stated, and no compiler is recorded as passing, so requiring acceptance is not supported."

@@ -204,7 +204,7 @@
  "program_sha": "4881fc09441baa8136ed371b152fc836eba85cbd9df8d09fee23b7aafabd8039",
  "instructions": "v2",
  "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it; AMD's front end, of another family, rejects it. A maintainer's ruling decides it.",
+ "why": "Not yet settled: AMD's front end, of another family, rejects it. A maintainer's ruling decides it.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-04",
@@ -234,10 +234,8 @@
   }
  ],
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: version: induction on parallel for is not valid in OpenMP 5.2"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "reject",
   "expected": "self-check",
@@ -247,7 +245,7 @@
   ],
   "witnesses": [],
   "program_sha": "4881fc09441baa8136ed371b152fc836eba85cbd9df8d09fee23b7aafabd8039",
-  "inputs": "11e1ac03866534231f15109e4a4f72b8f50eb4ece10cdaa63fb4a7ffb286f815"
+  "inputs": "baa9a1add16cb95406910329177558c430cbd4005f0e609b696454f4f1815af0"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

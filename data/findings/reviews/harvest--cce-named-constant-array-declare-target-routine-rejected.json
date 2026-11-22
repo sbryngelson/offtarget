@@ -125,7 +125,7 @@
    "afar244"
   ],
   "program_sha": "adcb3b9886d184de7c05ab04b4cf4fde414b3747f52543c71e7573f712dbd878",
-  "inputs": "1e77a362539027808e72c330e8e01be7e323e2f6b59e243862564729c28fb5d7"
+  "inputs": "5f3ac9b33f60c97d9cde6758cc4f161ca4d7e6741ab174c9f704278d2b82263d"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

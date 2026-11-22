@@ -121,13 +121,11 @@
  "external": [],
  "program_sha": "6253346d807f7929c5e6d81b6d2f1dcd56b816223e13929b4e0689689c9b2cf0",
  "instructions": "v2",
- "verdict": "open",
- "why": "Not yet settled: the rules engine cannot read it. A maintainer's ruling decides it.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar244, nvhpc, nvhpc269 of another compiler family build and run it as expected.",
  "mechanical": {
-  "rules": "unreadable",
-  "rules_why": [
-   "rules: cannot read it: GrammarError: version: 'target loop' is not valid in OpenMP 5.2"
-  ],
+  "rules": "accept",
+  "rules_why": [],
   "hazards": [],
   "witness": "accept",
   "expected": "other-family",
@@ -141,7 +139,7 @@
    "nvhpc269"
   ],
   "program_sha": "6253346d807f7929c5e6d81b6d2f1dcd56b816223e13929b4e0689689c9b2cf0",
-  "inputs": "bbb72a550aa20be0cee68cf7e05a06caa862db51e80b3dfa98aeb3a674f12957"
+  "inputs": "6c4c9ee918bae3411bf21037679fd58e24ce0fcf661d2c48c0fd10ea07e4674d"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."
