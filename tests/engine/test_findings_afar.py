@@ -2061,3 +2061,50 @@ def test_a_reduction_over_nested_loop_directives_is_on_each_of_them(construct, o
         assert ok, why
     else:
         assert ok is False and any(bad in w for w in why), why
+
+
+CONST_COPY = """module m
+  implicit none
+  real(8), allocatable :: a(:)
+  real(8), parameter :: start = 2.0d0
+contains
+  subroutine init(x)
+    DUMMY
+    !$acc KERNELS
+    a = x
+    !$acc end kernels
+  end subroutine init
+end module m
+program p
+  use m
+  implicit none
+  real(8) :: y
+  y = 2.0d0
+  allocate(a(8))
+  !$acc enter data create(a)
+  call init(ACTUAL)
+  !$acc exit data copyout(a)
+  print *, a(1)
+end program p
+"""
+
+
+@pytest.mark.parametrize("dummy,kernels,actual,bad", [
+    ("real(8), intent(in) :: x", "kernels", "2.0d0", True),        # a literal actual: the exit transfer writes it
+    ("real(8), intent(in) :: x", "kernels", "start", True),        # a named constant (BabelStream)
+    ("real(8), intent(in) :: x", "kernels", "y", False),           # a variable actual
+    ("real(8), value :: x", "kernels", "2.0d0", False),            # a value dummy is the procedure's own copy
+    ("real(8), intent(in) :: x", "kernels copyin(x)", "2.0d0", False),   # copyin: no exit transfer
+    ("real(8), intent(in) :: x", "parallel", "2.0d0", False),      # a parallel construct's scalar is firstprivate
+])
+def test_a_constant_actual_copied_by_an_acc_compute_construct_is_found(dummy, kernels, actual, bad):
+    """OpenACC 3.4 §1.6 l.423-424: a data action that writes to a constant location is undefined; a
+    scalar dummy read in a kernels construct without a data clause is copy (§2.6.2 l.1392-1393)."""
+    src = CONST_COPY.replace("DUMMY", dummy).replace("KERNELS", kernels).replace("ACTUAL", actual)
+    if kernels == "parallel":
+        src = src.replace("!$acc end kernels", "!$acc end parallel")
+    ok, why = rules(src)
+    if bad:
+        assert ok is False and any("acc-constant-copy" in w for w in why), why
+    else:
+        assert not any("acc-constant-copy" in w for w in why), why

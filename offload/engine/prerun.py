@@ -912,6 +912,9 @@ EXTRA_CITES = {
         "OpenMP 5.2 §13.8 p.286 l.31-32 (\"A variable referenced in a "
         "target region but not the target construct that is not declared "
         "in the target region must appear in a declare target directive.\")",
+    "acc-constant-copy":
+        "OpenACC 3.4 §1.6 l.423-424 (a data action that writes to an unwritable or constant location is "
+        "undefined) and §2.6.2 p.41 l.1392-1393 (a scalar in a kernels construct is treated as copy)",
     "acc-loop-reduction-data-clause":
         "OpenACC 3.4 §2.6.2 p.42 l.1403-1409 (\"If a scalar variable "
         "appears in a reduction clause on a loop construct that has a "
@@ -1081,6 +1084,50 @@ def extra(text: str, lang: str, tree=None) -> list[str]:
             out += _module_variables(text, dirs)
     else:
         out += _acc_reduction(text, lang)
+        if lang != "c":
+            out += _acc_constant_copy(text)
+    return out
+
+
+_F_PROC = re.compile(r"^\s*(?:(?:pure|elemental|recursive|module)\s+)*(?:subroutine|(?:[\w(),*= ]+\s+)?function)\s+"
+                     r"([a-z_]\w*)\s*\(([^)]*)\)", re.I | re.M)
+_F_LITERAL = re.compile(r"^[-+]?(?:\d+\.?\d*(?:[ed][-+]?\d+)?|\.\d+(?:[ed][-+]?\d+)?)(?:_\w+)?$|^\.(?:true|false)\.$|^['\"]",
+                        re.I)
+
+
+def _acc_constant_copy(text: str) -> list[str]:
+    """A scalar dummy read in a kernels construct with no data clause for it is copied in and out
+    (OpenACC 3.4 §2.6.2); when a call passes it a literal or a named constant, the exit transfer writes
+    a constant location (§1.6): undefined. A value dummy is the procedure's own copy."""
+    out = []
+    low = text.lower()
+    params = set(re.findall(r"parameter[^:\n]*::\s*([a-z_]\w*)", low))
+    for m in _F_PROC.finditer(text):
+        name, dummies = m.group(1).lower(), [d.strip().lower() for d in m.group(2).split(",") if d.strip()]
+        end = re.search(rf"^\s*end\s+(?:subroutine|function)\s*{name}?\b", text[m.end():], re.I | re.M)
+        body = text[m.end(): m.end() + end.start()] if end else text[m.end():]
+        blow = body.lower()
+        candidates = []
+        for k, d in enumerate(dummies):
+            decl = re.search(rf"^\s*[^!\n]*::[^\n]*\b{d}\b[^\n]*$", blow, re.M)
+            if not decl or re.search(rf"\b{d}\s*\(", decl.group(0)) or \
+                    re.search(r"\b(value|dimension|allocatable|pointer|intent\s*\(\s*out\s*\))", decl.group(0)):
+                continue
+            for km in re.finditer(r"^\s*!\$acc\s+kernels\b([^\n]*)\n(.*?)^\s*!\$acc\s+end\s+kernels\b", blow, re.M | re.S):
+                clauses, region = km.group(1), km.group(2)
+                code = "\n".join(ln for ln in region.splitlines() if not ln.lstrip().startswith("!") or ln.lstrip().startswith("!$"))
+                if re.search(rf"\b{d}\b", code) and not re.search(rf"\(\s*[^)]*\b{d}\b[^)]*\)", clauses):
+                    candidates.append((k, d))
+                    break
+        if not candidates:
+            continue
+        for call in re.finditer(rf"\bcall\s+{name}\s*\(([^)\n]*)\)", low):
+            actuals = [a.strip() for a in call.group(1).split(",")]
+            for k, d in candidates:
+                if k < len(actuals) and (_F_LITERAL.match(actuals[k]) or actuals[k] in params):
+                    out.append(_cite("acc-constant-copy").format(
+                        f"{name} reads its scalar dummy {d} in a kernels construct with no data clause for it, and a "
+                        f"call passes the constant {actuals[k]}: the implicit copy's exit transfer would write it"))
     return out
 
 
