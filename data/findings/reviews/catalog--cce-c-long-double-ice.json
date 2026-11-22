@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
  "instructions": "v2",
- "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-03",
@@ -218,14 +218,15 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "accept",
   "expected": "self-check",
   "outcome": "ice",
   "failing": [
    "cce"
   ],
   "witnesses": [],
-  "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a"
+  "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
+  "inputs": "28f0164041a0047c8faeb9b1a5dcd906266f83e1c2d5961a45784812bd274aff"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: The only mapping restriction is a mappable type, and the specification does not exclude long double or require a device to support it. The program is race-free. Whether a compiler must accept long double in a target region is not stated, and no compiler is recorded as passing, so requiring acceptance is not supported."

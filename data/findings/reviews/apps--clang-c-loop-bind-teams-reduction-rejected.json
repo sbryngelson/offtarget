@@ -98,7 +98,8 @@
   "witnesses": [
    "gcc"
   ],
-  "program_sha": "fe36a30fc2d5712a0469c1f0d9f4f915cf2f8005198a12e03b7d8ef03cca4f68"
+  "program_sha": "fe36a30fc2d5712a0469c1f0d9f4f915cf2f8005198a12e03b7d8ef03cca4f68",
+  "inputs": "c00e71d99f2fe878caabddc3435b3e205197e5900dd81022985fb6cf90638c7b"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

@@ -230,7 +230,8 @@
    "gcc",
    "gcc_sm80"
   ],
-  "program_sha": "9586e066db0c1746a3229fea947f29b28239778c0f81a109647cd48540ab1afc"
+  "program_sha": "9586e066db0c1746a3229fea947f29b28239778c0f81a109647cd48540ab1afc",
+  "inputs": "8fcdf5064780def61dbfec4f4a927665359373aec02f06bd5f6e38bd6a1a99b8"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: The program is race-free: distinct dr%o1(i) per iteration, t1 private. dr%o1 is explicitly mapped tofrom, and the data-environment attribute clause is stated to take precedence over implicit rules."

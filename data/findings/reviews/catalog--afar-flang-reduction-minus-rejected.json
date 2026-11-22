@@ -124,7 +124,8 @@
    "cce19",
    "cce20"
   ],
-  "program_sha": "7db25c3e23f86df7699e73117e45bbe325bd908b96dea1cc9076dc5a927a40a1"
+  "program_sha": "7db25c3e23f86df7699e73117e45bbe325bd908b96dea1cc9076dc5a927a40a1",
+  "inputs": "e23d5e3f58907dc4e424af29bafa43cae226cd1e14c5c98feb98e0c90be710f4"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

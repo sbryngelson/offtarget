@@ -97,6 +97,10 @@ STEPS = [
     ("dashboard", "offline, then publish",
      "tools/site/dashboard_data.py OUT_DIR; Artifact publish + ArtifactData "
      "update (docs/tooling/dashboard-publish.md)", "the published datasets"),
+    ("legality", "offline (front-end rows: a compute node)",
+     "tools/review/review.py mechanical (rules, other-family runs, stored front-end rows); "
+     "tools/jobs/run_mechanical.sh on a compute node also runs AMD's front end where it is needed",
+     "data/findings/reviews/*.json (verdict, mechanical), catalog/finding_witness.yaml"),
     ("site-inputs", "offline",
      "tools/site/site_inputs.py (feature support from results/dash/atoms.json, "
      "the published findings' verified citations from the spec cache)",
@@ -105,7 +109,7 @@ STEPS = [
 
 
 def _tool(name: str):
-    path = next(p for a in ("", "dataenv", "wild", "campaigns", "derive", "site", "repo", "lanes") if (p := ROOT / "tools" / a / f"{name}.py").is_file())
+    path = next(p for a in ("", "dataenv", "wild", "campaigns", "derive", "site", "repo", "lanes", "review") if (p := ROOT / "tools" / a / f"{name}.py").is_file())
     spec = importlib.util.spec_from_file_location(f"_regen_{name}", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -488,6 +492,14 @@ def check_finding_releases() -> list[str]:
     return _tool("finding_releases").stale()
 
 
+def check_legality() -> list[str]:
+    """Every finding's legality record was computed from its current program, outcome, cells, stored
+    front-end rows and verdict code (tools/review/review.py stale_records)."""
+    stale = _tool("review").stale_records()
+    return [f"data/findings/reviews: {len(stale)} legality records stale ({', '.join(stale[:3])}"
+            f"{', ...' if len(stale) > 3 else ''}; python3 -I tools/review/review.py mechanical)"] if stale else []
+
+
 def check_site_inputs() -> list[str]:
     """The site's committed inputs (site/inputs/) are those of the current
     atom table and spec cache (tools/site/site_inputs.py); a clean clone builds
@@ -513,6 +525,7 @@ CHECKS = [("confirm-batch", check_batch),
           ("triage", check_triage),
           ("widen-table", check_widen_table),
           ("widen-batch", check_widen_batch),
+          ("legality", check_legality),
           ("site-inputs", check_site_inputs)]
 NOT_CHECKED = {
     "measure, audits, expected-runs, fuzz, confirm-evidence":

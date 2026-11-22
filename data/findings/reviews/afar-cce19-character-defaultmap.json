@@ -306,7 +306,8 @@
    "nvhpc",
    "nvhpc269"
   ],
-  "program_sha": "6c30de79bb9624b89b661e9559582d6b8fe815bcfd890cc58fd66a33a3816690"
+  "program_sha": "6c30de79bb9624b89b661e9559582d6b8fe815bcfd890cc58fd66a33a3816690",
+  "inputs": "51fbde44be9a521b4efce785a305fa8528f3b813a8941de2164b52f0a8e61398"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 1 adjudicating readings that weighed both find the program legal and the result required: For Fortran, character type is excluded from scalar and is an aggregate variable. ch and s are therefore not scalars and are implicitly mapped tofrom, so the target-region assignments reach the host (ch=b, s=wxyz). k is an integer scalar without TARGET/ALLOCATABLE/POINTER, so it is firstprivate and stays 1."

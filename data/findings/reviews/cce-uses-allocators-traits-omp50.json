@@ -108,8 +108,8 @@
  "external": [],
  "program_sha": "70aa81c964e6620f8eeddf0ce0f2902ee7e6c47f2c5a4610ace9929e03c27880",
  "instructions": "v2",
- "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-02",
@@ -192,14 +192,15 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "accept",
   "expected": "none",
   "outcome": "rejected",
   "failing": [
    "cce"
   ],
   "witnesses": [],
-  "program_sha": "70aa81c964e6620f8eeddf0ce0f2902ee7e6c47f2c5a4610ace9929e03c27880"
+  "program_sha": "70aa81c964e6620f8eeddf0ce0f2902ee7e6c47f2c5a4610ace9929e03c27880",
+  "inputs": "ab5e481aec503c63637c282834959690f7d3e3426ec489aa51c3add7aec5afd3"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The restriction on allocators in uses_allocators concerns other data-sharing or mapping clauses in the same construct; my_alloc appears in shared only on the nested parallel do, a different construct. The traits array is a constant parameter array in the same scope as the target, the allocator is non-predefined with traits, and allocate on the parallel do names an allocator listed in uses_allocators."

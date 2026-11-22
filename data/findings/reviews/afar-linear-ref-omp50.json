@@ -5,15 +5,16 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "reject",
   "expected": "none",
   "outcome": "rejected",
   "failing": [],
   "witnesses": [],
-  "program_sha": "359e4809149f4c668dd6de05adafc854db5f3da3b0c8ccf205257d5051caf51a"
+  "program_sha": "359e4809149f4c668dd6de05adafc854db5f3da3b0c8ccf205257d5051caf51a",
+  "inputs": "3d2f775a9014bcb92ca0cf6b37a3d42feda8a298f6257bca7891e13393e6dc47"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
+ "why": "Not yet settled: AMD's front end, of another family, rejects it. A maintainer's ruling decides it."
 }

@@ -17,7 +17,8 @@
    "gcc",
    "gcc_sm80"
   ],
-  "program_sha": "0f37d56a4729c54caa29295e90f1bab26185aff9cb905d2b315ade66a4f5cf82"
+  "program_sha": "0f37d56a4729c54caa29295e90f1bab26185aff9cb905d2b315ade66a4f5cf82",
+  "inputs": "4cc6de87df871958d9b1fd943155e5ec38ecb95987799d05cf7b49e4ba76b8f9"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

@@ -5,17 +5,18 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "accept",
   "expected": "self-check",
   "outcome": "run_error",
   "failing": [
    "nvhpc"
   ],
   "witnesses": [],
-  "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a"
+  "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
+  "inputs": "2d63423248cafd09f720ce01414e92b544b8fd5fce29550f9a05a7b9ab474e4f"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected; the expected result comes from the program's own check."
 }

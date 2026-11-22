@@ -74,12 +74,12 @@ output.
 
 ### What happens to a new finding
 
-A maintainer runs the independent legality review on it ([tools/review/](tools/review/README.md)). Readers who see
-only the program, the specification text and the observed result, never the legality argument in its header, judge
-whether the program is legal and whether the specification requires the result. The readers are language models,
-each checked against a decoy with a known answer, and every passage they quote is checked against the
-specification. Until two of them agree, the website shows the finding as "not independently confirmed"; if one finds
-it not legal, it shows as "contested", with the reason. Editing the program later resets this until it is read again.
+Its legality verdict is computed, not judged ([tools/review/](tools/review/README.md)): the rules engine checks the
+program, a compiler of another family (never GCC) must build and run it correctly or its front end must accept it,
+and a wrong answer needs an expected value from outside the failing compiler. When all of that holds, the website
+shows the finding as "checked"; when the rules engine rejects it, "refuted"; when evidence is missing, "not yet
+settled", with the gap, until a maintainer's ruling quoting the specification decides it. Editing the program
+recomputes it (`tools/regenerate.py --check` reports a stale record).
 
 Every pull request runs the `check` workflow, which runs `check_findings.py` and the tests that need neither a GPU nor a vendor compiler. A pull request that changes a finding, a rule or a tool should follow the checklist in the pull request template.
 

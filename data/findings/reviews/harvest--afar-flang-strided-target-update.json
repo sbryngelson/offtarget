@@ -149,7 +149,8 @@
    "afar"
   ],
   "witnesses": [],
-  "program_sha": "be1b05e30b7b0090dd46a7c22f52ebe15185dd58501d9d8fd110165b4aeee69c"
+  "program_sha": "be1b05e30b7b0090dd46a7c22f52ebe15185dd58501d9d8fd110165b4aeee69c",
+  "inputs": "bcc78cc66b748419bbe80123aa497b5aaf22fdc10546ce2432fb37c64ce334e8"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

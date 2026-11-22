@@ -5,15 +5,16 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "accept",
   "expected": "none",
   "outcome": "wrong_answer",
   "failing": [],
   "witnesses": [],
-  "program_sha": "1af80d06175581f3749238b4d43f7f0df37233752d49e112a03082ae3b17b961"
+  "program_sha": "1af80d06175581f3749238b4d43f7f0df37233752d49e112a03082ae3b17b961",
+  "inputs": "59de80b2b5f887b0c3dacd169c245573a27f7bfc9a4b7c7c7a6afe92062fb360"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it; no independent source gives the expected result. A maintainer's ruling decides it."
+ "why": "Not yet settled: no independent source gives the expected result. A maintainer's ruling decides it."
 }

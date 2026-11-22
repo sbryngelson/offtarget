@@ -201,7 +201,8 @@
    "afar"
   ],
   "witnesses": [],
-  "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46"
+  "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46",
+  "inputs": "ec47811c316f77529276ea34340b7aff20d3b997b03bb29abed71ab675eb2c9d"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The directive is conforming, but support for a given requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. A compiler may thus refuse the program, so acceptance is not required."

@@ -108,20 +108,21 @@
  "external": [],
  "program_sha": "6b2feb588c4c56fc33206169a481e0ce459a313a181a2487b4e02450807ec9ee",
  "instructions": "v2",
- "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it.",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "accept",
   "expected": "self-check",
   "outcome": "rejected",
   "failing": [
    "cce"
   ],
   "witnesses": [],
-  "program_sha": "6b2feb588c4c56fc33206169a481e0ce459a313a181a2487b4e02450807ec9ee"
+  "program_sha": "6b2feb588c4c56fc33206169a481e0ce459a313a181a2487b4e02450807ec9ee",
+  "inputs": "1585a5ab95a0fc3e77afbaceb7cf4b358dc14701322a7dd72666b56ad274b908"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

@@ -16,7 +16,8 @@
   "witnesses": [
    "afar244"
   ],
-  "program_sha": "42b5fcefe18a8634f2e26507f26208c2f31768f1ca141167622ff53376a7bafb"
+  "program_sha": "42b5fcefe18a8634f2e26507f26208c2f31768f1ca141167622ff53376a7bafb",
+  "inputs": "47ae394c1061b304436507163a5518eda8119d61077cb7fd0a5efbb88a177e29"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

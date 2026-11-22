@@ -99,7 +99,8 @@
    "afar244",
    "gcc"
   ],
-  "program_sha": "b678dda6de57d49af72992231da68814ad1bacf8d6009545cdfe0efb5bdbdaf0"
+  "program_sha": "b678dda6de57d49af72992231da68814ad1bacf8d6009545cdfe0efb5bdbdaf0",
+  "inputs": "67dd4a77ffb6d6b227ad143ea272132c07e40495a1b7c3241b1c89d58370ef91"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

@@ -5,7 +5,7 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "accept",
   "expected": "other-family",
   "outcome": "ice",
   "failing": [
@@ -15,10 +15,11 @@
    "gcc",
    "gcc_sm80"
   ],
-  "program_sha": "99513f4e898f6c3f98249242a37a2b9aa602ee8fd8e2dfffba78445be5b8ed3a"
+  "program_sha": "99513f4e898f6c3f98249242a37a2b9aa602ee8fd8e2dfffba78445be5b8ed3a",
+  "inputs": "98631847641b0749746e4a957ca49065c09048d398c8c40b08ba27f64057b04b"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected."
 }

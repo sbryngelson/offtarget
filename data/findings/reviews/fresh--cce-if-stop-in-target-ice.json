@@ -19,7 +19,8 @@
    "nvhpc",
    "nvhpc269"
   ],
-  "program_sha": "ab5c43bf6dc8069271a30ebf3458c76d98f3f5a058e9817c85d39f57f0432503"
+  "program_sha": "ab5c43bf6dc8069271a30ebf3458c76d98f3f5a058e9817c85d39f57f0432503",
+  "inputs": "d3a4f7baad50dedfad3cdc751eafa0e91d971738b3520730a4465b0b4c359aeb"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

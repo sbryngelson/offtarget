@@ -127,7 +127,8 @@
    "cce21_4",
    "gcc"
   ],
-  "program_sha": "2f9a70205a6d003e7bdccac5c2522606f5d14212266e2cd1e1f140f6b4f273d6"
+  "program_sha": "2f9a70205a6d003e7bdccac5c2522606f5d14212266e2cd1e1f140f6b4f273d6",
+  "inputs": "ab5dc4cea3b2e8190947d5711220d89f1431d1476d70cdd56bf9b38fad1de16d"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

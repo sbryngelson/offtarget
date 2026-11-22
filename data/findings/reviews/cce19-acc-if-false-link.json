@@ -5,15 +5,16 @@
   "rules": "accept",
   "rules_why": [],
   "hazards": [],
-  "witness": "same-family",
+  "witness": "accept",
   "expected": "none",
   "outcome": "rejected",
   "failing": [],
   "witnesses": [],
-  "program_sha": "6eaf50afcea9ab987d5346a209d5a080f9e96681bd4aaefbb025566f1e8c0217"
+  "program_sha": "6eaf50afcea9ab987d5346a209d5a080f9e96681bd4aaefbb025566f1e8c0217",
+  "inputs": "75874a441daa3b7c47efd38ed5470d5486daf7a126d14588e18d255ed51fb1bf"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
- "verdict": "open",
- "why": "Not yet settled: no compiler of another family (GCC does not count) has accepted it. A maintainer's ruling decides it."
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected."
 }

@@ -123,7 +123,8 @@
   "witnesses": [
    "nvhpc269"
   ],
-  "program_sha": "f35623a855ac2da4981c8aca98f6cfaa8bfebb1c72852806521749090e4ba293"
+  "program_sha": "f35623a855ac2da4981c8aca98f6cfaa8bfebb1c72852806521749090e4ba293",
+  "inputs": "633b13b4bb04a68c0280e3077e80e69b51feddb5e7ab2c02ee76dafc51d892e1"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

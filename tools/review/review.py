@@ -450,7 +450,9 @@ def why_of(rec: dict) -> str:
     gaps = []
     if m.get("rules") != "accept":
         gaps.append("the rules engine cannot read it" if m.get("rules") == "unreadable" else "the rules engine does not accept it")
-    if m.get("witness") != "accept":
+    if m.get("witness") == "reject":
+        gaps.append("AMD's front end, of another family, rejects it")
+    elif m.get("witness") != "accept":
         gaps.append("no compiler of another family (GCC does not count) has accepted it")
     if m.get("outcome") not in L.ACCEPTANCE and m.get("expected") not in L.EXPECTED_SOURCES:
         gaps.append("no independent source gives the expected result")
@@ -466,26 +468,88 @@ def settle(fid: str, rec: dict) -> dict:
     return rec
 
 
+def _findings() -> dict:
+    """{finding id: (index entry, program path)} of every finding of the index."""
+    from offload.engine.confirm.findings import load_index
+    out = {}
+    for f in load_index():
+        fid = str(Path(f.file).relative_to("data/findings").with_suffix(""))
+        out[fid] = (f, L.finding_file(fid))
+    return out
+
+
+def _lang_model(path: Path) -> tuple[str, str]:
+    text = path.read_text(errors="replace")
+    model = "acc" if re.search(r"^\s*(?:!\$acc|#\s*pragma\s+acc)\b", text, re.M | re.I) else "omp"
+    return ("c" if path.suffix in (".c", ".cpp") else "f90"), model
+
+
+def stale_records() -> list[str]:
+    """The findings whose record is missing or was computed from other inputs than the current ones
+    (legality_mechanical.inputs_hash)."""
+    from offload.engine import legality_mechanical as LM
+    from offload.engine.site import matrix as M
+    rows, cases, wit, code = M._rows(), M._cases(), LM.load_rows(), LM.code_hash()
+    out = []
+    for fid, (f, path) in sorted(_findings().items()):
+        if path is None:
+            continue
+        rec = L.load(fid) or {}
+        want = LM.inputs_hash(L.program_sha(path), f.outcome, M.cells(fid, rows, cases), wit, fid, code)
+        if (rec.get("mechanical") or {}).get("inputs") != want:
+            out.append(fid)
+    return out
+
+
 def mechanical(ids: list[str], frontend: bool = False) -> int:
-    """Compute each finding's mechanical evidence (offload.engine.legality_mechanical) from its program
-    and the committed rows, and its verdicts; every finding of the index when ids is empty."""
+    """Each finding's mechanical evidence (offload.engine.legality_mechanical) from its program, the
+    committed rows and the stored front-end rows, and its verdicts; every finding of the index when
+    ids is empty. --frontend (a compute node) first runs AMD's front end on the findings that need
+    it and stores the rows (catalog/finding_witness.yaml)."""
     from collections import Counter
     from offload.engine import legality_mechanical as LM
-    from offload.engine.confirm.findings import load_index
     from offload.engine.site import matrix as M
     rows, cases = M._rows(), M._cases()
-    index = {str(Path(f.file).relative_to("data/findings").with_suffix("")): f for f in load_index()}
+    index = _findings()
+    ids = ids or sorted(index)
+    wit = LM.load_rows()
+    cells = {fid: M.cells(fid, rows, cases) for fid in ids if fid in index}
+    if frontend:
+        want = {}
+        witnessed = set()
+        for fid, cs in cells.items():
+            path = index[fid][1]
+            if path is None:
+                continue
+            failing = {LM._family(c.tc) for c in cs if c.state == "fails-like"}
+            if any(c.state == "correct" and LM._family(c.tc) not in failing | LM.NOT_A_WITNESS for c in cs):
+                witnessed.add(fid)
+            want[fid] = (L.program_sha(path), failing)
+        need = LM.needs_frontend(want, wit, witnessed)
+        print(f"front end: {len(need)} findings")
+        for fid in need:
+            path = index[fid][1]
+            lang, model = _lang_model(path)
+            r = LM.frontend_row(fid, want[fid][0], path.read_text(errors="replace"), lang, model)
+            if r is None:
+                print(f"{fid}: the front end cannot run here"); continue
+            wit = [x for x in wit if x["finding"] != fid] + [r]
+            print(f"{fid}: {r['result']}")
+        LM.write_rows(wit)
+    code = LM.code_hash()
     out = Counter()
-    for fid in ids or sorted(index):
-        f, path = index.get(fid), L.finding_file(fid)
-        if f is None or path is None:
+    for fid in ids:
+        if fid not in index or index[fid][1] is None:
             print(f"{fid}: not a finding of the index"); continue
+        f, path = index[fid]
         text = path.read_text(errors="replace")
-        model = "acc" if re.search(r"^\s*(?:!\$acc|#\s*pragma\s+acc)\b", text, re.M | re.I) else "omp"
-        lang = "c" if path.suffix in (".c", ".cpp") else "f90"
-        rec = L.load(fid) or {"readers": [], "program_sha": L.program_sha(path)}
-        rec["mechanical"] = LM.evidence(text, lang, model, f.outcome, M.cells(fid, rows, cases), frontend)
-        rec["mechanical"]["program_sha"] = L.program_sha(path)
+        lang, model = _lang_model(path)
+        sha = L.program_sha(path)
+        rec = L.load(fid) or {"readers": [], "program_sha": sha}
+        m = LM.evidence(text, lang, model, f.outcome, cells[fid], wit, fid, sha)
+        m["program_sha"] = sha
+        m["inputs"] = LM.inputs_hash(sha, f.outcome, cells[fid], wit, fid, code)
+        rec["mechanical"] = m
         settle(fid, rec)
         L.REVIEWS.mkdir(parents=True, exist_ok=True)
         L.record_path(fid).write_text(json.dumps(rec, indent=1) + "\n")

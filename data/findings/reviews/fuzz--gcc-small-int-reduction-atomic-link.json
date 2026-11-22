@@ -100,7 +100,8 @@
    "afar",
    "afar244"
   ],
-  "program_sha": "9e73b6cacb5dcac5e1c8518735de56b3a7fed815be06ba0869f267b2fd8d384d"
+  "program_sha": "9e73b6cacb5dcac5e1c8518735de56b3a7fed815be06ba0869f267b2fd8d384d",
+  "inputs": "a7908f6f4928bab8c6c42c04bc88a37b9d1f0b869bef5cf2d6fc6ae2ca3a22d5"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

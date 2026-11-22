@@ -17,7 +17,8 @@
    "cce21",
    "cce21_4"
   ],
-  "program_sha": "7fee982d02f8508afda9d2a77f11444567f929b32ceebba002f283a2a51788d3"
+  "program_sha": "7fee982d02f8508afda9d2a77f11444567f929b32ceebba002f283a2a51788d3",
+  "inputs": "80ff087e399944548614d1f9aa14d09a1e1919153a6d891d3065bb75a845d717"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

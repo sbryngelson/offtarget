@@ -232,7 +232,8 @@
    "nvhpc",
    "nvhpc269"
   ],
-  "program_sha": "ab075e0a3a549b3aa6a4740d064446fefe3230c7391cfc966cd3b77299c665ce"
+  "program_sha": "ab075e0a3a549b3aa6a4740d064446fefe3230c7391cfc966cd3b77299c665ce",
+  "inputs": "7d1937ca883732f4ff8e0f30567fbeb7bc221c031e5c4d2ae5b91de97bd7ab40"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Only x%a is referenced in the region, and it is a list item of the map clause, so the structure-element restriction (other referenced elements must be mapped) is met; x%n is not referenced. The allocatable-component restrictions are not violated (no reallocation)."

@@ -1,13 +1,31 @@
 # tools/review
 
-Independent legality reviews of the findings. A finding's own header argues that its program is legal; a review asks
-readers who never see that argument. The records go to `data/findings/reviews/<id>.json` and the verdict shows on the
-site and in `offload issues --show`. The rule and the record format are in
-[offload/engine/legality_review.py](../../offload/engine/legality_review.py).
+The legality verdicts of the findings. A finding's verdict is computed from mechanical evidence and maintainers'
+rulings only (`verdict` in [offload/engine/legality_review.py](../../offload/engine/legality_review.py)); the
+evidence is gathered by [offload/engine/legality_mechanical.py](../../offload/engine/legality_mechanical.py):
+
+- the rules engine (`prerun.rules_witness`) accepts or rejects the program; a result hazard (`prerun.result_hazards`)
+  is a checked result the specification does not require;
+- a second witness: a toolchain of another family (never GCC) built and ran it correctly in the committed rows, or AMD's
+  front end accepted it (`catalog/finding_witness.yaml`, written on a compute node by `tools/jobs/run_mechanical.sh`);
+- for a wrong answer, an expected value from another family's run, the program's own check or the generator's model.
+
+Verdicts: `ruled` (a maintainer's ruling that holds), `refuted`, `supported` (outside evidence), `checked`, `open`.
+
+    python3 -I tools/review/review.py mechanical [ID ...]   # recompute the records (every finding without IDs)
+    python3 -I tools/review/review.py queue                 # the open findings, grouped by what is missing
+
+Each record stamps the hash of its inputs (program, outcome, cells, stored front-end rows, verdict code);
+`tools/regenerate.py --check` reports the records whose inputs changed. A ruling (below) settles an open finding.
+
+## Advisory readings
+
+The readings below are kept in each record as `advisory` and `advisory_why`. They decide nothing and are not
+published; `queue` shows them beside each open finding.
 
 | file | holds |
 |---|---|
-| `review.py` | `select` (the findings of a set), `prepare` (batches for the readers), `ingest` (check the answers, write the records) |
+| `review.py` | `mechanical`, `queue`, `rule`; for the advisory readings `select`, `prepare`, `ingest`, `disputes`, `verify` |
 | `instructions.md` | what a reader is told; its version is `INSTRUCTIONS` in the engine module |
 | `adjudicate.md` | what an adjudicator of a dispute is told |
 | `verify.md` | what a verifier of a reading's premises is told |
@@ -42,7 +60,7 @@ when two counted verifiers refute it, it no longer counts (`refuted`).
 
 A reader counts only when it read under the current instructions (`INSTRUCTIONS`), caught its batch's decoy, gave
 only specification quotes that are in the specification, quoted at least one program line, gave only program lines
-that are in the program, and said the program lacks nothing that is there (its `absent` texts; `check_program`). The verdict
+that are in the program, and said the program lacks nothing that is there (its `absent` texts; `check_program`). The advisory verdict
 follows from the counted readers and adjudicators by a fixed rule: adjudicators decide first (two that find the
 program legal and the result required confirm it, one that finds it not legal or not required contests it); without
 them, two readers that agree confirm it and a reader that says no contests it. A contest or a doubt that prior art
@@ -59,6 +77,6 @@ a ruling instead of tuning the instructions to that one answer:
 
 `--quote` repeats for several passages. The command refuses a quote that is not in the specification under the section
 named, and a record whose program changed since its review. The verdict is then `ruled` ("settled by a maintainer's
-ruling"), never `confirmed`: the issue page shows the ruling, its passages and the readings it overrides. A ruling
+ruling"): the issue page shows the ruling and its passages. A ruling
 lapses with the readings when the program changes (`ingest` drops it), and `problems` reports one whose passages no
 longer check out.

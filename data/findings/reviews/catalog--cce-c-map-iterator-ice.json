@@ -252,7 +252,8 @@
    "gcc",
    "gcc_sm80"
   ],
-  "program_sha": "af215edc92dad2ee2d06dd1d5c4f0e8c1350de1a96dd88c7a486e4beac3d7c6d"
+  "program_sha": "af215edc92dad2ee2d06dd1d5c4f0e8c1350de1a96dd88c7a486e4beac3d7c6d",
+  "inputs": "e1055979a00a8ababb843d963fa92ec82a743eb1fe11005f575b22f9a8729d53"
  },
  "advisory": "ruled",
  "advisory_why": "A maintainer's ruling, citing OpenMP 5.2 \u00a73.2.6: \"The values of the iterator are the set of values\"; OpenMP 5.2 \u00a73.2.6: \"if step > 0, \u2013 i0 < (iterator-type) end;\". In C an iterator's values stay below end when the step is positive, so iterator(k = 1:2) has the single value k = 1. The map clause then names one array section, w[1:31], and the restriction on two sections of the same array does not apply: the program is conforming and a compiler must accept it. The independent readings had found otherwise: With k=1:2 the section w[k:n/2-(k+1)+1] gives w[1:31] and w[2:30], two instances with the same containing array w. The 5.2 map restriction forbids this, so the program is non-conforming and a compiler crash or rejection is permitted."

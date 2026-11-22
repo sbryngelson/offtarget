@@ -32,8 +32,8 @@ offload issues [--compiler cce|afar|nvhpc|gcc|cce19|...] [--kind incorrect|unsup
 Every query word must appear in the id, title, constructs or messages. Without `--show`, the command lists the
 matches with the compilers affected and how each fails: refused at compile or link time, a compiler crash, a hang,
 a crash or error at run time, or a wrong answer. `--stage` keeps the issues that fail at compile, link or run
-time. `--legality` keeps the issues with that verdict of the independent legality review (the website's method
-page, "Legality review"); the JSON output carries it as `legality`. `--show ID` prints one issue in full, with the
+time. `--legality` keeps the issues with that legality verdict (checked, supported, ruled, open, refuted; the
+website's method page, "Legality"); the JSON output carries it as `legality`. `--show ID` prints one issue in full, with the
 spec reference, the legality verdict and its reason, the state per compiler and the reproducer source.
 
 ```
