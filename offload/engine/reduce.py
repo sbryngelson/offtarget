@@ -2180,7 +2180,7 @@ def from_rows(paths, ident: str, root: Path = ROOT, program: Path | None = None,
         sigs = Counter(s for _, s in found)
         top = sigs.most_common(1)[0][0]
         notes = [f"{t.label}: {s}" for t, s in found if s != top]
-        return Job(text, "f90", [t for t, s in found if s == top], top,
+        return Job(text, getattr(prog, "lang", "f90"), [t for t, s in found if s == top], top,
                    f"fuzz seed {rec['seed']} ({rec.get('gen_version')}) in {Path(paths[0]).name}",
                    [f"another signature on {n}" for n in notes])
     mine = []
@@ -2229,7 +2229,7 @@ def from_seed(seed: int, gen_version: str = "fuzz-1", base=()) -> Job:
     signature are the caller's (the first run on the target decides)."""
     from offload.engine.fuzz import generate
     prog = generate(seed, gen_version, tuple(base))
-    return Job(prog.source, "f90", [], None, f"fuzz seed {seed} ({gen_version})",
+    return Job(prog.source, getattr(prog, "lang", "f90"), [], None, f"fuzz seed {seed} ({gen_version})",
                [f"model checksum {prog.expected}"])
 
 

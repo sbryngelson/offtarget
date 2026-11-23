@@ -280,6 +280,16 @@ Put `bash` in front, because a compute node can refuse to exec a freshly written
 
 Sealed benchmark sets (`data/bench/<set>/SEAL` not listed in `catalog/sealed_spent.yaml`) stay on Tuolumne and are never read. Tooling never files, reports or posts anything externally. Write drafts instead.
 
+## Leads of a run
+
+`tools/campaigns/leads.py` (library `offload/engine/leads.py`) turns a fuzz run's failures into leads without anyone reading a program:
+
+1. `scan results/fuzz/RUN` checks each failure against the findings (`offload.engine.confirm.findings.dedupe`, with the program id the index's `programs:` names; a compile-time failure in any memory mode; a finding of another GPU makes it related) and groups failures of one family by signature: a wrong answer by the family's toolchains that fail the program, any other failure by its masked message (a run-time failure by the first error line of its output). A group is known or related when every failure in it is explained, new or declared unsupported (the compiler's own "not implemented") when none is, mixed otherwise.
+2. `plan results/fuzz/RUN` queues a `tools/reduce.py` command for the smallest unexplained program of each new or mixed group (`results/leads/queue.jsonl`), silent wrong answers first, then run-time failures, compiler crashes and refusals, larger groups first.
+3. `tools/jobs/run_leads_reduce.sh` on a compute node runs the queue within one job and then `recheck`, which asks the catalog again about each reduced program (`results/leads/rechecked.jsonl`). Each reduction resumes from its checkpoint, so the next job continues the queue.
+
+A reduced program that is still new goes through the gate and `tools/new_finding.py` like any other; its legality verdict is computed (`tools/review/review.py mechanical`).
+
 ## Reduce a failing program
 
 `tools/reduce.py` (library `offload/engine/reduce.py`) shrinks a failing program to a small reproducer and writes one-change controls, so that a person can go from a failing row to a draft finding. It runs where the compiler and GPU are and refuses a target the node cannot run.

@@ -6,6 +6,7 @@ Drivers for measurement campaigns, corpus harvests, audits and program generator
 |---|---|
 | matrix and baseline runs | `run_matrix.py` (run, rerun, merge, replace), `presence_x1.py`, `widen.py` (widened catalog) |
 | reproduction gate | `gate.py` |
+| leads: failures against the catalog, reduction queue | `leads.py` (scan, plan, reduce, recheck) |
 | generated program families | `fuzz.py`, `stress.py`, `kbody.py`, `nested.py`, `oop.py`, `combination_matrix.py` |
 | expected values | `c_slices.py` |
 | corpus harvest and ingestion | `harvest.py`, `harvest2.py`, `harvest_known.py`, `harvest_probe.py`, `hecbench.py`, `app_bench.py`, `fresh_bench.py`, `index_corpus.py` |
