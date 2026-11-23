@@ -198,7 +198,7 @@ def advance(minutes: float) -> int:
             print(f"  not run: {res.get('reason')}", flush=True)     # no result: a later job tries again
             continue
         done.write_text(json.dumps(res) + "\n")
-        print(f"  {res.get('verdict')}  {res.get('draft') or res.get('reason', '')[:100]}", flush=True)
+        print(f"  {res.get('verdict')}  {(res.get('drafts') or [''])[0][-60:] or str(res.get('reason', ''))[:100]}", flush=True)
     return 0
 
 
