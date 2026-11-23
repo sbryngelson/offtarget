@@ -153,6 +153,18 @@ def recheck() -> int:
     return 0
 
 
+def _result_json(stdout: str) -> dict | None:
+    """The confirmer's result: the JSON object it prints (indented) after any notes."""
+    lines = stdout.splitlines()
+    for i, ln in enumerate(lines):
+        if ln.startswith("{"):
+            try:
+                return json.loads("\n".join(lines[i:]))
+            except ValueError:
+                continue
+    return None
+
+
 def advance(minutes: float) -> int:
     """The confirmer (tools/confirm.py case --run --draft) on each reduction recheck found new, once:
     it runs the case and the evidence cells, applies the legality witnesses, decides the verdict and
@@ -176,11 +188,7 @@ def advance(minutes: float) -> int:
                 "--mode", mode, "--run", "--draft"]
         print(f"confirm {r['name']}", flush=True)
         p = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=max(60, int(end - time.time())))
-        last = next((x for x in reversed(p.stdout.splitlines()) if x.strip().startswith("{")), "")
-        try:
-            res = json.loads(last)
-        except ValueError:
-            res = {"verdict": "error", "reason": (p.stderr or p.stdout)[-400:]}
+        res = _result_json(p.stdout) or {"verdict": "error", "reason": (p.stderr or p.stdout)[-400:]}
         if res.get("verdict") == "environment" and "could not run here" in str(res.get("reason")):
             print(f"  not run: {res.get('reason')}", flush=True)     # no result: a later job tries again
             continue

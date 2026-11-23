@@ -297,3 +297,14 @@ def test_a_confirmer_that_could_not_run_here_leaves_the_lead_for_a_later_job(tmp
         {"verdict": "environment", "reason": "the case's own cell could not run here: no runner for tuolumne"})))
     T.advance(20)
     assert not (tmp_path / "a" / "confirm.json").exists()
+
+
+def test_the_confirmers_indented_result_is_read_whole():
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool4", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    out = 'note: something\n{\n  "verdict": "BUG",\n  "case": {\n    "toolchain": "afar"\n  }\n}\n'
+    assert T._result_json(out) == {"verdict": "BUG", "case": {"toolchain": "afar"}}
+    assert T._result_json("no json here") is None
