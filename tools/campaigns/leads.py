@@ -6,6 +6,7 @@ grouped by signature; known, related and new groups, each new one with the progr
     python3 -I tools/campaigns/leads.py plan RUN_DIR [RUN_DIR ...]   # the reduction queue
     python3 -I tools/campaigns/leads.py reduce [--minutes M]          # a compute node: run the queue
     python3 -I tools/campaigns/leads.py recheck                       # the reduced programs vs the catalog
+    python3 -I tools/campaigns/leads.py advance [--minutes M]         # a compute node: the confirmer on new ones
 
 scan writes results/leads/<campaign>.jsonl (one group per line) and prints the counts and the new and
 mixed groups. plan appends a tools/reduce.py command per new or mixed group to results/leads/queue.jsonl;
@@ -144,11 +145,44 @@ def recheck() -> int:
         hits = F.dedupe(tc, lang, outcome, row.get("reason") or "", prog.read_text(), related=True,
                         output=row.get("output") or "")
         kind = "known" if any(h["kind"] == "duplicate" for h in hits) else ("related" if hits else "new")
-        out.append({"name": e["name"], "family": e["family"], "group": e["group"], "status": kind,
+        out.append({"name": e["name"], "family": e["family"], "group": e["group"], "status": kind, "target": e["target"],
                     "findings": [h["file"] for h in hits], "program": str(prog.relative_to(ROOT)),
                     "lines": sum(1 for x in prog.read_text().splitlines() if x.strip())})
         print(f"  {kind:7} {e['name']:40} {out[-1]['lines']:4} lines  {', '.join(out[-1]['findings'][:2])}")
     (OUT / "rechecked.jsonl").write_text("".join(json.dumps(r) + "\n" for r in out))
+    return 0
+
+
+def advance(minutes: float) -> int:
+    """The confirmer (tools/confirm.py case --run --draft) on each reduction recheck found new, once:
+    it runs the case and the evidence cells, applies the legality witnesses, decides the verdict and
+    writes a draft (results/confirm/drafts/; promoting one is a person's step). Its result is the
+    reduction's confirm.json."""
+    end = time.time() + minutes * 60
+    path = OUT / "rechecked.jsonl"
+    rows = [json.loads(x) for x in path.read_text().splitlines() if x.strip()] if path.is_file() else []
+    for r in rows:
+        if r["status"] != "new":
+            continue
+        prog = ROOT / r["program"]
+        done = prog.parent / "confirm.json"
+        if done.is_file():
+            continue
+        if (end - time.time()) / 60 < 3:
+            break
+        tc, xn = r["target"].split("/")
+        mode = LD.MODES.get(int(xn), "copy")
+        argv = [sys.executable, "-I", str(ROOT / "tools" / "confirm.py"), "case", str(prog), "--toolchain", tc,
+                "--mode", mode, "--run", "--draft"]
+        print(f"confirm {r['name']}", flush=True)
+        p = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=max(60, int(end - time.time())))
+        last = next((x for x in reversed(p.stdout.splitlines()) if x.strip().startswith("{")), "")
+        try:
+            res = json.loads(last)
+        except ValueError:
+            res = {"verdict": "error", "reason": (p.stderr or p.stdout)[-400:]}
+        done.write_text(json.dumps(res) + "\n")
+        print(f"  {res.get('verdict')}  {res.get('draft') or res.get('reason', '')[:100]}", flush=True)
     return 0
 
 
@@ -162,7 +196,11 @@ def main(argv=None) -> int:
     rd = sub.add_parser("reduce")
     rd.add_argument("--minutes", type=float, default=25)
     sub.add_parser("recheck")
+    ad = sub.add_parser("advance")
+    ad.add_argument("--minutes", type=float, default=10)
     a = ap.parse_args(argv)
+    if a.cmd == "advance":
+        return advance(a.minutes)
     if a.cmd == "reduce":
         return reduce(a.minutes)
     if a.cmd == "recheck":

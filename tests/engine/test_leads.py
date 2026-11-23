@@ -252,3 +252,30 @@ def test_a_wrong_answer_lead_the_elision_cannot_read_gets_a_host_run_of_a_correc
     assert "--reference" not in plain[0]["argv"]       # a Fortran fuzz program carries its own (the elision)
     none = LD.reduce_queue(lead("acc", "f90", "program p\nend program p\n", ("cce20",)), "results/fuzz/run")
     assert none == []                                   # no correct run of another family: no oracle
+
+
+def test_advance_runs_the_confirmer_on_each_new_reduction_once(tmp_path, monkeypatch):
+    import importlib.util
+    import subprocess
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool2", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    monkeypatch.setattr(T, "OUT", tmp_path)
+    rows = [{"name": "lead-r-1-cce19", "status": "new", "program": "red/a/lead-r-1-cce19.f90", "target": "cce19/0"},
+            {"name": "lead-r-2-cce19", "status": "known", "program": "red/b/x.f90", "target": "cce19/0"}]
+    (tmp_path / "rechecked.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+    (tmp_path / "red" / "a").mkdir(parents=True)
+    calls = []
+
+    def run(argv, **k):
+        calls.append(argv)
+        return SimpleNamespace(returncode=0, stdout='{"verdict": "BUG", "draft": "results/confirm/drafts/x"}\n', stderr="")
+    monkeypatch.setattr(subprocess, "run", run)
+    T.advance(20)
+    T.advance(20)                                    # already advanced: not again
+    assert len(calls) == 1 and calls[0][-6:] == ["--toolchain", "cce19", "--mode", "copy", "--run", "--draft"]
+    assert calls[0][3:5] == ["case", str(tmp_path / "red/a/lead-r-1-cce19.f90")]
+    got = json.loads((tmp_path / "red" / "a" / "confirm.json").read_text())
+    assert got["verdict"] == "BUG"
