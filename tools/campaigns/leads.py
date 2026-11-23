@@ -199,7 +199,11 @@ def advance(minutes: float) -> int:
         argv = [sys.executable, "-I", str(ROOT / "tools" / "confirm.py"), "case", str(prog), *claim,
                 "--toolchain", tc, "--mode", mode, "--run", "--draft"]
         print(f"confirm {r['name']}", flush=True)
-        p = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=max(60, int(end - time.time())))
+        try:
+            p = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=max(60, int(end - time.time())))
+        except subprocess.TimeoutExpired:
+            print("  not finished in this job: a later job tries again", flush=True)
+            break
         res = _result_json(p.stdout) or {"verdict": "error", "reason": (p.stderr or p.stdout)[-400:]}
         if res.get("verdict") == "environment" and "could not run here" in str(res.get("reason")):
             print(f"  not run: {res.get('reason')}", flush=True)     # no result: a later job tries again

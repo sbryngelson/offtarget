@@ -138,7 +138,8 @@ def signature(row: dict) -> Signature:
 
 
 _RUN_MARK = re.compile(r"^--- run\b.*$", re.M)
-_RUN_DIAG = re.compile(r"error|fatal|fault|abort|illegal|exception|signal|terminat|assert", re.I)
+# an error word at a word start ("fault", not the "fault" of "defaultmap" in an echoed source line)
+_RUN_DIAG = re.compile(r"\b(?:error|fatal|fault|abort|illegal|exception|signal|terminat|assert)", re.I)
 
 
 def _run_line(d: dict) -> str:
@@ -150,7 +151,9 @@ def _run_line(d: dict) -> str:
         text = text[m.end():]
     lines = [x.strip() for x in text.splitlines() if x.strip() and not x.startswith("---")
              and not x.strip().startswith("RESULT")]
-    pick = next((x for x in lines if _RUN_DIAG.search(x)), lines[0] if lines else "")
+    # only a line that names an error is the failure's message (the first line may be a module
+    # system's notice or an echoed source line, which differ between runs of one failure)
+    pick = next((x for x in lines if _RUN_DIAG.search(x)), "")
     return M._norm(pick)
 
 

@@ -3107,3 +3107,14 @@ def test_a_fuzz_records_signature_is_its_targets_when_the_targets_are_named(tmp_
     assert RD.from_rows([rows], "3", root=tmp_path).signature.cls == "ice"
     job = RD.from_rows([rows], "3", root=tmp_path, only={"gcc"})
     assert job.signature.cls == "wrong_answer" and [t.toolchain for t in job.targets] == ["gcc"]
+
+
+def test_a_crash_without_an_error_line_is_keyed_by_its_signal_alone():
+    """The first line of a crash's output is no message when no line names an error: a module
+    system's notice in one run and an echoed source line in another are the same SIGSEGV."""
+    a = {"toolchain": "cce21", "cls": "run_error", "reason": "crash: SIGSEGV",
+         "output": "The following have been reloaded with a version change:\n  1) cce/21.0.0 => cce/21.0.4\n"}
+    b = dict(a, output="  !$omp target map(tofrom: ib(:n)) map(tofrom: o) defaultmap(to: all) &\n")
+    assert RD.signature(a) == RD.signature(b)
+    c = dict(a, output="fuzz.out: Memory access fault by GPU node-4 on address 0x1000. Reason: Unknown.\n")
+    assert RD.signature(c) != RD.signature(a) and "memory access fault" in RD.signature(c).key.lower()

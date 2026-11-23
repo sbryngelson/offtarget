@@ -338,3 +338,23 @@ def test_a_reduction_that_cannot_start_is_finished_with_its_reason_and_not_retri
     T.reduce(25)
     assert len(calls) == 1
     assert "does not fail as recorded" in json.loads((tmp_path / "red" / "a" / "failed.json").read_text())["reason"]
+
+
+def test_a_confirmer_that_overruns_the_job_leaves_its_lead_for_a_later_job(tmp_path, monkeypatch):
+    import importlib.util
+    import subprocess
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool6", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    monkeypatch.setattr(T, "OUT", tmp_path)
+    (tmp_path / "rechecked.jsonl").write_text(json.dumps({"name": "l", "status": "new", "program": "a/l.f90",
+                                                           "target": "cce19/0"}) + "\n")
+    (tmp_path / "a").mkdir()
+
+    def slow(argv, **k):
+        raise subprocess.TimeoutExpired(argv, k.get("timeout"))
+    monkeypatch.setattr(subprocess, "run", slow)
+    assert T.advance(20) == 0
+    assert not (tmp_path / "a" / "confirm.json").exists()
