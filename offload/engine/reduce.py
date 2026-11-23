@@ -126,7 +126,11 @@ def signature(row: dict) -> Signature:
         m = _IGNORED_RUN.search(str(d.get("reason") or ""))
         d = dict(d, outcome="wrong_answer", reason=m.group(2) if m else d.get("reason"))
     if cls in ("rejected", "ice", "accepted_ignored", "wrong_answer"):
-        return Signature(cls, M.signature(R._stage_text(d, cls))[1])
+        text = R._stage_text(d, cls)
+        if cls == "rejected":
+            # a recorded reason starts with the harness's category word; a rerun's compile log does not
+            text = _CATEGORY.sub("", text)
+        return Signature(cls, M.signature(text)[1])
     if cls in ("crash", "run_error"):
         # finer than the gate's key (the exit kind or signal alone): the normalized first error
         # line of the run, so another run-time failure of the same kind is another failure
@@ -137,6 +141,7 @@ def signature(row: dict) -> Signature:
     return Signature(cls, "")
 
 
+_CATEGORY = re.compile(r"^(?:diagnostic|link_undefined_symbol|not_implemented|ignored): ", re.M)
 _RUN_MARK = re.compile(r"^--- run\b.*$", re.M)
 # an error word at a word start ("fault", not the "fault" of "defaultmap" in an echoed source line)
 _RUN_DIAG = re.compile(r"\b(?:error|fatal|fault|abort|illegal|exception|signal|terminat|assert)", re.I)

@@ -3118,3 +3118,13 @@ def test_a_crash_without_an_error_line_is_keyed_by_its_signal_alone():
     assert RD.signature(a) == RD.signature(b)
     c = dict(a, output="fuzz.out: Memory access fault by GPU node-4 on address 0x1000. Reason: Unknown.\n")
     assert RD.signature(c) != RD.signature(a) and "memory access fault" in RD.signature(c).key.lower()
+
+
+def test_a_compile_refusals_signature_does_not_carry_the_harness_category_word():
+    """A fuzz record keeps the harness's category before the message (diagnostic:, link_undefined_symbol:);
+    a rerun's compile log does not: the same refusal has one signature."""
+    rec = {"toolchain": "gcc", "cls": "compile_reject", "reason": "link_undefined_symbol: ld: error: undefined symbol: __atomic_fetch_or_8"}
+    rerun = dict(rec, reason="ld: error: undefined symbol: __atomic_fetch_or_8")
+    assert RD.signature(rec) == RD.signature(rerun)
+    d1 = {"toolchain": "cce19", "cls": "compile_reject", "reason": "diagnostic: ftn-1234 ftn: ERROR bad thing"}
+    assert RD.signature(d1) == RD.signature(dict(d1, reason="ftn-1234 ftn: ERROR bad thing"))
