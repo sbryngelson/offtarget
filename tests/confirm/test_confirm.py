@@ -2618,3 +2618,19 @@ def test_the_recorded_defaultmap_none_witness_is_uncalibrated():
     for v in ("50", "52", "60"):
         assert W.accepted(f"omp{v}-clause-defaultmap-none", "", "cce") is None
     assert W.illegal_variants("omp52-clause-defaultmap-none")
+
+
+def test_a_flux_run_job_step_is_inside_a_job(monkeypatch):
+    """`flux run` puts a job at instance level 0; its FLUX_JOB_ID says it is a job. A GPU does not:
+    a Tuolumne login node has an MI300A too."""
+    tu = M.load()["tuolumne"]
+    level0 = FakeRunner_3(out="0\n")
+    monkeypatch.delenv("FLUX_JOB_ID", raising=False)
+    from offload.engine import toolchains as T
+    monkeypatch.setattr(T, "detect_gpu", lambda: (None, ""))
+    assert not J.inside_job(tu, runner=level0)
+    monkeypatch.setenv("FLUX_JOB_ID", "f2abc")
+    assert J.inside_job(tu, runner=level0)
+    monkeypatch.delenv("FLUX_JOB_ID")
+    monkeypatch.setattr(T, "detect_gpu", lambda: (tu.arch, ""))
+    assert not J.inside_job(tu, runner=level0)

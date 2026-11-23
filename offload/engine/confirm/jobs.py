@@ -203,8 +203,9 @@ def spec_for(machine, script: str, env: dict, output: str,
 def inside_job(machine, runner=None) -> bool:
     """Whether this process runs inside a job allocation of the machine's
     scheduler (local runs of a confirmer belong on compute nodes, not on a
-    login node): flux, an instance level above 0; Slurm, SLURM_JOB_ID;
-    local, always."""
+    login node): flux, an instance level above 0 or a job's FLUX_JOB_ID (a
+    `flux run` job is at level 0; a job that starts with `env -i` passes it
+    on); Slurm, SLURM_JOB_ID; local, always."""
     import os
     kind = machine.scheduler["kind"]
     if kind in ("local", "direct"):  # no allocation to be inside of
@@ -212,4 +213,8 @@ def inside_job(machine, runner=None) -> bool:
     if kind == "slurm":
         return bool(os.environ.get("SLURM_JOB_ID"))
     res = (runner or _run)(["flux", "getattr", "instance-level"])
-    return res.returncode == 0 and res.stdout.strip() not in ("", "0")
+    if res.returncode == 0 and res.stdout.strip() not in ("", "0"):
+        return True
+    # a `flux run` job is at level 0: its FLUX_JOB_ID says it is a job (a
+    # Tuolumne login node has an MI300A too, so a GPU says nothing)
+    return bool(os.environ.get("FLUX_JOB_ID"))

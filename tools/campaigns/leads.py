@@ -181,6 +181,9 @@ def advance(minutes: float) -> int:
             res = json.loads(last)
         except ValueError:
             res = {"verdict": "error", "reason": (p.stderr or p.stdout)[-400:]}
+        if res.get("verdict") == "environment" and "could not run here" in str(res.get("reason")):
+            print(f"  not run: {res.get('reason')}", flush=True)     # no result: a later job tries again
+            continue
         done.write_text(json.dumps(res) + "\n")
         print(f"  {res.get('verdict')}  {res.get('draft') or res.get('reason', '')[:100]}", flush=True)
     return 0

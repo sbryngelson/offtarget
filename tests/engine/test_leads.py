@@ -279,3 +279,21 @@ def test_advance_runs_the_confirmer_on_each_new_reduction_once(tmp_path, monkeyp
     assert calls[0][3:5] == ["case", str(tmp_path / "red/a/lead-r-1-cce19.f90")]
     got = json.loads((tmp_path / "red" / "a" / "confirm.json").read_text())
     assert got["verdict"] == "BUG"
+
+
+def test_a_confirmer_that_could_not_run_here_leaves_the_lead_for_a_later_job(tmp_path, monkeypatch):
+    import importlib.util
+    import subprocess
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool3", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    monkeypatch.setattr(T, "OUT", tmp_path)
+    (tmp_path / "rechecked.jsonl").write_text(json.dumps({"name": "l", "status": "new", "program": "a/l.f90",
+                                                           "target": "cce19/0"}) + "\n")
+    (tmp_path / "a").mkdir()
+    monkeypatch.setattr(subprocess, "run", lambda argv, **k: SimpleNamespace(returncode=1, stderr="", stdout=json.dumps(
+        {"verdict": "environment", "reason": "the case's own cell could not run here: no runner for tuolumne"})))
+    T.advance(20)
+    assert not (tmp_path / "a" / "confirm.json").exists()

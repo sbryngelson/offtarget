@@ -3,8 +3,10 @@
 # order within MINUTES (default 18; each resumes from its checkpoint, so the next job continues the
 # queue, and a lead a finished reduction covers is skipped), the catalog asked again about each
 # result (recheck), then the confirmer on each one still new within ADVANCE minutes (default 8).
+# The job's FLUX_JOB_ID goes through env -i (expanded in the job: the confirmer's local runs need it):
 #   flux run -q pdebug -N1 -t 30 --job-name=compile-leads --env=SPINDLE_FLUXOPT=disable \
-#     env -i HOME=$HOME USER=$USER bash -lc "cd $PWD && tools/jobs/run_leads_reduce.sh"
+#     bash -c 'exec env -i HOME="$HOME" USER="$USER" FLUX_JOB_ID="$FLUX_JOB_ID" bash -lc \
+#     "cd /path/to/checkout && tools/jobs/run_leads_reduce.sh"'
 ulimit -c 0
 cd "${COMPLIANT_ROOT:-$PWD}" || exit 1
 echo "host $(hostname) job ${FLUX_JOB_ID:-none} start $(date -Is)"
