@@ -2159,7 +2159,7 @@ def lang_of(path: str) -> str:
 
 
 def from_rows(paths, ident: str, root: Path = ROOT, program: Path | None = None,
-              mode: int | None = None) -> Job:
+              mode: int | None = None, only: set | None = None) -> Job:
     """The job of a recorded failing row: `ident` is a harness row's
     program id (or its file's stem), or the seed of a fuzz campaign record
     (results/fuzz/<run>/programs.jsonl). The program text comes from
@@ -2175,6 +2175,9 @@ def from_rows(paths, ident: str, root: Path = ROOT, program: Path | None = None,
         text = program.read_text() if program else prog.source
         m = mode if mode is not None else _mode_of_run(paths)
         found = failures_of_record(rec, m)
+        if only:
+            # the named targets' failures: their signature, not the record's most common one
+            found = [(t, s) for t, s in found if t.toolchain in only]
         if not found:
             raise NoFailure(f"seed {rec['seed']}: no failing toolchain in its record")
         sigs = Counter(s for _, s in found)

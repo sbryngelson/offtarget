@@ -84,7 +84,7 @@ def plan(run_dir: Path) -> int:
 
 def _done(e: dict) -> bool:
     d = ROOT / e["argv"][-1]
-    return (d / "report.md").is_file() or (d / "covered.json").is_file()
+    return any((d / f).is_file() for f in ("report.md", "covered.json", "failed.json"))
 
 
 def _result(e: dict):
@@ -124,7 +124,14 @@ def reduce(minutes: float) -> int:
         i = argv.index("--budget-minutes")
         argv[i + 1] = str(int(min(float(argv[i + 1]), left - 1)))
         print(f"reduce {e['name']} ({argv[i + 1]} min)", flush=True)
-        subprocess.run([sys.executable, "-I", str(ROOT / "tools" / "reduce.py"), *argv], cwd=ROOT)
+        p = subprocess.run([sys.executable, "-I", str(ROOT / "tools" / "reduce.py"), *argv], cwd=ROOT)
+        out = ROOT / e["argv"][-1]
+        if p.returncode == 1 and not (out / "report.md").is_file():
+            # the original does not fail as recorded, the witness refuses it, or no oracle: finished,
+            # with the reason (exit 2, a runner or checkpoint problem, is tried again)
+            log = (out / "log.txt").read_text().splitlines() if (out / "log.txt").is_file() else []
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "failed.json").write_text(json.dumps({"reason": (log[-1] if log else "exit 1")[:400]}) + "\n")
     print(f"{sum(1 for e in todo if not _done(e))} reductions left")
     return 0
 

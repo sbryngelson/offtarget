@@ -312,3 +312,29 @@ def test_the_confirmers_indented_result_is_read_whole():
     out = 'note: something\n{\n  "verdict": "BUG",\n  "case": {\n    "toolchain": "afar"\n  }\n}\n'
     assert T._result_json(out) == {"verdict": "BUG", "case": {"toolchain": "afar"}}
     assert T._result_json("no json here") is None
+
+
+def test_a_reduction_that_cannot_start_is_finished_with_its_reason_and_not_retried(tmp_path, monkeypatch):
+    import importlib.util
+    import subprocess
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool5", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    monkeypatch.setattr(T, "QUEUE", tmp_path / "queue.jsonl")
+    e = {"name": "lead-r-1-gcc", "argv": ["--budget-minutes", "8", "--out", "red/a"], "priority": [0, -1]}
+    (tmp_path / "queue.jsonl").write_text(json.dumps(e) + "\n")
+    calls = []
+
+    def run(argv, **k):
+        calls.append(argv)
+        d = tmp_path / "red" / "a"
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "log.txt").write_text("[1] reduce ...\n[2] the original does not fail as recorded: gcc/0: correct_on_device\n")
+        return SimpleNamespace(returncode=1)
+    monkeypatch.setattr(subprocess, "run", run)
+    T.reduce(25)
+    T.reduce(25)
+    assert len(calls) == 1
+    assert "does not fail as recorded" in json.loads((tmp_path / "red" / "a" / "failed.json").read_text())["reason"]

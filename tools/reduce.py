@@ -77,7 +77,8 @@ def main(argv=None) -> int:
         if a.from_row:
             if not a.id:
                 ap.error("--from-row needs --id")
-            job = RD.from_rows(a.from_row, a.id, ROOT, Path(a.program) if a.program else None, a.mode)
+            only = {t.split("/")[0] for t in a.target} if a.target else None
+            job = RD.from_rows(a.from_row, a.id, ROOT, Path(a.program) if a.program else None, a.mode, only)
             name = a.name or a.id.replace(":", "-")
         elif a.seed is not None:
             job = RD.from_seed(a.seed, a.gen_version, a.base)
