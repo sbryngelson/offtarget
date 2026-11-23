@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
@@ -184,8 +185,12 @@ def advance(minutes: float) -> int:
             break
         tc, xn = r["target"].split("/")
         mode = LD.MODES.get(int(xn), "copy")
-        argv = [sys.executable, "-I", str(ROOT / "tools" / "confirm.py"), "case", str(prog), "--toolchain", tc,
-                "--mode", mode, "--run", "--draft"]
+        # a reduction that checks itself (RESULT ... check=) against the value its reference gave (the
+        # elision or a host run of another family, never the failing compiler) claims check=pass
+        claim = ["--expected", "check=pass"] if prog.is_file() and re.search(
+            r"RESULT[^\n]*check=", prog.read_text(errors="replace")) else []
+        argv = [sys.executable, "-I", str(ROOT / "tools" / "confirm.py"), "case", str(prog), *claim,
+                "--toolchain", tc, "--mode", mode, "--run", "--draft"]
         print(f"confirm {r['name']}", flush=True)
         p = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=max(60, int(end - time.time())))
         res = _result_json(p.stdout) or {"verdict": "error", "reason": (p.stderr or p.stdout)[-400:]}

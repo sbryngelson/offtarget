@@ -267,6 +267,8 @@ def test_advance_runs_the_confirmer_on_each_new_reduction_once(tmp_path, monkeyp
             {"name": "lead-r-2-cce19", "status": "known", "program": "red/b/x.f90", "target": "cce19/0"}]
     (tmp_path / "rechecked.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
     (tmp_path / "red" / "a").mkdir(parents=True)
+    (tmp_path / "red" / "a" / "lead-r-1-cce19.f90").write_text(
+        "program p\n  print '(a,i0,a,a)', 'RESULT ran_on_host=', 0, ' check=', merge('pass', 'fail', cs == 5_8)\nend program p\n")
     calls = []
 
     def run(argv, **k):
@@ -276,6 +278,8 @@ def test_advance_runs_the_confirmer_on_each_new_reduction_once(tmp_path, monkeyp
     T.advance(20)
     T.advance(20)                                    # already advanced: not again
     assert len(calls) == 1 and calls[0][-6:] == ["--toolchain", "cce19", "--mode", "copy", "--run", "--draft"]
+    # the reduction checks itself against its reference's value: the program's own claim is check=pass
+    assert calls[0][5:7] == ["--expected", "check=pass"]
     assert calls[0][3:5] == ["case", str(tmp_path / "red/a/lead-r-1-cce19.f90")]
     got = json.loads((tmp_path / "red" / "a" / "confirm.json").read_text())
     assert got["verdict"] == "BUG"
