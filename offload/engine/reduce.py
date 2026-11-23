@@ -128,8 +128,9 @@ def signature(row: dict) -> Signature:
     if cls in ("rejected", "ice", "accepted_ignored", "wrong_answer"):
         text = R._stage_text(d, cls)
         if cls == "rejected":
-            # a recorded reason starts with the harness's category word; a rerun's compile log does not
-            text = _CATEGORY.sub("", text)
+            # a recorded reason starts with the harness's category word and joins its lines with
+            # " | "; a rerun's compile log has neither
+            text = _CATEGORY.sub("", text).replace(" | ", "\n")
         return Signature(cls, M.signature(text)[1])
     if cls in ("crash", "run_error"):
         # finer than the gate's key (the exit kind or signal alone): the normalized first error
@@ -142,6 +143,10 @@ def signature(row: dict) -> Signature:
 
 
 _CATEGORY = re.compile(r"^(?:diagnostic|link_undefined_symbol|not_implemented|ignored): ", re.M)
+# a program's own name before its message ("fuzz-21.out: ..."), which differs between runs
+_EXE = re.compile(r"^\S+\.out: ")
+# a compiler's summary of its diagnostics in a run's output (CCE: "Cray Fortran : 0 errors, ...")
+_SUMMARY = re.compile(r"^Cray (?:Fortran|C)\b.*:\s*\d+ errors?", re.I)
 _RUN_MARK = re.compile(r"^--- run\b.*$", re.M)
 # an error word at a word start ("fault", not the "fault" of "defaultmap" in an echoed source line)
 _RUN_DIAG = re.compile(r"\b(?:error|fatal|fault|abort|illegal|exception|signal|terminat|assert)", re.I)
@@ -154,8 +159,8 @@ def _run_line(d: dict) -> str:
     m = _RUN_MARK.search(text)
     if m:
         text = text[m.end():]
-    lines = [x.strip() for x in text.splitlines() if x.strip() and not x.startswith("---")
-             and not x.strip().startswith("RESULT")]
+    lines = [_EXE.sub("", x.strip()) for x in text.splitlines() if x.strip() and not x.startswith("---")
+             and not x.strip().startswith("RESULT") and not _SUMMARY.match(x.strip())]
     # only a line that names an error is the failure's message (the first line may be a module
     # system's notice or an echoed source line, which differ between runs of one failure)
     pick = next((x for x in lines if _RUN_DIAG.search(x)), "")

@@ -3128,3 +3128,22 @@ def test_a_compile_refusals_signature_does_not_carry_the_harness_category_word()
     assert RD.signature(rec) == RD.signature(rerun)
     d1 = {"toolchain": "cce19", "cls": "compile_reject", "reason": "diagnostic: ftn-1234 ftn: ERROR bad thing"}
     assert RD.signature(d1) == RD.signature(dict(d1, reason="ftn-1234 ftn: ERROR bad thing"))
+
+
+def test_run_and_record_signatures_ignore_the_executables_name_and_cces_compile_summary():
+    a = {"toolchain": "cce19", "cls": "run_error", "reason": "crash: SIGABRT",
+         "output": "fuzz-21.out: libcrayacc/acc_clang_wrapper.c:1009: void TransferList::validate_clang_flags(int64_t): "
+                   "Assertion `clang_flags == 0' failed.\n"}
+    b = dict(a, output=a["output"].replace("fuzz-21.out", "lead-c6c1-1632-cce19_c.out"))
+    assert RD.signature(a) == RD.signature(b)
+    summary = dict(a, reason="exit_status: 1", cls="run_error",
+                   output="Cray Fortran : 0 errors, 1 warnings, 0 other messages, 0 ansi\n")
+    assert RD.signature(summary) == RD.signature(dict(summary, output=""))
+
+
+def test_a_recorded_refusal_joined_by_bars_signs_like_its_compile_log():
+    log = ("ftn-1234 ftn: ERROR FUZZ_PROG, File = fuzz_prog.f90, Line = 12, Column = 7\n"
+           "  Unexpected syntax while parsing the DIRECTIVE statement : \"scalar\" was expected\n")
+    joined = " | ".join(x.strip() for x in log.splitlines())
+    rec = {"toolchain": "cce19", "cls": "compile_reject", "reason": "diagnostic: " + joined}
+    assert RD.signature(rec) == RD.signature(dict(rec, reason=log))
