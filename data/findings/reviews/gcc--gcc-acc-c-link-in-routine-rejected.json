@@ -12,14 +12,15 @@
    "gcc"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept"
   },
   "program_sha": "bc6ecbc7e4ed863022073f1e0eb9bbd92db2dcbe0569747eeec9de4237e07aed",
-  "inputs": "1756bb75fc8dd9119661665ffe71a35d77876d1ebde3a4b335f101d4807b7f86"
+  "inputs": "6ef596906d1aef57491246e4618f7e7cad630286df88bd3b9d1f4d072475d568"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected."
+ "why": "The rules engine accepts the program and AMD's front end, of another compiler family, accepts it."
 }

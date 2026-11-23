@@ -128,7 +128,7 @@
  "program_sha": "f36cec15c51244ce0b789708876372d49a9f8d37d7f7a7e33be7b7c619bf8b0d",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-06",
@@ -253,9 +253,19 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
   "front_ends": {},
   "program_sha": "f36cec15c51244ce0b789708876372d49a9f8d37d7f7a7e33be7b7c619bf8b0d",
-  "inputs": "ea6b396ca999264974573372efc0c2935fa5ccd1f3aa66d39146e771f71fa079"
+  "inputs": "f202b76d9c810fdfbaeb970cb5f0cd7e876ccfe0c35c59870a62d179406b904c"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The task, target region and taskwait are conforming. The failure message shows OMP_TARGET_OFFLOAD=mandatory with no usable device; section 21.2.8 says a device construct using an unavailable device behaves as if omp_invalid_device were used, so aborting is permitted."

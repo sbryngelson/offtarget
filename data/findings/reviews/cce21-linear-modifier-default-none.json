@@ -12,16 +12,19 @@
    "cce"
   ],
   "witnesses": [
+   "afar244"
+  ],
+  "expected_from": [
    "afar244",
    "gcc",
    "gcc_sm80"
   ],
   "front_ends": {},
   "program_sha": "dc27c8b1fbdfe3b6fb78720ec4cf36161cd2bd642cd30f05b9e5876daba7de03",
-  "inputs": "68a2f03afec0c77fa35d355d6635a1b32a87d6f3123d926bc86d02845d40db5a"
+  "inputs": "2e71ce31743d85fc1d33598bf3f751267c4cf60648b05e0200bec274aa30eac0"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar244, gcc, gcc_sm80 of another compiler family build and run it as expected."
+ "why": "The rules engine accepts the program and afar244, of another compiler family, builds and runs it as expected."
 }

@@ -244,6 +244,7 @@
    "gcc"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "reject",
    "intel_c": "reject",
@@ -251,7 +252,7 @@
    "nvhpc_c": "reject"
   },
   "program_sha": "4881fc09441baa8136ed371b152fc836eba85cbd9df8d09fee23b7aafabd8039",
-  "inputs": "f980e0b3c3c8aa6f4b4ee6ad2436421b446419c6b87c26cea56daabc4ca99ec8"
+  "inputs": "d109f11cd70062c6beef78903a508aa6866371b4c378458818961e5416718860"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

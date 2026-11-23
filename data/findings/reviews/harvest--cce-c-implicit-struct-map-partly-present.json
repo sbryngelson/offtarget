@@ -109,7 +109,7 @@
  "program_sha": "fe5fc42dea725edbce348e712f94ae99d51c6605cb03c84fb2b6b86b9a1f04ed",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-01",
@@ -228,9 +228,13 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "fe5fc42dea725edbce348e712f94ae99d51c6605cb03c84fb2b6b86b9a1f04ed",
-  "inputs": "f8a72a321a294c412d8b23b8f949ac49fb3a676eb1c10b755c726c892509484c"
+  "inputs": "184000e974e363b38e9b6393cb9b9e02e024e8cf8a24ff630fb9a85da60d54ae"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The restriction on partially present storage covers only list items with an explicit data-mapping attribute, so it does not apply to the implicit map of s, and no passage requires success when a larger overlapping object is implicitly mapped."

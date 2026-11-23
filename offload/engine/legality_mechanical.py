@@ -142,8 +142,8 @@ def evidence(text: str, lang: str, model: str, outcome: str, cells: list, rows: 
     failing = {_family(c.tc) for c in cells if c.state == "fails-like"}
     others = [c for c in cells if c.state == "correct" and _family(c.tc) not in failing]
     bad = {lineage(f, lang) for f in failing} if outcome in REFUSALS else set()
-    witness = "accept" if any(_family(c.tc) not in NOT_A_WITNESS and lineage(_family(c.tc), lang) not in bad
-                              for c in others) else "same-family"
+    counted = [c for c in others if _family(c.tc) not in NOT_A_WITNESS and lineage(_family(c.tc), lang) not in bad]
+    witness = "accept" if counted else "same-family"
     if witness != "accept":
         witness = stored(rows, fid, sha, failing, lang) or witness
     if others:
@@ -154,7 +154,7 @@ def evidence(text: str, lang: str, model: str, outcome: str, cells: list, rows: 
         expected = "none"
     return {"rules": rules, "rules_why": list(why)[:6], "hazards": hazards, "witness": witness,
             "expected": expected, "outcome": outcome, "failing": sorted(failing),
-            "witnesses": sorted({c.tc for c in others}),
+            "witnesses": sorted({c.tc for c in counted}), "expected_from": sorted({c.tc for c in others}),
             "front_ends": {r["checker"]: result_of(r, lang) for r in rows if r["finding"] == fid and r["sha256"] == sha}}
 
 

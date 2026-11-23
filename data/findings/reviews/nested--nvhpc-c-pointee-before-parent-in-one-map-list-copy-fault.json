@@ -122,7 +122,7 @@
  "program_sha": "4bf96f45458e819c9e1b33ed210c0903dfb76ca4a12eb1eed0da2e0f63c4ef94",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-01",
@@ -217,13 +217,21 @@
    "cce19",
    "cce20",
    "cce21",
+   "cce21_4"
+  ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
    "cce21_4",
    "gcc",
    "gcc_sm80"
   ],
   "front_ends": {},
   "program_sha": "4bf96f45458e819c9e1b33ed210c0903dfb76ca4a12eb1eed0da2e0f63c4ef94",
-  "inputs": "db77408d64d848cf16bc6e31ad7fbc211f26f89ec40a2ae5ae8a5cd729fe978e"
+  "inputs": "9a3928a98e0c724ca52b2804f4f3fcc08036d8eeb14729a900662ab5d37e1a1c"
  },
  "advisory": "contested",
  "advisory_why": "An independent reading finds the result not required: r->nx[0:1] is mapped before r[0:1] on the same construct. The attached-pointer rule applies when a corresponding pointer for the base pointer r->nx exists upon entry to the region. Here r->nx lives in r[0:1], which is created by this same construct, so the rule does not clearly guarantee attachment. The device r->nx may hold the host address, so acceptance is not clearly required and the observed illegal address is not clearly a bug."

@@ -14,6 +14,12 @@
   "witnesses": [
    "afar",
    "afar244",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "expected_from": [
+   "afar",
+   "afar244",
    "gcc",
    "gcc_sm80",
    "nvhpc",
@@ -21,10 +27,10 @@
   ],
   "front_ends": {},
   "program_sha": "91bef60a09d1e49c4dbdfd34860e355ddc170eb5b2ee60401b56b98e443fe228",
-  "inputs": "18b644df76ea95c80094328514266147f94da6445303c9f601e1b3421e0bd04d"
+  "inputs": "9437e1f0eaf2069de8f65ab3dbd7fe79aca42fde2f971b7db2451d67a21bf96f"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80, nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and afar, afar244, nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run."
 }

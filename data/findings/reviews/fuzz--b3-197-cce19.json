@@ -15,12 +15,16 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "1d802eda67c76896cb3c545277f2098616c73bff4c9b8c0d8a132e9c270b700a",
-  "inputs": "fe11099b28bb58825638f1ce47b55d024a8b1d57d8c9e88dcbd6a8b7b43f8476"
+  "inputs": "0e0a6d3dd3f408a3433b0909c0c7ce781c263b423f39998a80c5b544ab0e8ff8"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run."
 }

@@ -109,7 +109,7 @@
  "program_sha": "905bccf76a70024abe28438530c50460463e908c4bb6ca412832af49c81d9e3d",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-01",
@@ -233,9 +233,17 @@
    "cce21",
    "cce21_4"
   ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
   "front_ends": {},
   "program_sha": "905bccf76a70024abe28438530c50460463e908c4bb6ca412832af49c81d9e3d",
-  "inputs": "9d40d7ebf2f670738f852dcf8fd6aebab073100313a4b156bb3285c8b6a98720"
+  "inputs": "e975fd122c713ef3abbbc950d0e5eff0242a137676ec8af08f613d5bf71fd635"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: Section 5.8.7 defines pointer as variables of pointer type and aggregate as variables of aggregate type (arrays or structures). The Fortran pointer array wp is a pointer and also an array, so it fits both categories. The text gives no precedence between them. If aggregate applies, the implicit tofrom rule of 5.8.1 maps wp and the observed copy-back is permitted. If pointer applies, to-only mapping is permitted too."

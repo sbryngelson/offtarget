@@ -11,7 +11,8 @@
   "failing": [
    "afar"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -21,7 +22,7 @@
    "nvhpc_f90": "reject"
   },
   "program_sha": "fbb48545f931e6e9cd9ae81a96acbb8beda010c48b8b600c5688253674c419d7",
-  "inputs": "f147d8c1b37588f2eb4c5088c691937ebff6a12e8207a42cbbe6eb22f82e9747"
+  "inputs": "9da8cb40b8d2b3158c3810157eda6b585329af3391785df5937ec89ae2d6b23c"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

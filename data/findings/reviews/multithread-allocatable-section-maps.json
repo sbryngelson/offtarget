@@ -109,7 +109,7 @@
  "program_sha": "0eb4d743bab627b467a9ca784e35a09915a13fd0a8a3613ca120bfef2680e06c",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-02",
@@ -203,9 +203,13 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "expected_from": [
+   "nvhpc",
+   "nvhpc269"
+  ],
   "front_ends": {},
   "program_sha": "0eb4d743bab627b467a9ca784e35a09915a13fd0a8a3613ca120bfef2680e06c",
-  "inputs": "d3bd591a48a4d35153994cfccc58bce7c95fa9705974561d20b97457fc46d67a"
+  "inputs": "482271a084c588a69638109a5d91072a69ff5fc300d722884e3b335a23338ec3"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The two host threads map disjoint sections a(lo:hi) and b(lo:hi), and the target region references only elements inside the mapped sections. The only stated restriction (whole-array reference to a partly mapped array) is not triggered, and the variable is not allocated, deallocated or reshaped meanwhile. i, lo and hi are private."

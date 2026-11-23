@@ -126,7 +126,7 @@
  "program_sha": "b387642834134bfe5207f98b911b2ae0392ece980ab6e62fa939a563dd1941eb",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-05",
@@ -219,9 +219,13 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "b387642834134bfe5207f98b911b2ae0392ece980ab6e62fa939a563dd1941eb",
-  "inputs": "90d9aceddf105d749f9dcd1cc8dd27e17621495b88a488abbc9cf00d52f0219c"
+  "inputs": "b0f6db516dd0662106492f3a3ea38a9b1f3be90ef67d764d1d8fad3cfc302140"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: Mapper decay is correct (to with tofrom gives to), so sv=1 is right. The host_flag difference is not required: default-device-var is implementation-defined and target regions may execute on the host when the device does not exist or is unsupported."

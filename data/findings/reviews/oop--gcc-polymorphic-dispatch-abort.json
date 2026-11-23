@@ -109,7 +109,7 @@
  "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-02",
@@ -228,9 +228,13 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
-  "inputs": "ab82fa723f25592f0b6c03e996b60ffe04f2e72d47056b4664bc4681605009cc"
+  "inputs": "7df9e37cefd33d45765311db3c422034a27cce167aeb9a5f8976cf2f155d0c89"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The spec requires only that type-bound procedures accessed in a target region appear in a declare target directive. The specific bindings sq_area, rect_area and area_of carry declare target, so that rule is met. Neither reading finds a rule on making the dynamic type information (descriptor or vtable) of a CLASS dummy usable on the device. q and rr are mapped as non-polymorphic objects whose passed class descriptors point to host data."

@@ -122,7 +122,7 @@
  "program_sha": "c21cbfa9347c72062810f6aa97885a5827c36a5f88f9b44e4f94757427842665",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-04",
@@ -216,9 +216,13 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "expected_from": [
+   "nvhpc",
+   "nvhpc269"
+  ],
   "front_ends": {},
   "program_sha": "c21cbfa9347c72062810f6aa97885a5827c36a5f88f9b44e4f94757427842665",
-  "inputs": "7a25f6f1070d814f0b3736f47f5fc8dcaa451c50d520fc9f11cca3d63a5c8ced"
+  "inputs": "638e300abe750123a98423c42328d4dd0bbccd73f7883e448f0ad04e4e5027f5"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Section 2.13.2 says a global-context declare sets the structured reference counter to one, and also says that for an allocatable the allocate statement raises a runtime error if that counter is not zero. Read literally, the program's allocate would be an error."

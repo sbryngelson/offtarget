@@ -12,6 +12,7 @@
    "cce"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "reject",
    "intel_c": "reject",
@@ -19,7 +20,7 @@
    "nvhpc_c": "reject"
   },
   "program_sha": "f59e9b1b5ea7389c39a9a346cc9bf17ba331d083fae96967541327c91426022e",
-  "inputs": "930bdbf49a9709e99f79b29847a3fd5f3c539e0e8bb6db5cf66f6fdfad9cf237"
+  "inputs": "02dcb734cbbdab711a7b37f19649f7ea95c330b909776e1fc015364d141f14df"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

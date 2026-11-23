@@ -16,6 +16,14 @@
    "cce20",
    "cce21",
    "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "expected_from": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
    "gcc",
    "gcc_sm80",
    "nvhpc",
@@ -23,10 +31,10 @@
   ],
   "front_ends": {},
   "program_sha": "68cb4f2032d089626d91efd002136108db5e5f605406e29a3562e4cc359200d8",
-  "inputs": "741ec32695d9fb8591f51f443d7f8f96c14971d54e6062f0a56e6375d3507827"
+  "inputs": "b2d06840b2139afe8ec46bbcb9115933c7d5e3b41a9ce59b779e9e8d2013cb87"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, gcc, gcc_sm80, nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run."
 }

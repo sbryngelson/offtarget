@@ -13,6 +13,10 @@
    "cce"
   ],
   "witnesses": [
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "expected_from": [
    "gcc",
    "gcc_sm80",
    "nvhpc",
@@ -20,10 +24,10 @@
   ],
   "front_ends": {},
   "program_sha": "e10bd88ba3f14804403d762cf131d9c846c0711a2d23e745de1110daf055b0d5",
-  "inputs": "95258cc14ce3548aaea0863822bfc810b992aa6c02b2e9aa2ae45d8ec9d61650"
+  "inputs": "bb6bc7d9a58d37bcc5ea57f181a2909ef1e2dbaccf00f6f2efb0e77fedfb196e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and gcc, gcc_sm80, nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run."
 }

@@ -83,7 +83,7 @@
  "program_sha": "d083404ee76f49fd575bf3fbfbbb27c6b5a13319cb188351ec8c78492a5e22e1",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
@@ -102,9 +102,17 @@
    "cce21",
    "cce21_4"
   ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
   "front_ends": {},
   "program_sha": "d083404ee76f49fd575bf3fbfbbb27c6b5a13319cb188351ec8c78492a5e22e1",
-  "inputs": "ca26305389d10de2a42537c14899af0fb9a1ab748fbc1b46b4ef670545c250fe"
+  "inputs": "675f26e2b2a13fb3afdb02cd15ab77c2534748e4a93fad8a00c3ee1e99a54a17"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

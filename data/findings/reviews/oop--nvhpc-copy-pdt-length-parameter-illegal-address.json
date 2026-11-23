@@ -109,7 +109,7 @@
  "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected; the expected result comes from the program's own check.",
+ "why": "The rules engine accepts the program and AMD's and Intel's front ends, of another compiler family, accept it; the expected result comes from the program's own check.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-05",
@@ -245,12 +245,13 @@
    "nvhpc"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "intel_f90": "accept"
   },
   "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
-  "inputs": "0e48030661e77a3796785597314b84b7b7f471d2711f50c8eb73337cff016b83"
+  "inputs": "89a8e835f4f779cddaa27054825b21d19d284f50046e99b70e424df684a18eb9"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Fortran 2003 is a cited base language, so a parameterized derived type is not excluded."

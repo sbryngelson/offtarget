@@ -232,7 +232,7 @@
  "program_sha": "9986a74fc4c6d36efdf5bf7954111f6fc71237e33df6eb193969a7319bf03707",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-04",
@@ -329,9 +329,17 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "expected_from": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
   "front_ends": {},
   "program_sha": "9986a74fc4c6d36efdf5bf7954111f6fc71237e33df6eb193969a7319bf03707",
-  "inputs": "d84c0f12eb26ba3fd9d0e6f2f171fd661fd45deaa19d4d7f31223deb817a4b24"
+  "inputs": "bc0a0b154ec478cf886c06f8e81eaee20b7ffca203d6b5b3962f0520f79fcd01"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The attach and detach clauses accept Fortran allocatable variables, which suggests allocatable components count as pointer references. But the attach pointer action is defined only for a pointer reference, and that term is never defined. Whether copyin(h%v) sets the attachment counter to one is therefore not settled."

@@ -109,7 +109,7 @@
  "program_sha": "9bce89767ba41f68c281e9a629cfe850fc228905a3d9b9e814f56e82d0f9c4bd",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected.",
+ "why": "The rules engine accepts the program and Intel's front end, of another compiler family, accepts it.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
@@ -120,7 +120,8 @@
   "failing": [
    "afar"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -130,7 +131,7 @@
    "nvhpc_f90": "unsupported"
   },
   "program_sha": "9bce89767ba41f68c281e9a629cfe850fc228905a3d9b9e814f56e82d0f9c4bd",
-  "inputs": "e02acbe25f31449f3278f9795eb20529036a0407dfc438fafe41ec401f89e223"
+  "inputs": "0afa3a6a7fd397ef0405aab372ba422b1379c77355e1cbd12698f5a30e764c60"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

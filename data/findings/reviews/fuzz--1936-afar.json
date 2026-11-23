@@ -11,7 +11,8 @@
   "failing": [
    "afar"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -21,10 +22,10 @@
    "nvhpc_f90": "unsupported"
   },
   "program_sha": "2803131b91ebb42f22c2296d02dba4f1aa175d42dc4b25672330fddafe555186",
-  "inputs": "c9527bcae7bca5f65d4894beea4b1a6daa99f0dbd01ea05b1e493dc60a16bee4"
+  "inputs": "1c8e9b294646d0d9782dc1d3147358c0972f7d6352ed9d3741758ad238ea318f"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and Intel's front end, of another compiler family, accepts it; the expected result comes from another compiler family's run."
 }

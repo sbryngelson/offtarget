@@ -109,7 +109,7 @@
  "program_sha": "2f9a62f0d763e74a8ab8c424f321cef23b10c1bdcc6166a09188f3711389a7f2",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-03",
@@ -202,9 +202,13 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "2f9a62f0d763e74a8ab8c424f321cef23b10c1bdcc6166a09188f3711389a7f2",
-  "inputs": "da97e56d53c58c7add07cf2b81ac67b56bb653280000836d9429f3bdefe54622"
+  "inputs": "ba4e43081826b3f75af20071b4e93077e2956b20d9327925fb3f034cf76587e8"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The only OpenMP polymorphism restrictions concern ALLOCATABLE polymorphic list items (map clause) or C++ types with mismatched static and dynamic types; none applies since e1, e2, b0 are non-polymorphic variables mapped tofrom. A declare target procedure with CLASS dummy and SELECT TYPE is plain Fortran, so the values are determined."

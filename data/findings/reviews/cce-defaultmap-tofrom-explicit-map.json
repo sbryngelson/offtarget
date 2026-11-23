@@ -13,7 +13,8 @@
    "cce",
    "nvhpc"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -21,10 +22,10 @@
    "intel_f90": "accept"
   },
   "program_sha": "c10bfb64bb5c65085ca3b5dff626d0af7e54445d2a2556b6207bed1231907365",
-  "inputs": "4b8ddc06d51e47bbd5293e9c745884c9ea96f912cf2f44c44659d5c9d3fa1b7c"
+  "inputs": "477dc0177ec2e9a95579d608ed7ac515385b4d828b6bff49685260ce33b85437"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and Intel's front end, of another compiler family, accepts it; the expected result comes from another compiler family's run."
 }

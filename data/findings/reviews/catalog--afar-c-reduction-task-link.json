@@ -120,7 +120,8 @@
   "failing": [
    "afar"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -130,7 +131,7 @@
    "nvhpc_c": "reject"
   },
   "program_sha": "048a8998e7bb6fd7880460859829d30ff8d43e19623a55ac83020a97cbb2bc3f",
-  "inputs": "06bba740450b2a5d9fc370f292a8b4aa6eacc3d786865d23297c09c18102c0ae"
+  "inputs": "af9ae8136b797492ab0f131084f2b00ef46ece363b41951c55be0a1700a894e6"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

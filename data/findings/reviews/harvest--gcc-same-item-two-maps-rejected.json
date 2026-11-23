@@ -21,12 +21,22 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4",
+   "nvhpc",
+   "nvhpc269"
+  ],
   "front_ends": {},
   "program_sha": "214cc40d520d6ebaf2605ca8ca9e69536e5cc7cebd07b40cf9f2c7c9ebb35dc6",
-  "inputs": "ec609e7f4bad55a9456c3f4a50d4bba4b40062aa6a45cdb5f368065e592c399f"
+  "inputs": "f4216eb82ff9de31a7982875291a2954ae74f9d5df2b6354f1d065d641141e44"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269 of another compiler family build and run it as expected."
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, nvhpc, nvhpc269, of another compiler family, build and run it as expected."
 }

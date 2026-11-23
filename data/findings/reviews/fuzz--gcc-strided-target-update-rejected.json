@@ -12,6 +12,7 @@
    "gcc"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "intel_f90": "reject",
@@ -19,10 +20,10 @@
    "nvhpc_f90": "reject"
   },
   "program_sha": "277915601af930b151ab93598fdce24e2ac8715c2efd7d1a955cbd37dbe3b5ae",
-  "inputs": "76203e27023fdd5d33367a678c4bb2c74ac1e66983862bc2d0fdd2b934ce459c"
+  "inputs": "54fb6663947fae5a73db2259d964d24e3e6f8307eb803d96b6ed971c80d286eb"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected."
+ "why": "The rules engine accepts the program and AMD's front end, of another compiler family, accepts it."
 }

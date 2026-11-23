@@ -10,13 +10,14 @@
   "outcome": "wrong_answer",
   "failing": [],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "nvhpc269_acc": "reject",
    "nvhpc_acc": "reject"
   },
   "program_sha": "1af80d06175581f3749238b4d43f7f0df37233752d49e112a03082ae3b17b961",
-  "inputs": "28d406511196fd734c5d2c4211b630b5d022efe7cc57706063ae7fc592926ecd"
+  "inputs": "32968d4361bb62412f9c63b233d003552827a0bc4973e494f94c8c7cdf4787bd"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

@@ -15,12 +15,16 @@
    "nvhpc",
    "nvhpc269"
   ],
+  "expected_from": [
+   "nvhpc",
+   "nvhpc269"
+  ],
   "front_ends": {},
   "program_sha": "81766965f88c8d56f74693b070d482548d4107be347851d75b318fc6f214b894",
-  "inputs": "1b6735bf86cc80660dca45554a299dd35940e52cd50bd392c8dc3bce792b0f5f"
+  "inputs": "57ec84f37bd6983ed6cb091ea8f57d0b1ce881865b54ce82d01c006228d37a73"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and nvhpc, nvhpc269 of another compiler family build and run it as expected."
+ "why": "The rules engine accepts the program and nvhpc, nvhpc269, of another compiler family, build and run it as expected."
 }

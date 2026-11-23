@@ -109,7 +109,7 @@
  "program_sha": "a72a37441ec59c7afa8a7d4fd492d2faa75648084c4965fefb9718d929da6d20",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected.",
+ "why": "The rules engine accepts the program and Intel's front end, of another compiler family, accepts it.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
@@ -121,13 +121,14 @@
    "afar"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "intel_f90": "accept",
    "nvhpc269_f90": "reject",
    "nvhpc_f90": "reject"
   },
   "program_sha": "a72a37441ec59c7afa8a7d4fd492d2faa75648084c4965fefb9718d929da6d20",
-  "inputs": "cee93d00de7f25bb380b230874553e9f2f47040495c1ade0aaee17128ce8166d"
+  "inputs": "8269abb8b1f7df3096647c083a2d21afc7ce9e39c64b3ca63ef875bb6107ddf1"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

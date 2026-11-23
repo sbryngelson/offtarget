@@ -15,16 +15,22 @@
    "cce19",
    "cce20",
    "cce21",
+   "cce21_4"
+  ],
+  "expected_from": [
+   "cce19",
+   "cce20",
+   "cce21",
    "cce21_4",
    "gcc",
    "gcc_sm80"
   ],
   "front_ends": {},
   "program_sha": "95329e2ecaad451e345cc6fa798f8bb48e400e654086b55153d77230941c0f0c",
-  "inputs": "d5aab18f47a065f884b2af2319b002804571b5bac0cd7d2fa50865bcdc70d103"
+  "inputs": "4a5d1182fe1950623f1fe38f770e8362182c1f60dfdf63fd8325fa86225a1dd6"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected."
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected."
 }

@@ -139,7 +139,7 @@
  "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected.",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-20261113b/batch-01",
@@ -258,9 +258,13 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
-  "inputs": "e3a6189720318c6ec3702c97306e17424109e25d530192499fa5c0850b608345"
+  "inputs": "3246651f6977246b83f639adc25853eef6e42d36d360ba2bee7a30faaefee0a9"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: The accessed binding area is deferred and its abstract interface has no body and no declare target; the overriders have it. The text does not say whether the deferred binding or the overriders count, nor does it define device-side dynamic dispatch. so a link failure is not shown to be a violation."

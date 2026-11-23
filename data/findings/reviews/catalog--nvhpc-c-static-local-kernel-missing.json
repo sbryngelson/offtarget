@@ -17,16 +17,24 @@
    "cce19",
    "cce20",
    "cce21",
+   "cce21_4"
+  ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
    "cce21_4",
    "gcc",
    "gcc_sm80"
   ],
   "front_ends": {},
   "program_sha": "25bf6ac3ccfd0cda92b2b38d39e8aef5dbad72250f05ae27f002fbf4f244fab0",
-  "inputs": "2f93894270a0af0f93450f9f716de8ee3aae97757d50db5915201deafd73dceb"
+  "inputs": "983d24f87c7dce9f667859d26745ae060f967e26d89b30779072d49ee85c0a7e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run."
 }

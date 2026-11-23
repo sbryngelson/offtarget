@@ -109,7 +109,7 @@
  "program_sha": "ab075e0a3a549b3aa6a4740d064446fefe3230c7391cfc966cd3b77299c665ce",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80, nvhpc, nvhpc269 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, nvhpc, nvhpc269, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-05",
@@ -227,6 +227,12 @@
   "witnesses": [
    "afar",
    "afar244",
+   "nvhpc",
+   "nvhpc269"
+  ],
+  "expected_from": [
+   "afar",
+   "afar244",
    "gcc",
    "gcc_sm80",
    "nvhpc",
@@ -234,7 +240,7 @@
   ],
   "front_ends": {},
   "program_sha": "ab075e0a3a549b3aa6a4740d064446fefe3230c7391cfc966cd3b77299c665ce",
-  "inputs": "2dbfcd9f154db84625497f06b1be2357182f37e64f41ebdbf20aa87f9faec23f"
+  "inputs": "c431fac72cbb6480301d9152e9552fae680e7eb0ba7bdcd05c47f7a6be9a2fcb"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Only x%a is referenced in the region, and it is a list item of the map clause, so the structure-element restriction (other referenced elements must be mapped) is met; x%n is not referenced. The allocatable-component restrictions are not violated (no reallocation)."

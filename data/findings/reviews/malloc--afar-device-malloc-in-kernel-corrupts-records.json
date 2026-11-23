@@ -128,7 +128,7 @@
  "program_sha": "f291e10383fcfb60d06c380264ab5d7f738b0410b6bb411f58f4ab0a28fde77c",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and gcc_sm80 of another compiler family builds and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and Intel's and NVHPC's front ends, of another compiler family, accept it; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-01",
@@ -278,7 +278,8 @@
    "afar",
    "cce"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc_sm80"
   ],
   "front_ends": {
@@ -287,7 +288,7 @@
    "nvhpc_c": "accept"
   },
   "program_sha": "f291e10383fcfb60d06c380264ab5d7f738b0410b6bb411f58f4ab0a28fde77c",
-  "inputs": "40a5c41eca295239a2c13500f77498738d88efdd27ea300bbf15d130d1a91328"
+  "inputs": "7455542143a815b9deddae57c6cafc8912e5abe71e0f6d0b626c315a4a9343da"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The failure is in device-side malloc, memcpy and free, which the specification treats only as procedures referenced in a target construct. Nothing in the specification defines their device behavior, heap size or failure handling for millions of threads, so wrong results from an exhausted device heap are not excluded."

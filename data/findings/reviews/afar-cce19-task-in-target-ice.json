@@ -12,7 +12,8 @@
    "afar",
    "cce"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -22,7 +23,7 @@
    "nvhpc_f90": "unsupported"
   },
   "program_sha": "52119b01a38e42b76d09bbb88a005df0ff402bda5f0591678940fff3caef9db3",
-  "inputs": "d064e54af29e52056ed96f26982754cb343a3f9c22ee9c60f0b215da8f9c3171"
+  "inputs": "2eb95fc2771a35f87afe8f840c53294eeb85d991e201e892854581ca22bd3bb7"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

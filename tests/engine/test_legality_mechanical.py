@@ -187,3 +187,9 @@ def test_a_checker_that_crashes_gives_no_verdict():
     joined = [row("intel_f90", "intel", "reject", "t.f90(3): warning: x | t.f90(7): error #5541: A TASK or TASKGROUP "
                   "construct inside of a TARGET or DECLARE TARGET region is not supported on this platform.")]
     assert LM.evidence(PROG, "f90", "omp", "rejected", [], rows=joined, fid="x", sha="s")["front_ends"] == {"intel_f90": "unsupported"}
+
+
+def test_gcc_gives_the_expected_value_but_is_never_named_a_witness():
+    cells = [cell("cce21", "fails-like"), cell("afar", "correct"), cell("gcc", "correct")]
+    m = LM.evidence(PROG, "f90", "omp", "wrong_answer", cells)
+    assert m["witnesses"] == ["afar"] and m["expected_from"] == ["afar", "gcc"]

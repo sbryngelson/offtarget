@@ -10,6 +10,7 @@
   "outcome": "wrong_answer",
   "failing": [],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "intel_f90": "accept",
@@ -17,7 +18,7 @@
    "nvhpc_f90": "accept"
   },
   "program_sha": "60ad3f69431a75c57f2b5d7797585fe3e05969815fd9c091dd653f7f674efdd4",
-  "inputs": "dddf53718d811443d5dd4712d20e64781b7b89c9303b1622b617a24e3092d0e9"
+  "inputs": "1d8ef3d6aef8b6ca0d7508f58945a73a97162218e7827b0e3804a4d83ed6e57e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

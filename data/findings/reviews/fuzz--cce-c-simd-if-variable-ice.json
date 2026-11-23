@@ -94,14 +94,15 @@
   "failing": [
    "cce"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "afar",
    "afar244",
    "gcc"
   ],
   "front_ends": {},
   "program_sha": "b678dda6de57d49af72992231da68814ad1bacf8d6009545cdfe0efb5bdbdaf0",
-  "inputs": "026e030aa5e988de81988ca7920118d8998e92cbc15e530299891b7bfe0c246e"
+  "inputs": "827344f00209b5c0455b16977d2941be12b871fa7cd004fa576cd0dd938c27cd"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

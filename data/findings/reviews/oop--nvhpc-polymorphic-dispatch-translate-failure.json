@@ -141,7 +141,7 @@
  "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected.",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-05",
@@ -234,9 +234,13 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
-  "inputs": "93b832c6525ef5e9f98a16beeb3648109d0aab0bf6667455cb4b1329b304b9ec"
+  "inputs": "4265fb8005e08f9523b63506ee1800232280bbe6e07b6a88f3fc12170dfede30"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The specification requires type-bound procedures accessed in a target region to appear in a declare target directive. The overriding procedures sq_area, rect_area and area_of carry one, but the deferred binding is declared only through an abstract interface, so whether the requirement is met is not settled. Nothing specifies device-side dynamic dispatch, so refusal is not shown to violate a requirement."

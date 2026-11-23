@@ -83,7 +83,7 @@
  "program_sha": "9e73b6cacb5dcac5e1c8518735de56b3a7fed815be06ba0869f267b2fd8d384d",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244 of another compiler family build and run it as expected.",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected.",
  "mechanical": {
   "rules": "accept",
   "rules_why": [],
@@ -100,9 +100,13 @@
    "afar",
    "afar244"
   ],
+  "expected_from": [
+   "afar",
+   "afar244"
+  ],
   "front_ends": {},
   "program_sha": "9e73b6cacb5dcac5e1c8518735de56b3a7fed815be06ba0869f267b2fd8d384d",
-  "inputs": "ef38bd7aa08234f16c545ee4072bfca0ff464aa381a4752b5d66ae7664396aa2"
+  "inputs": "84dd16c9f6431aaa3947083a97226114f9a8b4294d62b1f760c8e09b9a2c0222"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

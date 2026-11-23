@@ -10,16 +10,17 @@
   "outcome": "rejected",
   "failing": [],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "nvhpc269_acc": "accept",
    "nvhpc_acc": "accept"
   },
   "program_sha": "6eaf50afcea9ab987d5346a209d5a080f9e96681bd4aaefbb025566f1e8c0217",
-  "inputs": "410ea1f4325459f1b8b74d408c70bc0a25a724615da84c88cf14421321cbf0bc"
+  "inputs": "c1a34c8e7542bdc6c4c9d18f85037a6b3ac3f86d4f4aa62baa2b01680f00840e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected."
+ "why": "The rules engine accepts the program and AMD's and NVHPC's front ends, of another compiler family, accept it."
 }

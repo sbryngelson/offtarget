@@ -109,7 +109,7 @@
  "program_sha": "9271f17e8f59997005f99169e8efa08630323f76fb2a17e711e784125c06a72a",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-v2-20261113/batch-04",
@@ -204,13 +204,21 @@
    "cce19",
    "cce20",
    "cce21",
+   "cce21_4"
+  ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
    "cce21_4",
    "gcc",
    "gcc_sm80"
   ],
   "front_ends": {},
   "program_sha": "9271f17e8f59997005f99169e8efa08630323f76fb2a17e711e784125c06a72a",
-  "inputs": "bf683b626467d5bffbcf64f5a9e54d952b7af0b03ab152cb118713a0ce479164"
+  "inputs": "cc362ca93c1d3274eceba2e75cc081cf1f40b48090a5acbe1f348e02769a3bbd"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Both mappings are legal in separate constructs. The text does not say a pointer member inside a larger list item keeps its host value, so the device pointer value may overwrite host r->a."

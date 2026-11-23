@@ -109,7 +109,7 @@
  "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected; the expected result comes from the program's own check.",
+ "why": "The rules engine accepts the program and AMD's and Intel's front ends, of another compiler family, accept it; the expected result comes from the program's own check.",
  "adjudicators": [
   {
    "run": "adj-20261113/batch-03",
@@ -150,12 +150,13 @@
    "nvhpc"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "intel_f90": "accept"
   },
   "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
-  "inputs": "01230601e221989044e9fbe4d8864bda3a0d209a8514d811919fb0b61a0e0470"
+  "inputs": "b75e72b822c7d8db0825839c18755f1063494acfbe7f6e786e0cad84edca0a57"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

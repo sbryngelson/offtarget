@@ -12,15 +12,16 @@
    "nvhpc"
   ],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "intel_c": "unsupported"
   },
   "program_sha": "4d7f45f4b17443dedafc3bb4fe4ac41593ac177c11f2f6f032c191f213ca397a",
-  "inputs": "d6b0573e42e30008589460e1316ef4e1817c910c888bcafc48f35fc7c6f5c0d7"
+  "inputs": "8abe37a38d2ab90dc4b15f0ce7b5b5abb304084f1f697b573628d518937ce7af"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected; the expected result comes from the program's own check."
+ "why": "The rules engine accepts the program and AMD's front end, of another compiler family, accepts it; the expected result comes from the program's own check."
 }

@@ -17,12 +17,18 @@
    "cce21",
    "cce21_4"
   ],
+  "expected_from": [
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
   "front_ends": {},
   "program_sha": "b201cd89754bc8726ac3ef2272ee2c29b64195cbfe1c57b2b788f78e19f0a7da",
-  "inputs": "9d79943a6e60cda03cc77b68d65a7a2dd74fbdb4602c2bb38f3a7d87a6cb3f0e"
+  "inputs": "836653ff7ee3782c5dfa3848d9a385d5aa0fa690d57106003e3ce90c109bdefd"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4 of another compiler family build and run it as expected."
+ "why": "The rules engine accepts the program and cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected."
 }

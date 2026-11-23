@@ -10,6 +10,7 @@
   "outcome": "rejected",
   "failing": [],
   "witnesses": [],
+  "expected_from": [],
   "front_ends": {
    "afar-frontend": "accept",
    "intel_f90": "accept",
@@ -17,10 +18,10 @@
    "nvhpc_f90": "reject"
   },
   "program_sha": "eeb51b2a1a40135f9265fac4d01b4a4b0336c1a5b34f30ebbab4aaadfcbceab0",
-  "inputs": "3a4997f847bf9a67d19026e7afbc16cf95e3b82497fa3c881c95b0c1c7d58765"
+  "inputs": "f99e647ae0264c1dc9bad63ed64fe1b645475790076d3197c11da008523753db"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and another family's front end of another compiler family builds and run it as expected."
+ "why": "The rules engine accepts the program and AMD's and Intel's front ends, of another compiler family, accept it."
 }

@@ -11,7 +11,8 @@
   "failing": [
    "cce"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -22,10 +23,10 @@
    "nvhpc_c": "accept"
   },
   "program_sha": "5782c17e3a0b767886fbb87b923aa401d8fa471d3eccbf899279413b289fc3a7",
-  "inputs": "be8675e9dba35c04aa4ae7415a5734c11ee9b62908a77983c462384fcbb16125"
+  "inputs": "597e5cd816110bda1071ba54c49eb9478f0eb028cba5dacd924b8730deb4e88b"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected."
+ "why": "The rules engine accepts the program and AMD's and NVHPC's front ends, of another compiler family, accept it."
 }

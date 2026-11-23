@@ -442,9 +442,18 @@ def why_of(rec: dict) -> str:
     if v == "supported":
         return "Outside evidence supports it: " + _clip("; ".join(str(e.get("source", e)) for e in rec["external"]), 300)
     if v == "checked":
-        w = ", ".join(m.get("witnesses") or []) or "another family's front end"
         exp = "" if m.get("outcome") in L.ACCEPTANCE else f"; the expected result comes from {_SOURCE_WORDS[m['expected']]}"
-        return f"The rules engine accepts the program and {w} of another compiler family build{'s' if ',' not in w else ''} and run it as expected{exp}."
+        runs = m.get("witnesses") or []
+        if runs:
+            one = len(runs) == 1
+            return (f"The rules engine accepts the program and {', '.join(runs)}, of another compiler family, "
+                    f"build{'s' if one else ''} and run{'s' if one else ''} it as expected{exp}.")
+        names = {"afar": "AMD's", "nvhpc": "NVHPC's", "intel": "Intel's"}
+        fes = sorted({names[p] for k, v in (m.get("front_ends") or {}).items() if v == "accept"
+                      for p in names if k.startswith(p)}) or ["another family's"]
+        many = len(fes) > 1
+        return (f"The rules engine accepts the program and {' and '.join(fes)} front end{'s' if many else ''}, of "
+                f"another compiler family, accept{'' if many else 's'} it{exp}.")
     if not m:
         return "Not yet checked."
     gaps = []

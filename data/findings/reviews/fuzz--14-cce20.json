@@ -14,16 +14,20 @@
   ],
   "witnesses": [
    "afar",
+   "afar244"
+  ],
+  "expected_from": [
+   "afar",
    "afar244",
    "gcc",
    "gcc_sm80"
   ],
   "front_ends": {},
   "program_sha": "271586d22060a8fbe786505a7c02b24db2b316ef1fd1fd29fa7ce2a15a1b2436",
-  "inputs": "f6c78637d6d9c6984aa6638a6e0e4ea0d30eca7b3a80fec114fc6e2354071786"
+  "inputs": "c8f324be13eb7c37047cdce97d7243990753bc7e5f3237fc82efcea0b91ff05e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",
  "verdict": "checked",
- "why": "The rules engine accepts the program and afar, afar244, gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run."
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run."
 }

@@ -11,13 +11,14 @@
   "failing": [
    "cce"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "afar",
    "afar244"
   ],
   "front_ends": {},
   "program_sha": "dada9e040e039bf7724ec60cab650764130c2452c0fc346e93f4d3b03040091c",
-  "inputs": "390d589c99b7918a9982910cef52493ebeed21cae11d0df55756722ecceb70eb"
+  "inputs": "9f90ff9ca869d7efb064d2b7bcd5e343d19cc938d4066490714cc61c75d5c2db"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

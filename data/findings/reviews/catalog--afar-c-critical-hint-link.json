@@ -11,7 +11,8 @@
   "failing": [
    "afar"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "cce19",
    "cce20",
    "cce21",
@@ -21,7 +22,7 @@
   ],
   "front_ends": {},
   "program_sha": "45f379ea2b0a21d6c9ad47d9a623825ba1ae6aba488ed4157a8b384f998353ce",
-  "inputs": "af35af7e49f435fbdecef01e53a9991eb3bbd12bccf356710431eb48be7e3d94"
+  "inputs": "26344e33873cc828f018f8cc5a5feecf9201f8c7404295470d94059d9d98bb99"
  },
  "advisory": "unconfirmed",
  "advisory_why": "",

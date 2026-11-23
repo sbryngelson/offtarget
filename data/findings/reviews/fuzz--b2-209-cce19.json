@@ -109,7 +109,7 @@
  "program_sha": "13257285b4d645dedeebdbe1c2b8b3f337d780a3753a970cc57ed2439f8cb104",
  "instructions": "v2",
  "verdict": "checked",
- "why": "The rules engine accepts the program and gcc, gcc_sm80 of another compiler family build and run it as expected; the expected result comes from another compiler family's run.",
+ "why": "The rules engine accepts the program and AMD's front end, of another compiler family, accepts it; the expected result comes from another compiler family's run.",
  "adjudicators": [
   {
    "run": "adj-20261112/batch-01",
@@ -148,7 +148,8 @@
   "failing": [
    "cce"
   ],
-  "witnesses": [
+  "witnesses": [],
+  "expected_from": [
    "gcc",
    "gcc_sm80"
   ],
@@ -159,7 +160,7 @@
    "nvhpc_f90": "reject"
   },
   "program_sha": "13257285b4d645dedeebdbe1c2b8b3f337d780a3753a970cc57ed2439f8cb104",
-  "inputs": "35ea806a1dc87507f1495ee6b556b3af986c6fb6a1e637dc9a8bdd05f4fd4c93"
+  "inputs": "d83ca6f0797e2fe8ee9e2d1de1bbac6d42683193bdba9899e686cf16c061448b"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."
