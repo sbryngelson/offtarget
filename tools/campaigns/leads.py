@@ -8,6 +8,7 @@ grouped by signature; known, related and new groups, each new one with the progr
     python3 -I tools/campaigns/leads.py recheck                       # the reduced programs vs the catalog
     python3 -I tools/campaigns/leads.py advance [--minutes M]         # a compute node: the confirmer on new ones
     python3 -I tools/campaigns/leads.py clusters                      # the confirmed drafts as candidate bugs
+    python3 -I tools/campaigns/leads.py deepen [--minutes M]          # a compute node: reduce stopped drafts further
 
 scan writes results/leads/<campaign>.jsonl (one group per line) and prints the counts and the new and
 mixed groups. plan appends a tools/reduce.py command per new or mixed group to results/leads/queue.jsonl;
@@ -214,6 +215,41 @@ def advance(minutes: float) -> int:
     return 0
 
 
+def _stopped(e: dict) -> bool:
+    """The reduction's last run stopped at its budget (its log's last "reduced:" line says so)."""
+    log = ROOT / e["argv"][-1] / "log.txt"
+    last = [x for x in log.read_text().splitlines() if "reduced:" in x][-1:] if log.is_file() else []
+    return bool(last) and "stopped at the budget" in last[0]
+
+
+def deepen(minutes: float, budget: int = 25, workers: int = 4) -> int:
+    """The confirmed drafts (confirm.json compiler_bug) whose reduction stopped at its budget,
+    resumed from their checkpoints with a larger budget and `workers` candidates at once (a compute
+    node: one per GPU), until `minutes` pass. A program that changed loses its confirm.json, so
+    advance confirms the smaller one."""
+    end = time.time() + minutes * 60
+    entries = [json.loads(x) for x in QUEUE.read_text().splitlines() if x.strip()] if QUEUE.is_file() else []
+    todo = [e for e in entries if _stopped(e) and (ROOT / e["argv"][-1] / "confirm.json").is_file()
+            and json.loads((ROOT / e["argv"][-1] / "confirm.json").read_text()).get("verdict") == "compiler_bug"]
+    print(f"{len(todo)} drafts to reduce further")
+    for e in todo:
+        left = (end - time.time()) / 60
+        if left < 5:
+            break
+        d = ROOT / e["argv"][-1]
+        prog = next((p for p in sorted(d.glob(e["name"] + ".*")) if p.suffix in (".f90", ".c", ".F90")), None)
+        before = prog.read_text() if prog else ""
+        argv = list(e["argv"])
+        i = argv.index("--budget-minutes")
+        argv[i + 1] = str(int(min(budget, left - 2)))
+        argv = argv[:-2] + ["--workers", str(workers)] + argv[-2:]
+        print(f"deepen {e['name']} ({argv[i + 1]} min, {workers} workers)", flush=True)
+        subprocess.run([sys.executable, "-I", str(ROOT / "tools" / "reduce.py"), *argv], cwd=ROOT)
+        if prog and prog.is_file() and prog.read_text() != before:
+            (d / "confirm.json").unlink(missing_ok=True)
+    return 0
+
+
 def clusters() -> int:
     """The confirmed drafts (confirm.json verdict compiler_bug) grouped into candidate bugs
     (offload.engine.leads.clusters): results/leads/clusters.json, one cluster per entry."""
@@ -255,6 +291,10 @@ def main(argv=None) -> int:
     rd.add_argument("--minutes", type=float, default=25)
     sub.add_parser("recheck")
     sub.add_parser("clusters")
+    dp = sub.add_parser("deepen")
+    dp.add_argument("--minutes", type=float, default=20)
+    dp.add_argument("--budget", type=int, default=25)
+    dp.add_argument("--workers", type=int, default=4)
     ad = sub.add_parser("advance")
     ad.add_argument("--minutes", type=float, default=10)
     a = ap.parse_args(argv)
@@ -262,6 +302,8 @@ def main(argv=None) -> int:
         return advance(a.minutes)
     if a.cmd == "clusters":
         return clusters()
+    if a.cmd == "deepen":
+        return deepen(a.minutes, a.budget, a.workers)
     if a.cmd == "reduce":
         return reduce(a.minutes)
     if a.cmd == "recheck":

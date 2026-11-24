@@ -371,3 +371,40 @@ def test_drafts_with_one_signature_form_one_cluster_across_releases_of_a_family(
          dict(entry(4, "ice", ICE, SIMD_IF, tcs=("gcc",)), reduced=SIMD_IF, row={"toolchain": "gcc", "reason": ICE})]
     got = sorted(sorted(e["name"] for e in c) for c in LD.clusters(d))
     assert got == [["lead-r-1-cce19", "lead-r-2-cce21"], ["lead-r-3-cce20"], ["lead-r-4-gcc"]]
+
+
+def test_deepen_resumes_confirmed_drafts_that_stopped_at_their_budget(tmp_path, monkeypatch):
+    import importlib.util
+    import subprocess
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool7", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    monkeypatch.setattr(T, "QUEUE", tmp_path / "queue.jsonl")
+
+    def red(name, verdict, stopped):
+        d = tmp_path / "red" / name
+        d.mkdir(parents=True)
+        (d / "log.txt").write_text("[1] reduced: 9 -> 9 lines, 0 steps" + ("; stopped at the budget: rerun" if stopped else "") + "\n")
+        (d / "confirm.json").write_text(json.dumps({"verdict": verdict}) + "\n")
+        (d / f"{name}.f90").write_text("program p\nend program p\n")
+        return {"name": name, "argv": ["--budget-minutes", "8", "--name", name, "--out", f"red/{name}"], "text": "x"}
+    es = [red("a", "compiler_bug", True), red("b", "compiler_bug", False), red("c", "needs_human", True)]
+    (tmp_path / "queue.jsonl").write_text("".join(json.dumps(e) + "\n" for e in es))
+    calls = []
+
+    def run(argv, **k):
+        calls.append(argv)
+        (tmp_path / "red" / "a" / "log.txt").write_text("[1] reduced: 9 -> 9 lines\n[2] reduced: 9 -> 5 lines, 4 steps\n")
+        (tmp_path / "red" / "a" / "a.f90").write_text("program p\n  x = 1\nend program p\n")
+        return SimpleNamespace(returncode=0)
+    monkeypatch.setattr(subprocess, "run", run)
+    T.deepen(30, budget=25, workers=4)
+    assert len(calls) == 1 and "red/a" in calls[0]
+    argv = calls[0]
+    assert argv[argv.index("--budget-minutes") + 1] == "25" and argv[argv.index("--workers") + 1] == "4"
+    # the program changed: its confirmation is redone by advance
+    assert not (tmp_path / "red" / "a" / "confirm.json").exists() and (tmp_path / "red" / "b" / "confirm.json").exists()
+    T.deepen(30, budget=25, workers=4)
+    assert len(calls) == 1                    # no longer stopped at the budget
