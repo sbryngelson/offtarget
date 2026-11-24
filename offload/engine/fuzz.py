@@ -76,9 +76,12 @@ from offload.engine.fuzz_base import (ALL_GROUPS, BASE_GROUPS, TYPES, BaseMixin,
 #   sanitizer, which must print the model's checksum (check_defined_c): a
 #   translation that changed the program's value never reaches a compiler.
 # fuzz-acc1 (OpenACC): offload.engine.fuzz_acc; no base-language groups.
+# fuzz-mfc1 (OpenMP) and fuzz-mfcacc1 (OpenACC): MFC's offload patterns, offload.engine.fuzz_mfc;
+# their elided sequential run must print the model's checksum (check_defined).
 GEN_VERSIONS = ("fuzz-1", "fuzz-2", "fuzz-3", "fuzz-4", "fuzz-4s50",
-                "fuzz-5", "fuzz-6", "fuzz-6c", "fuzz-acc1")
-ACC_VERSIONS = ("fuzz-acc1",)
+                "fuzz-5", "fuzz-6", "fuzz-6c", "fuzz-acc1", "fuzz-mfc1", "fuzz-mfcacc1")
+ACC_VERSIONS = ("fuzz-acc1", "fuzz-mfcacc1")
+MFC_VERSIONS = ("fuzz-mfc1", "fuzz-mfcacc1")
 # the Fortran version a C version translates
 _C_OF = {"fuzz-6c": "fuzz-6"}
 UNTRANSLATED = "// untranslated: "
@@ -2257,6 +2260,11 @@ def generate(seed: int, gen_version: str = GEN_VERSION,
     """The program of `seed` (deterministic for one generator version and
     set of base-language groups, offload.engine.fuzz_base; groups need
     fuzz-3). A C version is the program of its Fortran version, translated."""
+    if gen_version in MFC_VERSIONS:
+        if base:
+            raise ValueError(f"{gen_version} has no base-language groups")
+        from offload.engine import fuzz_mfc
+        return fuzz_mfc.generate(seed, gen_version)
     if gen_version in ACC_VERSIONS:
         if base:
             raise ValueError(f"{gen_version} has no base-language groups")
@@ -2291,7 +2299,11 @@ def to_c(source: str, gen_version: str) -> str:
 
 
 def is_acc(source: str) -> bool:
-    return re.search(r"^! generator: fuzz-acc\d", source, re.M) is not None
+    return re.search(r"^! generator: fuzz-(?:mfc)?acc\d", source, re.M) is not None
+
+
+def is_mfc(source: str) -> bool:
+    return re.search(r"^! generator: fuzz-mfc(?:acc)?\d", source, re.M) is not None
 
 
 def is_c(source: str) -> bool:
@@ -2487,9 +2499,19 @@ class CheckerError(Exception):
     """A checker could not be run (not a verdict on the program)."""
 
 
+# AFAR flang refusals the specification contradicts (each with the passage that allows the form):
+# such a refusal is no evidence that a program is illegal, so it does not keep it from the compilers
+FRONTEND_LIMITS = (
+    (re.compile(r"At most one DEFAULTMAP clause can appear"),
+     "OpenMP 5.2 §5.8.7 p.162: a given variable-category may be specified in at most one defaultmap clause"),
+)
+
+
 def check_flang(source: str) -> str | None:
     """None, or AFAR flang's frontend diagnostic (parse + semantic checks
-    at -fopenmp-version=52, the offload.engine.flang_oracle invocation)."""
+    at -fopenmp-version=52, the offload.engine.flang_oracle invocation); a
+    refusal whose every error is one the specification contradicts
+    (FRONTEND_LIMITS) is None."""
     from offload.engine.flang_oracle import MODULE_FLAGS, FlangError, _dump
     try:
         _dump(source, VERSION, sema=True, extra_flags=MODULE_FLAGS)
@@ -2499,7 +2521,10 @@ def check_flang(source: str) -> str | None:
         errs = [ln for ln in e.message.splitlines()
                 if re.search(r":\d+:\d+: error:", ln)] or \
             [ln for ln in e.message.splitlines() if "error:" in ln]
-        return f"{e.stage}: " + (errs[0] if errs else
+        real = [ln for ln in errs if not any(p.search(ln) for p, _ in FRONTEND_LIMITS)]
+        if errs and not real:
+            return None
+        return f"{e.stage}: " + (real[0] if real else
                                  e.message.splitlines()[0])
     return None
 
@@ -2614,7 +2639,7 @@ def check(source: str, defined: bool | None = None,
             ("rules", check_rules), ("gfortran", check_gfortran),
             ("flang", check_flang)]
     if defined is None:
-        defined = is_fuzz3(source)
+        defined = is_fuzz3(source) or is_mfc(source)
     if defined:
         stages.append(("defined",
                        lambda src: check_defined(src, expected)))
