@@ -9,6 +9,7 @@ grouped by signature; known, related and new groups, each new one with the progr
     python3 -I tools/campaigns/leads.py advance [--minutes M]         # a compute node: the confirmer on new ones
     python3 -I tools/campaigns/leads.py clusters                      # the confirmed drafts as candidate bugs
     python3 -I tools/campaigns/leads.py deepen [--minutes M]          # a compute node: reduce stopped drafts further
+    python3 -I tools/campaigns/leads.py write | cases | finish        # the drafts as findings (compute node)
 
 Outputs are under results/leads/ (docs/tooling/contributing.md, "Leads of a run"): the groups of a
 scan, queue.jsonl of plan, rechecked.jsonl of recheck, clusters.json of clusters."""
@@ -277,6 +278,159 @@ def clusters() -> int:
     return 0
 
 
+LEDGER = OUT / "published.json"
+
+
+def _ledger() -> dict:
+    return json.loads(LEDGER.read_text()) if LEDGER.is_file() else {}
+
+
+def _words(rep: dict, link: bool) -> dict:
+    """The generated words of a cluster's representative (offload.engine.autodraft)."""
+    from offload.engine import autodraft as AD
+    from offload.engine.confirm import findings as F
+    from offload.engine.toolchains import TOOLCHAINS
+    d = ROOT / rep["argv"][-1]
+    tc = rep["target"].split("/")[0]
+    t = TOOLCHAINS[tc]
+    report = (d / "report.md").read_text() if (d / "report.md").is_file() else ""
+    keys = AD.control_constructs(report)
+    if not keys:
+        prog = next(p for p in sorted(d.glob(rep["name"] + ".*")) if p.suffix in (".f90", ".c"))
+        keys = sorted(F._key_constructs(prog.read_text()))[:3]
+    lang, model, outcome = rep.get("lang", "f90"), "acc" if rep.get("model") == "acc" else "omp", rep["outcome"]
+    res = json.loads((d / "confirm.json").read_text())
+    return {"keys": keys, "name": AD.name(t.family.id if t.family.id != "cce" else tc, outcome, keys),
+            "title": AD.title(t.label, outcome, lang, model, keys, link), "expected": AD.expected_text(res),
+            "rule": AD.rule(keys, model, outcome), "legality": AD.legality_text(res),
+            "site_title": AD.site_title(t.family.name, outcome, keys),
+            "site_summary": AD.site_summary(t.label, outcome, keys, lang, model, link)}
+
+
+def _new_finding(rep: dict, name: str, case: str | None) -> int:
+    d = ROOT / rep["argv"][-1]
+    prog = next(p for p in sorted(d.glob(rep["name"] + ".*")) if p.suffix in (".f90", ".c"))
+    argv = [sys.executable, "-I", str(ROOT / "tools" / "new_finding.py"), str(prog), "--campaign", "leads",
+            "--rows", str(d / "rows.jsonl"), "--name", name, "--dir", "fuzz", "--write"]
+    ctl = sorted((d / "controls").glob("*")) if (d / "controls").is_dir() else []
+    if ctl:
+        argv += ["--control", *map(str, ctl)]
+    if case:
+        argv += ["--case", case]
+    return subprocess.run(argv, cwd=ROOT).returncode
+
+
+def _fill(entry: dict, rep: dict, keep_expected: bool) -> None:
+    from offload.engine import autodraft as AD
+    w = _words(rep, entry.get("link", False))
+    AD.fill(ROOT / "data" / "findings" / entry["file"], title=w["title"],
+            expected=None if keep_expected else w["expected"], rule=w["rule"], legality=w["legality"],
+            site_title=w["site_title"], site_summary=w["site_summary"])
+
+
+def write(limit: int = 0) -> int:
+    """Each cluster's representative not yet written becomes a finding (tools/new_finding.py --write
+    from its reduction's rows and controls) with its generated words, and a site check case
+    (tools/derive/finding_matrix.py cases); the ledger is results/leads/published.json."""
+    led = _ledger()
+    queue = {json.loads(x)["name"]: json.loads(x) for x in QUEUE.read_text().splitlines() if x.strip()}
+    done = 0
+    for c in json.loads((OUT / "clusters.json").read_text()):
+        rep = queue.get(c["representative"])
+        if rep is None or rep["name"] in led or (limit and done >= limit):
+            continue
+        row = (_result(rep) or (None, {}))[1]
+        link = "undefined symbol" in (row.get("reason") or "")
+        w = _words(rep, link)
+        name, n = w["name"], 2
+        while (ROOT / "data" / "findings" / "fuzz" / f"{name}.{'c' if rep.get('lang') == 'c' else 'f90'}").exists():
+            name, n = f"{w['name']}-{n}", n + 1
+        if _new_finding(rep, name, None) != 0:
+            print(f"{rep['name']}: new_finding failed"); continue
+        ext = "c" if rep.get("lang") == "c" else "f90"
+        entry = {"file": f"fuzz/{name}.{ext}", "case": f"site-fuzz--{name}", "link": link, "members": c["members"]}
+        _fill(entry, rep, keep_expected=False)
+        led[rep["name"]] = entry
+        LEDGER.write_text(json.dumps(led, indent=1) + "\n")
+        print(f"wrote {entry['file']}: {w['title']}")
+        done += 1
+    for entry in led.values():
+        subprocess.run([sys.executable, "-I", str(ROOT / "tools" / "derive" / "finding_matrix.py"), "cases",
+                        "--control", entry["file"]], cwd=ROOT, capture_output=True)
+    return 0
+
+
+def cases() -> int:
+    """The check cases of the written findings that are not finished (for run_leads_gate.sh)."""
+    print(",".join(e["case"] for e in _ledger().values() if not e.get("finished")))
+    return 0
+
+
+def _gated(case: str) -> bool:
+    import glob
+    envs = set()
+    for f in glob.glob(str(ROOT / "data" / "vendor" / "checks" / "results" / "site-tuolumne*.jsonl")):
+        for ln in open(f):
+            if f'"{case}"' in ln:
+                envs.add(json.loads(ln).get("env"))
+    return {"a", "b", "c", "d"} <= envs
+
+
+def _pack(case: str) -> None:
+    import glob
+    import tempfile
+    from offload.engine.site import matrix as M
+    tmp = Path(tempfile.mkdtemp())
+    files = []
+    for f in sorted(glob.glob(str(ROOT / "data" / "vendor" / "checks" / "results" / "site-tuolumne*.jsonl"))):
+        rows = [ln for ln in open(f) if ln.strip() and json.loads(ln).get("case") == case]
+        if rows:
+            (tmp / Path(f).name).write_text("".join(rows))
+            files.append(tmp / Path(f).name)
+    M.pack(files, ROOT / "data" / "vendor" / "checks" / "results-site")
+
+
+def _unwrite(rel: str) -> None:
+    """Remove a written finding, its controls and its index entry (new_finding does not overwrite)."""
+    idx = ROOT / "data" / "findings" / "index.yaml"
+    s = idx.read_text()
+    a = s.find(f"  - file: {rel}\n")
+    if a != -1:
+        b = s.find("\n  - file:", a + 10)
+        idx.write_text(s[:a] + s[b + 1:] if b != -1 else s[:a])
+    f = ROOT / "data" / "findings" / rel
+    for ln in (f.read_text().splitlines() if f.is_file() else []):
+        m = re.match(r"^\S+ control: (fuzz/controls/\S+)", ln)
+        if m:
+            (ROOT / "data" / "findings" / m.group(1)).unlink(missing_ok=True)
+    f.unlink(missing_ok=True)
+
+
+def finish() -> int:
+    """Each written finding whose case has rows in all four gate environments: its rows packed into
+    the committed site rows, the finding drafted again from them (--case), its words filled again
+    (the expected line from a passing row) and its legality record computed; then the site inputs."""
+    led = _ledger()
+    queue = {json.loads(x)["name"]: json.loads(x) for x in QUEUE.read_text().splitlines() if x.strip()}
+    for name, e in led.items():
+        if e.get("finished") or not _gated(e["case"]):
+            continue
+        rep = queue[name]
+        _pack(e["case"])
+        _unwrite(e["file"])
+        if _new_finding(rep, Path(e["file"]).stem, e["case"]) != 0:
+            print(f"{e['file']}: new_finding --case failed"); continue
+        text = (ROOT / "data" / "findings" / e["file"]).read_text()
+        _fill(e, rep, keep_expected="- expected: TODO(human)" not in text)
+        fid = e["file"].rsplit(".", 1)[0]
+        subprocess.run([sys.executable, "-I", str(ROOT / "tools" / "review" / "review.py"), "mechanical", fid], cwd=ROOT)
+        e["finished"] = True
+        LEDGER.write_text(json.dumps(led, indent=1) + "\n")
+        print(f"finished {e['file']}")
+    subprocess.run([sys.executable, "-I", str(ROOT / "tools" / "site" / "site_inputs.py")], cwd=ROOT)
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -288,6 +442,10 @@ def main(argv=None) -> int:
     rd.add_argument("--minutes", type=float, default=25)
     sub.add_parser("recheck")
     sub.add_parser("clusters")
+    wr = sub.add_parser("write")
+    wr.add_argument("--limit", type=int, default=0)
+    sub.add_parser("cases")
+    sub.add_parser("finish")
     dp = sub.add_parser("deepen")
     dp.add_argument("--minutes", type=float, default=20)
     dp.add_argument("--budget", type=int, default=25)
@@ -299,6 +457,12 @@ def main(argv=None) -> int:
         return advance(a.minutes)
     if a.cmd == "clusters":
         return clusters()
+    if a.cmd == "write":
+        return write(a.limit)
+    if a.cmd == "cases":
+        return cases()
+    if a.cmd == "finish":
+        return finish()
     if a.cmd == "deepen":
         return deepen(a.minutes, a.budget, a.workers)
     if a.cmd == "reduce":

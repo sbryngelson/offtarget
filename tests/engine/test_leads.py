@@ -408,3 +408,21 @@ def test_deepen_resumes_confirmed_drafts_that_stopped_at_their_budget(tmp_path, 
     assert not (tmp_path / "red" / "a" / "confirm.json").exists() and (tmp_path / "red" / "b" / "confirm.json").exists()
     T.deepen(30, budget=25, workers=4)
     assert len(calls) == 1                    # no longer stopped at the budget
+
+
+def test_unwrite_removes_a_finding_its_controls_and_its_index_entry(tmp_path, monkeypatch):
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool8", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    f = tmp_path / "data" / "findings"
+    (f / "fuzz" / "controls").mkdir(parents=True)
+    (f / "index.yaml").write_text("findings:\n  - file: a.f90\n    lang: f90\n  - file: fuzz/x.f90\n    lang: f90\n"
+                                  "  - file: b.f90\n    lang: f90\n")
+    (f / "fuzz" / "x.f90").write_text("! site:\n! control: fuzz/controls/x-ctl.f90 one change\n! end site\n")
+    (f / "fuzz" / "controls" / "x-ctl.f90").write_text("program p\nend program p\n")
+    T._unwrite("fuzz/x.f90")
+    assert (f / "index.yaml").read_text() == "findings:\n  - file: a.f90\n    lang: f90\n  - file: b.f90\n    lang: f90\n"
+    assert not (f / "fuzz" / "x.f90").exists() and not (f / "fuzz" / "controls" / "x-ctl.f90").exists()
