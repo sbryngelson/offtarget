@@ -3147,3 +3147,32 @@ def test_a_recorded_refusal_joined_by_bars_signs_like_its_compile_log():
     joined = " | ".join(x.strip() for x in log.splitlines())
     rec = {"toolchain": "cce19", "cls": "compile_reject", "reason": "diagnostic: " + joined}
     assert RD.signature(rec) == RD.signature(dict(rec, reason=log))
+
+
+def test_a_reduction_stopped_at_its_budget_still_records_its_final_rows(tmp_path, monkeypatch):
+    """The final rows (the reduced program on its targets) are the reduction's output, not reduction
+    work: the budget does not stop them, so a stopped reduction can be drafted (tools/new_finding.py)."""
+    import importlib.util
+    import json as _json
+    spec = importlib.util.spec_from_file_location("reduce_tool", ROOT / "tools" / "reduce.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+
+    class Fake:
+        def __init__(self, *a, **k):
+            pass
+
+        def check(self, targets):
+            pass
+
+        def run(self, text, lang, target, program_id):
+            return RD.fake_row("ice", text, target, msg="ice: internal compiler error: boom", program_id=program_id)
+    monkeypatch.setattr(RD, "HarnessRunner", Fake)
+    p = tmp_path / "p.f90"
+    p.write_text("program p\n  implicit none\n  integer :: a(8), i\n  !$omp target map(from: a)\n  do i = 1, 8\n"
+                 "    a(i) = i\n  end do\n  !$omp end target\n  print *, a(1)\nend program p\n")
+    out = tmp_path / "out"
+    T.main(["--program", str(p), "--target", "afar/0", "--budget-candidates", "2", "--out", str(out),
+            "--no-controls", "--name", "p"])
+    rows = [_json.loads(x) for x in (out / "rows.jsonl").read_text().splitlines() if x.strip()]
+    assert rows and rows[0]["toolchain"] == "afar"

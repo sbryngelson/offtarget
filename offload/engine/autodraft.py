@@ -50,7 +50,13 @@ def control_constructs(report: str) -> list[str]:
 
 def _phrase(key: str) -> str:
     kind, _, name = key.partition(":")
-    return f"a {name} clause" if kind == "clause" else f"a {name} construct"
+    art = "an" if name[:1] in "aeio" else "a"
+    return f"{art} {name} clause" if kind == "clause" else f"{art} {name} construct"
+
+
+def model_of(text: str) -> str:
+    """acc when the program has an OpenACC directive (!$acc, #pragma acc), else omp."""
+    return "acc" if re.search(r"^\s*(?:!\$acc|#\s*pragma\s+acc)\b", text, re.M | re.I) else "omp"
 
 
 def _join(items: list[str]) -> str:
@@ -59,7 +65,8 @@ def _join(items: list[str]) -> str:
 
 def title(label: str, outcome: str, lang: str, model: str, keys: list[str], link: bool = False) -> str:
     verb = "fails to link" if outcome == "rejected" and link else VERB.get(outcome, "fails")
-    head = f"{label} {verb} on a {LANG.get(lang, lang)} {MODEL.get(model, model)} program"
+    what = f"a {LANG.get(lang, lang)} {MODEL.get(model, model)} program"
+    head = f"{label} refuses {what}" if outcome == "rejected" and not link else f"{label} {verb} on {what}"
     return head + (f" with {_join([_phrase(k) for k in keys])}" if keys else "")
 
 

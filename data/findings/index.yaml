@@ -2574,3 +2574,148 @@ findings:
     modes: [unified, copy]
     arch: [gfx942]
     programs: ["def1:7003"]
+  - file: fuzz/cce21-defaultmap-wrong.f90
+    toolchains: [cce21, cce21_4]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:654', 'g1x0-o3:585', 'g1x0-o3:1784']
+  - file: fuzz/cce21-declare-target-parallel-run-error.f90
+    toolchains: [cce21, cce21_4]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:1075', 'g1x0-o3:1034']
+  - file: fuzz/cce19-schedule-distribute-for-rejected.c
+    toolchains: [cce19]
+    lang: c
+    outcome: rejected
+    message: 'lld: error: undefined symbol: __kmpc_dispatch_deinit'
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ['c6c1:1293']
+  - file: fuzz/cce19-masked-target-parallel-rejected.c
+    toolchains: [cce19, cce20, cce21, cce21_4]
+    lang: c
+    outcome: rejected
+    message: 'lld: error: undefined symbol: __kmpc_masked'
+    modes: [unified, copy]
+    arch: [gfx942, gfx90a]
+    programs: ['c6c1:846']
+  - file: fuzz/gcc-defaultmap-reduction-parallel-do-rejected.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: rejected
+    message: 'ld: error: undefined symbol: __atomic_fetch_or_1'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['def1:1336']
+  - file: fuzz/gcc-teams-loop-thread-limit-abort.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: crash
+    message: 'Memory access fault by GPU node-4 (Agent handle: 0x5a5910) on address 0x800000000. Reason: Write acc'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['def1:16148']
+  - file: fuzz/gcc-loop-wrong.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['def1:19377']
+  - file: fuzz/cce19-parallel-loop-if-default-rejected.f90
+    toolchains: [cce19, cce20, cce21, cce21_4]
+    lang: f90
+    outcome: rejected
+    message: 'ftn-1510 ftn: ERROR FUZZ_PROG, File = site-fuzz--cce19-parallel-loop-if-default-rejected.f90, Line ='
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:1021']
+  - file: fuzz/cce19-declare-target-abort.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: crash
+    message: 'Memory access fault by GPU node-7 (Agent handle: 0x4ca220) on address 0x48e000. Reason: Unknown.'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:1034']
+  - file: fuzz/cce21-if-declare-target-parallel-wrong.f90
+    toolchains: [cce21, cce21_4]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:1250']
+  - file: fuzz/gcc-target-teams-loop-thread-limit-abort.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: crash
+    message: 'Memory access fault by GPU node-7 (Agent handle: 0x5a5e60) on address 0x800000000. Reason: Unknown.'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:1522']
+  - file: fuzz/cce21-defaultmap-device-dist-schedule-abort.f90
+    toolchains: [cce21, cce21_4]
+    lang: f90
+    outcome: crash
+    message: RUN_FAIL
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:1861']
+  - file: fuzz/gcc-target-parallel-do-map-nowait-abort.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: crash
+    message: 'Memory access fault by GPU node-4 (Agent handle: 0x59bb10) on address 0xfffff000. Reason: Unknown.'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:1867']
+  - file: fuzz/cce20-if-num-threads-reduction-wrong.f90
+    toolchains: [cce20]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:298']
+  - file: fuzz/cce19-collapse-defaultmap-device-run-error.f90
+    toolchains: [cce19, cce20]
+    lang: f90
+    outcome: wrong_answer
+    modes: [unified, copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:511']
+  - file: fuzz/gcc-do-reduction-rejected.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: rejected
+    message: 'ld: error: undefined symbol: __atomic_fetch_or_2'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:589']
+  - file: fuzz/gcc-teams-distribute-simd-simd-wrong.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: wrong_answer
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:651']
+  - file: fuzz/gcc-loop-reduction-parallel-rejected.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: rejected
+    message: 'ld: error: undefined symbol: __atomic_fetch_xor_2'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:955']
+  - file: fuzz/gcc-target-teams-reduction-rejected.f90
+    toolchains: [gcc]
+    lang: f90
+    outcome: rejected
+    message: 'ld: error: undefined symbol: __atomic_fetch_and_2'
+    modes: [copy]
+    arch: [gfx942]
+    programs: ['g1x0-o3:98']

@@ -2121,3 +2121,15 @@ def test_a_proposal_goes_to_proposed_with_its_rows_and_no_index_entry(tmp_path):
     assert (fd / "proposed" / "x-rejected.rows.jsonl").read_text() == rows.read_text()
     assert (fd / "proposed" / "controls" / "x-ok.c").is_file()
     assert (fd / "index.yaml").read_text() == "findings: []\n" and len(done) == 3
+
+
+def test_a_controls_passing_site_row_is_not_a_passing_row_of_the_program(tree, monkeypatch):
+    """A check case's control rows pass where the program may not: only its repro rows say how the
+    program itself runs (a compiler that refuses the program and runs the control is no other family
+    that runs the file correctly)."""
+    def site_obs(case, rows):
+        return [R.Obs("gcc", "mi300a-c", e, "", True, False, "RUN_OK rc=0\ntot= 16 check=pass", "site-rows", "control",
+                      case["id"], "", "ctl-one.c", "correct") for e in "abcd"]
+    monkeypatch.setattr(R, "site_obs", site_obs)
+    d = draft(tree, case={"id": "site-demo"})
+    assert "GCC" not in (H.parse(d.text).get("other") or ""), H.parse(d.text).get("other")

@@ -3727,12 +3727,575 @@
   "lang": "f90",
   "model": "omp",
   "affected": [
-   "cce21"
+   "cce21",
+   "cce21_4"
   ],
   "repro": "../../findings/fuzz/cce21-target-teams-if-pointer-write-lost.f90",
   "derived": true,
   "control": "../../findings/fuzz/controls/cce21-target-teams-if-pointer-write-lost-no-if-control.f90",
+  "control_what": "one change from the finding; correct on cce21, cce21_4",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce21-defaultmap-wrong",
+  "finding": "fuzz/cce21-defaultmap-wrong.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/fuzz/cce21-defaultmap-wrong.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-1784-cce21-delete-clause-defaultmap-to-scalar-control.f90",
   "control_what": "one change from the finding; correct on cce21",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce21-declare-target-parallel-run-error",
+  "finding": "fuzz/cce21-declare-target-parallel-run-error.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/fuzz/cce21-declare-target-parallel-run-error.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce19-kernels-loop-collapse-rejected",
+  "finding": "fuzz/cce19-kernels-loop-collapse-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19"
+  ],
+  "repro": "../../findings/fuzz/cce19-kernels-loop-collapse-rejected.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-acc1-738-cce19-delete-clause-collapse-2-control.f90",
+  "control_what": "one change from the finding; correct on cce19",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce19-schedule-distribute-for-rejected",
+  "finding": "fuzz/cce19-schedule-distribute-for-rejected.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "cce19"
+  ],
+  "repro": "../../findings/fuzz/cce19-schedule-distribute-for-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce19-masked-target-parallel-rejected",
+  "finding": "fuzz/cce19-masked-target-parallel-rejected.c",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "c",
+  "model": "omp",
+  "affected": [
+   "cce19"
+  ],
+  "repro": "../../findings/fuzz/cce19-masked-target-parallel-rejected.c",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-defaultmap-reduction-parallel-do-rejected",
+  "finding": "fuzz/gcc-defaultmap-reduction-parallel-do-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-defaultmap-reduction-parallel-do-rejected.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-teams-loop-thread-limit-abort",
+  "finding": "fuzz/gcc-teams-loop-thread-limit-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-teams-loop-thread-limit-abort.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-def1-16148-gcc-delete-clause-thread-limit-1-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-loop-wrong",
+  "finding": "fuzz/gcc-loop-wrong.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-loop-wrong.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-def1-19377-gcc-unwrap-loop-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce19-parallel-loop-if-default-rejected",
+  "finding": "fuzz/cce19-parallel-loop-if-default-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19"
+  ],
+  "repro": "../../findings/fuzz/cce19-parallel-loop-if-default-rejected.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-1021-cce19-delete-clause-default-none-control.f90",
+  "control_what": "one change from the finding; correct on cce19",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce19-declare-target-abort",
+  "finding": "fuzz/cce19-declare-target-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19"
+  ],
+  "repro": "../../findings/fuzz/cce19-declare-target-abort.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce21-if-declare-target-parallel-wrong",
+  "finding": "fuzz/cce21-if-declare-target-parallel-wrong.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/fuzz/cce21-if-declare-target-parallel-wrong.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-target-teams-loop-thread-limit-abort",
+  "finding": "fuzz/gcc-target-teams-loop-thread-limit-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-target-teams-loop-thread-limit-abort.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-1522-gcc-delete-clause-thread-limit-1-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce21-defaultmap-device-dist-schedule-abort",
+  "finding": "fuzz/cce21-defaultmap-device-dist-schedule-abort.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce21"
+  ],
+  "repro": "../../findings/fuzz/cce21-defaultmap-device-dist-schedule-abort.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-target-parallel-do-map-nowait-abort",
+  "finding": "fuzz/gcc-target-parallel-do-map-nowait-abort.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-target-parallel-do-map-nowait-abort.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-1867-gcc-delete-clause-map-to-dr-a-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce20-if-num-threads-reduction-wrong",
+  "finding": "fuzz/cce20-if-num-threads-reduction-wrong.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce20"
+  ],
+  "repro": "../../findings/fuzz/cce20-if-num-threads-reduction-wrong.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--cce19-collapse-defaultmap-device-run-error",
+  "finding": "fuzz/cce19-collapse-defaultmap-device-run-error.f90",
+  "symptom": "crash:",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "cce19"
+  ],
+  "repro": "../../findings/fuzz/cce19-collapse-defaultmap-device-run-error.f90",
+  "derived": true,
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-do-reduction-rejected",
+  "finding": "fuzz/gcc-do-reduction-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-do-reduction-rejected.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-589-gcc-delete-clause-reduction-ior-r1a-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-teams-distribute-simd-simd-wrong",
+  "finding": "fuzz/gcc-teams-distribute-simd-simd-wrong.f90",
+  "symptom": "wrong",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-teams-distribute-simd-simd-wrong.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-651-gcc-shorten-teams-distribute-simd-to-teams-d-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-loop-reduction-parallel-rejected",
+  "finding": "fuzz/gcc-loop-reduction-parallel-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-loop-reduction-parallel-rejected.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-955-gcc-delete-clause-reduction-ieor-r1a-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
+  "arch": [
+   "gfx942",
+   "gfx90a",
+   "sm_80"
+  ],
+  "vendor": [
+   "amd",
+   "hpe",
+   "nvidia"
+  ],
+  "modes": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "site-fuzz--gcc-target-teams-reduction-rejected",
+  "finding": "fuzz/gcc-target-teams-reduction-rejected.f90",
+  "symptom": "compile:.",
+  "expect": "ok",
+  "lang": "f90",
+  "model": "omp",
+  "affected": [
+   "gcc"
+  ],
+  "repro": "../../findings/fuzz/gcc-target-teams-reduction-rejected.f90",
+  "derived": true,
+  "control": "../../findings/fuzz/controls/lead-g1x0-o3-98-gcc-delete-clause-reduction-iand-r2a-control.f90",
+  "control_what": "one change from the finding; correct on gcc",
   "arch": [
    "gfx942",
    "gfx90a",

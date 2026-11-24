@@ -161,9 +161,11 @@ def main(argv=None) -> int:
     dest.write_text(RD.reduction_header(name, job.origin, job.targets, res, out, job.lang, witness_name) + final_text)
     log(f"wrote {dest}")
 
-    # the final rows: the reduced program on every target and verify target, by its own id
+    # the final rows: the reduced program on every target and verify target, by its own id. They
+    # are the reduction's output, not reduction work: the budget no longer limits them
     rows_path = out / "rows.jsonl"
     judge.rows_path = rows_path
+    judge.budget = RD.Budget(None, None)
     final_rows, verdicts = [], []
     for t in job.targets + verify:
         try:

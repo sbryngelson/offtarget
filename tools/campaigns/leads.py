@@ -220,15 +220,20 @@ def _stopped(e: dict) -> bool:
     return bool(last) and "stopped at the budget" in last[0]
 
 
-def deepen(minutes: float, budget: int = 25, workers: int = 4) -> int:
+def deepen(minutes: float, budget: int = 25, workers: int = 4, rows_only: bool = False) -> int:
     """The confirmed drafts (confirm.json compiler_bug) whose reduction stopped at its budget,
     resumed from their checkpoints with a larger budget and `workers` candidates at once (a compute
     node: one per GPU), until `minutes` pass. A program that changed loses its confirm.json, so
     advance confirms the smaller one."""
     end = time.time() + minutes * 60
     entries = [json.loads(x) for x in QUEUE.read_text().splitlines() if x.strip()] if QUEUE.is_file() else []
-    todo = [e for e in entries if _stopped(e) and (ROOT / e["argv"][-1] / "confirm.json").is_file()
-            and json.loads((ROOT / e["argv"][-1] / "confirm.json").read_text()).get("verdict") == "compiler_bug"]
+    if rows_only:
+        # a finished or stopped reduction with no final rows: resumed briefly, its final rows are recorded
+        todo = [e for e in entries if not (_result(e) or (None, {}))[1]
+                and (ROOT / e["argv"][-1] / "report.md").is_file()]
+    else:
+        todo = [e for e in entries if _stopped(e) and (ROOT / e["argv"][-1] / "confirm.json").is_file()
+                and json.loads((ROOT / e["argv"][-1] / "confirm.json").read_text()).get("verdict") == "compiler_bug"]
     print(f"{len(todo)} drafts to reduce further")
     for e in todo:
         left = (end - time.time()) / 60
@@ -298,7 +303,8 @@ def _words(rep: dict, link: bool) -> dict:
     if not keys:
         prog = next(p for p in sorted(d.glob(rep["name"] + ".*")) if p.suffix in (".f90", ".c"))
         keys = sorted(F._key_constructs(prog.read_text()))[:3]
-    lang, model, outcome = rep.get("lang", "f90"), "acc" if rep.get("model") == "acc" else "omp", rep["outcome"]
+    prog_text = next(p for p in sorted(d.glob(rep["name"] + ".*")) if p.suffix in (".f90", ".c")).read_text()
+    lang, model, outcome = rep.get("lang", "f90"), AD.model_of(prog_text), rep["outcome"]
     res = json.loads((d / "confirm.json").read_text())
     return {"keys": keys, "name": AD.name(t.family.id if t.family.id != "cce" else tc, outcome, keys),
             "title": AD.title(t.label, outcome, lang, model, keys, link), "expected": AD.expected_text(res),
@@ -307,7 +313,7 @@ def _words(rep: dict, link: bool) -> dict:
             "site_summary": AD.site_summary(t.label, outcome, keys, lang, model, link)}
 
 
-def _new_finding(rep: dict, name: str, case: str | None) -> int:
+def _new_finding(rep: dict, name: str, case: str | None, programs: list | None = None) -> int:
     d = ROOT / rep["argv"][-1]
     prog = next(p for p in sorted(d.glob(rep["name"] + ".*")) if p.suffix in (".f90", ".c"))
     argv = [sys.executable, "-I", str(ROOT / "tools" / "new_finding.py"), str(prog), "--campaign", "leads",
@@ -317,6 +323,8 @@ def _new_finding(rep: dict, name: str, case: str | None) -> int:
         argv += ["--control", *map(str, ctl)]
     if case:
         argv += ["--case", case]
+    if programs:
+        argv += ["--programs", *programs]       # the campaign programs it stands for (run:seed)
     return subprocess.run(argv, cwd=ROOT).returncode
 
 
@@ -339,16 +347,21 @@ def write(limit: int = 0) -> int:
         rep = queue.get(c["representative"])
         if rep is None or rep["name"] in led or (limit and done >= limit):
             continue
+        if not (ROOT / rep["argv"][-1] / "confirm.json").is_file() or not (_result(rep) or (None, {}))[1]:
+            print(f"{rep['name']}: no confirmation or no final rows yet")
+            continue
         row = (_result(rep) or (None, {}))[1]
         link = "undefined symbol" in (row.get("reason") or "")
         w = _words(rep, link)
         name, n = w["name"], 2
         while (ROOT / "data" / "findings" / "fuzz" / f"{name}.{'c' if rep.get('lang') == 'c' else 'f90'}").exists():
             name, n = f"{w['name']}-{n}", n + 1
-        if _new_finding(rep, name, None) != 0:
+        programs = [queue[m]["program_ref"] for m in c["members"] if m in queue and queue[m].get("program_ref")]
+        if _new_finding(rep, name, None, programs) != 0:
             print(f"{rep['name']}: new_finding failed"); continue
         ext = "c" if rep.get("lang") == "c" else "f90"
-        entry = {"file": f"fuzz/{name}.{ext}", "case": f"site-fuzz--{name}", "link": link, "members": c["members"]}
+        entry = {"file": f"fuzz/{name}.{ext}", "case": f"site-fuzz--{name}", "link": link, "members": c["members"],
+                 "programs": programs}
         _fill(entry, rep, keep_expected=False)
         led[rep["name"]] = entry
         LEDGER.write_text(json.dumps(led, indent=1) + "\n")
@@ -374,6 +387,21 @@ def _gated(case: str) -> bool:
             if f'"{case}"' in ln:
                 envs.add(json.loads(ln).get("env"))
     return {"a", "b", "c", "d"} <= envs
+
+
+def _reproduced(case: str, rel: str, tc: str) -> bool:
+    """The gate's rows of the case show the program failing on its compiler (a repro row not
+    classified as passing; offload.engine.finding_rows.site_obs)."""
+    import glob
+    from offload.engine import finding_rows as R
+    from offload.engine.site import matrix as M
+    rows = []
+    for f in glob.glob(str(ROOT / "data" / "vendor" / "checks" / "results" / "site-tuolumne*.jsonl")):
+        rows += [json.loads(ln) for ln in open(f) if f'"{case}"' in ln]
+    c = next((x for x in M._cases() if x["id"] == case), None)
+    if c is None:
+        return False
+    return any(o.tc == tc and o.variant == "repro" and o.failed for o in R.site_obs(c, rows))
 
 
 def _pack(case: str) -> None:
@@ -404,6 +432,8 @@ def _unwrite(rel: str) -> None:
         if m:
             (ROOT / "data" / "findings" / m.group(1)).unlink(missing_ok=True)
     f.unlink(missing_ok=True)
+    # its legality record (tools/review/review.py mechanical) goes with it
+    (ROOT / "data" / "findings" / "reviews" / (rel.rsplit(".", 1)[0].replace("/", "--") + ".json")).unlink(missing_ok=True)
 
 
 def finish() -> int:
@@ -416,9 +446,17 @@ def finish() -> int:
         if e.get("finished") or not _gated(e["case"]):
             continue
         rep = queue[name]
+        tc = rep["target"].split("/")[0]
+        if not _reproduced(e["case"], e["file"], tc):
+            # the gate does not show the failure on its compiler: no finding
+            _unwrite(e["file"])
+            e["finished"], e["not_reproduced"] = True, True
+            LEDGER.write_text(json.dumps(led, indent=1) + "\n")
+            print(f"not reproduced in the gate: {e['file']} on {tc}")
+            continue
         _pack(e["case"])
         _unwrite(e["file"])
-        if _new_finding(rep, Path(e["file"]).stem, e["case"]) != 0:
+        if _new_finding(rep, Path(e["file"]).stem, e["case"], e.get("programs")) != 0:
             print(f"{e['file']}: new_finding --case failed"); continue
         text = (ROOT / "data" / "findings" / e["file"]).read_text()
         _fill(e, rep, keep_expected="- expected: TODO(human)" not in text)
@@ -450,6 +488,7 @@ def main(argv=None) -> int:
     dp.add_argument("--minutes", type=float, default=20)
     dp.add_argument("--budget", type=int, default=25)
     dp.add_argument("--workers", type=int, default=4)
+    dp.add_argument("--rows-only", action="store_true", help="record the final rows of stopped reductions")
     ad = sub.add_parser("advance")
     ad.add_argument("--minutes", type=float, default=10)
     a = ap.parse_args(argv)
@@ -464,7 +503,7 @@ def main(argv=None) -> int:
     if a.cmd == "finish":
         return finish()
     if a.cmd == "deepen":
-        return deepen(a.minutes, a.budget, a.workers)
+        return deepen(a.minutes, a.budget, a.workers, a.rows_only)
     if a.cmd == "reduce":
         return reduce(a.minutes)
     if a.cmd == "recheck":

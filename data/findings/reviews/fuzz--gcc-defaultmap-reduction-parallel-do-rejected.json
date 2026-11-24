@@ -1,0 +1,40 @@
+{
+ "readers": [],
+ "program_sha": "6fe04a91ea6d62a37a8d9ed4746ef16ec6ff4f73a69c31974f4b938f98b23130",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [
+   "omp-unmapped-scalar-reduction: r2a is reduced on 'parallel do' (line 40) inside 'target' (line 38), which does not map it (OpenMP 5.2 \u00a75.8.1 (a scalar referenced in a target construct and not in a data clause is firstprivate), so the result of a reduction on a construct nested in it stays on the device)"
+  ],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "rejected",
+  "failing": [
+   "gcc"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "cce19",
+   "cce20",
+   "cce21",
+   "cce21_4"
+  ],
+  "front_ends": {},
+  "program_sha": "6fe04a91ea6d62a37a8d9ed4746ef16ec6ff4f73a69c31974f4b938f98b23130",
+  "inputs": "0ae5d84b05de51deb55862282a18fdfcd303fec007b33a9287a0f28481d6cf7c"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, cce19, cce20, cce21, cce21_4, of another compiler family, build and run it as expected."
+}

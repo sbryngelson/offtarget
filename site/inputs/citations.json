@@ -1923,6 +1923,188 @@
    "quote": "When an if clause is present and evaluates to false, the preferred number of iterations to be executed concurrently is one, regardless of whether a simdlen clause is specified."
   }
  ],
+ "fuzz/cce19-collapse-defaultmap-device-run-error.f90": [
+  {
+   "text": "OpenMP 5.2 §4.4.3 p.93 l.23-25",
+   "version": "OpenMP 5.2",
+   "section": "4.4.3",
+   "quote": "The collapse clause associates one or more loops with the directive on which it appears for the purpose of identifying the portion of the depth of the canonical loop nest to which to apply the semantics of the directive."
+  },
+  {
+   "text": "OpenMP 5.2 §5.8.7 p.161 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables that are referenced in a target construct, in accordance with the rules given in Section 5.8.1."
+  },
+  {
+   "text": "OpenMP 5.2 §13.2 p.276 l.11",
+   "version": "OpenMP 5.2",
+   "section": "13.2",
+   "quote": "The device clause identifies the target device that is associated with a device construct."
+  }
+ ],
+ "fuzz/cce19-declare-target-abort.f90": [
+  {
+   "text": "OpenMP 5.2 §7.8.1 p.206 l.9-10",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": "If the extended-list argument is specified, the effect is as if an enter clause was specified with the extended-list as its argument."
+  }
+ ],
+ "fuzz/cce19-masked-target-parallel-rejected.c": [
+  {
+   "text": "OpenMP 5.2 §10.5 p.238 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "10.5",
+   "quote": "The masked construct specifies a structured block that is executed by a subset of the threads of the current team."
+  },
+  {
+   "text": "OpenMP 5.2 §13.8 p.284 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct provides a superset of the functionality provided by the target data directive, except for the use_device_ptr and use_device_addr clauses."
+  },
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
+  }
+ ],
+ "fuzz/cce19-parallel-loop-if-default-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
+  },
+  {
+   "text": "OpenMP 5.2 §11.7 p.257 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "A loop construct specifies that the logical iterations of the associated loops may execute concurrently and permits the encountering threads to execute the loop accordingly."
+  },
+  {
+   "text": "OpenMP 5.2 §3.4 p.72 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "3.4",
+   "quote": "If no directive-name-modifier is specified then the effect is as if a directive-name-modifier was specified with the directive-name of the directive on which the clause appears."
+  },
+  {
+   "text": "OpenMP 5.2 §5.4.1 p.109 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "5.4.1",
+   "quote": "The default clause determines the implicit data-sharing attribute of certain variables that are referenced in the construct, in accordance with the rules given in Section 5.1.1."
+  },
+  {
+   "text": "OpenMP 5.2 §11.7 p.257 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "A loop construct specifies that the logical iterations of the associated loops may execute concurrently and permits the encountering threads to execute the loop accordingly."
+  }
+ ],
+ "fuzz/cce19-schedule-distribute-for-rejected.c": [
+  {
+   "text": "OpenMP 5.2 §11.5.3 p.252 l.10-12",
+   "version": "OpenMP 5.2",
+   "section": "11.5.3",
+   "quote": "The schedule clause specifies how iterations of associated loops of a worksharing-loop construct are divided into contiguous non-empty subsets, called chunks, and how these chunks are distributed among threads of the team."
+  },
+  {
+   "text": "OpenMP 5.2 §11.6 p.254 l.18-19",
+   "version": "OpenMP 5.2",
+   "section": "11.6",
+   "quote": "The distribute construct specifies that the iterations of one or more loops will be executed by the initial teams in the context of their implicit tasks."
+  },
+  {
+   "text": "OpenMP 5.2 §11.5.1 p.250 l.2-9",
+   "version": "OpenMP 5.2",
+   "section": "11.5.1",
+   "quote": "Separating directives scan Clauses allocate, collapse, firstprivate, lastprivate, linear, nowait, order, ordered, private, reduction, schedule Semantics The for construct is a worksharing-loop construct."
+  }
+ ],
+ "fuzz/cce20-if-num-threads-reduction-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §3.4 p.72 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "3.4",
+   "quote": "If no directive-name-modifier is specified then the effect is as if a directive-name-modifier was specified with the directive-name of the directive on which the clause appears."
+  },
+  {
+   "text": "OpenMP 5.2 §10.1.2 p.227 l.23",
+   "version": "OpenMP 5.2",
+   "section": "10.1.2",
+   "quote": "The num_threads clause specifies the desired number of threads to execute a parallel region."
+  },
+  {
+   "text": "OpenMP 5.2 §5.5.8 p.134 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier."
+  }
+ ],
+ "fuzz/cce21-declare-target-parallel-run-error.f90": [
+  {
+   "text": "OpenMP 5.2 §7.8.1 p.206 l.9-10",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": "If the extended-list argument is specified, the effect is as if an enter clause was specified with the extended-list as its argument."
+  },
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
+  }
+ ],
+ "fuzz/cce21-defaultmap-device-dist-schedule-abort.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.7 p.161 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables that are referenced in a target construct, in accordance with the rules given in Section 5.8.1."
+  },
+  {
+   "text": "OpenMP 5.2 §13.2 p.276 l.11",
+   "version": "OpenMP 5.2",
+   "section": "13.2",
+   "quote": "The device clause identifies the target device that is associated with a device construct."
+  },
+  {
+   "text": "OpenMP 5.2 §11.6.1 p.256 l.13-15",
+   "version": "OpenMP 5.2",
+   "section": "11.6.1",
+   "quote": "The dist_schedule clause specifies how iterations of associated loops of a distribute construct are divided into contiguous non-empty subsets, called chunks, and how these chunks are distributed among the teams of the league."
+  }
+ ],
+ "fuzz/cce21-defaultmap-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.7 p.161 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables that are referenced in a target construct, in accordance with the rules given in Section 5.8.1."
+  }
+ ],
+ "fuzz/cce21-if-declare-target-parallel-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §3.4 p.72 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "3.4",
+   "quote": "If no directive-name-modifier is specified then the effect is as if a directive-name-modifier was specified with the directive-name of the directive on which the clause appears."
+  },
+  {
+   "text": "OpenMP 5.2 §7.8.1 p.206 l.9-10",
+   "version": "OpenMP 5.2",
+   "section": "7.8.1",
+   "quote": "If the extended-list argument is specified, the effect is as if an enter clause was specified with the extended-list as its argument."
+  },
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
+  }
+ ],
  "fuzz/cce21-target-teams-if-pointer-write-lost.f90": [
   {
    "text": "OpenMP 5.2 §5.8.1 p.149 l.4-5",
@@ -1979,12 +2161,80 @@
    "quote": "If the reduction identifier is defined in a declare reduction directive, the declare reduction directive must be in the same subprogram, or accessible by host or use association"
   }
  ],
+ "fuzz/gcc-defaultmap-reduction-parallel-do-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §5.8.7 p.161 l.14-16",
+   "version": "OpenMP 5.2",
+   "section": "5.8.7",
+   "quote": "The defaultmap clause determines the implicit data-mapping or data-sharing attribute of certain variables that are referenced in a target construct, in accordance with the rules given in Section 5.8.1."
+  },
+  {
+   "text": "OpenMP 5.2 §5.5.8 p.134 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier."
+  },
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
+  },
+  {
+   "text": "OpenMP 5.2 §11.5.2 p.251 l.2-9",
+   "version": "OpenMP 5.2",
+   "section": "11.5.2",
+   "quote": "Separating directives scan Clauses allocate, collapse, firstprivate, lastprivate, linear, nowait, order, ordered, private, reduction, schedule Semantics The do construct is a worksharing-loop construct."
+  }
+ ],
+ "fuzz/gcc-do-reduction-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §11.5.2 p.251 l.2-9",
+   "version": "OpenMP 5.2",
+   "section": "11.5.2",
+   "quote": "Separating directives scan Clauses allocate, collapse, firstprivate, lastprivate, linear, nowait, order, ordered, private, reduction, schedule Semantics The do construct is a worksharing-loop construct."
+  },
+  {
+   "text": "OpenMP 5.2 §5.5.8 p.134 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier."
+  }
+ ],
  "fuzz/gcc-int8-mod-narrowed-o2-wrong.f90": [
   {
    "text": "OpenMP 5.2 §5.8.3 p.154 l.2-5",
    "version": "OpenMP 5.2",
    "section": "5.8.3",
    "quote": "If the reference count of the corresponding list item is one or if the always map-type-modifier is specified, and if the map-type is from or tofrom, the original list item is updated as if the list item appeared in a from clause on a target update directive."
+  }
+ ],
+ "fuzz/gcc-loop-reduction-parallel-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §11.7 p.257 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "A loop construct specifies that the logical iterations of the associated loops may execute concurrently and permits the encountering threads to execute the loop accordingly."
+  },
+  {
+   "text": "OpenMP 5.2 §5.5.8 p.134 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier."
+  },
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
+  }
+ ],
+ "fuzz/gcc-loop-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §11.7 p.257 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "A loop construct specifies that the logical iterations of the associated loops may execute concurrently and permits the encountering threads to execute the loop accordingly."
   }
  ],
  "fuzz/gcc-signed-widening-multiply-o2-wrong.f90": [
@@ -2031,6 +2281,38 @@
    "quote": "the original list item is updated as if the list item appeared in a from clause on a target update directive"
   }
  ],
+ "fuzz/gcc-target-parallel-do-map-nowait-abort.f90": [
+  {
+   "text": "OpenMP 5.2 §13.8 p.284 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct provides a superset of the functionality provided by the target data directive, except for the use_device_ptr and use_device_addr clauses."
+  },
+  {
+   "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
+   "version": "OpenMP 5.2",
+   "section": "10.1",
+   "quote": "When a thread encounters a parallel construct, a team of threads is created to execute the parallel region (see Section 10.1.1 for more information about how the number of threads in the team is determined, including the evaluation of the if and num_threads clauses)."
+  },
+  {
+   "text": "OpenMP 5.2 §11.5.2 p.251 l.2-9",
+   "version": "OpenMP 5.2",
+   "section": "11.5.2",
+   "quote": "Separating directives scan Clauses allocate, collapse, firstprivate, lastprivate, linear, nowait, order, ordered, private, reduction, schedule Semantics The do construct is a worksharing-loop construct."
+  },
+  {
+   "text": "OpenMP 5.2 §5.8.3 p.151 l.8-10",
+   "version": "OpenMP 5.2",
+   "section": "5.8.3",
+   "quote": "The map clause specifies how an original list item is mapped from the current task’s data environment to a corresponding list item in the device data environment of the device identified by the construct."
+  },
+  {
+   "text": "OpenMP 5.2 §15.6 p.308 l.15-16",
+   "version": "OpenMP 5.2",
+   "section": "15.6",
+   "quote": "The nowait clause overrides any synchronization that would otherwise occur at the end of a construct."
+  }
+ ],
  "fuzz/gcc-target-repeated-parallel-num-threads-abort.f90": [
   {
    "text": "OpenMP 5.2 §10.1 p.223 l.12-14",
@@ -2045,6 +2327,98 @@
    "version": "OpenMP 5.2",
    "section": "17.2",
    "quote": null
+  }
+ ],
+ "fuzz/gcc-target-teams-loop-thread-limit-abort.f90": [
+  {
+   "text": "OpenMP 5.2 §13.8 p.284 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct provides a superset of the functionality provided by the target data directive, except for the use_device_ptr and use_device_addr clauses."
+  },
+  {
+   "text": "OpenMP 5.2 §10.2 p.230 l.12",
+   "version": "OpenMP 5.2",
+   "section": "10.2",
+   "quote": "When a thread encounters a teams construct, a league of teams is created."
+  },
+  {
+   "text": "OpenMP 5.2 §11.7 p.257 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "A loop construct specifies that the logical iterations of the associated loops may execute concurrently and permits the encountering threads to execute the loop accordingly."
+  },
+  {
+   "text": "OpenMP 5.2 §13.3 p.277 l.17-19",
+   "version": "OpenMP 5.2",
+   "section": "13.3",
+   "quote": "As described in Section 2.4, some constructs limit the number of threads that may participate in a contention group initiated by each team by setting the value of the thread-limit-var ICV for the initial task to an implementation-defined value greater than zero."
+  }
+ ],
+ "fuzz/gcc-target-teams-reduction-rejected.f90": [
+  {
+   "text": "OpenMP 5.2 §13.8 p.284 l.11-12",
+   "version": "OpenMP 5.2",
+   "section": "13.8",
+   "quote": "The target construct provides a superset of the functionality provided by the target data directive, except for the use_device_ptr and use_device_addr clauses."
+  },
+  {
+   "text": "OpenMP 5.2 §10.2 p.230 l.12",
+   "version": "OpenMP 5.2",
+   "section": "10.2",
+   "quote": "When a thread encounters a teams construct, a league of teams is created."
+  },
+  {
+   "text": "OpenMP 5.2 §5.5.8 p.134 l.21-22",
+   "version": "OpenMP 5.2",
+   "section": "5.5.8",
+   "quote": "For each list item, a private copy is created for each implicit task or SIMD lane and is initialized with the initializer value of the reduction-identifier."
+  }
+ ],
+ "fuzz/gcc-teams-distribute-simd-simd-wrong.f90": [
+  {
+   "text": "OpenMP 5.2 §10.2 p.230 l.12",
+   "version": "OpenMP 5.2",
+   "section": "10.2",
+   "quote": "When a thread encounters a teams construct, a league of teams is created."
+  },
+  {
+   "text": "OpenMP 5.2 §11.6 p.254 l.18-19",
+   "version": "OpenMP 5.2",
+   "section": "11.6",
+   "quote": "The distribute construct specifies that the iterations of one or more loops will be executed by the initial teams in the context of their implicit tasks."
+  },
+  {
+   "text": "OpenMP 5.2 §10.4 p.235 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "10.4",
+   "quote": "The simd construct enables the execution of multiple iterations of the associated loops concurrently by using SIMD instructions."
+  },
+  {
+   "text": "OpenMP 5.2 §10.4 p.235 l.12-13",
+   "version": "OpenMP 5.2",
+   "section": "10.4",
+   "quote": "The simd construct enables the execution of multiple iterations of the associated loops concurrently by using SIMD instructions."
+  }
+ ],
+ "fuzz/gcc-teams-loop-thread-limit-abort.f90": [
+  {
+   "text": "OpenMP 5.2 §10.2 p.230 l.12",
+   "version": "OpenMP 5.2",
+   "section": "10.2",
+   "quote": "When a thread encounters a teams construct, a league of teams is created."
+  },
+  {
+   "text": "OpenMP 5.2 §11.7 p.257 l.8-9",
+   "version": "OpenMP 5.2",
+   "section": "11.7",
+   "quote": "A loop construct specifies that the logical iterations of the associated loops may execute concurrently and permits the encountering threads to execute the loop accordingly."
+  },
+  {
+   "text": "OpenMP 5.2 §13.3 p.277 l.17-19",
+   "version": "OpenMP 5.2",
+   "section": "13.3",
+   "quote": "As described in Section 2.4, some constructs limit the number of threads that may participate in a contention group initiated by each team by setting the value of the thread-limit-var ICV for the initial task to an implementation-defined value greater than zero."
   }
  ],
  "fuzz/gcc-thread-limit-target-and-teams-fault.f90": [

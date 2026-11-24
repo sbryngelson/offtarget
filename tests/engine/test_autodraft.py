@@ -98,3 +98,16 @@ def test_fill_keeps_a_field_the_rows_gave_when_its_text_is_none(tmp_path):
         g = tmp_path / "y.f90"
         g.write_text(DRAFT)
         AD.fill(g, title="T", expected=None, rule="r", legality="l", site_title="S", site_summary="S.")
+
+
+def test_titles_use_the_right_article_and_say_a_refusal_plainly():
+    assert AD.title("CCE 19", "rejected", "f90", "omp", ["clause:if"]) == \
+        "CCE 19 refuses a Fortran OpenMP program with an if clause"
+    assert "with an order clause and a loop construct" in AD.title("GCC 16.2", "crash", "c", "omp",
+                                                                   ["clause:order", "dir:loop"])
+
+
+def test_the_model_is_read_from_the_programs_directives():
+    assert AD.model_of("program p\n  !$acc kernels loop\n  do i = 1, 2\n  end do\nend program p\n") == "acc"
+    assert AD.model_of("int main(void) {\n#pragma acc parallel loop\n  for (;;) {}\n}\n") == "acc"
+    assert AD.model_of("program p\n  !$omp target\n  !$omp end target\nend program p\n") == "omp"

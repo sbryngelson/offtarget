@@ -1,0 +1,31 @@
+{
+ "readers": [],
+ "program_sha": "b62655aec549c5749485bef3693d56b248caa5585e538d5f453ec6e6a635001e",
+ "mechanical": {
+  "rules": "accept",
+  "rules_why": [],
+  "hazards": [],
+  "witness": "accept",
+  "expected": "other-family",
+  "outcome": "wrong_answer",
+  "failing": [
+   "cce"
+  ],
+  "witnesses": [
+   "afar",
+   "afar244"
+  ],
+  "expected_from": [
+   "afar",
+   "afar244",
+   "gcc"
+  ],
+  "front_ends": {},
+  "program_sha": "b62655aec549c5749485bef3693d56b248caa5585e538d5f453ec6e6a635001e",
+  "inputs": "15df44e99aa10230b6ac4ab70162fb166a0040bb61864351a45bef0332e585ee"
+ },
+ "advisory": "unconfirmed",
+ "advisory_why": "",
+ "verdict": "checked",
+ "why": "The rules engine accepts the program and afar, afar244, of another compiler family, build and run it as expected; the expected result comes from another compiler family's run."
+}

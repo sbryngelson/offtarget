@@ -226,7 +226,8 @@ def generate(program, campaign: str, rows, controls=(), name: str | None = None,
     repro = [o for o in obs if o.variant == "repro" and (o.fp == fp or o.pid in ids)]
     if case is not None:
         # the site rows come first, as the claim checker reads them (R.evidence_for)
-        repro = R.site_obs(case, M._rows()) + repro
+        # (its repro rows only: a control may pass where the program does not)
+        repro = [o for o in R.site_obs(case, M._rows()) if o.variant == "repro"] + repro
     failing_all = [o for o in repro if o.failed]
     if not failing_all:
         raise NoRows(f"{program}: no failing row of the program in {len(files)} row file(s)")

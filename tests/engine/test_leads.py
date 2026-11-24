@@ -423,6 +423,31 @@ def test_unwrite_removes_a_finding_its_controls_and_its_index_entry(tmp_path, mo
                                   "  - file: b.f90\n    lang: f90\n")
     (f / "fuzz" / "x.f90").write_text("! site:\n! control: fuzz/controls/x-ctl.f90 one change\n! end site\n")
     (f / "fuzz" / "controls" / "x-ctl.f90").write_text("program p\nend program p\n")
+    (f / "reviews").mkdir()
+    (f / "reviews" / "fuzz--x.json").write_text("{}\n")
     T._unwrite("fuzz/x.f90")
+    assert not (f / "reviews" / "fuzz--x.json").exists()
     assert (f / "index.yaml").read_text() == "findings:\n  - file: a.f90\n    lang: f90\n  - file: b.f90\n    lang: f90\n"
     assert not (f / "fuzz" / "x.f90").exists() and not (f / "fuzz" / "controls" / "x-ctl.f90").exists()
+
+
+def test_a_finding_the_gate_does_not_reproduce_is_not_published(tmp_path, monkeypatch):
+    import importlib.util
+    from pathlib import Path
+    from offload.engine import finding_rows as R
+    from offload.engine.site import matrix as M
+    spec = importlib.util.spec_from_file_location("leads_tool9", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    raw = tmp_path / "data" / "vendor" / "checks" / "results"
+    raw.mkdir(parents=True)
+    (raw / "site-tuolumne.a.jsonl").write_text(json.dumps({"case": "c1", "tc": "cce19"}) + "\n")
+    monkeypatch.setattr(M, "_cases", lambda: [{"id": "c1"}])
+    ok = SimpleNamespace(tc="cce19", variant="repro", failed=False)
+    bad = SimpleNamespace(tc="cce19", variant="repro", failed=True)
+    ctl = SimpleNamespace(tc="cce19", variant="control", failed=True)
+    monkeypatch.setattr(R, "site_obs", lambda c, rows: [ok, ctl])
+    assert not T._reproduced("c1", "fuzz/x.f90", "cce19")
+    monkeypatch.setattr(R, "site_obs", lambda c, rows: [ok, bad])
+    assert T._reproduced("c1", "fuzz/x.f90", "cce19") and not T._reproduced("c1", "fuzz/x.f90", "gcc")
