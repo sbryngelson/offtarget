@@ -10,11 +10,8 @@ grouped by signature; known, related and new groups, each new one with the progr
     python3 -I tools/campaigns/leads.py clusters                      # the confirmed drafts as candidate bugs
     python3 -I tools/campaigns/leads.py deepen [--minutes M]          # a compute node: reduce stopped drafts further
 
-scan writes results/leads/<campaign>.jsonl (one group per line) and prints the counts and the new and
-mixed groups. plan appends a tools/reduce.py command per new or mixed group to results/leads/queue.jsonl;
-reduce runs the unfinished ones in order within M minutes (tools/jobs/run_leads_reduce.sh; each
-reduction resumes from its checkpoint); recheck asks the catalog again about each finished reduction
-and writes results/leads/rechecked.jsonl."""
+Outputs are under results/leads/ (docs/tooling/contributing.md, "Leads of a run"): the groups of a
+scan, queue.jsonl of plan, rechecked.jsonl of recheck, clusters.json of clusters."""
 from __future__ import annotations
 
 import argparse
