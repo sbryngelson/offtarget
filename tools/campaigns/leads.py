@@ -7,6 +7,7 @@ grouped by signature; known, related and new groups, each new one with the progr
     python3 -I tools/campaigns/leads.py reduce [--minutes M]          # a compute node: run the queue
     python3 -I tools/campaigns/leads.py recheck                       # the reduced programs vs the catalog
     python3 -I tools/campaigns/leads.py advance [--minutes M]         # a compute node: the confirmer on new ones
+    python3 -I tools/campaigns/leads.py clusters                      # the confirmed drafts as candidate bugs
 
 scan writes results/leads/<campaign>.jsonl (one group per line) and prints the counts and the new and
 mixed groups. plan appends a tools/reduce.py command per new or mixed group to results/leads/queue.jsonl;
@@ -213,6 +214,36 @@ def advance(minutes: float) -> int:
     return 0
 
 
+def clusters() -> int:
+    """The confirmed drafts (confirm.json verdict compiler_bug) grouped into candidate bugs
+    (offload.engine.leads.clusters): results/leads/clusters.json, one cluster per entry."""
+    entries = [json.loads(x) for x in QUEUE.read_text().splitlines() if x.strip()] if QUEUE.is_file() else []
+    drafts = []
+    for e in entries:
+        got = _result(e)
+        conf = ROOT / e["argv"][-1] / "confirm.json"
+        if got is None or not conf.is_file() or "text" not in e:
+            continue
+        res = json.loads(conf.read_text())
+        if res.get("verdict") != "compiler_bug":
+            continue
+        prog, row = got
+        drafts.append(dict(e, reduced=prog.read_text(), row=row, program=str(prog.relative_to(ROOT)),
+                           drafts=res.get("drafts") or []))
+    out = []
+    for c in LD.clusters(drafts):
+        rep = min(c, key=lambda d: (len(d["reduced"].splitlines()), d["name"]))
+        out.append({"family": c[0]["family"], "outcome": c[0]["outcome"],
+                    "toolchains": sorted({d["target"].split("/")[0] for d in c}),
+                    "representative": rep["name"], "program": rep["program"], "draft": (rep["drafts"] or [""])[0],
+                    "members": [d["name"] for d in c]})
+        print(f"{len(c):3}  {out[-1]['family']:5} {out[-1]['outcome']:12} {','.join(out[-1]['toolchains']):18} "
+              f"{rep['name']}  {(rep['row'].get('reason') or '')[:60]}")
+    (OUT / "clusters.json").write_text(json.dumps(out, indent=1) + "\n")
+    print(f"{len(drafts)} drafts in {len(out)} clusters -> {(OUT / 'clusters.json').relative_to(ROOT)}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -223,11 +254,14 @@ def main(argv=None) -> int:
     rd = sub.add_parser("reduce")
     rd.add_argument("--minutes", type=float, default=25)
     sub.add_parser("recheck")
+    sub.add_parser("clusters")
     ad = sub.add_parser("advance")
     ad.add_argument("--minutes", type=float, default=10)
     a = ap.parse_args(argv)
     if a.cmd == "advance":
         return advance(a.minutes)
+    if a.cmd == "clusters":
+        return clusters()
     if a.cmd == "reduce":
         return reduce(a.minutes)
     if a.cmd == "recheck":

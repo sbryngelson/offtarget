@@ -328,3 +328,42 @@ def fuzz_groups(run_dir: Path) -> list[Group]:
         out += split_by_features(mine, fuzz_features(run_dir, fam)) \
             if any(g.signature.startswith("wrong_answer|") for g in mine) else mine
     return out
+
+
+def _family_toolchains(tc: str) -> tuple:
+    from offload.engine.toolchains import TOOLCHAINS
+    fam = _family(tc)
+    return tuple(sorted(t for t in TOOLCHAINS if _family(t) == fam)) or (tc,)
+
+
+def clusters(drafts: list[dict]) -> list[list[dict]]:
+    """Drafts (queue entries with ``reduced``, the reduced program, and ``row``, its failing row) of
+    one candidate bug: two are linked when either's reduced program has the other's signature
+    (``provisional`` with every toolchain of the family: a signature in two releases is one bug that
+    persisted); the connected sets, largest first."""
+    from offload.engine.confirm import findings as F
+    provs = []
+    for d in drafts:
+        p = provisional(dict(d, toolchains=list(_family_toolchains(d["target"].split("/")[0]))), d["reduced"], d["row"])
+        provs.append(p)
+    parent = list(range(len(drafts)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i, d in enumerate(drafts):
+        tc = d["target"].split("/")[0]
+        for j, p in enumerate(provs):
+            if i == j or find(i) == find(j):
+                continue
+            m = F.match(p, tc, d.get("lang", "f90"), d["outcome"], d["row"].get("reason") or d.get("reason") or "",
+                        d["reduced"], "", d.get("mode") or "", output=d["row"].get("output") or d.get("output") or "")
+            if m and m[0] == "duplicate":
+                parent[find(i)] = find(j)
+    groups: dict = {}
+    for i, d in enumerate(drafts):
+        groups.setdefault(find(i), []).append(d)
+    return sorted(groups.values(), key=lambda g: (-len(g), g[0]["name"]))

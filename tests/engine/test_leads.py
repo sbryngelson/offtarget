@@ -358,3 +358,16 @@ def test_a_confirmer_that_overruns_the_job_leaves_its_lead_for_a_later_job(tmp_p
     monkeypatch.setattr(subprocess, "run", slow)
     assert T.advance(20) == 0
     assert not (tmp_path / "a" / "confirm.json").exists()
+
+
+def test_drafts_with_one_signature_form_one_cluster_across_releases_of_a_family():
+    """Drafts of one family whose reduced programs have each other's signature are one candidate bug;
+    other signatures and other families stay apart."""
+    d = [dict(entry(1, "ice", ICE, SIMD_IF, tcs=("cce19",)), reduced=SIMD_IF, row={"toolchain": "cce19", "reason": ICE}),
+         dict(entry(2, "ice", ICE.replace("abc", "def"), SIMD_IF, tcs=("cce21",)), reduced=SIMD_IF.replace("8", "16"),
+              row={"toolchain": "cce21", "reason": ICE}),
+         dict(entry(3, "ice", ICE.replace("1703", "99"), SIMD_IF, tcs=("cce20",)), reduced=SIMD_IF,
+              row={"toolchain": "cce20", "reason": ICE.replace("v_mt_translate_atomic.c, line 1703", "other.c, line 99")}),
+         dict(entry(4, "ice", ICE, SIMD_IF, tcs=("gcc",)), reduced=SIMD_IF, row={"toolchain": "gcc", "reason": ICE})]
+    got = sorted(sorted(e["name"] for e in c) for c in LD.clusters(d))
+    assert got == [["lead-r-1-cce19", "lead-r-2-cce21"], ["lead-r-3-cce20"], ["lead-r-4-gcc"]]
