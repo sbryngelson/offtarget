@@ -233,10 +233,10 @@ def wants_controls(sig: Signature | None) -> bool:
     return sig is None or (sig.kind == "controls" and ingredients(sig) <= 1)
 
 
-_MODE = {"mi300a-u": 1, "mi300a-c": 0}
+_MODE = {"mi300a-u": 1, "mi300a-c": 0, "a100-s": 0, "a100-m": 2}   # the row keys of each target's modes
 
 
-_MODE_NAME = {"copy": 0, "unified": 1}
+_MODE_NAME = {"copy": 0, "unified": 1, "managed": 2}
 
 
 def named_compilers(entry: dict | None, text: str) -> tuple[set, set | None] | None:
@@ -255,7 +255,7 @@ def named_compilers(entry: dict | None, text: str) -> tuple[set, set | None] | N
         tcs = {m.group(1).split()[0]}
     if not tcs:
         return None
-    modes = {_MODE_NAME[w] for w in re.findall(r"\b(copy|unified)\b", line)}
+    modes = {_MODE_NAME[w] for w in re.findall(r"\b(copy|unified|managed)\b", line)}
     if re.search(r"HSA_XNACK=([01])", line):
         modes.add(int(re.search(r"HSA_XNACK=([01])", line).group(1)))
     return tcs, modes or None

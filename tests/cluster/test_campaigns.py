@@ -2895,6 +2895,21 @@ def test_a_control_passes_only_where_the_reference_passes_it_too(tmp_path):
     assert kept and not any(c.what.startswith(("delete statement", "simplify")) for c in kept)
 
 
+def test_flagless_keeps_a_c_flag_declared():
+    c = ("#include <omp.h>\nint main(void) {\n  int host_flag = 0, b = 1;\n"
+         "#pragma omp target map(tofrom: b, host_flag)\n  {\n    host_flag = omp_is_initial_device();\n    b = 2;\n  }\n"
+         "  return host_flag + b;\n}\n")
+    fl = RD.flagless(c)
+    assert "int host_flag = 0, b = 1;" in fl and "map(tofrom: b, host_flag)" in fl
+    assert "return 0 + b;" in fl
+
+
+def test_a_reference_whose_memory_mode_is_a_compile_flag_is_asked_in_its_mode():
+    ref = RD.HostReference("gcc_sm80", [RD.Target("nvhpc", 0, "-O2")])
+    _, why = ref.values("int main(void) {\n#pragma omp target\n{ }\nreturn 0;\n}\n", "c")
+    assert "memory mode is a compile flag" not in why
+
+
 def test_a_reference_that_cannot_build_the_model_is_a_refusal_not_a_crash():
     ref = RD.HostReference("afar", [RD.Target("gcc", 0, "-O2")])
     vals, why = ref.values("program p\n!$acc parallel\n!$acc end parallel\nend program p\n", "f90")

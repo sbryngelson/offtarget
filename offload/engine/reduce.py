@@ -1304,8 +1304,8 @@ def flag_names(text: str) -> set:
 
 def flagless(text: str) -> str:
     """The program with every use of a host-execution flag variable other
-    than its assignment and declaration replaced by 0 (for the elision's
-    applicability analysis, which otherwise stops at that use)."""
+    than its assignment and declaration (Fortran or C) replaced by 0 (for the
+    elision's applicability analysis, which otherwise stops at that use)."""
     names = flag_names(text)
     if not names:
         return text
@@ -1313,7 +1313,8 @@ def flagless(text: str) -> str:
     assign = re.compile(r"\s*(?:if\s*\(.*\)\s*)?(" + "|".join(map(re.escape, names)) + r")\s*=(?!=)", re.I)
     for ln in text.splitlines():
         if DEVICE_FLAG.search(ln) or assign.match(ln) or \
-                re.match(r"\s*(integer|logical|real|use\s|!|//|#)", ln, re.I):
+                re.match(r"\s*(integer|logical|real|use\s|!|//|#|(?:(?:static|const|volatile|unsigned|"
+                         r"signed)\s+)*(?:int|long|short|char|bool|_Bool)\b)", ln, re.I):
             out.append(ln)              # the flag's declaration and assignments stay; its uses become 0
             continue
         for n in names:
@@ -1447,12 +1448,12 @@ class HostReference:
         if tc.lang != lang_:
             tc = dataclasses.replace(tc, lang=lang_)
         tc = dataclasses.replace(tc, model=model_of(text))
+        mode = tc.xnack_modes[0]
+        tc = tc.for_mode(mode)
         try:
             tc.flags()
         except ValueError as e:              # the reference cannot build this model or language
             return None, f"reference {self.toolchain}: {e}"
-        mode = tc.xnack_modes[0]
-        tc = tc.for_mode(mode)
         tmp = Path(tempfile.mkdtemp(prefix="reduce_ref_"))
         try:
             src, exe = tmp / f"ref.{lang_}", tmp / "ref.out"

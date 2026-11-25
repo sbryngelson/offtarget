@@ -378,3 +378,11 @@ end program p
 def test_the_same_ingredient_from_two_controls_counts_once():
     q = E.Part(frozenset({"dir:parallel", "dir:loop", "clause:present"}))
     assert E.ingredients(E.Signature("controls", requirements=[q, q])) == 1
+
+
+def test_a_wingtip_finding_runs_in_its_a100_memory_mode():
+    obs = [_obs("nvhpc", "a100-m", True, "run_error"), _obs("nvhpc", "a100-s", True, "run_error"),
+           _obs("nvhpc", "a100-m", True, "run_error"), _obs("gcc_sm80", "a100-s", False, "correct")]
+    job = E.control_job("x.c", obs, local={"nvhpc", "gcc_sm80"}, named=({"nvhpc"}, {2}))
+    assert job["targets"] == ["nvhpc/2"] and job["reference"] == "host:gcc_sm80"
+    assert E.named_compilers({"toolchains": ["nvhpc"], "modes": ["copy", "managed"]}, "") == ({"nvhpc"}, {0, 2})
