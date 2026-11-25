@@ -298,3 +298,14 @@ def test_compiler_trees_and_test_suites_are_not_application_code():
                        ("fspiga/FluTAS", "src/apps/main__two_phase_ht.f90"),
                        ("me/latest", "src/contest/solver.f90")):
         assert E.is_application(repo, path), path
+
+
+def test_a_function_pointer_is_a_name():
+    src = "int add1(int x) { return x + 1; }\nint main(void) {\n  int (*f)(int) = add1;\n  int (*g[2])(int);\n  return f(1);\n}\n"
+    assert {"f", "g", "add1", "x"} <= E.names(src, "p.c")
+
+
+def test_an_openacc_finding_never_gets_afar_as_its_reference():
+    obs = [_obs("cce20", "mi300a-u", True), _obs("afar", "mi300a-u", False, "correct")]
+    job = E.control_job("x.f90", obs, local={"afar", "cce20", "gcc"}, model="acc")
+    assert job["reference"] == "host:gcc"

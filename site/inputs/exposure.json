@@ -821,12 +821,53 @@
    ]
   },
   "catalog/cce-acc-character-dummy-routine-ice.f90": {
+   "examples": [
+    {
+     "line": 7,
+     "path": "indevelopment/module8/English/C/base/dot_acc.c",
+     "repo": "mozhgan-kch/openacc-training-materials",
+     "url": "https://github.com/mozhgan-kch/openacc-training-materials/blob/099643c50f41415943035daa64a698db7b45e409/indevelopment/module8/English/C/base/dot_acc.c#L7"
+    },
+    {
+     "line": 31,
+     "path": "Code_Examples/Chapter_02/area.acc.c",
+     "repo": "OpenACCUserGroup/openacc_concept_strategies_book",
+     "url": "https://github.com/OpenACCUserGroup/openacc_concept_strategies_book/blob/7547260d6d845d34b1f28bbb64ab93226c705207/Code_Examples/Chapter_02/area.acc.c#L31"
+    },
+    {
+     "line": 420,
+     "path": "src/vof.f90",
+     "repo": "nscapin/FluTAS",
+     "url": "https://github.com/nscapin/FluTAS/blob/207df6f2a35ddd03c3f647a37c665b6b5d6b4302/src/vof.f90#L420"
+    },
+    {
+     "line": 466,
+     "path": "Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90",
+     "repo": "sailoridy/MAESTRO",
+     "url": "https://github.com/sailoridy/MAESTRO/blob/f957d148d2028324a2a1076be244f73dad63fd67/Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90#L466"
+    },
+    {
+     "line": 18,
+     "path": "atomic_op/atomic_op.f90",
+     "repo": "jeng1220/fortran_study",
+     "url": "https://github.com/jeng1220/fortran_study/blob/08e0b68f884ab82ebbd2d68292ea3e41ad44a00c/atomic_op/atomic_op.f90#L18"
+    }
+   ],
    "files": 56,
-   "ingredients": 1,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 35,
    "signature": [
+    {
+     "features": [
+      "clause:private",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    },
     {
      "features": [
       "clause:private",
@@ -1626,26 +1667,7 @@
    ]
   },
   "catalog/nvhpc-c-function-pointer-kernel-missing.c": {
-   "files": 98,
-   "ingredients": 1,
-   "kind": "controls",
-   "measurable": true,
-   "repos": 25,
-   "signature": [
-    {
-     "features": [
-      "dir:distribute",
-      "dir:for",
-      "dir:parallel",
-      "dir:target",
-      "dir:teams"
-     ],
-     "file_features": [],
-     "words": [
-      "f"
-     ]
-    }
-   ]
+   "measurable": false
   },
   "catalog/nvhpc-c-long-double-kernel-missing.c": {
    "examples": [
@@ -3592,7 +3614,7 @@
     }
    ],
    "files": 79,
-   "ingredients": 3,
+   "ingredients": 5,
    "kind": "controls",
    "measurable": true,
    "repos": 36,
@@ -3623,16 +3645,75 @@
      ],
      "file_features": [],
      "words": []
+    },
+    {
+     "features": [
+      "clause:independent",
+      "dir:kernels",
+      "dir:loop"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:independent",
+      "dir:kernels",
+      "dir:loop"
+     ],
+     "file_features": [],
+     "words": []
     }
    ]
   },
   "fuzz/cce-acc-parallel-and-gang-loop-reduction-lost.f90": {
+   "examples": [
+    {
+     "line": 7,
+     "path": "indevelopment/module8/English/C/base/dot_acc.c",
+     "repo": "mozhgan-kch/openacc-training-materials",
+     "url": "https://github.com/mozhgan-kch/openacc-training-materials/blob/099643c50f41415943035daa64a698db7b45e409/indevelopment/module8/English/C/base/dot_acc.c#L7"
+    },
+    {
+     "line": 48,
+     "path": "examples/polynomial/polynomial.f90",
+     "repo": "alexeedm/pytorch-fortran",
+     "url": "https://github.com/alexeedm/pytorch-fortran/blob/cd4334a0f1bfbd87402a2dd1fa43f41c2a1cd150/examples/polynomial/polynomial.f90#L48"
+    },
+    {
+     "line": 45,
+     "path": "Code_Examples/Chapter_10/filter.c",
+     "repo": "OpenACCUserGroup/openacc_concept_strategies_book",
+     "url": "https://github.com/OpenACCUserGroup/openacc_concept_strategies_book/blob/7547260d6d845d34b1f28bbb64ab93226c705207/Code_Examples/Chapter_10/filter.c#L45"
+    },
+    {
+     "line": 466,
+     "path": "Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90",
+     "repo": "sailoridy/MAESTRO",
+     "url": "https://github.com/sailoridy/MAESTRO/blob/f957d148d2028324a2a1076be244f73dad63fd67/Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90#L466"
+    },
+    {
+     "line": 17,
+     "path": "alternative_nested_parallelism/alternative_nested_parallelism.f90",
+     "repo": "jeng1220/fortran_study",
+     "url": "https://github.com/jeng1220/fortran_study/blob/08e0b68f884ab82ebbd2d68292ea3e41ad44a00c/alternative_nested_parallelism/alternative_nested_parallelism.f90#L17"
+    }
+   ],
    "files": 60,
-   "ingredients": 1,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 38,
    "signature": [
+    {
+     "features": [
+      "clause:gang",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    },
     {
      "features": [
       "clause:gang",
@@ -5176,12 +5257,53 @@
    "measurable": false
   },
   "harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90": {
+   "examples": [
+    {
+     "line": 116,
+     "path": "src/solver.f90",
+     "repo": "nscapin/FluTAS",
+     "url": "https://github.com/nscapin/FluTAS/blob/207df6f2a35ddd03c3f647a37c665b6b5d6b4302/src/solver.f90#L116"
+    },
+    {
+     "line": 466,
+     "path": "Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90",
+     "repo": "sailoridy/MAESTRO",
+     "url": "https://github.com/sailoridy/MAESTRO/blob/f957d148d2028324a2a1076be244f73dad63fd67/Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90#L466"
+    },
+    {
+     "line": 14,
+     "path": "access_efficiency/access_efficiency.f90",
+     "repo": "jeng1220/fortran_study",
+     "url": "https://github.com/jeng1220/fortran_study/blob/08e0b68f884ab82ebbd2d68292ea3e41ad44a00c/access_efficiency/access_efficiency.f90#L14"
+    },
+    {
+     "line": 3818,
+     "path": "src/pot3d.f",
+     "repo": "kurtsansom/POT3D",
+     "url": "https://github.com/kurtsansom/POT3D/blob/2a7f46d2760361eb45c94d0999a68c2eb3b36d30/src/pot3d.f#L3818"
+    },
+    {
+     "line": 209,
+     "path": "SandBox/Opacities/NeutrinoOpacities.f90",
+     "repo": "srichers/thornado",
+     "url": "https://github.com/srichers/thornado/blob/bc6666cbf9ae8b39b1ba5feffac80303c2b1f9a8/SandBox/Opacities/NeutrinoOpacities.f90#L209"
+    }
+   ],
    "files": 127,
-   "ingredients": 1,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 61,
    "signature": [
+    {
+     "features": [
+      "clause:present",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    },
     {
      "features": [
       "clause:present",
@@ -5227,11 +5349,21 @@
     }
    ],
    "files": 107,
-   "ingredients": 2,
+   "ingredients": 4,
    "kind": "controls",
    "measurable": true,
    "repos": 37,
    "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "dir:data",
+      "map:tofrom"
+     ],
+     "words": []
+    },
     {
      "features": [
       "dir:target"
@@ -5524,7 +5656,7 @@
     }
    ],
    "files": 42,
-   "ingredients": 5,
+   "ingredients": 9,
    "kind": "controls",
    "measurable": true,
    "repos": 25,
@@ -5535,6 +5667,18 @@
       "dir:target"
      ],
      "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
      "words": []
     },
     {

@@ -67,6 +67,8 @@ def main(argv=None) -> int:
     rd.add_argument("--repeats", type=int, default=2, help="runs per candidate (the worst counts)")
     rd.add_argument("--no-controls", action="store_true")
     rd.add_argument("--max-controls", type=int, default=4)
+    rd.add_argument("--statement-controls", action="store_true",
+                    help="controls may also delete one statement or simplify one expression")
     rd.add_argument("--no-witness", action="store_true",
                     help="skip the legality rules witness (exploration only; the result is not a candidate finding)")
     a = ap.parse_args(argv)
@@ -181,7 +183,7 @@ def main(argv=None) -> int:
     kept = []
     if not a.no_controls and res.stopped == "done":
         log("controls: one-change edits of the reduced program's directives")
-        kept = RD.controls(res.text, job.lang, judge, a.max_controls, name)
+        kept = RD.controls(res.text, job.lang, judge, a.max_controls, name, a.statement_controls)
         cd = out / "controls"
         cd.mkdir(exist_ok=True)
         for c in kept:

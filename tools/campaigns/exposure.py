@@ -130,39 +130,46 @@ def load_records(everything: bool = False):
                            d.get("sha", ""), d.get("stars", 0))
 
 
-def queue() -> list[dict]:
+def _job_for(rel: str, index: dict, local: set) -> dict | None:
     from offload.engine import finding_rows as R
-    from offload.engine.toolchains import registry
+    from offload.engine.reduce import model_of
+    text = (FINDINGS / rel).read_text(errors="replace")
+    if not E._parts_of(text, rel) or "RESULT" not in text:
+        return None                        # no offload region, or not in the harness's form
+    named = E.named_compilers(index.get(rel), text)
+    if named is None:
+        return None
+    return E.control_job(rel, R.evidence_for(rel, text).repro(), local, named, model_of(text))
+
+
+def _context():
     import yaml
+    from offload.engine.toolchains import registry
     local = {n for n, t in registry().toolchains.items() if t.machine == "tuolumne"}
     index = {e["file"]: e for e in yaml.safe_load((FINDINGS / "index.yaml").read_text())["findings"]}
-    jobs = []
-    for rel, sig in E.signatures(FINDINGS, CONTROLS).items():
-        if not E.wants_controls(sig) or (CONTROLS / E.job_slug(rel) / "report.md").exists():
-            continue
-        text = (FINDINGS / rel).read_text(errors="replace")
-        if sig is None and not any(r for r in E._parts_of(text, rel)):
-            continue                      # no offload region: nothing to measure
-        if "RESULT" not in text:
-            continue                      # not in the harness's form: no run of it can pass
-        named = E.named_compilers(index.get(rel), text)
-        if named is None:
-            continue
-        job = E.control_job(rel, R.evidence_for(rel, text).repro(), local, named)
-        if job:
-            jobs.append(job)
+    return index, local
+
+
+def queue() -> list[dict]:
+    index, local = _context()
+    jobs = [j for rel, sig in E.signatures(FINDINGS, CONTROLS).items()
+            if E.wants_controls(sig) and (j := _job_for(rel, index, local))]
     CONTROLS.mkdir(parents=True, exist_ok=True)
     QUEUE.write_text("".join(json.dumps(j) + "\n" for j in jobs))
     return jobs
 
 
-def run_controls(minutes: float, per_job: float) -> None:
+def run_controls(minutes: float, per_job: float, statements: bool = False, only=()) -> None:
     import subprocess
     import time
     stop = time.time() + minutes * 60
-    for ln in QUEUE.read_text().splitlines():
-        j = json.loads(ln)
-        out = CONTROLS / j["slug"]
+    if only:
+        index, local = _context()
+        jobs = [j for rel in sorted(only) if (j := _job_for(rel, index, local))]
+    else:
+        jobs = [json.loads(ln) for ln in QUEUE.read_text().splitlines()]
+    for j in jobs:
+        out = CONTROLS / j["slug"] / "statements" if statements else CONTROLS / j["slug"]
         if (out / "report.md").exists() or (out / "failed.txt").exists():
             continue
         if time.time() + per_job * 60 > stop:
@@ -170,7 +177,7 @@ def run_controls(minutes: float, per_job: float) -> None:
             return
         cmd = [sys.executable, "-I", str(ROOT / "tools" / "reduce.py"), "--program", str(FINDINGS / j["finding"]),
                "--name", Path(j["finding"]).stem, "--out", str(out), "--levels", "", "--max-controls", "12",
-               "--budget-minutes", str(per_job), "--repeats", "1"]
+               "--budget-minutes", str(per_job), "--repeats", "1"] + (["--statement-controls"] if statements else [])
         for t in j["targets"]:
             cmd += ["--target", t]
         if j.get("reference"):
@@ -262,6 +269,9 @@ def main(argv=None) -> int:
     cc = sub.add_parser("controls")
     cc.add_argument("--minutes", type=float, default=27)
     cc.add_argument("--per-job", type=float, default=4)
+    cc.add_argument("--statements", action="store_true",
+                    help="a second pass: controls may delete a statement or simplify an expression")
+    cc.add_argument("--only", nargs="*", default=[], help="these findings of the queue")
     a = ap.parse_args(argv)
     if a.cmd == "fetch":
         fetch(a.langs)
@@ -282,7 +292,7 @@ def main(argv=None) -> int:
         print(f"{n} commits checked, {g} gone; {LINKS.relative_to(ROOT)}")
         return 0
     if a.cmd == "controls":
-        run_controls(a.minutes, a.per_job)
+        run_controls(a.minutes, a.per_job, a.statements, set(a.only))
         return 0
     t = table()
     TABLE.write_text(render(t))

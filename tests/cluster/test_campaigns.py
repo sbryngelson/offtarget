@@ -2871,6 +2871,36 @@ def test_controls_filters_candidates_that_are_not_one_change(tmp_path):
         RD.unregister("two-change")
 
 
+def test_statement_controls_add_one_statement_edits_only_when_asked():
+    plain = [c.what for c in RD.control_candidates(PADDED, "f90")]
+    more = [c.what for c in RD.control_candidates(PADDED, "f90", statements=True)]
+    assert not any(w.startswith("delete statement") for w in plain)
+    assert any(w.startswith("delete statement") for w in more) and set(plain) <= set(more)
+    for c in RD.control_candidates(PADDED, "f90", statements=True):
+        assert RD.one_change(RD.render_lines(RD.logical_lines(PADDED, "f90"), "f90"), c.text), c.what
+
+
+def test_a_control_passes_only_where_the_reference_passes_it_too(tmp_path):
+    # a control that changes the expected value can agree with the wrong answer on the device;
+    # the reference's own run of it fails its check
+    rigged = _judge(tmp_path / "a", RD.FakeRunner(lambda t, g: "correct"),
+                    reference=RD.FakeReference(lambda text: (None, "the check fails on the host")))
+    ok, why, _, _ = rigged.passes(PADDED, "c1", with_reference=True)
+    assert not ok and "reference" in why
+    assert rigged.passes(PADDED, "c1b")[0]        # a directive edit leaves the host's computation alone
+    fine = _judge(tmp_path / "b", RD.FakeRunner(lambda t, g: "correct"))
+    assert fine.passes(PADDED, "c2", with_reference=True)[0]
+    # statement controls ask for it; directive controls do not
+    kept = RD.controls(PADDED, "f90", rigged, limit=50, statements=True)
+    assert kept and not any(c.what.startswith(("delete statement", "simplify")) for c in kept)
+
+
+def test_a_reference_that_cannot_build_the_model_is_a_refusal_not_a_crash():
+    ref = RD.HostReference("afar", [RD.Target("gcc", 0, "-O2")])
+    vals, why = ref.values("program p\n!$acc parallel\n!$acc end parallel\nend program p\n", "f90")
+    assert vals is None and "OpenACC" in why
+
+
 def test_the_order_seed_changes_the_candidate_order_not_the_result(tmp_path):
     seqs = {}
     for seed in (None, 3, 4):

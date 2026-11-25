@@ -87,6 +87,7 @@ def names(text: str, name: str) -> set:
         out |= set(re.findall(r"#\s*define\s+(\w+)", code))
         code = "\n".join(ln for ln in code.splitlines() if not ln.lstrip().startswith("#"))
         out |= set(re.findall(r"\}\s*([A-Za-z_]\w*)\s*[;,\[=]", code))
+        out |= set(re.findall(r"\(\s*\*\s*([A-Za-z_]\w*)\s*(?:\[[^\]]*\]\s*)*\)\s*\(", code))
         out |= set(re.findall(r"\b(?:struct|union|enum)\s+(\w+)", code))
         out |= set(re.findall(r"typedef\b[^;]*?\b(\w+)\s*;", code))
         out |= set(re.findall(r"(?:\.|->)\s*([A-Za-z_]\w*)", code))
@@ -155,8 +156,12 @@ def job_slug(rel: str) -> str:
 
 
 def _generated(rel: str, extra: Path | None) -> list[Path]:
-    d = extra / job_slug(rel) / "controls" if extra else None
-    return sorted(p for p in d.iterdir() if p.suffix in (".f90", ".c")) if d and d.is_dir() else []
+    """The generated controls of a finding: every controls/ directory under its own (a second
+    run, such as one with statement controls, writes beside the first)."""
+    d = extra / job_slug(rel) if extra else None
+    if not d or not d.is_dir():
+        return []
+    return sorted(p for p in d.rglob("*") if p.parent.name == "controls" and p.suffix in (".f90", ".c"))
 
 
 def signature(path: Path, root: Path, extra: Path | None = None) -> Signature | None:
@@ -251,7 +256,7 @@ def named_compilers(entry: dict | None, text: str) -> tuple[set, set | None] | N
     return tcs, modes or None
 
 
-def control_job(rel: str, obs, local, named=None) -> dict | None:
+def control_job(rel: str, obs, local, named=None, model: str = "omp") -> dict | None:
     """Where to make a finding's controls: the local toolchain and memory mode it is recorded
     failing on most often, among the ones it names (`named`: toolchains, modes), with a host run
     of a correct toolchain of another family as the output reference."""
@@ -266,6 +271,9 @@ def control_job(rel: str, obs, local, named=None) -> dict | None:
     (tc, mode), _ = fails.most_common(1)[0]
     good = Counter(o.tc for o in obs if o.passed and o.tc in local and family_of(o.tc) != family_of(tc))
     bad = {o.tc for o in obs if o.failed}
+    if model == "acc":                 # AFAR has no OpenACC: it cannot be an OpenACC program's reference
+        good = Counter({t: n for t, n in good.items() if family_of(t) != "afar"})
+        bad |= {t for t in local if family_of(t) == "afar"}
     ref = (good.most_common(1)[0][0] if good else
            next((t for t in sorted(local) if family_of(t) != family_of(tc) and t not in bad), None))
     return {"finding": rel, "slug": job_slug(rel), "targets": [f"{tc}/{mode}"],

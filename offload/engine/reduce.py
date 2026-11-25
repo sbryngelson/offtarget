@@ -1447,6 +1447,10 @@ class HostReference:
         if tc.lang != lang_:
             tc = dataclasses.replace(tc, lang=lang_)
         tc = dataclasses.replace(tc, model=model_of(text))
+        try:
+            tc.flags()
+        except ValueError as e:              # the reference cannot build this model or language
+            return None, f"reference {self.toolchain}: {e}"
         mode = tc.xnack_modes[0]
         tc = tc.for_mode(mode)
         tmp = Path(tempfile.mkdtemp(prefix="reduce_ref_"))
@@ -1938,12 +1942,21 @@ class Judge:
                     f.write(json.dumps(row) + "\n")
         return row
 
-    def passes(self, text: str, program_id: str, targets=None) -> tuple[bool, str, list[str], list[dict]]:
+    def passes(self, text: str, program_id: str, targets=None,
+               with_reference: bool = False) -> tuple[bool, str, list[str], list[dict]]:
         """(passes everywhere, why not, the targets it passed on, the rows):
-        legal, with a reference, and correct_on_device on every target."""
+        legal, with a reference, correct_on_device on every target, and, `with_reference`,
+        passing the output oracle's own run too (a control that changes a statement can
+        change the expected value until it agrees with a wrong answer on the device)."""
         prepared, why = self._check_text(text)
         if prepared is None:
             return False, why, [], []
+        if with_reference:
+            if self.reference is None:
+                return False, "a statement control needs an output oracle (--reference)", [], []
+            ref, why = self.reference.values(text, self.lang)
+            if ref is None:
+                return False, f"reference {self.reference.name}: {why}"[:300], [], []
         passed, rows, bad = [], [], ""
         for t in (targets if targets is not None else self.targets + self.verify_targets):
             row = self.run(prepared, t, program_id)
@@ -2234,12 +2247,19 @@ def one_change(a: str, b: str) -> str | None:
     return None
 
 
-def control_candidates(text: str, lang: str) -> list[Candidate]:
+_STATEMENT_STEPS = ("statement", "expression")
+_STATEMENT_EDITS = ("delete statement", "simplify")
+
+
+def control_candidates(text: str, lang: str, statements: bool = False) -> list[Candidate]:
     """One-change edits of the directives of a program (the steps marked
-    ``controls``), distinct and different from it."""
+    ``controls``), distinct and different from it; with `statements`, also one
+    statement deleted or one expression simplified (a trigger in the base
+    language, offload.engine.exposure)."""
     L = logical_lines(text, lang)
     base = render_lines(L, lang)
-    ss = [s for s in STEPS if s.controls and s.applies(text, lang)]
+    ss = [s for s in STEPS if (s.controls or (statements and s.name in _STATEMENT_STEPS))
+          and s.applies(text, lang)]
     out, seen = [], {text, base}
     for s in sorted(ss, key=lambda s: (s.level, STEPS.index(s))):
         for c in s.fn(text, lang):
@@ -2256,16 +2276,19 @@ def _slug(what: str) -> str:
     return w[:40].rstrip("-")
 
 
-def controls(text: str, lang: str, judge: Judge, limit: int = 4, name: str = "reduce") -> list[Control]:
+def controls(text: str, lang: str, judge: Judge, limit: int = 4, name: str = "reduce",
+             statements: bool = False) -> list[Control]:
     """The one-change controls of a reduced program that are legal and
     pass on every target and verify target of the judge; at most `limit`,
-    in step order (a clause, an item or a modifier first)."""
+    in step order (a clause, an item or a modifier first); `statements` as in
+    control_candidates."""
     out, used = [], set()
-    for c in control_candidates(text, lang):
+    for c in control_candidates(text, lang, statements):
         slug = _slug(c.what)
         pid = f"{name}-{slug}-control"
         try:
-            ok, why, passed, rows = judge.passes(c.text, pid)
+            ok, why, passed, rows = judge.passes(c.text, pid,
+                                                 with_reference=c.what.startswith(_STATEMENT_EDITS))
         except BudgetExhausted as e:
             judge.log(str(e))
             break
