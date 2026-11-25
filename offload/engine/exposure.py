@@ -27,6 +27,7 @@ class Part:
     features: frozenset                         # on one region
     words: frozenset = frozenset()              # minimal: in that region; controls: in the file
     file_features: frozenset = frozenset()      # on any directive of the file
+    detail: frozenset = frozenset()             # resemblance: the types and attributes the region uses
 
 
 @dataclass
@@ -46,6 +47,7 @@ class Record:
     lines: tuple = ()                  # each region's first line
     sha: str = ""                      # the commit the file was taken from
     stars: int = 0
+    details: tuple = ()                # each region's types and attributes (usage.Region.detail)
 
 
 def _is_c(name: str) -> bool:
@@ -213,8 +215,11 @@ def signatures(root: Path, extra: Path | None = None) -> dict:
 def ingredients(sig: Signature) -> int:
     """How many proven ingredients beyond the directive names a signature has."""
     ps = sig.parts if sig.kind == "minimal" else sig.requirements
-    return sum(sum(1 for x in p.features if not x.startswith("dir:")) + len(p.words)
-               + len(p.file_features) for p in ps)
+    seen = set()          # the same ingredient proven by two controls is one ingredient
+    for p in ps:
+        seen |= {x for x in p.features if not x.startswith("dir:")} | {("word", w) for w in p.words}
+        seen |= {("file", x) for x in p.file_features}
+    return len(seen)
 
 
 def measurable(sig: Signature | None) -> bool:
@@ -285,7 +290,64 @@ def record(text: str, path: str, repo: str, sha: str = "", stars: int = 0) -> Re
     regs = fs.regions if fs else []
     return Record(repo, path, [(frozenset(r.features), frozenset(r.words)) for r in regs],
                   frozenset(U.code_words(_code(text, path))), _directive_features(fs),
-                  tuple(r.line for r in regs), sha, stars or 0)
+                  tuple(r.line for r in regs), sha, stars or 0, tuple(frozenset(r.detail) for r in regs))
+
+
+def unharnessed(text: str) -> str:
+    """The program without its self-check's host-execution flag: the lines that set it gone, and
+    its name gone from the directives' lists (a list left empty takes its clause with it)."""
+    from offload.engine import reduce as RD
+    flags = RD.flag_names(text)
+    if not flags:
+        return text
+    alt = "|".join(map(re.escape, sorted(flags)))
+    out = []
+    for ln in text.splitlines():
+        if RD.DEVICE_FLAG.search(ln) and not re.match(r"\s*(use\s|#\s*include)", ln):
+            continue
+        if re.match(r"\s*(!\$(omp|acc)|#\s*pragma)", ln, re.I):
+            ln = re.sub(rf"(?<=[(,])\s*(?:{alt})\s*(?=[,)])", "", ln, flags=re.I)
+            ln = re.sub(r"\(\s*,", "(", re.sub(r",\s*,", ",", re.sub(r",\s*\)", ")", ln)))
+            ln = re.sub(r"\b\w+\s*\(\s*(?:\w+\s*:)?\s*\)", "", ln)
+        out.append(ln)
+    return "\n".join(out) + "\n"
+
+
+def resemblance(path: Path) -> list[Part]:
+    """What a file closely resembling the finding's program has: for each of its offload regions
+    (its self-check's flag left out), one region with all its features and the types and
+    attributes of the data it uses. Not proven necessary: a description of the reproducer, not of
+    the trigger."""
+    text = unharnessed(path.read_text(errors="replace"))
+    fs = _scan(text, path.name)
+    return [Part(frozenset(r.features), detail=frozenset(r.detail))
+            for r in (fs.regions if fs else []) if r.features and r.words]
+
+
+def resembles(parts: list[Part], rec: Record) -> bool:
+    det = rec.details or tuple(frozenset() for _ in rec.regions)
+    return bool(parts) and all(any(p.features <= f and p.words <= w and p.detail <= d
+                                   for (f, w), d in zip(rec.regions, det)) for p in parts)
+
+
+def count_similar(sims: dict, records) -> dict:
+    """Finding to the distinct repositories and files that closely resemble its program."""
+    out = {}
+    recs = _distinct(records)
+    for name, parts in sims.items():
+        hit = [r for r in recs if resembles(parts, r)]
+        out[name] = {"repos": len({r.repo for r in hit}), "files": len(hit)}
+    return out
+
+
+def _distinct(records) -> list:
+    seen, recs = set(), []
+    for r in records:
+        key = (tuple(sorted(map(str, r.regions))), r.words)
+        if key not in seen:
+            seen.add(key)
+            recs.append(r)
+    return recs
 
 
 _COMPILER_TREE = re.compile(r"(^|/)(clang|llvm|flang|mlir|openmp|libomptarget|libgomp|compiler-rt|polly)/")
@@ -332,12 +394,7 @@ def count(sigs: dict, records, examples: int = 0, gone=frozenset()) -> dict:
     """Finding to the distinct repositories and files exposed (copies once), and with `examples`
     up to that many pinned links to matching files, one a repository, most stars first,
     none in a repository of `gone` (deleted since the snapshot)."""
-    seen, recs = set(), []
-    for r in records:
-        key = (tuple(sorted(map(str, r.regions))), r.words)
-        if key not in seen:
-            seen.add(key)
-            recs.append(r)
+    recs = _distinct(records)
     out = {}
     for name, s in sigs.items():
         if s is not None:

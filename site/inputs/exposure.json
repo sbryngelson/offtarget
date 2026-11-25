@@ -19,13 +19,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-c-lastprivate-distribute-parallel-for-small-type.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-c-teams-distribute-reduction-first-team.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 14,
+    "repos": 12
+   }
   },
   "afar-c-update-iterator-copy-mode.c": {
    "files": 0,
@@ -43,13 +55,21 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "afar-c-xnack1-target-is-present.c": {
    "measurable": false
   },
   "afar-cce19-character-defaultmap.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-cce19-task-in-target-ice.f90": {
    "examples": [],
@@ -70,7 +90,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-clang-requires-device-safesync-hang.c": {
    "measurable": false
@@ -90,7 +114,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-flang-loop-bind-teams-reduction.f90": {
    "files": 0,
@@ -109,7 +137,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-flang-task-reduction-max.f90": {
    "examples": [],
@@ -132,7 +164,11 @@
       "max"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-flang-thread-limit-target-parallel-do.f90": {
    "files": 0,
@@ -151,7 +187,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-linear-ref-omp50.f90": {
    "measurable": false
@@ -173,12 +213,15 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-nontemporal-assumed-shape-ice.f90": {
-   "examples": [],
    "files": 0,
-   "ingredients": 3,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -222,7 +265,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-udr-derived-type-link.f90": {
    "examples": [],
@@ -250,7 +297,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-xnack1-atomic-min-nested-parallel.f90": {
    "examples": [],
@@ -276,28 +327,56 @@
       "allocate"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-xnack1-present-not-enforced.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "afar-xnack1-target-is-present.f90": {
    "measurable": false
   },
   "apps/afar-cce-teams-private-array-nested-parallel-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "apps/cce20-device-link-infer-address-spaces-crash.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "apps/cce21-device-link-agpr-copy-mfma-assert.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "apps/cce21-private-array-loaded-subscript-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "apps/clang-c-loop-bind-teams-reduction-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "apps/gcc-acc-c-tile-partial-tiles-wrong.c": {
    "files": 3,
@@ -315,7 +394,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "apps/gcc-acc-tile-partial-tiles-wrong.f90": {
    "files": 3,
@@ -333,10 +416,18 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-c-complex-reduction-link.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-c-critical-hint-link.c": {
    "files": 0,
@@ -356,12 +447,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-c-ordered-doacross-link.c": {
    "examples": [],
    "files": 0,
-   "ingredients": 6,
+   "ingredients": 4,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -399,12 +494,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-c-reduction-task-link.c": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -433,7 +532,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-absent-optional-target-crash.f90": {
    "examples": [],
@@ -458,16 +561,32 @@
       "then"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-critical-target-parallel-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-deprecated-minus-reduction-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-dist-schedule-chunk.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-linear-parallel-ice.f90": {
    "examples": [],
@@ -499,19 +618,15 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-linear-ref-assumed-shape-rejected.f90": {
-   "examples": [
-    {
-     "line": 26,
-     "path": "t-for/test.c",
-     "repo": "tob2/omptests",
-     "url": "https://github.com/tob2/omptests/blob/9b855f8ee079bb84956733f8d9279a7178f0d8e1/t-for/test.c#L26"
-    }
-   ],
    "files": 1,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 1,
@@ -534,7 +649,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-named-critical-link.f90": {
    "examples": [],
@@ -562,19 +681,15 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-nowait-combined-target-rejected.f90": {
-   "examples": [
-    {
-     "line": 109,
-     "path": "studies/aomp/fortran/simple_offload.f95",
-     "repo": "ROCmSoftwarePlatform/gpufort",
-     "url": "https://github.com/ROCmSoftwarePlatform/gpufort/blob/b3d392cf28200cd9b3b2f77689d5a81176b3ec42/studies/aomp/fortran/simple_offload.f95#L109"
-    }
-   ],
    "files": 1,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 1,
@@ -636,7 +751,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-ordered-wrong.f90": {
    "examples": [],
@@ -669,7 +788,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-reduction-minus-rejected.f90": {
    "files": 0,
@@ -686,12 +809,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-reduction-task-ice.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -720,7 +847,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-sections-in-target-ice.f90": {
    "examples": [],
@@ -746,7 +877,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/afar-flang-workdistribute-ice.f90": {
    "examples": [],
@@ -768,7 +903,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/c-allocate-const-mem-firstprivate-wrong.c": {
    "examples": [],
@@ -797,7 +936,11 @@
       "uses_allocators"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-acc-allocate-in-compute-crash.f90": {
    "examples": [],
@@ -818,43 +961,15 @@
       "deallocate"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-acc-character-dummy-routine-ice.f90": {
-   "examples": [
-    {
-     "line": 7,
-     "path": "indevelopment/module8/English/C/base/dot_acc.c",
-     "repo": "mozhgan-kch/openacc-training-materials",
-     "url": "https://github.com/mozhgan-kch/openacc-training-materials/blob/099643c50f41415943035daa64a698db7b45e409/indevelopment/module8/English/C/base/dot_acc.c#L7"
-    },
-    {
-     "line": 31,
-     "path": "Code_Examples/Chapter_02/area.acc.c",
-     "repo": "OpenACCUserGroup/openacc_concept_strategies_book",
-     "url": "https://github.com/OpenACCUserGroup/openacc_concept_strategies_book/blob/7547260d6d845d34b1f28bbb64ab93226c705207/Code_Examples/Chapter_02/area.acc.c#L31"
-    },
-    {
-     "line": 420,
-     "path": "src/vof.f90",
-     "repo": "nscapin/FluTAS",
-     "url": "https://github.com/nscapin/FluTAS/blob/207df6f2a35ddd03c3f647a37c665b6b5d6b4302/src/vof.f90#L420"
-    },
-    {
-     "line": 466,
-     "path": "Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90",
-     "repo": "sailoridy/MAESTRO",
-     "url": "https://github.com/sailoridy/MAESTRO/blob/f957d148d2028324a2a1076be244f73dad63fd67/Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90#L466"
-    },
-    {
-     "line": 18,
-     "path": "atomic_op/atomic_op.f90",
-     "repo": "jeng1220/fortran_study",
-     "url": "https://github.com/jeng1220/fortran_study/blob/08e0b68f884ab82ebbd2d68292ea3e41ad44a00c/atomic_op/atomic_op.f90#L18"
-    }
-   ],
    "files": 56,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 35,
@@ -877,10 +992,18 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-acc-loop-seq-in-routine-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-acc-stop-in-compute-crash.f90": {
    "files": 28,
@@ -899,7 +1022,11 @@
       "stop"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "catalog/cce-allocators-stack-ice.f90": {
    "examples": [],
@@ -922,10 +1049,18 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-atomic-default-mem-order-acquire-release-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-allocate-align-link.c": {
    "examples": [],
@@ -950,7 +1085,11 @@
       "allocator"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-allocate-allocator-modifier-rejected.c": {
    "examples": [],
@@ -973,13 +1112,25 @@
       "allocator"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-device-type-directive-name-ice.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/cce-c-dist-schedule-chunk.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-f-pointer-device-link.f90": {
    "examples": [],
@@ -1001,10 +1152,18 @@
       "call"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-lastprivate-parallel-in-seq-loop-wrong.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-long-double-ice.c": {
    "examples": [
@@ -1035,7 +1194,11 @@
       "long"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/cce-c-map-iterator-ice.c": {
    "files": 0,
@@ -1053,7 +1216,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/cce-c-motion-iterator-rejected.c": {
    "files": 0,
@@ -1071,12 +1238,16 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/cce-c-ordered-doacross-link.c": {
    "examples": [],
    "files": 0,
-   "ingredients": 6,
+   "ingredients": 4,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -1114,7 +1285,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-ordered-link.c": {
    "examples": [],
@@ -1150,10 +1325,18 @@
       "tofrom"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-recursive-function-ice.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/cce-c-reduction-inscan-ice.c": {
    "examples": [],
@@ -1188,12 +1371,16 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-reduction-task-link.c": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -1222,7 +1409,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-sections-in-target-wrong.c": {
    "examples": [],
@@ -1249,7 +1440,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-single-masked-task-link.c": {
    "examples": [
@@ -1280,7 +1475,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/cce-c-task-in-target-link.c": {
    "examples": [],
@@ -1312,7 +1511,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-c-uses-allocators-traits-rejected.c": {
    "examples": [],
@@ -1336,7 +1539,11 @@
       "uses_allocators"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-flang-allocate-const-mem-ice.f90": {
    "examples": [],
@@ -1361,7 +1568,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-flang-allocate-in-target-crash.f90": {
    "examples": [
@@ -1413,10 +1624,18 @@
       "deallocate"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-flang-stop-in-target-crash.f90": {
    "files": 3,
@@ -1438,7 +1657,11 @@
       "stop"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-iterator-link.f90": {
    "files": 0,
@@ -1456,7 +1679,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-linear-lastprivate-ice.f90": {
    "examples": [],
@@ -1488,10 +1715,18 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-nohost-link.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-reduction-inscan-ice.f90": {
    "examples": [],
@@ -1526,7 +1761,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce-reduction-task-link.f90": {
    "files": 0,
@@ -1546,7 +1785,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce19-reduction-task-addrspacecast-ice.f90": {
    "files": 0,
@@ -1566,7 +1809,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce20-c-defaultmap-private-storage-rejected.c": {
    "files": 0,
@@ -1583,7 +1830,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce20-map-self-rejected.f90": {
    "files": 0,
@@ -1601,7 +1852,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/cce21-c-declare-target-local-rejected.c": {
    "files": 0,
@@ -1619,10 +1874,18 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/cce21-c-target-loop-ice.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/defaultmap-present-private-array-abort.f90": {
    "examples": [],
@@ -1645,7 +1908,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "catalog/nvhpc-acc-associate-illegal-address.f90": {
    "files": 2,
@@ -1664,10 +1931,18 @@
       "associate"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "catalog/nvhpc-c-function-pointer-kernel-missing.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/nvhpc-c-long-double-kernel-missing.c": {
    "examples": [
@@ -1698,7 +1973,11 @@
       "long"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/nvhpc-c-static-local-kernel-missing.c": {
    "files": 90,
@@ -1716,19 +1995,39 @@
       "static"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 11,
+    "repos": 10
+   }
   },
   "catalog/nvhpc-c-vla-kernel-missing.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "catalog/nvhpc-flang-type-bound-kernel-missing.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce-acc-init-set-runtime-assert.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "cce-acc-reduction-200-int8-scalars-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 21,
+    "repos": 16
+   }
   },
   "cce-acc-routine-bind-module-ice.f90": {
    "examples": [
@@ -1781,7 +2080,11 @@
       "use"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "cce-acc-self-condition-ignored.f90": {
    "measurable": false
@@ -1816,10 +2119,18 @@
       "static"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce-c-map-delete-refcount.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "cce-c-map-present-assert.c": {
    "examples": [],
@@ -1839,15 +2150,23 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce-c-openmp45-device-link.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 76,
+    "repos": 40
+   }
   },
   "cce-c-parallel-for-in-target.c": {
    "examples": [],
    "files": 0,
-   "ingredients": 9,
+   "ingredients": 5,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -1889,7 +2208,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce-defaultmap-tofrom-explicit-map.f90": {
    "examples": [
@@ -1921,31 +2244,59 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce-mapper-next-map-copy-back.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce-trim-merge-output-one-character.f90": {
    "measurable": false
   },
   "cce-uses-allocators-traits-omp50.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce19-acc-if-false-link.f90": {
    "measurable": false
   },
   "cce19-c-reduction-63-scalars-one-wrong.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 54,
+    "repos": 29
+   }
   },
   "cce19-target-parallel-guarded-loop.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce19-target-parallel-single-ice.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce21-alloc-2e32-sum-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce21-defaultmap-aggregate-flag.f90": {
    "examples": [],
@@ -1964,10 +2315,18 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce21-in-reduction-assumed-shape-write-lost.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce21-in-reduction-taskwait-link.f90": {
    "examples": [],
@@ -1989,7 +2348,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "cce21-linear-modifier-default-none.f90": {
    "examples": [],
@@ -2012,7 +2375,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "clang-c-declare-target-to-omp52.c": {
    "files": 65,
@@ -2030,15 +2397,18 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "clang-c-linear-directive-name-hang.c": {
    "measurable": false
   },
   "clang-c-map-iterator-omp51.c": {
-   "examples": [],
    "files": 0,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -2061,7 +2431,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 29,
+    "repos": 17
+   }
   },
   "clang-c-shared-declare-target-combined.c": {
    "files": 0,
@@ -2080,10 +2454,18 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "dataenv/cce-value-dummy-target-write-visible.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "defaultmap-none-loop-variable.f90": {
    "examples": [],
@@ -2102,7 +2484,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fortran-loop-bind-thread-in-parallel.f90": {
    "files": 0,
@@ -2121,13 +2507,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fortran-schedule-static-in-target.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fresh/cce-common-block-name-in-map-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "fresh/cce-if-stop-in-target-ice-one-condition.f90": {
    "files": 29,
@@ -2145,7 +2543,11 @@
       "stop"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 8,
+    "repos": 8
+   }
   },
   "fresh/cce-if-stop-in-target-ice.f90": {
    "files": 29,
@@ -2163,16 +2565,32 @@
       "stop"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 8,
+    "repos": 8
+   }
   },
   "fresh/cce-list-directed-print-in-target-copy-crash.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 803,
+    "repos": 179
+   }
   },
   "fresh/cce19-acc-automatic-array-copyout-copy-crash.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 8,
+    "repos": 8
+   }
   },
   "fresh/cce21-combined-if-runtime-expr-loop-skipped.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fresh/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90": {
    "files": 16,
@@ -2190,10 +2608,18 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fresh/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/1131-afar.f90": {
    "examples": [],
@@ -2238,7 +2664,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/14-cce20.f90": {
    "examples": [],
@@ -2268,7 +2698,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/1505-cce20.f90": {
    "examples": [],
@@ -2298,7 +2732,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/1540-afar.f90": {
    "examples": [],
@@ -2321,7 +2759,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/158-afar.f90": {
    "examples": [],
@@ -2367,7 +2809,11 @@
       "then"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 12,
+    "repos": 8
+   }
   },
   "fuzz/1644-cce21.f90": {
    "examples": [],
@@ -2391,7 +2837,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/165-cce19.f90": {
    "examples": [],
@@ -2418,7 +2868,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/1749-cce20.f90": {
    "examples": [],
@@ -2445,7 +2899,11 @@
       "then"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 6,
+    "repos": 6
+   }
   },
   "fuzz/1936-afar.f90": {
    "examples": [],
@@ -2473,7 +2931,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/1978-cce19.f90": {
    "examples": [],
@@ -2499,7 +2961,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/2014-cce19.f90": {
    "examples": [],
@@ -2525,7 +2991,11 @@
       "then"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 6,
+    "repos": 6
+   }
   },
   "fuzz/2224-cce19.f90": {
    "examples": [],
@@ -2567,7 +3037,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/536-cce19.f90": {
    "examples": [],
@@ -2592,7 +3066,11 @@
       "then"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 4,
+    "repos": 4
+   }
   },
   "fuzz/591-cce19.f90": {
    "examples": [],
@@ -2618,7 +3096,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/650-afar.f90": {
    "examples": [],
@@ -2649,7 +3131,11 @@
       "program"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "fuzz/698-afar.f90": {
    "examples": [],
@@ -2687,7 +3173,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/700-afar.f90": {
    "examples": [
@@ -2719,7 +3209,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "fuzz/775-cce21.f90": {
    "examples": [],
@@ -2747,7 +3241,11 @@
       "then"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/87-afar.f90": {
    "examples": [
@@ -2780,7 +3278,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "fuzz/916-afar.f90": {
    "examples": [],
@@ -2810,7 +3312,11 @@
       "iand"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/958-cce20.f90": {
    "examples": [],
@@ -2835,7 +3341,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/98-cce19.f90": {
    "examples": [],
@@ -2859,7 +3369,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b1-121-afar.f90": {
    "examples": [],
@@ -2913,7 +3427,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b1-22-cce20.f90": {
    "examples": [],
@@ -2940,7 +3458,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b1-231-afar.f90": {
    "examples": [],
@@ -2969,7 +3491,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b1-268-afar.f90": {
    "examples": [
@@ -3003,7 +3529,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "fuzz/b2-183-afar.f90": {
    "examples": [],
@@ -3034,7 +3564,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b2-209-cce19.f90": {
    "examples": [],
@@ -3059,7 +3593,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b2-213-afar.f90": {
    "examples": [],
@@ -3090,7 +3628,11 @@
       "ieor"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b2-52-afar.f90": {
    "examples": [
@@ -3122,7 +3664,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "fuzz/b2-68-afar.f90": {
    "examples": [],
@@ -3151,7 +3697,11 @@
       "omp_is_initial_device"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b2-85-cce20.f90": {
    "examples": [],
@@ -3183,7 +3733,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-188-cce19.f90": {
    "examples": [],
@@ -3209,7 +3763,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-190-cce21.f90": {
    "examples": [
@@ -3239,7 +3797,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-197-cce19.f90": {
    "examples": [],
@@ -3267,7 +3829,11 @@
       "omp_is_initial_device"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-250-cce20.f90": {
    "examples": [],
@@ -3293,7 +3859,11 @@
       "omp_is_initial_device"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-278-cce19.f90": {
    "examples": [],
@@ -3319,7 +3889,11 @@
       "max"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-45-cce21.f90": {
    "examples": [
@@ -3351,7 +3925,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-54-afar.f90": {
    "examples": [
@@ -3427,7 +4005,11 @@
       "omp_is_initial_device"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-9-afar.f90": {
    "examples": [],
@@ -3449,7 +4031,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-9-cce21.f90": {
    "examples": [],
@@ -3474,7 +4060,11 @@
       "end"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b3-94-afar.f90": {
    "examples": [],
@@ -3504,12 +4094,16 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b4-39-afar.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 18,
+   "ingredients": 16,
    "kind": "minimal",
    "measurable": true,
    "repos": 0,
@@ -3551,7 +4145,11 @@
       "mod"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/b4-86-cce19.f90": {
    "examples": [],
@@ -3578,43 +4176,15 @@
       "omp_is_initial_device"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce-acc-kernels-nested-loop-reduction-lost.f90": {
-   "examples": [
-    {
-     "line": 72,
-     "path": "posts/openacc-unified-memory-jacobi/laplace2d.c",
-     "repo": "jordiblasco/code-samples",
-     "url": "https://github.com/jordiblasco/code-samples/blob/0754981b37b343474c45222ea487c9667551e854/posts/openacc-unified-memory-jacobi/laplace2d.c#L72"
-    },
-    {
-     "line": 10,
-     "path": "Code_Examples/Chapter_03/gol_ex3_data.c",
-     "repo": "OpenACCUserGroup/openacc_concept_strategies_book",
-     "url": "https://github.com/OpenACCUserGroup/openacc_concept_strategies_book/blob/7547260d6d845d34b1f28bbb64ab93226c705207/Code_Examples/Chapter_03/gol_ex3_data.c#L10"
-    },
-    {
-     "line": 101,
-     "path": "Util/VBDF/dev/omp_vode/ignition_simple_bdf/f_rhs.f90",
-     "repo": "sailoridy/MAESTRO",
-     "url": "https://github.com/sailoridy/MAESTRO/blob/f957d148d2028324a2a1076be244f73dad63fd67/Util/VBDF/dev/omp_vode/ignition_simple_bdf/f_rhs.f90#L101"
-    },
-    {
-     "line": 1298,
-     "path": "level1.c",
-     "repo": "EPCCed/epcc-openacc-benchmarks",
-     "url": "https://github.com/EPCCed/epcc-openacc-benchmarks/blob/3f91c5bb2cba810572f237ce0e62e09b3d364082/level1.c#L1298"
-    },
-    {
-     "line": 87,
-     "path": "OpenACC/Lapalace2d/laplace2d_test.c",
-     "repo": "cheryli/parallel",
-     "url": "https://github.com/cheryli/parallel/blob/a6b3f3ea479e64476a56f08e8c9e28c632a1b68b/OpenACC/Lapalace2d/laplace2d_test.c#L87"
-    }
-   ],
    "files": 79,
-   "ingredients": 5,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 36,
@@ -3664,43 +4234,15 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce-acc-parallel-and-gang-loop-reduction-lost.f90": {
-   "examples": [
-    {
-     "line": 7,
-     "path": "indevelopment/module8/English/C/base/dot_acc.c",
-     "repo": "mozhgan-kch/openacc-training-materials",
-     "url": "https://github.com/mozhgan-kch/openacc-training-materials/blob/099643c50f41415943035daa64a698db7b45e409/indevelopment/module8/English/C/base/dot_acc.c#L7"
-    },
-    {
-     "line": 48,
-     "path": "examples/polynomial/polynomial.f90",
-     "repo": "alexeedm/pytorch-fortran",
-     "url": "https://github.com/alexeedm/pytorch-fortran/blob/cd4334a0f1bfbd87402a2dd1fa43f41c2a1cd150/examples/polynomial/polynomial.f90#L48"
-    },
-    {
-     "line": 45,
-     "path": "Code_Examples/Chapter_10/filter.c",
-     "repo": "OpenACCUserGroup/openacc_concept_strategies_book",
-     "url": "https://github.com/OpenACCUserGroup/openacc_concept_strategies_book/blob/7547260d6d845d34b1f28bbb64ab93226c705207/Code_Examples/Chapter_10/filter.c#L45"
-    },
-    {
-     "line": 466,
-     "path": "Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90",
-     "repo": "sailoridy/MAESTRO",
-     "url": "https://github.com/sailoridy/MAESTRO/blob/f957d148d2028324a2a1076be244f73dad63fd67/Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90#L466"
-    },
-    {
-     "line": 17,
-     "path": "alternative_nested_parallelism/alternative_nested_parallelism.f90",
-     "repo": "jeng1220/fortran_study",
-     "url": "https://github.com/jeng1220/fortran_study/blob/08e0b68f884ab82ebbd2d68292ea3e41ad44a00c/alternative_nested_parallelism/alternative_nested_parallelism.f90#L17"
-    }
-   ],
    "files": 60,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 38,
@@ -3723,19 +4265,15 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "fuzz/cce-c-simd-if-variable-ice.c": {
-   "examples": [
-    {
-     "line": 35,
-     "path": "examples/single-source/main.cpp",
-     "repo": "Pennycook/code-base-investigator",
-     "url": "https://github.com/Pennycook/code-base-investigator/blob/1673301553100f567ab4140ab27f7417d84e3f08/examples/single-source/main.cpp#L35"
-    }
-   ],
    "files": 1,
-   "ingredients": 3,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 1,
@@ -3767,13 +4305,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce19-collapse-defaultmap-device-run-error.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce19-declare-target-abort.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 8,
+    "repos": 8
+   }
   },
   "fuzz/cce19-masked-target-parallel-rejected.c": {
    "measurable": false
@@ -3781,7 +4331,7 @@
   "fuzz/cce19-parallel-loop-if-default-rejected.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 6,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -3828,43 +4378,15 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce19-schedule-distribute-for-rejected.c": {
-   "examples": [
-    {
-     "line": 65,
-     "path": "include/RAJA/policy/openmp_target/forall.hpp",
-     "repo": "researchapps/RAJA",
-     "url": "https://github.com/researchapps/RAJA/blob/122fa519ebc84f1ed114b70444fb807bd8e4efa9/include/RAJA/policy/openmp_target/forall.hpp#L65"
-    },
-    {
-     "line": 101,
-     "path": "DirectProgramming/C++/StructuredGrids/iso3dfd_omp_offload/src/iso3dfd.cpp",
-     "repo": "tiwaria1/oneAPI-samples",
-     "url": "https://github.com/tiwaria1/oneAPI-samples/blob/18310adf63c7780715f24034acfb0bf01d15521f/DirectProgramming/C++/StructuredGrids/iso3dfd_omp_offload/src/iso3dfd.cpp#L101"
-    },
-    {
-     "line": 50,
-     "path": "src/C-interface/ellpack/bml_copy_ellpack_typed.c",
-     "repo": "nicolasbock/bml",
-     "url": "https://github.com/nicolasbock/bml/blob/ea763bd3fc97ff71fa7f01118f8bacae477bc9fe/src/C-interface/ellpack/bml_copy_ellpack_typed.c#L50"
-    },
-    {
-     "line": 1293,
-     "path": "src/nvector/openmpdev/nvector_openmpdev.c",
-     "repo": "steinitznavican/sundials",
-     "url": "https://github.com/steinitznavican/sundials/blob/1a5e4110b2b19f7b0e35933343ad83405908fa67/src/nvector/openmpdev/nvector_openmpdev.c#L1293"
-    },
-    {
-     "line": 5,
-     "path": "PWR013/example-omp.c",
-     "repo": "teamappentra/check-examples",
-     "url": "https://github.com/teamappentra/check-examples/blob/fcd6449b9fb4b17eee645754dbc5e3dd6c2c2a2f/PWR013/example-omp.c#L5"
-    }
-   ],
    "files": 28,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 16,
@@ -3891,13 +4413,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce20-if-num-threads-reduction-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce21-declare-target-parallel-run-error.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce21-defaultmap-device-dist-schedule-abort.f90": {
    "examples": [],
@@ -3921,7 +4455,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce21-defaultmap-wrong.f90": {
    "examples": [],
@@ -3940,7 +4478,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce21-if-declare-target-parallel-wrong.f90": {
    "files": 1,
@@ -3968,12 +4510,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/cce21-target-teams-if-pointer-write-lost.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4014,43 +4560,15 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-acc-async-kernels-reduction-lost.f90": {
-   "examples": [
-    {
-     "line": 2454,
-     "path": "src/share/mod_comm.f90",
-     "repo": "hisashiyashiro/nicamdc",
-     "url": "https://github.com/hisashiyashiro/nicamdc/blob/90ac760804a2e81fd4453a33351787e448433ce7/src/share/mod_comm.f90#L2454"
-    },
-    {
-     "line": 26,
-     "path": "src/kernels/atan/atan_pc.c",
-     "repo": "RTSandberg/BaryTree",
-     "url": "https://github.com/RTSandberg/BaryTree/blob/ee801ace5b0dcc3a15e1949735a311f300026e74/src/kernels/atan/atan_pc.c#L26"
-    },
-    {
-     "line": 181,
-     "path": "src/interaction_compute/interaction_compute_downpass.c",
-     "repo": "dylansheils/BaryTree",
-     "url": "https://github.com/dylansheils/BaryTree/blob/650632ef93607ad0b9b72db798164a683846b851/src/interaction_compute/interaction_compute_downpass.c#L181"
-    },
-    {
-     "line": 438,
-     "path": "scale-gm/src/atmos-gm/dynamics/mod_dynamics.f90",
-     "repo": "Shima-Lab/SCALE-SDM_mixed-phase_Shima2019",
-     "url": "https://github.com/Shima-Lab/SCALE-SDM_mixed-phase_Shima2019/blob/4eaf4f74aa03d091d9778eff373b816f178a962f/scale-gm/src/atmos-gm/dynamics/mod_dynamics.f90#L438"
-    },
-    {
-     "line": 438,
-     "path": "src/clusters/clusters.c",
-     "repo": "eaitchison/modified_barytree",
-     "url": "https://github.com/eaitchison/modified_barytree/blob/b155bdc5b46dfcca566ee69341147b90cab4cde4/src/clusters/clusters.c#L438"
-    }
-   ],
    "files": 24,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 7,
@@ -4073,21 +4591,37 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-complex-pointer-do-simd-ice.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-declare-reduction-module-not-found.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-defaultmap-reduction-parallel-do-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-do-reduction-rejected.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 6,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4118,15 +4652,23 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-int8-mod-narrowed-o2-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 7,
+    "repos": 7
+   }
   },
   "fuzz/gcc-loop-reduction-parallel-rejected.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 6,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4166,13 +4708,25 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-loop-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-signed-widening-multiply-o2-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 7,
+    "repos": 7
+   }
   },
   "fuzz/gcc-small-int-reduction-atomic-link.f90": {
    "examples": [],
@@ -4197,7 +4751,11 @@
    ]
   },
   "fuzz/gcc-strided-target-update-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 7,
+    "repos": 7
+   }
   },
   "fuzz/gcc-target-parallel-after-nowait-copyback-lost.f90": {
    "examples": [
@@ -4209,7 +4767,7 @@
     }
    ],
    "files": 1,
-   "ingredients": 10,
+   "ingredients": 6,
    "kind": "controls",
    "measurable": true,
    "repos": 1,
@@ -4273,12 +4831,16 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-target-parallel-do-map-nowait-abort.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 13,
+   "ingredients": 9,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4325,43 +4887,15 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-target-repeated-parallel-num-threads-abort.f90": {
-   "examples": [
-    {
-     "line": 155,
-     "path": "gc-omp/main.cpp",
-     "repo": "BeauJoh/HeCBench",
-     "url": "https://github.com/BeauJoh/HeCBench/blob/594b845171d686dc951971ce36ed59cf114dd2b4/gc-omp/main.cpp#L155"
-    },
-    {
-     "line": 50,
-     "path": "saxpy-ompt-cuda/asaxpy.c",
-     "repo": "DarkHighness/HeCBench",
-     "url": "https://github.com/DarkHighness/HeCBench/blob/56e0f24fefd1c8117518ef980a53f90c3033a228/saxpy-ompt-cuda/asaxpy.c#L50"
-    },
-    {
-     "line": 93,
-     "path": "apps/g500/lib_htc/src_htc/ht_bottom_up.c",
-     "repo": "TonyBrewer/OpenHT",
-     "url": "https://github.com/TonyBrewer/OpenHT/blob/63898397de4d303ba514d88b621cc91367ffe2a6/apps/g500/lib_htc/src_htc/ht_bottom_up.c#L93"
-    },
-    {
-     "line": 360,
-     "path": "t-for/test.c",
-     "repo": "tob2/omptests",
-     "url": "https://github.com/tob2/omptests/blob/9b855f8ee079bb84956733f8d9279a7178f0d8e1/t-for/test.c#L360"
-    },
-    {
-     "line": 98,
-     "path": "core/src/OpenMPTarget/Kokkos_OpenMPTarget_Parallel.hpp",
-     "repo": "ORNL-CEES/kokkos",
-     "url": "https://github.com/ORNL-CEES/kokkos/blob/70d113838b7dade09218a46c1e8aae44b6dbd321/core/src/OpenMPTarget/Kokkos_OpenMPTarget_Parallel.hpp#L98"
-    }
-   ],
    "files": 16,
-   "ingredients": 3,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 9,
@@ -4393,7 +4927,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-target-simd-map-nontemporal-rejected.f90": {
    "files": 0,
@@ -4411,12 +4949,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-target-teams-loop-thread-limit-abort.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 3,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4442,12 +4984,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-target-teams-reduction-rejected.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 8,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4489,24 +5035,44 @@
    ]
   },
   "fuzz/gcc-teams-distribute-simd-simd-wrong.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 3,
+    "repos": 2
+   }
   },
   "fuzz/gcc-teams-loop-thread-limit-abort.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/gcc-thread-limit-target-and-teams-fault.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 3,
+    "repos": 3
+   }
   },
   "fuzz/nvhpc-assumed-length-character-dummy-map-ice.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-default-none-reduction-lastprivate-fort1-crash.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 5,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4538,12 +5104,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-defaultmap-firstprivate-lastprivate-ice.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 3,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4569,7 +5139,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-defaultmap-to-scalar-reduction-lost.f90": {
    "examples": [],
@@ -4590,7 +5164,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-depend-implicit-map-illegal-address.f90": {
    "examples": [
@@ -4635,12 +5213,15 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-distribute-parallel-num-threads-writes-lost.f90": {
-   "examples": [],
    "files": 0,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -4669,13 +5250,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-end-distribute-simd-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-loop-character-achar-unsupported.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-map-always-after-map-to-not-copied-back.f90": {
    "examples": [
@@ -4702,7 +5295,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-num-threads-reduction-identity-lost.f90": {
    "files": 0,
@@ -4721,7 +5318,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-target-parallel-firstprivate-translate-failure.f90": {
    "files": 1,
@@ -4740,7 +5341,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-target-parallel-single-hang.f90": {
    "measurable": false
@@ -4779,7 +5384,7 @@
     }
    ],
    "files": 19,
-   "ingredients": 3,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 8,
@@ -4803,10 +5408,18 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/nvhpc-target-simd-no-end-directive-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/par-s1-2082-gcc_g90.f90": {
    "examples": [],
@@ -4831,7 +5444,11 @@
       "omp_is_initial_device"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/s1-2370-cce21.f90": {
    "files": 1,
@@ -4852,10 +5469,18 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/s1-2592-cce21.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/s1-3463-cce21.f90": {
    "examples": [],
@@ -4878,7 +5503,11 @@
       "omp_is_initial_device"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/s1-4339-afar.f90": {
    "examples": [],
@@ -4898,7 +5527,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/s1-6085-cce21.f90": {
    "examples": [
@@ -4951,7 +5584,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "fuzz/s1-6760-cce20.f90": {
    "files": 1,
@@ -4969,10 +5606,18 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 3,
+    "repos": 2
+   }
   },
   "fuzz/s1-6888-cce21.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 16,
+    "repos": 11
+   }
   },
   "fuzz/s1-7882-cce20.f90": {
    "examples": [],
@@ -5078,10 +5723,18 @@
    ]
   },
   "gcc/gcc-acc-bind-device-type-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-c-bind-device-type-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-c-detach-delete-attach-underflow.c": {
    "files": 1,
@@ -5100,13 +5753,25 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-c-gang-dim-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-c-link-in-routine-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "gcc/gcc-acc-detach-delete-attach-underflow.f90": {
    "files": 1,
@@ -5125,28 +5790,60 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-gang-dim-collapse-force-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-init-set-shutdown-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-link-in-routine-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-acc-use-device-allocatable-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-c-motion-mapper-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-c-omp60-undocumented-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-c-omp60-unimplemented-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-c-target-in-task-mandatory-device-not-found.c": {
    "examples": [
@@ -5180,13 +5877,25 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "gcc/gcc-c-uses-allocators-traits-unimplemented.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-declare-mapper-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-defaultmap-to-pointer-copy-back.f90": {
    "examples": [],
@@ -5205,16 +5914,32 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-loop-bind-default-none-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-omp60-undocumented-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-omp60-unimplemented-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-target-in-task-mandatory-device-not-found.f90": {
    "examples": [
@@ -5248,49 +5973,29 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "gcc/gcc-uses-allocators-traits-unimplemented.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "harvest/afar-flang-strided-target-update.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90": {
-   "examples": [
-    {
-     "line": 116,
-     "path": "src/solver.f90",
-     "repo": "nscapin/FluTAS",
-     "url": "https://github.com/nscapin/FluTAS/blob/207df6f2a35ddd03c3f647a37c665b6b5d6b4302/src/solver.f90#L116"
-    },
-    {
-     "line": 466,
-     "path": "Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90",
-     "repo": "sailoridy/MAESTRO",
-     "url": "https://github.com/sailoridy/MAESTRO/blob/f957d148d2028324a2a1076be244f73dad63fd67/Util/VBDF/dev/oac_vbdf/ignition_simple_bdf/burner.f90#L466"
-    },
-    {
-     "line": 14,
-     "path": "access_efficiency/access_efficiency.f90",
-     "repo": "jeng1220/fortran_study",
-     "url": "https://github.com/jeng1220/fortran_study/blob/08e0b68f884ab82ebbd2d68292ea3e41ad44a00c/access_efficiency/access_efficiency.f90#L14"
-    },
-    {
-     "line": 3818,
-     "path": "src/pot3d.f",
-     "repo": "kurtsansom/POT3D",
-     "url": "https://github.com/kurtsansom/POT3D/blob/2a7f46d2760361eb45c94d0999a68c2eb3b36d30/src/pot3d.f#L3818"
-    },
-    {
-     "line": 209,
-     "path": "SandBox/Opacities/NeutrinoOpacities.f90",
-     "repo": "srichers/thornado",
-     "url": "https://github.com/srichers/thornado/blob/bc6666cbf9ae8b39b1ba5feffac80303c2b1f9a8/SandBox/Opacities/NeutrinoOpacities.f90#L209"
-    }
-   ],
    "files": 127,
-   "ingredients": 2,
+   "ingredients": 1,
    "kind": "controls",
    "measurable": true,
    "repos": 61,
@@ -5313,7 +6018,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 3,
+    "repos": 3
+   }
   },
   "harvest/cce-c-implicit-struct-map-partly-present.c": {
    "examples": [
@@ -5349,7 +6058,7 @@
     }
    ],
    "files": 107,
-   "ingredients": 4,
+   "ingredients": 2,
    "kind": "controls",
    "measurable": true,
    "repos": 37,
@@ -5374,28 +6083,56 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "harvest/cce-c-strided-target-update.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 8,
+    "repos": 6
+   }
   },
   "harvest/cce-ftn-target-parallel-thread-query-ice.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 5,
+    "repos": 4
+   }
   },
   "harvest/cce-named-constant-array-declare-target-routine-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "harvest/cce-use-device-ptr-c-ptr-not-converted.f90": {
    "measurable": false
   },
   "harvest/cce21-declare-target-link-module-variable-write-lost.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "harvest/cce21-internal-procedure-calls-internal-in-target-fault.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "harvest/gcc-acc-declare-create-allocatable-not-mapped.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 3,
+    "repos": 3
+   }
   },
   "harvest/gcc-c-same-item-two-maps-rejected.c": {
    "examples": [
@@ -5446,16 +6183,32 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "harvest/gcc-c-strided-section-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 29,
+    "repos": 17
+   }
   },
   "harvest/gcc-c-target-data-struct-pointer-section-ice.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 88,
+    "repos": 45
+   }
   },
   "harvest/gcc-c-target-data-two-maps-ice.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "harvest/gcc-same-item-two-maps-rejected.f90": {
    "examples": [
@@ -5506,7 +6259,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "harvest/gcc-teams-simd-matmul-allocatable-ice.f90": {
    "files": 0,
@@ -5529,19 +6286,35 @@
       "matmul"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "harvest/nvhpc-c-target-data-if-false-use-device-ptr-garbage.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 76,
+    "repos": 40
+   }
   },
   "harvest/nvhpc-named-constant-array-declare-target-routine-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "harvest/nvhpc-use-device-ptr-c-ptr-not-found.f90": {
    "measurable": false
   },
   "harvest/nvhpc2511-target-nowait-in-parallel-for-ice.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "hecbench/gcc-c-float16-array-in-target-lto-ice.c": {
    "files": 0,
@@ -5559,10 +6332,18 @@
       "_float16"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 3,
+    "repos": 2
+   }
   },
   "hecbench/gcc-c-swar-popcount-assembler-error.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 13,
+    "repos": 8
+   }
   },
   "malloc/afar-device-malloc-in-kernel-corrupts-records.c": {
    "examples": [
@@ -5617,10 +6398,18 @@
       "memcpy"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "multithread-allocatable-section-maps.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/afar-cce-c-call-result-member-in-target-rejected.c": {
    "examples": [
@@ -5656,7 +6445,7 @@
     }
    ],
    "files": 42,
-   "ingredients": 9,
+   "ingredients": 5,
    "kind": "controls",
    "measurable": true,
    "repos": 25,
@@ -5693,15 +6482,23 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/afar-cce-c-update-struct-and-member-rejected.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 12,
+   "ingredients": 9,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -5758,7 +6555,11 @@
       "sum"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "nested/cce-c-struct-and-nested-pointee-sections-ice.c": {
    "examples": [],
@@ -5778,7 +6579,11 @@
       "calloc"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/cce-fortran-nested-allocatable-component-copy-fault.f90": {
    "examples": [
@@ -5829,12 +6634,16 @@
       "allocate"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "nested/cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -5867,7 +6676,11 @@
       "allocatable"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 22,
+    "repos": 14
+   }
   },
   "nested/cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object.f90": {
    "examples": [],
@@ -5898,13 +6711,25 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 2,
+    "repos": 2
+   }
   },
   "nested/gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/gcc-acc-c-parent-and-shared-pointee-one-directive.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/gcc-acc-c-struct-and-member-array-one-directive.c": {
    "examples": [
@@ -5931,7 +6756,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/gcc-c-always-on-pointer-member-section-ice.c": {
    "examples": [
@@ -5958,7 +6787,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/gcc-c-declare-mapper-pointer-member-section-gpu-fault.c": {
    "examples": [
@@ -5986,7 +6819,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/gcc-c-from-struct-and-pointee-section-rejected.c": {
    "examples": [
@@ -5998,7 +6835,7 @@
     }
    ],
    "files": 1,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 1,
@@ -6028,7 +6865,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/gcc-fortran-pointer-component-alloc-bounds-lost.f90": {
    "examples": [],
@@ -6058,18 +6899,30 @@
       "pointer"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 22,
+    "repos": 14
+   }
   },
   "nested/gcc-fortran-root-and-element-pointer-components-ice.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 8,
+    "repos": 8
+   }
   },
   "nested/nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nested/nvhpc-c-update-from-structure-overwrites-attached-pointer-segv.c": {
    "examples": [],
    "files": 0,
-   "ingredients": 12,
+   "ingredients": 6,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6104,13 +6957,25 @@
       "calloc"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-acc-atomic-update-sum-fort2-crash.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-c-acc-atomic-update-sum-ice.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-c-dist-schedule-chunk-compile-hang.c": {
    "files": 3,
@@ -6131,13 +6996,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "nvhpc-c-map-present-ignored.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-c-ordered-in-target-nvcpfe-crash.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-c-parallel-for-firstprivate-in-target.c": {
    "files": 7,
@@ -6156,7 +7033,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-c-parallel-if-in-target-nvvm-ice.c": {
    "files": 6,
@@ -6175,7 +7056,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-defaultmap-firstprivate-explicit-map.f90": {
    "examples": [],
@@ -6194,7 +7079,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-defaultmap-from-allocatable-indexing.f90": {
    "files": 0,
@@ -6211,7 +7100,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-depend-inoutset-ignored.f90": {
    "files": 0,
@@ -6229,7 +7122,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-dist-schedule-chunk-illegal-address.f90": {
    "files": 0,
@@ -6250,7 +7147,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "nvhpc-managed-acc-shutdown-host-access.f90": {
    "measurable": false
@@ -6272,7 +7173,11 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/afar-final-dealloc-device-link.f90": {
    "examples": [
@@ -6324,12 +7229,16 @@
       "deallocate"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "oop/afar-pdt-length-parameter-not-implemented.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6354,7 +7263,11 @@
       "lv"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-class-is-device-link.f90": {
    "examples": [],
@@ -6376,12 +7289,16 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-copy-alloc-component-section-fault.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 10,
+   "ingredients": 5,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6431,7 +7348,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-copy-parent-to-component-tofrom-lost.f90": {
    "examples": [
@@ -6474,12 +7395,16 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-copy-second-member-section-lost.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 9,
+   "ingredients": 5,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6509,12 +7434,16 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-element-component-map-lost.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 9,
+   "ingredients": 5,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6551,7 +7480,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-final-dealloc-device-abort.f90": {
    "examples": [
@@ -6603,12 +7536,16 @@
       "deallocate"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "oop/cce-pdt-default-mapper-rejected.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6633,12 +7570,16 @@
       "lv"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-polymorphic-dispatch-device-link.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6662,7 +7603,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-section-of-element-component-overlap.f90": {
    "examples": [],
@@ -6685,12 +7630,16 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-select-type-guard-not-taken.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 12,
+   "ingredients": 8,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6724,7 +7673,11 @@
       "subroutine"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce-udr-derived-type-unsupported.f90": {
    "examples": [],
@@ -6750,12 +7703,16 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/cce21-element-component-map-lost.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 9,
+   "ingredients": 5,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6792,10 +7749,18 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/gcc-acc-parent-and-member-data-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 76,
+    "repos": 38
+   }
   },
   "oop/gcc-pdt-length-parameter-abort.f90": {
    "examples": [],
@@ -6826,7 +7791,11 @@
       "lv"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/gcc-polymorphic-dispatch-abort.f90": {
    "files": 0,
@@ -6843,18 +7812,30 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/gcc-vtab-not-marked-for-offload.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/nvhpc-copy-alloc-component-illegal-address.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/nvhpc-copy-pdt-length-parameter-illegal-address.f90": {
    "examples": [],
    "files": 0,
-   "ingredients": 4,
+   "ingredients": 3,
    "kind": "controls",
    "measurable": true,
    "repos": 0,
@@ -6879,31 +7860,67 @@
       "lv"
      ]
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/nvhpc-named-mapper-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/nvhpc-polymorphic-dispatch-translate-failure.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/nvhpc-polymorphism-runtime-unsupported.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/nvhpc-type-bound-call-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "oop/nvhpc-udr-derived-type-rejected.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/afar-c-lastprivate-combined-target-not-mapped.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/afar-target-scalar-implicit-firstprivate.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/cce-acc-declare-create-scalar-serial-firstprivate.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/cce-c-distribute-lastprivate-lost.c": {
    "files": 2,
@@ -6922,13 +7939,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/cce-c-flto-offload-dropped.c": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 1,
+    "repos": 1
+   }
   },
   "stress/cce-ftn-cif-record-split-abort.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 4,
+    "repos": 4
+   }
   },
   "stress/cce-lastprivate-num-threads-collapse-simd.f90": {
    "files": 0,
@@ -6949,13 +7978,25 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/cce-teams-reduction-many-teams-wrap.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/cce21-declare-target-scalar-map-write-lost.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/gcc-declare-target-allocatable-component-ice.f90": {
    "examples": [
@@ -6986,10 +8027,18 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 4,
+    "repos": 4
+   }
   },
   "stress/nvhpc-acc-derived-type-component-not-copied.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 4,
+    "repos": 3
+   }
   },
   "stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c": {
    "files": 0,
@@ -7010,16 +8059,32 @@
      "file_features": [],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/nvhpc-declare-target-scalar-write-lost.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/nvhpc-lastprivate-combined-target-not-mapped.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "stress/nvhpc-target-scalar-implicit-firstprivate.f90": {
-   "measurable": false
+   "measurable": false,
+   "similar": {
+    "files": 0,
+    "repos": 0
+   }
   },
   "target-update-sections-in-parallel.f90": {
    "examples": [],
@@ -7041,7 +8106,11 @@
      ],
      "words": []
     }
-   ]
+   ],
+   "similar": {
+    "files": 5,
+    "repos": 5
+   }
   }
  },
  "meta": {

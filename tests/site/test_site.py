@@ -1424,3 +1424,11 @@ def test_examples_link_pinned_public_code_and_say_it_is_not_known_to_fail():
     assert 'href="https://github.com/org/app/blob/abc/src/k.c#L12"' in t and "org/app" in t
     assert "uses the same constructs" in t and "not known to fail" in t
     assert "uses the same constructs" not in SB.exposure_card(dict(x, examples=[]))
+
+
+def test_the_card_gives_the_code_that_closely_resembles_the_reproducer():
+    x = dict(EXPOSURE["findings"]["e.f90"], corpus=EXPOSURE["meta"], similar={"repos": 3, "files": 4})
+    t = SB.exposure_card(x)
+    assert "3 public repositories (4 files) closely resemble" in t
+    n = SB.exposure_card({"measurable": False, "similar": {"repos": 1, "files": 1}, "corpus": EXPOSURE["meta"]})
+    assert "Not measured" in n and "1 public repository (1 file) closely resembles" in n

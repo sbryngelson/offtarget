@@ -111,7 +111,8 @@ def scan_shard(args) -> tuple[str, int, int]:
                 fh.write(json.dumps({"repo": repo, "path": path,
                                      "regions": [[sorted(f), sorted(w)] for f, w in r.regions],
                                      "words": sorted(r.words), "features": sorted(r.features),
-                                     "lines": list(r.lines), "sha": r.sha, "stars": r.stars}) + "\n")
+                                     "lines": list(r.lines), "sha": r.sha, "stars": r.stars,
+                                     "details": [sorted(x) for x in r.details]}) + "\n")
     tmp.rename(out)
     return shard, n, kept
 
@@ -127,7 +128,8 @@ def load_records(everything: bool = False):
             yield E.Record(d["repo"], d["path"],
                            [(frozenset(a), frozenset(b)) for a, b in d["regions"]],
                            frozenset(d["words"]), frozenset(d["features"]), tuple(d.get("lines", ())),
-                           d.get("sha", ""), d.get("stars", 0))
+                           d.get("sha", ""), d.get("stars", 0),
+                           tuple(frozenset(x) for x in d.get("details", ())))
 
 
 def _job_for(rel: str, index: dict, local: set) -> dict | None:
@@ -205,14 +207,20 @@ def table() -> dict:
     gone = {r.repo for r in recs if live.get(f"{r.repo}@{r.sha}") != "ok"}
     got = E.count(sigs, recs, EXAMPLES, gone)
     rows = {}
+    sims = {name: p for name in sigs if (p := E.resemblance(FINDINGS / name))}
+    similar = E.count_similar(sims, recs)
     for name, s in sigs.items():
         if not E.measurable(s):
             rows[name] = {"measurable": False}
+            if name in similar:
+                rows[name]["similar"] = similar[name]
             continue
         req = s.parts if s.kind == "minimal" else s.requirements
         rows[name] = {"measurable": True, "kind": s.kind, **got[name], "ingredients": E.ingredients(s),
                       "signature": [{"features": sorted(p.features), "words": sorted(p.words),
                                      "file_features": sorted(p.file_features)} for p in req]}
+        if name in similar:
+            rows[name]["similar"] = similar[name]
     every = list(load_records(everything=True))
     meta = {"corpus": "bigcode/the-stack-dedup",
             "left_out": {"files": len(every) - len(recs),

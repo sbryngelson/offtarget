@@ -431,6 +431,7 @@ class Region:
     last: int = 0
     proc: str = ""
     words: set = field(default_factory=set)    # lower-case words of its statements, no strings
+    detail: set = field(default_factory=set)   # types and attributes of what it uses (type:, attr:)
 
 
 @dataclass
@@ -578,8 +579,8 @@ def scan_fortran(text: str, path: str = "") -> FileScan:
             if region is not None:
                 if name.startswith("end ") and \
                         name[4:] == region.name:
-                    _close_region(region, region_stmts, decls, args,
-                                  region_listed)
+                    _close_region(region, region_stmts, decls, args, region_listed,
+                                  module_decls)
                     fs.regions.append(region)
                     region = None
                     continue
@@ -632,8 +633,8 @@ def scan_fortran(text: str, path: str = "") -> FileScan:
                 region.open_do -= 1
             if region.combined_loop and region.seen_do and \
                     region.open_do <= 0:
-                _close_region(region, region_stmts, decls, args,
-                              region_listed)
+                _close_region(region, region_stmts, decls, args, region_listed,
+                              module_decls)
                 fs.regions.append(region)
                 region = None
             continue
@@ -781,7 +782,7 @@ def scan_fortran(text: str, path: str = "") -> FileScan:
             for mm in re.finditer(r"\bcall\s+(\w+)", low):
                 proc.calls.add(mm.group(1))
     if region is not None:
-        _close_region(region, region_stmts, decls, args, region_listed)
+        _close_region(region, region_stmts, decls, args, region_listed, module_decls)
         fs.regions.append(region)
     # module scalars visible in regions are counted only through procs'
     # own declarations (a conservative count)
@@ -820,8 +821,29 @@ def _mark_device(d: Directive, proc, stack, fs, module_decls) -> None:
         proc.device = True
 
 
+_F_TYPES = (("character", "character"), ("complex", "complex"), ("logical", "logical"),
+            ("integer", "integer"), ("double precision", "real"), ("real", "real"),
+            ("type", "derived"), ("class", "derived"))
+_F_ATTRS = ("allocatable", "pointer", "target", "save", "optional", "value", "contiguous")
+
+
+def _f_detail(stmt: str) -> set:
+    """type: and attr: words of a Fortran declaration statement."""
+    st = stmt.lower().strip()
+    if re.search(r"\bparameter\b", st.split("::")[0]):
+        return set()                     # a named constant, not data
+    out = {f"type:{t}" for k, t in _F_TYPES if st.startswith(k)}
+    spec = st.split("::")[0]
+    out |= {f"attr:{a}" for a in _F_ATTRS if re.search(rf"\b{a}\b", spec)}
+    if "intent" in spec:
+        out.add("attr:dummy")
+    if "dimension" in spec or re.search(r"::.*\w\s*\(", st):
+        out.add("attr:array")
+    return out
+
+
 def _close_region(region: Region, stmts: list[str], decls: dict,
-                  args: set, listed: set) -> None:
+                  args: set, listed: set, module_decls: dict | None = None) -> None:
     region.loop_depth = _loop_depth(stmts)
     region.words = code_words("\n".join(stmts))
     used = set()
@@ -842,6 +864,16 @@ def _close_region(region: Region, stmts: list[str], decls: dict,
     region.implicit_scalars = len(scal)
     region.idents = {nm for nm in used if nm not in decls and
                      nm not in listed and nm not in _KEYWORDS}
+    mods = {}
+    for d in (module_decls or {}).values():
+        mods.update(d)
+    for nm in used | set(listed):
+        if nm in decls:
+            region.detail |= _f_detail(decls[nm][0])
+            if nm in args:
+                region.detail.add("attr:dummy")
+        elif nm in mods:
+            region.detail |= _f_detail(mods[nm][0]) | {"attr:module"}
     for nm in used:
         if nm in decls:
             st = decls[nm][0].lower()
@@ -895,6 +927,32 @@ def _c_strip(text: str) -> str:
     return text
 
 
+_C_DECL = re.compile(
+    r"((?:\b(?:static|const|extern|volatile|register|unsigned|signed|struct\s+\w+|union\s+\w+|"
+    r"enum\s+\w+|int|long|short|float|double|char|bool|_Bool|_Complex|complex|size_t|\w+_t)\b\s*)+)"
+    r"([^;(){}=]*)")
+_C_TYPE_WORDS = (("struct", "type:struct"), ("union", "type:struct"), ("char", "type:char"),
+                 ("float", "type:float"), ("double", "type:double"), ("_complex", "type:complex"),
+                 ("complex", "type:complex"), ("int", "type:int"), ("long", "type:int"),
+                 ("short", "type:int"), ("size_t", "type:int"), ("static", "attr:static"),
+                 ("const", "attr:const"), ("bool", "type:bool"))
+
+
+def c_declared(code: str) -> dict:
+    """name -> type: and attr: words, from the declarations of C code (comments removed)."""
+    out: dict = {}
+    for m in _C_DECL.finditer(code):
+        typ = m.group(1).lower()
+        base = {w for k, w in _C_TYPE_WORDS if re.search(rf"\b{k}\b", typ)}
+        for d in m.group(2).split(","):
+            nm = re.search(r"([A-Za-z_]\w*)\s*(\[|$)", d.strip())
+            if not nm or nm.group(1) in ("struct", "union"):
+                continue
+            extra = ({"attr:pointer"} if "*" in d else set()) | ({"attr:array"} if "[" in d else set())
+            out.setdefault(nm.group(1), set()).update(base | extra)
+    return out
+
+
 def scan_c(text: str, path: str = "") -> FileScan:
     fs = FileScan(path, "c")
     lines = text.splitlines()
@@ -903,6 +961,7 @@ def scan_c(text: str, path: str = "") -> FileScan:
     prag = c_pragmas(text)
     code = _c_strip(text)
     clines = code.splitlines()
+    declared = c_declared("\n".join(x for x in clines if not x.lstrip().startswith("#")))
     for ln, phys, body, model in prag:
         d = parse_directive(body, model, ln, phys)
         fs.directives.append(d)
@@ -939,6 +998,8 @@ def scan_c(text: str, path: str = "") -> FileScan:
                     break
             btxt = "\n".join(body_lines)
             r.words = code_words(btxt)
+            for nm in r.words | listed:
+                r.detail |= declared.get(nm, set())
             r.loop_depth = _c_loop_depth(btxt)
             r.statements = btxt.count(";")
             r.calls = set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", btxt)) - {

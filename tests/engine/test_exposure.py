@@ -309,3 +309,72 @@ def test_an_openacc_finding_never_gets_afar_as_its_reference():
     obs = [_obs("cce20", "mi300a-u", True), _obs("afar", "mi300a-u", False, "correct")]
     job = E.control_job("x.f90", obs, local={"afar", "cce20", "gcc"}, model="acc")
     assert job["reference"] == "host:gcc"
+
+
+DETAIL_F = """module m
+  real(8), allocatable :: buf(:)
+  !$acc declare create(buf)
+contains
+  subroutine s(c, n)
+    character(len=*), intent(in) :: c
+    integer, intent(in) :: n
+    integer :: i
+    complex :: z
+    !$acc parallel loop present(buf)
+    do i = 1, n
+      buf(i) = real(ichar(c(1:1)), 8) + real(z)
+    end do
+  end subroutine s
+end module m
+"""
+
+
+def test_a_region_records_the_types_and_attributes_of_what_it_uses():
+    (r,) = U.scan(DETAIL_F, "m.f90").regions
+    assert {"type:character", "attr:dummy", "type:complex", "attr:module", "attr:allocatable",
+            "type:real"} <= r.detail
+    assert not any(d.startswith(("type:", "attr:")) for d in r.features)     # the profile's features stay
+    c = U.scan("struct S { int *p; };\nint main(void) {\n  static double w[4];\n  struct S s;\n"
+               "#pragma omp target map(tofrom: s, w)\n  { w[0] = s.p[0]; }\n  return 0;\n}\n", "c.c").regions[0]
+    assert {"type:struct", "type:double", "attr:static", "attr:array"} <= c.detail
+
+
+def test_resemblance_needs_every_region_with_its_detail(tmp_path):
+    f = tmp_path / "r.f90"
+    f.write_text(DETAIL_F)
+    sim = E.resemblance(f)
+    assert sim and any("type:character" in p.detail for p in sim)
+    same = E.record(DETAIL_F, "a.f90", "o/a")
+    other = E.record(DETAIL_F.replace("character(len=*), intent(in) :: c", "integer, intent(in) :: c")
+                     .replace("ichar(c(1:1))", "c"), "b.f90", "o/b")
+    got = E.count_similar({"r.f90": sim}, [same, other])
+    assert got["r.f90"] == {"repos": 1, "files": 1}
+
+
+def test_the_self_check_flag_is_not_part_of_the_resemblance(tmp_path):
+    prog = """program p
+  use openacc, only: acc_on_device, acc_device_host
+  integer, parameter :: n = 8
+  integer :: a(n), i, hf
+  hf = 0
+  !$acc parallel copy(hf) num_gangs(1)
+  hf = merge(1, 0, acc_on_device(acc_device_host))
+  !$acc end parallel
+  !$acc parallel loop copy(a, hf)
+  do i = 1, n
+    a(i) = ishft(i, 1)
+  end do
+  print '(a,i0,a,a)', 'RESULT ran_on_host=', hf, ' check=', merge('pass', 'fail', a(1) == 2)
+end program p
+"""
+    f = tmp_path / "h.f90"
+    f.write_text(prog)
+    (part,) = E.resemblance(f)
+    assert not part.words and "clause:num_gangs" not in part.features    # the flag's region is gone
+    assert "clause:copy" in part.features and "attr:parameter" not in part.detail
+    assert "copy(a)" in E.unharnessed(prog) and "num_gangs" in E.unharnessed(prog)
+
+
+def test_the_same_ingredient_from_two_controls_counts_once():
+    q = E.Part(frozenset({"dir:parallel", "dir:loop", "clause:present"}))
+    assert E.ingredients(E.Signature("controls", requirements=[q, q])) == 1

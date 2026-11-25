@@ -186,11 +186,23 @@ def _n(k: int, one: str, many: str) -> str:
     return f"{k} {one if k == 1 else many}"
 
 
+def _similar(x: dict) -> str:
+    sim = x.get("similar")
+    if not sim:
+        return ""
+    verb = "closely resembles" if sim["repos"] == 1 else "closely resemble"
+    return (f'<p>{_n(sim["repos"], "public repository", "public repositories")} '
+            f'({_n(sim["files"], "file", "files")}) {verb} the program: each of its offload regions has a match '
+            'with the same directives, clauses and kinds of data (types and attributes such as character, '
+            'allocatable, dummy argument or module variable). Not every part of the program is shown to be '
+            'needed, so the failure may reach further.</p>')
+
+
 def exposure_card(x: dict) -> str:
     if not x.get("measurable"):
         return ('<div class="card"><h3>In public code</h3><p>Not measured: no passing one-change control or '
                 'minimized program shows which of its parts, beyond the names of its directives, the failure '
-                'needs.</p></div>')
+                'needs.</p>' + _similar(x) + '</div>')
     c = x.get("corpus") or {}
     names = {"fortran": "Fortran", "c": "C", "cpp": "C++"}
     langs = [names.get(g, g) for g in c.get("langs", [])]
@@ -207,7 +219,7 @@ def exposure_card(x: dict) -> str:
             + ('; with one proven ingredient beyond the directive names, it is a loose upper bound' if loose else '')
             + '. '
               '<a href="../method.html#exposure">How this is counted</a></p>'
-            + exposure_examples(x.get("examples") or []) + '</div>')
+            + _similar(x) + exposure_examples(x.get("examples") or []) + '</div>')
 
 
 def exposure_examples(ex: list[dict]) -> str:
@@ -450,7 +462,9 @@ is of code with the ingredients, not of code known to fail. More controls make i
 proven ingredient beyond the directive names reads "at most" and is a loose upper bound. Compilers' and runtimes'
 own source trees, and files under test directories, are left out: the count is of code people run. Where at least
 two ingredients are proven, up to five matching files are linked as they were in the snapshot, from the
-repositories with the most stars, after a check that the commit still exists.</p>
+repositories with the most stars, after a check that the commit still exists. A second count, of code that closely
+resembles the program, needs a match for each of its offload regions with the same directives, clauses and kinds of
+data (types and attributes), its self-check left out. It describes the reproducer, not the proven trigger.</p>
 <h2 id="legality">Legality</h2>
 <p>A program counts as legal only on evidence that does not come from the compiler under test. The rules engine
 checks each program against rules written from the specification (data races, the nesting of constructs and
