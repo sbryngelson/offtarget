@@ -20,6 +20,7 @@ import hashlib
 import json
 import random
 import re
+import subprocess
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -148,6 +149,8 @@ _EXE = re.compile(r"^\S+\.out: ")
 # a compiler's summary of its diagnostics in a run's output (CCE: "Cray Fortran : 0 errors, ...")
 _SUMMARY = re.compile(r"^Cray (?:Fortran|C)\b.*:\s*\d+ errors?", re.I)
 _RUN_MARK = re.compile(r"^--- run\b.*$", re.M)
+# the reason ROCm gives for a GPU memory access fault, which differs between runs of one failure
+_FAULT_REASON = re.compile(r"(memory access fault by gpu\b.*?)\s*reason:.*$", re.I)
 # an error word at a word start ("fault", not the "fault" of "defaultmap" in an echoed source line)
 _RUN_DIAG = re.compile(r"\b(?:error|fatal|fault|abort|illegal|exception|signal|terminat|assert)", re.I)
 
@@ -164,7 +167,7 @@ def _run_line(d: dict) -> str:
     # only a line that names an error is the failure's message (the first line may be a module
     # system's notice or an echoed source line, which differ between runs of one failure)
     pick = next((x for x in lines if _RUN_DIAG.search(x)), "")
-    return M._norm(pick)
+    return M._norm(_FAULT_REASON.sub(r"\1", pick))
 
 
 def is_failure(row: dict) -> bool:
@@ -1071,6 +1074,9 @@ for _n in ("unwrap", "clause", "clause-item", "modifier", "prefix", "clause-orde
 
 FUZZ_PRINT = re.compile(r"^(\s*)print\s*'\([^']*\)'\s*,\s*'RESULT checksum='\s*,\s*(\w+)\s*,"
                         r"\s*' ran_on_host='\s*,\s*(.+?)\s*$", re.M)
+# a C fuzz program's line (offload.engine.fuzz_capp, offload.engine.f2c)
+FUZZ_PRINT_C = re.compile(r'^(\s*)printf\("RESULT checksum=%lld ran_on_host=%d\\n",\s*(?:\(long long\)\s*)?(\w+)\s*,'
+                          r'\s*(.+?)\);\s*$', re.M)
 
 
 class PlainContract:
@@ -1101,6 +1107,16 @@ def elision_reference(text: str):
     """The sequential elision's checksum (int) of a fuzz program by the
     installed elision compilers, or why there is none (str)."""
     from offload.engine import expected as E
+    if FUZZ_PRINT_C.search(text):
+        # a C program: its sequential run (no OpenMP or OpenACC, the undefined-behaviour sanitizer)
+        from offload.engine import fuzz as FZ
+        v = FZ.elided_checksum_c(text)
+        return v if isinstance(v, int) else str(v)[:300]
+    if model_of(text) == "acc":
+        # an OpenACC program: its build without OpenACC against the sequential openacc module
+        from offload.engine import fuzz_acc
+        v = fuzz_acc.elided_value_acc(text)
+        return v if isinstance(v, int) else str(v)[:300]
     comps = elision_compilers()
     if not comps:
         return "no elision compiler installed here"
@@ -1124,33 +1140,41 @@ class FuzzContract:
 
     @staticmethod
     def applies(text: str) -> bool:
-        return FUZZ_PRINT.search(text) is not None
+        return FUZZ_PRINT.search(text) is not None or FUZZ_PRINT_C.search(text) is not None
 
     def prepare(self, text: str) -> str | None:
-        m = FUZZ_PRINT.search(text)
-        if m is None:
+        if not self.applies(text):
             return text
         ref = self.reference(text)
         if not isinstance(ref, int):
             self.why = str(ref)
             return None
-        return self.rewrite(text, f"merge('pass', 'fail', {{cs}} == {ref}_8)")
+        return self.rewrite(text, ref)
 
     @staticmethod
-    def rewrite(text: str, check: str = "'pass'") -> str:
+    def rewrite(text: str, ref: int | None = None) -> str:
         """The RESULT line in the harness's form: the checksum on a line of its own, then the
-        RESULT line with `check` (a Fortran expression; {cs} names the checksum variable)."""
+        RESULT line with check=pass when the checksum is `ref` (check=pass whatever it is when
+        `ref` is None). Fortran (FUZZ_PRINT) and C (FUZZ_PRINT_C)."""
         m = FUZZ_PRINT.search(text)
+        if m is not None:
+            ind, cs, host = m.group(1), m.group(2), m.group(3)
+            check = "'pass'" if ref is None else f"merge('pass', 'fail', {cs} == {ref}_8)"
+            new = (f"{ind}print '(a,i0)', 'checksum= ', {cs}\n"
+                   f"{ind}print '(a,i0,a,a)', 'RESULT ran_on_host=', {host}, ' check=', {check}")
+            return text[:m.start()] + new + text[m.end():]
+        m = FUZZ_PRINT_C.search(text)
         if m is None:
             return text
         ind, cs, host = m.group(1), m.group(2), m.group(3)
-        new = (f"{ind}print '(a,i0)', 'checksum= ', {cs}\n"
-               f"{ind}print '(a,i0,a,a)', 'RESULT ran_on_host=', {host}, ' check=', {check.format(cs=cs)}")
+        check = '"pass"' if ref is None else f'({cs}) == {ref}LL ? "pass" : "fail"'
+        new = (f'{ind}printf("checksum= %lld\\n", (long long)({cs}));\n'
+               f'{ind}printf("RESULT ran_on_host=%d check=%s\\n", {host}, {check});')
         return text[:m.start()] + new + text[m.end():]
 
 
 def contract_for(text: str, lang: str):
-    return FuzzContract() if lang == "f90" and FuzzContract.applies(text) else PlainContract()
+    return FuzzContract() if lang in ("f90", "c") and FuzzContract.applies(text) else PlainContract()
 
 
 # --- witnesses -------------------------------------------------------------------------------
@@ -1226,13 +1250,18 @@ def depends_kept(candidate: list, original: list) -> bool:
 
 
 _EXIT_OR_UPDATE = re.compile(r"^\s*(?:!\$omp|#\s*pragma\s+omp)\s+target\s+(exit\s+data|update)\b(.*)$", re.I | re.M)
+# OpenACC: update self / update host, exit data copyout (OpenACC 3.4 §2.14.4, §2.14.7)
+_ACC_COPYBACK = re.compile(r"^\s*(?:!\$acc|#\s*pragma\s+acc)\s+(?:update|exit\s+data)\b(.*)$", re.I | re.M)
 
 
 def copied_back(text: str) -> set:
-    """The variables a target exit data (map from or tofrom) or a target update from copies back to the host
-    (Fortran continuation lines joined)."""
-    joined = re.sub(r"&\s*\n\s*!\$omp&?", " ", text, flags=re.I)
+    """The variables a target exit data (map from or tofrom) or a target update from copies back to the host,
+    and an OpenACC update self or host and exit data copyout (Fortran continuation lines joined)."""
+    joined = re.sub(r"&\s*\n\s*!\$(?:omp|acc)&?", " ", text, flags=re.I)
     out = set()
+    for m in _ACC_COPYBACK.finditer(joined):
+        for c in re.findall(r"\b(?:self|host|copyout)\s*\(((?:[^()]|\([^()]*\))*)\)", m.group(1), re.I):
+            out |= {re.split(r"[(%\[]", x.strip())[0].lower() for x in c.split(",") if x.strip()}
     for m in _EXIT_OR_UPDATE.finditer(joined):
         kind, rest = m.group(1).lower(), m.group(2)
         if kind.startswith("exit"):
@@ -1334,6 +1363,8 @@ class ElisionReference:
         from offload.engine import expected as E
         if lang != "f90":
             return None, "the sequential elision reads Fortran only"
+        if model_of(text) == "acc":
+            return self._acc_values(text)
         # the analysis stops at the flag's use in the RESULT line (a value the elision cannot
         # mirror); the flag-derived values are left out of the comparison, so the analysis sees the
         # program with those uses neutralized and its copy-semantics walk runs on everything else
@@ -1354,6 +1385,24 @@ class ElisionReference:
             outs.append(printed_values(v, flag_names(text)))
         if any(o != outs[0] for o in outs):
             return None, "the elision compilers print different values"
+        return outs[0], ""
+
+    @staticmethod
+    def _acc_values(text: str):
+        """An OpenACC program built without OpenACC against the sequential openacc module
+        (offload.engine.fuzz_acc), run with both initial fills, which must print the same values."""
+        from offload.engine import fuzz_acc
+        outs = []
+        for init in fuzz_acc.INITS:
+            v, why = fuzz_acc.elided_run_acc(flagless(text), init)
+            if v is None:
+                return None, f"elision: {why}"[:300]
+            bad = reference_check_fails(v)
+            if bad:
+                return None, f"elision: {bad}"
+            outs.append(printed_values(v, flag_names(text)))
+        if outs[0] != outs[1]:
+            return None, "the elided runs with two initial fills print different values (an undefined value)"
         return outs[0], ""
 
 
@@ -1641,6 +1690,65 @@ def not_evidence(row: dict) -> str:
     return ""
 
 
+def base_check(lang: str, directives: bool = False):
+    """The base-language check of a candidate: gfortran -std=f2008 -fsyntax-only with the
+    directives as comments (offload.engine.fuzz.check_gfortran), gcc -std=c11 with OpenMP stubs for
+    C (fuzz.check_cbase); with `directives`, gfortran -fsyntax-only -fopenmp (-fopenacc), which also
+    resolves the names a directive's clauses use (a clause naming a component the candidate deleted).
+    It returns the first error or None. A filter that refuses broken programs, never evidence that a
+    program is legal."""
+    from offload.engine import fuzz as FZ
+    if lang == "c":
+        return lambda text: FZ.check_cbase(text)
+    if directives:
+        return _gfortran_directives
+    return lambda text: FZ.check_gfortran(text)
+
+
+def _gfortran_errors(text: str) -> list[str]:
+    """The Error lines of gfortran -fsyntax-only -fopenmp (-fopenacc): [] when it accepts. gfortran
+    names a location as (1) on the line, so one error reads alike in two programs."""
+    import tempfile
+    from offload.engine import fuzz as FZ
+    flag = "-fopenacc" if model_of(text) == "acc" else "-fopenmp"
+    with tempfile.TemporaryDirectory(prefix="reduce_gf_") as d:
+        (Path(d) / "t.f90").write_text(text)
+        res = subprocess.run([FZ.GFORTRAN, "-fsyntax-only", flag, "-ffree-line-length-none", "-J", d, "t.f90"],
+                             cwd=d, capture_output=True, text=True, timeout=120)
+    if res.returncode == 0:
+        return []
+    lines = [ln.strip() for ln in res.stderr.splitlines() if "Error" in ln]
+    return lines or [res.stderr.strip()[:300] or f"rc={res.returncode}"]
+
+
+def _gfortran_directives(text: str) -> str | None:
+    errs = _gfortran_errors(text)
+    return errs[0] if errs else None
+
+
+def base_guard(lang: str, original: str):
+    """The base-language guard of a reduction: the check without directives when the original passes it,
+    and (Fortran) the directive-reading check refusing any error the original does not have, so an
+    original that gfortran -fopenmp already refuses (a clause it does not implement) still keeps its
+    candidates from naming what they deleted. None when no check can run."""
+    checks = []
+    plain = base_check(lang)
+    try:
+        if not plain(original):
+            checks.append(plain)
+    except (OSError, subprocess.SubprocessError):
+        pass
+    if lang == "f90":
+        try:
+            known = set(_gfortran_errors(original))
+            checks.append(lambda t: next((e for e in _gfortran_errors(t) if e not in known), None))
+        except (OSError, subprocess.SubprocessError):
+            pass
+    if not checks:
+        return None
+    return lambda t: next((w for w in (c(t) for c in checks) if w), None)
+
+
 class Judge:
     """Does a candidate keep the failure? In order: the host-execution
     flag must stay (a program that stops calling omp_is_initial_device
@@ -1670,6 +1778,7 @@ class Judge:
         self.wait_after_nowait = False      # the original waits for its nowait target tasks
         self.nowait_depends = None          # the original orders its nowait target tasks with depend
         self.copybacks = set()              # the variables the original copies back (exit data from, update from)
+        self.base = None                    # a base-language check (base_check), when the original passes it
         self.flag_mapped = False            # the original maps its host-execution flag back
         self._lock = threading.Lock()
 
@@ -1729,6 +1838,10 @@ class Judge:
         ok, why = self.witness(text, self.lang)
         if not ok:
             return None, "illegal: " + "; ".join(why)[:300]
+        if self.base is not None:
+            bad = self.base(text)
+            if bad:
+                return None, f"base language: {bad}"[:300]
         prepared = self.prepared(text)
         if prepared is None:
             return None, f"no reference: {self.contract.why}"[:300]
@@ -1768,6 +1881,16 @@ class Judge:
                     self.signature = got
                 else:
                     return False, f"{t.label}: signature {got} (want {self.signature})"
+        # every verify target (a compiler of another family that ran the original correctly) still runs
+        # the candidate correctly: a candidate every compiler fails is a broken program, not the failure
+        for t in self.verify_targets:
+            row = self.run(prepared, t, pid)
+            bad = not_evidence(row)
+            if bad:
+                return False, f"{t.label}: {bad}"
+            cls = run_class(row)
+            if cls not in G.PASSING or cls == "unobservable":
+                return False, f"verify target {t.label}: {signature(row)}: the candidate fails there too"
         return True, str(self.signature)
 
     def _oracle(self, text: str, row: dict, got: Signature, t: Target):
@@ -1954,6 +2077,10 @@ def reduce(text: str, lang: str, judge: Judge, levels=LEVELS, seed: int | None =
     deps = nowait_depends(text)
     judge.nowait_depends = deps if any(deps) else None
     judge.copybacks = copied_back(text)
+    # a candidate must stay valid in its base language when the original is (a refusal reduces to
+    # whatever still triggers the message, broken Fortran included); never evidence of legality
+    if judge.base is None:
+        judge.base = base_guard(lang, text)
     judge.flag_mapped = flag_mapped(text)
     steps: list[str] = []
     ck = load_checkpoint(checkpoint, origin, judge, levels) if checkpoint else None

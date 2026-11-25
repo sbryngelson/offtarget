@@ -240,7 +240,7 @@
   ],
   "front_ends": {},
   "program_sha": "ab075e0a3a549b3aa6a4740d064446fefe3230c7391cfc966cd3b77299c665ce",
-  "inputs": "c431fac72cbb6480301d9152e9552fae680e7eb0ba7bdcd05c47f7a6be9a2fcb"
+  "inputs": "a38f14129a06415e149342eacf46199755b553ed7348cfa5cfcd672870afc3ec"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Only x%a is referenced in the region, and it is a list item of the map clause, so the structure-element restriction (other referenced elements must be mapped) is met; x%n is not referenced. The allocatable-component restrictions are not violated (no reallocation)."

@@ -235,7 +235,7 @@
   ],
   "front_ends": {},
   "program_sha": "3af8afb353d7b6b82e34f857d9adb70fc159af34eb75f829be2ad76308f23236",
-  "inputs": "61bfd5a4ce17ac5fedd9994eb9208b4a3330bc46c20079c7f93fbeede4f69451"
+  "inputs": "4ed157962736f8c44bf571aae9782e7fb07fb9a85cdd35fa7d2756836e4602fa"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: dr, ib and ic are non-scalars implicitly mapped tofrom; the predefined default mapper maps each structure element of dr, including the allocatable component q, and 5.2 added support for allocatable components. j is a Fortran loop variable inside a teams construct and so private; i is the distribute loop variable. r1b is a max reduction and the ic index stays in 1..5, so the program is race free. A device fault is a compiler or runtime error."

@@ -252,7 +252,7 @@
    "nvhpc_c": "reject"
   },
   "program_sha": "4881fc09441baa8136ed371b152fc836eba85cbd9df8d09fee23b7aafabd8039",
-  "inputs": "d109f11cd70062c6beef78903a508aa6866371b4c378458818961e5416718860"
+  "inputs": "1ef2706d8002ad433d68da6947fdfc5c3ef4ad1e4bfd50352d2b13d0290055ce"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

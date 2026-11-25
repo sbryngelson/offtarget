@@ -240,7 +240,7 @@
   ],
   "front_ends": {},
   "program_sha": "d5fa2febece98e64573b4673ceea80ab6799b85e490b137e3033b41d250c51a4",
-  "inputs": "4265fb8005e08f9523b63506ee1800232280bbe6e07b6a88f3fc12170dfede30"
+  "inputs": "8a1369b442f3f3aa8c0ca3cdf3c353d121c8a28916d737bb7899e203e39da041"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The specification requires type-bound procedures accessed in a target region to appear in a declare target directive. The overriding procedures sq_area, rect_area and area_of carry one, but the deferred binding is declared only through an abstract interface, so whether the requirement is met is not settled. Nothing specifies device-side dynamic dispatch, so refusal is not shown to violate a requirement."

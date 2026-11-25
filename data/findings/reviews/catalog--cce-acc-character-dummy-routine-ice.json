@@ -131,7 +131,7 @@
    "nvhpc_acc": "ice"
   },
   "program_sha": "e245406be736ba1fbdca4dda831d4048ff27405fc528b01299c4614f5f847fab",
-  "inputs": "bff5feea01d25cd06dbfbcba4b974db52a597f1c6d079afe6d3929d9f232d1a5"
+  "inputs": "064329a172f38734bc6c672498c067b1b969f5e178a03659f07cae9501e8ce91"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

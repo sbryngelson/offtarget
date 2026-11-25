@@ -254,6 +254,22 @@ def test_a_wrong_answer_lead_the_elision_cannot_read_gets_a_host_run_of_a_correc
     assert none == []                                   # no correct run of another family: no oracle
 
 
+def test_a_run_time_failure_reduces_with_a_correct_compiler_of_another_family_as_verify_target():
+    """The reduced program must still run correctly on a compiler of another family that ran the original
+    correctly (tools/reduce.py --verify-target): no drift into a program every compiler fails. A compile-time
+    failure needs none."""
+    def lead(outcome, agree):
+        f = LD.Failure("fuzz:run", "7", "gcc", "f90", "omp", "copy", outcome, "", "program p\nend program p\n", 9,
+                       (), ("gcc",), "", tuple(agree))
+        return LD.group([LD.Lead(f, "new", ())])
+    for outcome in ("crash", "run_error", "wrong_answer"):
+        q = LD.reduce_queue(lead(outcome, ("gcc", "cce21", "afar")), "results/fuzz/run")
+        argv = q[0]["argv"]
+        assert argv[argv.index("--verify-target") + 1] == "afar/0", outcome
+    assert "--verify-target" not in LD.reduce_queue(lead("rejected", ("afar",)), "results/fuzz/run")[0]["argv"]
+    assert "--verify-target" not in LD.reduce_queue(lead("crash", ("gcc",)), "results/fuzz/run")[0]["argv"]
+
+
 def test_advance_runs_the_confirmer_on_each_new_reduction_once(tmp_path, monkeypatch):
     import importlib.util
     import subprocess
@@ -275,6 +291,7 @@ def test_advance_runs_the_confirmer_on_each_new_reduction_once(tmp_path, monkeyp
         calls.append(argv)
         return SimpleNamespace(returncode=0, stdout='{"verdict": "BUG", "draft": "results/confirm/drafts/x"}\n', stderr="")
     monkeypatch.setattr(subprocess, "run", run)
+    monkeypatch.setattr(T, "_witness", lambda prog: None)    # the checkers (their own test)
     T.advance(20)
     T.advance(20)                                    # already advanced: not again
     assert len(calls) == 1 and calls[0][-6:] == ["--toolchain", "cce19", "--mode", "copy", "--run", "--draft"]
@@ -451,3 +468,85 @@ def test_a_finding_the_gate_does_not_reproduce_is_not_published(tmp_path, monkey
     assert not T._reproduced("c1", "fuzz/x.f90", "cce19")
     monkeypatch.setattr(R, "site_obs", lambda c, rows: [ok, bad])
     assert T._reproduced("c1", "fuzz/x.f90", "cce19") and not T._reproduced("c1", "fuzz/x.f90", "gcc")
+
+
+def test_advance_first_stores_the_independent_checkers_verdicts_on_the_reduction(tmp_path, monkeypatch):
+    import importlib.util
+    from pathlib import Path
+    from offload.engine.confirm import witness as W
+    spec = importlib.util.spec_from_file_location("leads_tool10", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    prog = tmp_path / "red.f90"
+    prog.write_text(SIMD_IF)
+    monkeypatch.setattr(W, "FILES", tmp_path / "wf.yaml")
+    monkeypatch.setattr(W, "checkers", lambda data=None: {"intel_f90": {"family": "intel", "lang": "f90"},
+                                                          "nvhpc_f90": {"family": "nvhpc", "lang": "f90"}})
+    monkeypatch.setattr(W, "names_for", lambda lang, model="omp": ["intel_f90", "nvhpc_f90"])
+    seen = []
+
+    def check(ident, source, lang, sha, model, name):
+        seen.append(name)
+        if name == "nvhpc_f90":
+            raise RuntimeError("ssh to wingtip failed")
+        return {"program": ident, "sha256": sha, "checker": name, "version": "v", "result": "accept",
+                "message": "", "date": "d", "command": "c"}
+    monkeypatch.setattr(W, "check", check)
+    T._witness(prog)
+    T._witness(prog)                       # stored once: not checked again
+    W._rows.cache_clear()
+    rows = list(W._rows(str(tmp_path / "wf.yaml")))
+    assert [r["checker"] for r in rows] == ["intel_f90"] and rows[0]["program"] == str(prog)
+    assert seen.count("intel_f90") == 1
+
+
+def test_a_feature_without_which_no_program_fails_splits_a_group_at_any_base_rate():
+    """At a high failure rate twice the base rate cannot be reached; a feature every failure has
+    and no program without it fails is the split all the same."""
+    feats = {str(i): ({"common"} | ({"atomic"} if i < 75 else set()), i < 70) for i in range(100)}
+    groups = LD.split_by_features(LD.group([LD.Lead(failure(i), "new", ()) for i in range(70)]), feats)
+    assert [g.signature for g in groups] == ["wrong_answer|cce21|feature:atomic"]
+
+
+def test_plan_gives_an_unfinished_reduction_the_current_command(tmp_path, monkeypatch):
+    """A queued reduction that has not finished takes the command plan computes now (a new option, such as
+    --verify-target); a finished one keeps the command it ran with."""
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("leads_tool3", Path(__file__).parents[2] / "tools/campaigns/leads.py")
+    T = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(T)
+    monkeypatch.setattr(T, "ROOT", tmp_path)
+    monkeypatch.setattr(T, "QUEUE", tmp_path / "queue.jsonl")
+    monkeypatch.setattr(T, "OUT", tmp_path)
+    old = [{"name": n, "argv": ["--old", "--out", f"red/{n}"]} for n in ("a", "b")]
+    T.QUEUE.write_text("".join(json.dumps(e) + "\n" for e in old))
+    (tmp_path / "red" / "b").mkdir(parents=True)
+    (tmp_path / "red" / "b" / "report.md").write_text("done\n")
+    new = [{"name": n, "argv": ["--new", "--out", f"red/{n}"]} for n in ("a", "b", "c")]
+    monkeypatch.setattr(T.LD, "fuzz_groups", lambda run_dir: [])
+    monkeypatch.setattr(T.LD, "reduce_queue", lambda *a, **k: new)
+    monkeypatch.setattr(T, "_meta", lambda run_dir: {})
+    T.plan(tmp_path / "run")
+    q = {e["name"]: e["argv"][0] for e in map(json.loads, T.QUEUE.read_text().splitlines())}
+    assert q == {"a": "--new", "b": "--old", "c": "--new"}
+
+
+def test_a_gpu_memory_fault_groups_whatever_reason_the_runtime_gives():
+    """ROCm's reason for a memory access fault differs between runs of one failure: one group."""
+    def f(reason):
+        out = f"Memory access fault by GPU node-4 (Agent handle: 0x5a8900) on address 0x1560789. Reason: {reason}."
+        return LD.Failure("fuzz:run", "7", "gcc", "f90", "acc", "copy", "crash", "crash: SIGABRT", "", 9, (),
+                          ("gcc",), out, ())
+    assert LD.signature(f("Unknown")) == LD.signature(f("Write access to a read-only page"))
+    assert "reason" not in LD.signature(f("Unknown")).lower()
+
+
+def test_a_generated_c_wrong_answer_reduces_against_its_sequential_run():
+    """A generated C program's reference is its own sequential run (offload.engine.reduce.FuzzContract with
+    offload.engine.fuzz.elided_checksum_c): its wrong answer reduces with no other family's host run."""
+    text = ("// Generated by compliance.fuzz (OpenACC 3.4, C11; patterns of the profiled code bases, swarm). Do not edit.\n"
+            "// generator: fuzz-cappacc1\nint main(void) {\n  return 0;\n}\n")
+    f = LD.Failure("fuzz:run", "7", "gcc", "c", "acc", "copy", "wrong_answer", "", text, 9, (), ("gcc",), "", ())
+    q = LD.reduce_queue(LD.group([LD.Lead(f, "new", ())]), "results/fuzz/run")
+    assert len(q) == 1 and "--reference" not in q[0]["argv"]

@@ -131,7 +131,7 @@
    "intel_c": "accept"
   },
   "program_sha": "e48c4556201e842b33d7385e9aa609f521bf452f9cf87f67d78aac9d8c358eca",
-  "inputs": "bd894b848e9946e29ae042e13d64bf73341a3719d272f9e279759d9f2e456d3b"
+  "inputs": "d29789979d8121ba28ae8870977a1cea76e54a0add15cad65bc6e8e7f83521dc"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

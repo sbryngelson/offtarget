@@ -290,7 +290,7 @@
    "afar-frontend": "reject"
   },
   "program_sha": "6b8f41ad357e5b57d956caac520e1db71247be8b28c60243a99d3b7eb4a62775",
-  "inputs": "bb7f92fa170dc9bbbea235429ccc7535ef848bd2535d3b9c93245287e8808719"
+  "inputs": "357de747f41ef06ad26dcdf57f7ef79937d93f8a044a14ae47bab2ccaa4eaf19"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: The statement x = x + v + 1 parses as (x + v) + 1, so it does not match x = x binop expr with x as the left operand of the top-level operator. The spec requires only that x binop expr be mathematically equivalent to x binop (expr), and the precedence condition is given as a sufficient case. For integer addition, x + (v + 1) is equivalent, so the form can be read as admitted."

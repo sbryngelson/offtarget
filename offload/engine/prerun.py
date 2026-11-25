@@ -936,6 +936,8 @@ EXTRA_CITES = {
     "omp-unmapped-scalar-reduction":
         "OpenMP 5.2 §5.8.1 (a scalar referenced in a target construct and not in a data clause is "
         "firstprivate), so the result of a reduction on a construct nested in it stays on the device",
+    "acc-declare-clause":
+        "OpenACC 3.4 §2.13 p.82 l.2992 (at least one clause must appear on a declare directive)",
     "acc-constant-copy":
         "OpenACC 3.4 §1.6 l.423-424 (a data action that writes to an unwritable or constant location is "
         "undefined) and §2.6.2 p.41 l.1392-1393 (a scalar in a kernels construct is treated as copy)",
@@ -1108,8 +1110,21 @@ def extra(text: str, lang: str, tree=None) -> list[str]:
             out += _module_variables(text, dirs)
     else:
         out += _acc_reduction(text, lang)
+        out += _acc_declare_clause(text)
         if lang != "c":
             out += _acc_constant_copy(text)
+    return out
+
+
+_ACC_DECLARE = re.compile(r"^\s*(?:!\$acc|#\s*pragma\s+acc)\s+declare\s*$", re.M | re.I)
+
+
+def _acc_declare_clause(text: str) -> list[str]:
+    """A declare directive with no clause (OpenACC 3.4 §2.13)."""
+    out = []
+    for m in _ACC_DECLARE.finditer(text):
+        line = text.count("\n", 0, m.start()) + 1
+        out.append(_cite("acc-declare-clause").format(f"line {line}: a declare directive with no clause"))
     return out
 
 
@@ -1556,9 +1571,22 @@ def frontend_witness(program, timeout_s: int = 600
                         if re.search(r":\d+:\d+: error:", ln)] or \
                     [ln for ln in ex.stdout.splitlines()
                      if re.search(r"\berror:", ln)]
+                real = [ln for ln in errs if not any(p.search(ln) for p, _ in FRONTEND_LIMITS)]
+                if errs and not real:
+                    continue        # refusals the specification contradicts only (FRONTEND_LIMITS)
                 return False, [f"frontend: {name}: " + (
-                    errs[0] if errs else ex.stdout.strip()[:300]).strip()]
+                    real[0] if real else ex.stdout.strip()[:300]).strip()]
     return True, []
+
+
+# AFAR's front-end refusals the specification contradicts, each with the passage that allows the
+# form: such a refusal is no evidence that a program is illegal (frontend_witness, fuzz.check_flang)
+FRONTEND_LIMITS = (
+    (re.compile(r"At most one DEFAULTMAP clause can appear"),
+     "OpenMP 5.2 §5.8.7 p.162: a given variable-category may be specified in at most one defaultmap clause"),
+    (re.compile(r"presents? cannot be used with defaultmap clause", re.I),
+     "OpenMP 5.2 §5.8.7: present is an implicit-behavior of the defaultmap clause"),
+)
 
 
 # --- the check ---------------------------------------------------------------------------

@@ -265,3 +265,44 @@ def test_a_remote_checker_that_never_starts_records_nothing(monkeypatch):
         monkeypatch.setattr(subprocess, "run", lambda *a, **k: SimpleNamespace(returncode=rc, stdout="", stderr=out))
         with pytest.raises(RuntimeError):
             W._check_remote("p", "int main(){}", "c", "s", "nvhpc_c", c)
+
+
+def test_a_stored_verdict_on_a_file_program_witnesses_it(tmp_path, monkeypatch):
+    """Checker verdicts on programs outside the catalog (a lead's reduction) are kept apart from the
+    committed catalog/legality_witness.yaml (results/confirm/witness_files.yaml) and witness the
+    same way."""
+    from offload.engine.confirm import witness as W
+    files = tmp_path / "witness_files.yaml"
+    files.write_text("witnesses:\n- program: /x/red.f90\n  sha256: abc\n  checker: intel_f90\n  version: ifx 2025.3\n"
+                     "  result: accept\n")
+    monkeypatch.setattr(W, "FILES", files)
+    monkeypatch.setattr(W, "checkers", lambda data=None: {"intel_f90": {"family": "intel", "lang": "f90"}})
+    W._rows.cache_clear()
+    assert W.accepted("/x/red.f90", "abc", family="cce") == "intel_f90 ifx 2025.3"
+    assert W.verdict_of("/x/red.f90", "abc", family="cce") == ("intel_f90 ifx 2025.3", "accept")
+    assert W.accepted("/x/red.f90", "other", family="cce") is None
+    W._rows.cache_clear()
+
+
+def test_a_checker_refusal_the_specification_contradicts_is_no_verdict():
+    """A checker that refuses only with a refusal the specification contradicts
+    (offload.engine.prerun.FRONTEND_LIMITS: NVHPC's 'presents cannot be used with defaultmap clause';
+    present is a defaultmap behaviour, OpenMP 5.2 §5.8.7) neither accepts nor rejects the program."""
+    from offload.engine.confirm import witness as W
+    lim = "NVFORTRAN-S-1197-OpenMP GPU - presents cannot be used with defaultmap clause. (t.f90: 43)"
+    assert W.result_of_refusal(lim + " | " + lim) == "unsupported"
+    assert W.result_of_refusal(lim + " | NVFORTRAN-S-0034-Syntax error at or near end of line (t.f90: 26)") == "reject"
+    assert W.result_of_refusal("") == "reject"
+
+
+def test_a_stored_refusal_the_specification_contradicts_reads_as_no_verdict(monkeypatch):
+    """A row stored before the refusal was known to contradict the specification still says reject: it is
+    read as no verdict."""
+    from offload.engine.confirm import witness as W
+    lim = "NVFORTRAN-S-1197-OpenMP GPU - presents cannot be used with defaultmap clause. (t.f90: 43)"
+    row = {"program": "p1", "sha256": "s", "checker": "nv", "version": "26.9", "result": "reject", "message": lim}
+    monkeypatch.setattr(W, "_all_rows", lambda: (row,))
+    monkeypatch.setattr(W, "checkers", lambda: {"nv": {"family": "nvhpc"}})
+    assert W.verdict_of("p1", "s") is None
+    monkeypatch.setattr(W, "_all_rows", lambda: (dict(row, message="NVFORTRAN-S-0034-Syntax error"),))
+    assert W.verdict_of("p1", "s") == ("nv 26.9", "reject")

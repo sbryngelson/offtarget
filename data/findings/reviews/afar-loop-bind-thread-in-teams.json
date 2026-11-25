@@ -213,7 +213,7 @@
   ],
   "front_ends": {},
   "program_sha": "ae8f2cfe4e144e5927780c134346987555fe48ab12c6682bbf03e5c117bdedb5",
-  "inputs": "c1167ff741747ae2b7b2df658682f457ecdb18e65ad04224c3cc4cfd9e687617"
+  "inputs": "3015953002f14dda329e87f2affdcbc963f123d86ab33add327303241ca5b41d"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the program not legal: Both readings are right that bind(thread) is allowed inside teams in 5.2, so the compiler's stated reason is stale. But the loop construct asserts its iterations may execute in any order, including concurrently, and every iteration does mine = mine + 1 on one variable with no reduction. That loop-carried dependence is a data race, so the program is non-conforming and no result is required."

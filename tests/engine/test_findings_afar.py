@@ -2203,3 +2203,12 @@ int main(void) {
 """
     ok, why = rules(src, "c")
     assert not any("race:" in w for w in why), why
+
+
+@pytest.mark.parametrize("decl,bad", [("!$acc declare create(x)", False), ("!$acc declare", True),
+                                      ("!$acc declare  ", True)])
+def test_an_openacc_declare_directive_has_a_clause(decl, bad):
+    """OpenACC 3.4 §2.13 p.82 l.2992: at least one clause must appear on a declare directive."""
+    src = f"module m\n  integer :: x\n  {decl}\nend module m\nprogram p\n  use m\n  x = 1\n  print *, x\nend program p\n"
+    ok, why = rules(src, "f90")
+    assert any("acc-declare-clause" in w for w in why) == bad, why

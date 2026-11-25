@@ -28,6 +28,9 @@ from offload.engine import localcfg
 
 ROOT = Path(__file__).resolve().parent.parent.parent.parent
 DATA = ROOT / "catalog" / "legality_witness.yaml"
+# checker verdicts on programs outside the catalog (a lead's reduction: tools/campaigns/leads.py
+# advance), kept apart from the committed catalog rows (regenerate.py checks those only)
+FILES = ROOT / "results" / "confirm" / "witness_files.yaml"
 
 
 def validate(entries: dict) -> dict:
@@ -132,6 +135,32 @@ def _rows(path: str = str(DATA)) -> tuple:
                  or ())
 
 
+def result_of_refusal(message: str) -> str:
+    """reject, or unsupported when every error of the refusal is one the specification contradicts
+    (offload.engine.prerun.FRONTEND_LIMITS): no verdict on the program."""
+    from offload.engine.prerun import FRONTEND_LIMITS
+    parts = [x.strip() for x in (message or "").split(" | ") if x.strip()]
+    if parts and all(any(p.search(x) for p, _ in FRONTEND_LIMITS) for x in parts):
+        return "unsupported"
+    return "reject"
+
+
+def _all_rows() -> tuple:
+    """The catalog's witness rows and those of programs outside it (FILES)."""
+    return _rows(str(DATA)) + _rows(str(FILES))
+
+
+def add_file_rows(rows: list[dict]) -> None:
+    """Store checker verdicts on programs outside the catalog (FILES), replacing a program's older
+    rows of the same checker."""
+    import yaml as _y
+    old = [r for r in _rows(str(FILES)) if (r["program"], r["checker"]) not in
+           {(x["program"], x["checker"]) for x in rows}]
+    FILES.parent.mkdir(parents=True, exist_ok=True)
+    FILES.write_text(_y.safe_dump({"witnesses": list(old) + rows}, sort_keys=False, width=1000))
+    _rows.cache_clear()
+
+
 def accepted(ident: str, sha: str = "", family: str | None = None
              ) -> str | None:
     """The checker (with version) that accepted the program's current
@@ -142,7 +171,7 @@ def accepted(ident: str, sha: str = "", family: str | None = None
     counts."""
     active = {k: v for k, v in checkers().items()
               if family is None or v.get("family") != family}
-    for r in _rows():
+    for r in _all_rows():
         if r.get("calibrates"):
             continue  # an illegal variant run for calibration, not a witness
         if r["checker"] in active and r["program"] == ident and \
@@ -167,11 +196,12 @@ def verdict_of(ident: str, sha: str = "", family: str | None = None
         return acc, "accept"
     active = {k: v for k, v in checkers().items()
               if family is None or v.get("family") != family}
-    for r in _rows():
+    for r in _all_rows():
         if r.get("calibrates") or r["checker"] not in active:
             continue
         if r["program"] == ident and (not sha or r["sha256"] == sha) and \
-                r["result"] == "reject":
+                r["result"] == "reject" and result_of_refusal(r.get("message") or "") == "reject":
+            # a refusal the specification contradicts (stored before it was known as one) is no verdict
             return f"{r['checker']} {r['version']}", "reject"
     return None
 
@@ -266,7 +296,7 @@ def check(ident: str, source: str, lang: str, sha: str,
                      if "error" in x.lower())[:300]
     return {"program": ident, "sha256": sha, "checker": name,
             "version": _version(c["version"]), "command": public(c["command"]),
-            "result": "accept" if r.returncode == 0 else "reject",
+            "result": "accept" if r.returncode == 0 else result_of_refusal(msg),
             "message": public(msg),
             "date": datetime.date.today().isoformat()}
 
@@ -337,7 +367,7 @@ def _check_remote(ident, source, lang, sha, name, c) -> dict:
     return {"program": ident, "sha256": sha, "checker": name,
             "version": first.strip(), "command": public(c["command"]),
             "result": ("ignored" if ign else "accept") if r.returncode == 0
-            else "reject",
+            else result_of_refusal(msg),
             "message": msg, "date": datetime.date.today().isoformat()}
 
 

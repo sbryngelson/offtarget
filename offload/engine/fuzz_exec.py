@@ -622,6 +622,16 @@ def campaign(out_dir: Path, seeds, workers: int = 6,
     raises (a campaign has one generator version and one set of base
     groups)."""
     from concurrent.futures import ProcessPoolExecutor, as_completed
+    seeds = list(seeds)
+    if seeds:
+        # a toolchain that does not compile the generator's language and model (the catalog's reason) is
+        # refused before any program runs
+        first = generate(seeds[0], gen_version, tuple(base))
+        for name in toolchains:
+            try:
+                toolchain_for(name, first.lang, first.model).flags()
+            except ValueError as e:
+                raise ValueError(f"{name}: {e}") from None
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "programs.jsonl"

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
@@ -485,6 +486,11 @@ class Port(Collector):
 ELISION_ANALYSIS = 2
 
 
+# a generated fuzz program, or a reduction of one (tools/reduce.py's first line): its result is its sequential
+# run's by construction, so a C or OpenACC program of this kind has an elision without the OpenMP analysis
+_GENERATED = re.compile(r"^(?:!|//) (?:generator: fuzz-|Reduced by tools/reduce\.py from fuzz seed \d+ \(fuzz-)", re.M)
+
+
 class Elision(Collector):
     """Sequential elision (offload.engine.expected.elision_evidence; Fortran,
     where ELISION_RULE applies). A fuzz campaign's stored elision value is
@@ -499,6 +505,10 @@ class Elision(Collector):
         # older elision analysis is not reused (the parser reads a bare `end`)
         variant = ("free-form" if free_form else "original") + \
             f"@{ELISION_ANALYSIS}"
+        from offload.engine.reduce import model_of
+        generated = _GENERATED.search(case.program.text) is not None
+        if generated and model_of(case.program.text) == "acc":
+            variant += "+acc"       # the OpenACC elision (fuzz_acc), not the OpenMP analysis's verdict
         key = (self.name, case.program.sha, "", "", "", "-O2", "mandatory",
                variant)
         hit = ctx.store.get(key)
@@ -518,6 +528,8 @@ class Elision(Collector):
                                  "value" else "inapplicable",
                                  detail=el.get("detail", "")[:300],
                                  provenance=Provenance(origin=rec[3]))]
+        if generated and case.program.lang == "c" and not free_form and not P.split_files(case.program.text):
+            return [ctx.store.put(self._c(case, variant + "+c"))]
         if case.program.lang != "f90" or P.split_files(case.program.text):
             return [Evidence(self.name, sha=case.program.sha,
                              status="inapplicable",
@@ -548,6 +560,8 @@ class Elision(Collector):
                              provenance=Provenance(origin=rec[3]))]
         from offload.engine import expected as E
         from offload.engine.confirm.model import value_of
+        if generated and model_of(case.program.text) == "acc" and not free_form:
+            return [ctx.store.put(self._acc(case, variant))]
         # a finding's free-form output: the elided build's output with
         # whitespace collapsed (value_of), else the RESULT line
         free = (lambda out: value_of(out)[0]) if free_form else None
@@ -565,6 +579,43 @@ class Elision(Collector):
             detail=str(ev.detail)[:300],
             provenance=Provenance(command="offload.engine.expected."
                                   "elision_evidence", origin="run")))]
+
+
+    def _c(self, case, variant):
+        """A C program built without OpenMP or OpenACC under the undefined-behaviour sanitizer and run on
+        the host (offload.engine.fuzz.elided_run_c)."""
+        from offload.engine import expected as E
+        from offload.engine import fuzz as FZ
+        try:
+            out, why = FZ.elided_run_c(case.program.text)
+        except Exception as e:   # a checker failure is no verdict
+            out, why = None, f"error: {e}"
+        v = E.value_of(out) if out is not None else None
+        return Evidence(self.name, variant=variant, sha=case.program.sha, value=v,
+                        status="value" if v else "no_value",
+                        detail="" if v else (why or "no single RESULT line")[:300],
+                        provenance=Provenance(command="offload.engine.fuzz.elided_run_c", origin="run"))
+
+    def _acc(self, case, variant):
+        """An OpenACC program built without OpenACC against the sequential openacc module
+        (offload.engine.fuzz_acc), run with both initial fills, which must print one value."""
+        from offload.engine import expected as E
+        from offload.engine import fuzz_acc
+        vals = []
+        for init in fuzz_acc.INITS:
+            try:
+                out, why = fuzz_acc.elided_run_acc(case.program.text, init)
+            except Exception as e:   # a checker failure is no verdict
+                out, why = None, f"error: {e}"
+            if out is None:
+                return Evidence(self.name, variant=variant, sha=case.program.sha, status="no_value",
+                                detail=why[:300])
+            vals.append(E.value_of(out))
+        ok = vals[0] is not None and vals[0] == vals[1]
+        return Evidence(self.name, variant=variant, sha=case.program.sha, value=vals[0] if ok else None,
+                        status="value" if ok else "no_value",
+                        detail="" if ok else f"the runs with two initial fills print {vals[0]} and {vals[1]}",
+                        provenance=Provenance(command="offload.engine.fuzz_acc.elided_run_acc", origin="run"))
 
 
 class Repeats(Collector):

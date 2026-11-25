@@ -251,7 +251,7 @@
    "intel_f90": "accept"
   },
   "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
-  "inputs": "89a8e835f4f779cddaa27054825b21d19d284f50046e99b70e424df684a18eb9"
+  "inputs": "cddf87b98b9c75cba64504b15b5be7d54d8ba1e3a58c2a4c971973f0c35b583e"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Fortran 2003 is a cited base language, so a parameterized derived type is not excluded."

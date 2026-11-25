@@ -104,7 +104,7 @@
    "nvhpc_acc": "accept"
   },
   "program_sha": "871b56b34c4d3ff3104053490bbc0c9e9788e89bb11fb17ae54e60a358e57227",
-  "inputs": "06d328c297fb691883bfd7eec3ecf2e3c84f3017f5a157acd175b9f4916800ec"
+  "inputs": "165a0db9a2c8fbce1895870260cf75cace4534d4bbbf3f74aa2f7ab4795efb0f"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

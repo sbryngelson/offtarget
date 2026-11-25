@@ -3176,3 +3176,98 @@ def test_a_reduction_stopped_at_its_budget_still_records_its_final_rows(tmp_path
             "--no-controls", "--name", "p"])
     rows = [_json.loads(x) for x in (out / "rows.jsonl").read_text().splitlines() if x.strip()]
     assert rows and rows[0]["toolchain"] == "afar"
+
+
+def test_a_candidate_the_base_language_rejects_is_refused_when_the_original_passes_it(monkeypatch):
+    """A reduction of a refusal keeps whatever still triggers the message; a candidate that is no
+    longer valid Fortran (a use of a component it deleted) is refused by the base-language check
+    (fuzz.check_gfortran: -std=f2008 without OpenMP, never evidence of legality, only a filter)."""
+    from offload.engine import fuzz as FZ
+    j = RD.Judge(None, [], None, "f90", witness=lambda t, l: (True, []))
+    monkeypatch.setattr(FZ, "check_gfortran", lambda src: "Error: 'vf' is not a member" if "bad" in src else None)
+    j.base = RD.base_check("f90")
+    j.device_flag = j.device_construct = False         # the other guards (their own tests)
+    assert j._check_text("program p\n  x = 1  ! bad\nend program p\n")[1].startswith("base language:")
+    assert j._check_text("program p\n  x = 1\nend program p\n")[1] == ""
+
+
+def test_an_openacc_copy_back_is_one_a_candidate_must_keep():
+    """update self, update host and exit data copyout copy back to the host like an OpenMP update from:
+    a candidate that drops one leaves the host's stale values, which a sequential reference counts as wrong."""
+    src = ("  !$acc update self(qa%vf(i)%sf, tot)\n  !$acc update host(w(1:4))\n"
+           "  !$acc exit data copyout(z) delete(y)\n  !$acc update device(v)\n")
+    assert RD.copied_back(src) == {"qa", "tot", "w", "z"}
+    dropped = src.replace("self(qa%vf(i)%sf, tot)", "self(qa%vf(i)%sf)") + "  print *, tot\n"
+    assert not RD.copybacks_kept(dropped, {"tot"}) and RD.copybacks_kept(src + "  print *, tot\n", {"tot"})
+
+
+@pytest.mark.gfortran
+def test_the_reducer_reads_a_generated_openacc_programs_elision():
+    """A generated OpenACC program's reference is its build without OpenACC against the sequential openacc
+    module (offload.engine.fuzz_acc), run with two initial fills that must agree: the model's checksum."""
+    from offload.engine import fuzz
+    p = fuzz.generate(3, "fuzz-mfcacc2")
+    assert RD.elision_reference(p.source) == p.expected
+
+
+def test_a_gpu_memory_fault_is_one_failure_whatever_reason_the_runtime_gives():
+    """ROCm's "Memory access fault by GPU ... Reason: ..." names a reason that differs between runs of one
+    failure (unknown, write access to a read-only page): the signature leaves it out."""
+    def row(reason):
+        return {"toolchain": "gcc", "outcome": "crash", "reason": "crash: SIGABRT",
+                "output": f"Memory access fault by GPU node-4 (Agent handle: 0x5a8900) on address (nil). Reason: {reason}."}
+    a, b = RD.signature(row("Unknown")), RD.signature(row("Write access to a read-only page"))
+    assert a == b and "memory access fault" in a.key and "reason" not in a.key
+
+
+def test_a_candidate_must_still_run_correctly_on_the_verify_targets(tmp_path):
+    """A candidate keeps the failure on the targets and still runs correctly on every verify target (a
+    compiler of another family that ran the original correctly): a reduction cannot drift into a program
+    every compiler fails."""
+    prog = "program p\n  integer :: x\n  !$omp target map(tofrom: x)\n  x = 1\n  !$omp end target\n  print *, x\nend program p\n"
+
+    def cls(text, t):
+        return "crash" if t.toolchain == "nvhpc" or "x = 2" in text else "correct"
+    j = RD.Judge(RD.FakeRunner(cls), [NV], None, "f90", witness=_witness_ok, rows_path=tmp_path / "c.jsonl",
+                 name="v", verify_targets=[NV269], require_device_flag=False)
+    assert j(prog)[0]
+    ok, why = j(prog.replace("x = 1", "x = 2"))
+    assert not ok and "nvhpc269/0" in why and "verify target" in why
+
+
+def test_a_candidate_may_not_add_an_error_the_original_does_not_have(monkeypatch):
+    """The original may already fail gfortran -fopenmp (a clause it does not implement): the directive-reading
+    check then refuses only a candidate with an error the original lacks (a clause naming a component the
+    candidate deleted), and the check without directives still holds when the original passes it."""
+    from offload.engine import fuzz as FZ
+    errs = {"orig": ["Error: Unsupported clause defaultmap(present:pointer) at (1)"],
+            "same": ["Error: Unsupported clause defaultmap(present:pointer) at (1)"],
+            "worse": ["Error: Unsupported clause defaultmap(present:pointer) at (1)",
+                      "Error: 'vf' at (1) is not a member of the 'vector_field' structure"],
+            "plainbad": []}
+    monkeypatch.setattr(RD, "_gfortran_errors", lambda text: errs[text])
+    monkeypatch.setattr(FZ, "check_gfortran", lambda text: "Error: syntax" if text == "plainbad" else None)
+    guard = RD.base_guard("f90", "orig")
+    assert guard("same") is None
+    assert "not a member" in guard("worse")
+    assert guard("plainbad") == "Error: syntax"
+
+
+C_FUZZ_TAIL = ('int main(void) {\n  long long cs = 5;\n#pragma omp target map(tofrom: cs)\n  cs += 1;\n'
+               '  printf("RESULT checksum=%lld ran_on_host=%d\\n", cs, 0);\n  return 0;\n}\n')
+
+
+def test_a_c_fuzz_program_is_checked_against_its_reference_like_a_fortran_one(monkeypatch):
+    """A C fuzz program's printf("RESULT checksum=...") line takes the harness's self-checking form: the
+    checksum on a line of its own, then RESULT with check=pass when it equals the reference (by default the
+    sequential C run, offload.engine.fuzz.elided_checksum_c)."""
+    from offload.engine import fuzz as FZ
+    assert RD.FuzzContract.applies(C_FUZZ_TAIL) and isinstance(RD.contract_for(C_FUZZ_TAIL, "c"), RD.FuzzContract)
+    out = RD.FuzzContract(reference=lambda text: 6).prepare(C_FUZZ_TAIL)
+    assert 'printf("checksum= %lld\\n", (long long)(cs));' in out
+    assert 'printf("RESULT ran_on_host=%d check=%s\\n", 0, (cs) == 6LL ? "pass" : "fail");' in out
+    assert "RESULT checksum=" not in out
+    plain = RD.FuzzContract.rewrite(C_FUZZ_TAIL)
+    assert '"pass");' in plain or 'check=%s\\n", 0, "pass")' in plain
+    monkeypatch.setattr(FZ, "elided_checksum_c", lambda src: 6)
+    assert RD.elision_reference(C_FUZZ_TAIL) == 6

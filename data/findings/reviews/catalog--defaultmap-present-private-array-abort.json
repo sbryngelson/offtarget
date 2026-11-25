@@ -254,7 +254,7 @@
    "nvhpc_f90": "reject"
   },
   "program_sha": "6f6756ca5bb491b7b602d1771af50b5f7d6f3f9a510619ffd9c79d9afe5aecd0",
-  "inputs": "5d29af560bcad644766b82e44b76366e7effeca6a94bf7f906fbdfe89e2646d9"
+  "inputs": "4b21a4f6b49f03eb9c998fae4464eaac4bf02fff367c333ab608c60a3a960929"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the program not legal: Section 17.3 applies private only to the innermost leaf construct that permits it, which is the worksharing loop, so the target construct has no explicit data-sharing attribute for t. t is an array (aggregate), so defaultmap(present: aggregate) gives it an implicit map with alloc and the present modifier. t is not present on the device, so runtime error termination is required. The 16-byte message matches t (4 integers)."

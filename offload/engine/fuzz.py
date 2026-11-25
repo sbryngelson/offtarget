@@ -76,14 +76,21 @@ from offload.engine.fuzz_base import (ALL_GROUPS, BASE_GROUPS, TYPES, BaseMixin,
 #   sanitizer, which must print the model's checksum (check_defined_c): a
 #   translation that changed the program's value never reaches a compiler.
 # fuzz-acc1 (OpenACC): offload.engine.fuzz_acc; no base-language groups.
-# fuzz-mfc1 (OpenMP) and fuzz-mfcacc1 (OpenACC): MFC's offload patterns, offload.engine.fuzz_mfc;
+# fuzz-mfc1 (OpenMP) and fuzz-mfcacc1 (OpenACC): MFC's offload patterns, offload.engine.fuzz_mfc
+# (fuzz-mfc2, fuzz-mfcacc2: a swarm over them; fuzz-app1, fuzz-appacc1: the swarm with each code base's
+# weights from catalog/fuzz_profile.json);
 # their elided sequential run must print the model's checksum (check_defined).
+# fuzz-capp1 (OpenMP) and fuzz-cappacc1 (OpenACC): the fuzz-app1 swarm written in C's forms of its data
+# (offload.engine.fuzz_capp); check() runs the rules, the C11 base check and the elided C run.
 GEN_VERSIONS = ("fuzz-1", "fuzz-2", "fuzz-3", "fuzz-4", "fuzz-4s50",
-                "fuzz-5", "fuzz-6", "fuzz-6c", "fuzz-acc1", "fuzz-mfc1", "fuzz-mfcacc1")
-ACC_VERSIONS = ("fuzz-acc1", "fuzz-mfcacc1")
-MFC_VERSIONS = ("fuzz-mfc1", "fuzz-mfcacc1")
+                "fuzz-5", "fuzz-6", "fuzz-6c", "fuzz-acc1", "fuzz-mfc1", "fuzz-mfcacc1",
+                "fuzz-mfc2", "fuzz-mfcacc2", "fuzz-app1", "fuzz-appacc1", "fuzz-capp1", "fuzz-cappacc1")
+ACC_VERSIONS = ("fuzz-acc1", "fuzz-mfcacc1", "fuzz-mfcacc2", "fuzz-appacc1", "fuzz-cappacc1")
+CAPP_VERSIONS = ("fuzz-capp1", "fuzz-cappacc1")
+MFC_VERSIONS = ("fuzz-mfc1", "fuzz-mfcacc1", "fuzz-mfc2", "fuzz-mfcacc2", "fuzz-app1", "fuzz-appacc1")
 # the Fortran version a C version translates
 _C_OF = {"fuzz-6c": "fuzz-6"}
+C_VERSIONS = (*_C_OF, *CAPP_VERSIONS)
 UNTRANSLATED = "// untranslated: "
 GEN_VERSION = "fuzz-4"
 # the generator behaviour (self.v) of a spelling variant
@@ -569,7 +576,7 @@ class FuzzProgram:
 
     @property
     def lang(self) -> str:
-        return "c" if self.gen_version in _C_OF else "f90"
+        return "c" if self.gen_version in C_VERSIONS else "f90"
 
     @property
     def model(self) -> str:
@@ -2260,6 +2267,11 @@ def generate(seed: int, gen_version: str = GEN_VERSION,
     """The program of `seed` (deterministic for one generator version and
     set of base-language groups, offload.engine.fuzz_base; groups need
     fuzz-3). A C version is the program of its Fortran version, translated."""
+    if gen_version in CAPP_VERSIONS:
+        if base:
+            raise ValueError(f"{gen_version} has no base-language groups")
+        from offload.engine import fuzz_capp
+        return fuzz_capp.generate(seed, gen_version)
     if gen_version in MFC_VERSIONS:
         if base:
             raise ValueError(f"{gen_version} has no base-language groups")
@@ -2299,11 +2311,15 @@ def to_c(source: str, gen_version: str) -> str:
 
 
 def is_acc(source: str) -> bool:
-    return re.search(r"^! generator: fuzz-(?:mfc)?acc\d", source, re.M) is not None
+    return re.search(r"^! generator: fuzz-(?:mfc|app)?acc\d", source, re.M) is not None
 
 
 def is_mfc(source: str) -> bool:
-    return re.search(r"^! generator: fuzz-mfc(?:acc)?\d", source, re.M) is not None
+    return re.search(r"^! generator: fuzz-(?:mfc|app)(?:acc)?\d", source, re.M) is not None
+
+
+def is_c_acc(source: str) -> bool:
+    return re.search(r"^// generator: fuzz-c\w*acc\d", source, re.M) is not None
 
 
 def is_c(source: str) -> bool:
@@ -2438,20 +2454,28 @@ def check_defined_c(source: str, expected: int | None) -> str | None:
     return None
 
 
-def elided_checksum_c(source: str) -> int | str:
-    """The checksum the elided C program prints (no OpenMP, -O0, -fsanitize=undefined with no
-    recovery), or why there is none."""
+def elided_run_c(source: str) -> tuple[str | None, str]:
+    """(stdout or None, why) of the elided C program (no OpenMP or OpenACC, -O0,
+    -fsanitize=undefined with no recovery) run on the host."""
     with tempfile.TemporaryDirectory(prefix="fuzz_c_") as d:
         (Path(d) / "p.c").write_text(_omp_stubs_c(source))
         b = subprocess.run([GCC_C, "-std=c11", "-O0", "-Wno-unknown-pragmas", "-fsanitize=undefined",
                             "-fno-sanitize-recover=all", "p.c", "-o", "p"], cwd=d,
                            capture_output=True, text=True, timeout=300)
         if b.returncode:
-            return "elided build: " + (b.stderr or b.stdout).strip()[:400]
+            return None, "elided build: " + (b.stderr or b.stdout).strip()[:400]
         r = subprocess.run(["./p"], cwd=d, capture_output=True, text=True, timeout=300)
-    m = re.search(r"RESULT checksum=(-?\d+)", r.stdout)
-    if r.returncode or not m:
-        return f"elided run: rc={r.returncode} {(r.stderr or r.stdout).strip()[:300]}"
+    if r.returncode:
+        return None, f"elided run: rc={r.returncode} {(r.stderr or r.stdout).strip()[:300]}"
+    return r.stdout, ""
+
+
+def elided_checksum_c(source: str) -> int | str:
+    """The checksum the elided C program prints (elided_run_c), or why there is none."""
+    out, why = elided_run_c(source)
+    m = re.search(r"RESULT checksum=(-?\d+)", out or "")
+    if out is None or not m:
+        return why or f"elided run: no RESULT checksum line: {(out or '').strip()[:300]}"
     return int(m.group(1))
 
 
@@ -2499,12 +2523,8 @@ class CheckerError(Exception):
     """A checker could not be run (not a verdict on the program)."""
 
 
-# AFAR flang refusals the specification contradicts (each with the passage that allows the form):
-# such a refusal is no evidence that a program is illegal, so it does not keep it from the compilers
-FRONTEND_LIMITS = (
-    (re.compile(r"At most one DEFAULTMAP clause can appear"),
-     "OpenMP 5.2 §5.8.7 p.162: a given variable-category may be specified in at most one defaultmap clause"),
-)
+# AFAR flang refusals the specification contradicts (offload.engine.prerun.FRONTEND_LIMITS)
+from offload.engine.prerun import FRONTEND_LIMITS  # noqa: E402
 
 
 def check_flang(source: str) -> str | None:
@@ -2629,7 +2649,12 @@ def check(source: str, defined: bool | None = None,
     if is_acc(source):
         from offload.engine import fuzz_acc
         return fuzz_acc.check_acc(source, expected)
-    if is_c(source):
+    if is_c_acc(source):
+        from offload.engine import fuzz_acc
+        stages = [("rules", fuzz_acc.check_rules_acc), ("cbase", check_cbase),
+                  ("defined", lambda src: check_defined_c(src, expected))]
+        defined = False
+    elif is_c(source):
         stages = ([("scope", check_scope)] if scope else []) + [
             ("rules", check_rules), ("cbase", check_cbase),
             ("defined", lambda src: check_defined_c(src, expected))]

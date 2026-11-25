@@ -160,7 +160,7 @@
    "nvhpc_f90": "reject"
   },
   "program_sha": "13257285b4d645dedeebdbe1c2b8b3f337d780a3753a970cc57ed2439f8cb104",
-  "inputs": "d83ca6f0797e2fe8ee9e2d1de1bbac6d42683193bdba9899e686cf16c061448b"
+  "inputs": "01133fd216e0ba7f1eb657a0533f765c21ee93f6989e379d36df989c96da7606"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

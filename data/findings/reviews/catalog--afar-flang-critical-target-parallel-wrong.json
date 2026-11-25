@@ -131,7 +131,7 @@
    "nvhpc_f90": "unsupported"
   },
   "program_sha": "cdee32980c1cb3edacc3d46f71023f2f8d9fad591b5eb8f40bc83c34faf2176a",
-  "inputs": "48625f0825e6b7fc5b8d0acdc71300bd08f7ba7d7fd54f23505ff36ea0f570b9"
+  "inputs": "6554ab4f9a0f6bdc125db721a4f54752d1cde8b1d22da6fdd79befa59b14e4bd"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."

@@ -207,7 +207,7 @@
    "nvhpc_f90": "reject"
   },
   "program_sha": "70aa81c964e6620f8eeddf0ce0f2902ee7e6c47f2c5a4610ace9929e03c27880",
-  "inputs": "688ef0a4763849e8dbb6607d1f866328cc247a6c1823c47d16af82b998c933e1"
+  "inputs": "34ac13301eb16f4c495d36744ca242b599f79d1a1e87cdfbfc6b9e7046c0563e"
  },
  "advisory": "confirmed",
  "advisory_why": "One independent reading was uncertain; 2 adjudicating readings that weighed both find the program legal and the result required: The restriction on allocators in uses_allocators concerns other data-sharing or mapping clauses in the same construct; my_alloc appears in shared only on the nested parallel do, a different construct. The traits array is a constant parameter array in the same scope as the target, the allocator is non-predefined with traits, and allocate on the parallel do names an allocator listed in uses_allocators."

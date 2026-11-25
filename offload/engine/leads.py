@@ -133,6 +133,8 @@ def signature(f: Failure) -> str:
         err = next((ln for ln in (f.output or "").splitlines() if _RUN_ERROR.search(ln) and not _NOISE.search(ln)), "")
         if err:
             first = err.split(": ", 1)[-1] if err.split(": ", 1)[0].endswith(".out") else err
+        from offload.engine.reduce import _FAULT_REASON     # the runtime's reason differs between runs
+        first = _FAULT_REASON.sub(r"\1", first)
     return f"{f.outcome}|{_msg_key(first)}"
 
 
@@ -186,8 +188,13 @@ def priority(signature: str, failures: int) -> tuple:
 
 
 def _elision_blind(f: Failure) -> bool:
-    """The sequential elision (a fuzz program's own oracle) cannot read the program: C, OpenACC, or
+    """The sequential elision (a fuzz program's own oracle) cannot read the program: hand-written C, OpenACC, or
     Fortran module variables (declare target visibility)."""
+    from offload.engine.fuzz import is_c, is_mfc
+    if f.lang == "c" and is_c(f.text):
+        return False            # a generated C program: its sequential C run (offload.engine.fuzz.elided_checksum_c)
+    if is_mfc(f.text):          # a generated MFC or application program: the elision reads it
+        return f.lang == "c"
     return f.lang == "c" or f.model == "acc" or re.search(r"^\s*module\s+\w+", f.text, re.M | re.I) is not None
 
 
@@ -211,13 +218,20 @@ def reduce_queue(groups, run_dir: str, opt: str = "-O2", xnack: int = 0, budget_
             if not others:
                 continue
             ref = ["--reference", f"host:{others[0]}"]
+        verify = []
+        if f.outcome in _ORDER and _ORDER[f.outcome] < 2:
+            # a run-time failure: every candidate must still run correctly on a compiler of another family
+            # that ran the original correctly, so the reduction cannot drift into a broken program
+            fam = _family(f.toolchain)
+            others = sorted(t for t in f.agree if _family(t) != fam)
+            verify = ["--verify-target", f"{others[0]}/{xnack}"] if others else []
         out.append({"name": name, "target": f"{f.toolchain}/{xnack}", "group": g.signature, "family": g.family,
                     "failures": len(g.unexplained), "priority": priority(g.signature, len(g.unexplained)),
                     "toolchains": sorted({lead.failure.toolchain for lead in g.leads}), "lang": f.lang,
                     "mode": f.mode, "outcome": f.outcome, "reason": f.reason, "output": f.output[-4000:],
                     "text": f.text, "program_ref": f.program_ref,
                     "argv": ["--from-row", f"{run_dir}/programs.jsonl", "--id", f.program_id,
-                             "--target", f"{f.toolchain}/{xnack}", f"--opt={opt}", *ref,
+                             "--target", f"{f.toolchain}/{xnack}", f"--opt={opt}", *ref, *verify,
                              "--budget-minutes", str(budget_minutes), "--name", name,
                              "--out", f"{REDUCE_OUT}/{name}"]})
     return out
@@ -281,7 +295,10 @@ def split_by_features(groups, features: dict, min_support: int = 3, alpha: float
             for f in set().union(*(pool[p][0] for p in pids if p in pool)) if pids else ():
                 k = sum(1 for p in pids if p in pool and f in pool[p][0])
                 K = sum(1 for v in pool.values() if f in v[0])
-                if k < min_support or K == N or (k / n) < min_lift * (K / N):
+                # a feature no program without it fails is a split at any base rate (where twice
+                # the base rate cannot be reached)
+                sole = k == n and not any(pool[p][1] for p in pool if f not in pool[p][0])
+                if k < min_support or K == N or ((k / n) < min_lift * (K / N) and not sole):
                     continue
                 p = _tail(N, K, n, k)
                 if p < alpha and (best is None or (p, -k) < best[0]):

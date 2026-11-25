@@ -206,7 +206,7 @@
    "nvhpc_c": "reject"
   },
   "program_sha": "396c1c25c59548ad60ebe122fbabbf809c0a6a3726724df0f6bb073e3b1cbc46",
-  "inputs": "73ba759d447da0cb6098451c69b059c7910e8a823b985022add62ce6094607f1"
+  "inputs": "a18cd0937dec85045b384f96f851ed15987a4f7986da5e1376dcd23a983e786c"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: The directive is conforming, but support for a given requirement clause is implementation defined, and an implementation that does not support it must perform compile-time error termination. A compiler may thus refuse the program, so acceptance is not required."

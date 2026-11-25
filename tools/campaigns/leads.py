@@ -72,12 +72,14 @@ def plan(run_dir: Path) -> int:
     meta = _meta(run_dir)
     q = LD.reduce_queue(groups, str(Path(run_dir).relative_to(ROOT) if Path(run_dir).is_absolute() else run_dir),
                         meta.get("opt") or "-O2", int(meta.get("xnack") or 0))
-    have = {json.loads(x)["name"] for x in QUEUE.read_text().splitlines() if x.strip()} if QUEUE.is_file() else set()
+    old = [json.loads(x) for x in QUEUE.read_text().splitlines() if x.strip()] if QUEUE.is_file() else []
     OUT.mkdir(parents=True, exist_ok=True)
+    now = {e["name"]: e for e in q}
+    # an unfinished reduction takes the command computed now; a finished one keeps the one it ran with
+    kept = [now[e["name"]] if e["name"] in now and not _done(e) else e for e in old]
+    have = {e["name"] for e in old}
     new = [e for e in q if e["name"] not in have]
-    with QUEUE.open("a") as fh:
-        for e in new:
-            fh.write(json.dumps(e) + "\n")
+    QUEUE.write_text("".join(json.dumps(e) + "\n" for e in kept + new))
     print(f"{run_dir}: {len(new)} reductions queued ({len(q) - len(new)} already) -> {QUEUE.relative_to(ROOT)}")
     return 0
 
@@ -173,6 +175,31 @@ def _result_json(stdout: str) -> dict | None:
     return None
 
 
+def _witness(prog: Path) -> None:
+    """The independent checkers' verdicts on a reduction (Intel here, NVHPC over ssh;
+    offload.engine.confirm.witness), stored where the confirmer's legality step reads them
+    (witness.add_file_rows), keyed as the confirmer keys the program; a checker that cannot run or
+    be reached adds nothing, and a stored program is not checked again."""
+    from offload.engine import autodraft as AD
+    from offload.engine.confirm import programs as P
+    from offload.engine.confirm import witness as W
+    if not prog.is_file():
+        return
+    ref = P.file_ref([str(prog)])
+    have = {(r["program"], r["sha256"], r["checker"]) for r in W._all_rows()}
+    lang = "c" if prog.suffix == ".c" else "f90"
+    rows = []
+    for name in W.names_for(lang, AD.model_of(ref.text)):
+        if (ref.ident, ref.sha, name) in have:
+            continue
+        try:
+            rows.append(W.check(ref.ident, ref.text, lang, ref.sha, AD.model_of(ref.text), name))
+        except (RuntimeError, OSError, ValueError, subprocess.TimeoutExpired) as e:
+            print(f"  {name}: no verdict ({str(e)[:80]})", flush=True)
+    if rows:
+        W.add_file_rows(rows)
+
+
 def advance(minutes: float) -> int:
     """The confirmer (tools/confirm.py case --run --draft) on each reduction recheck found new, once:
     it runs the case and the evidence cells, applies the legality witnesses, decides the verdict and
@@ -190,6 +217,7 @@ def advance(minutes: float) -> int:
             continue
         if (end - time.time()) / 60 < 3:
             break
+        _witness(prog)
         tc, xn = r["target"].split("/")
         mode = LD.MODES.get(int(xn), "copy")
         # a reduction that checks itself (RESULT ... check=) against the value its reference gave (the

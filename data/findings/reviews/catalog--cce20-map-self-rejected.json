@@ -221,7 +221,7 @@
   ],
   "front_ends": {},
   "program_sha": "f51bf6d6b6072933b5f3edfebb6c81ab4aa32d2209c73ced0c3904c679bb32a4",
-  "inputs": "4e3811765cad279beefc9c8c45337e8aecd642718ee2ff9e90dc4df80b1b9fff"
+  "inputs": "4f51d170c3cd4ae2d29b3578442d93331e4fc616b67406407c9a745bd84aa7ec"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: In 6.0 self is a map-type-modifier and map-type is optional (default), so map(self: a) is syntactically valid and the compiler error reflects the pre-6.0 rule. A self map causes runtime error termination when the original item is not accessible from the target device and cannot be made so. With separate memory the allocatable a may not be accessible, so successful execution is not required."

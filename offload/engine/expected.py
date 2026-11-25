@@ -1413,7 +1413,11 @@ class _Analysis:
             elif in_mod and F._TYPE.match(s.text) and \
                     "parameter" not in low:
                 mod_vars.append(s.text)
-        if mod_vars:
+        # a generated MFC or application program (offload.engine.fuzz_mfc) moves every module variable it
+        # reads on the host explicitly, and the reducer keeps each copy-back: its host copy is the
+        # sequential value
+        generated = re.search(r"^! generator: fuzz-(?:mfc|app)(?:acc)?\d", self.source, re.M) is not None
+        if mod_vars and not generated:
             why.append("module variables (declare target visibility)")
         fp = {n for n, v in self.decls.items()
               if v.type.startswith(("real", "double", "complex"))}

@@ -222,7 +222,7 @@
   ],
   "front_ends": {},
   "program_sha": "c21cbfa9347c72062810f6aa97885a5827c36a5f88f9b44e4f94757427842665",
-  "inputs": "638e300abe750123a98423c42328d4dd0bbccd73f7883e448f0ad04e4e5027f5"
+  "inputs": "03689ac452183302050842f86717c4f59ae550d411f604e97665c4874cf233b9"
  },
  "advisory": "unconfirmed",
  "advisory_why": "Independent readings are uncertain: Section 2.13.2 says a global-context declare sets the structured reference counter to one, and also says that for an allocatable the allocate statement raises a runtime error if that counter is not zero. Read literally, the program's allocate would be an error."

@@ -317,7 +317,7 @@
   ],
   "front_ends": {},
   "program_sha": "ad91ae70ae88199dc81cf2058da98a3f0f1bd1f6edad64f85888988db9af3e00",
-  "inputs": "592275f268e3a41a07a8b10dc4ce988d699990bc2b0c8c64609adef97607f85e"
+  "inputs": "e5b843b7cb900f5bf6c6dfe8b95c3998ff418bd06a68ca6c28662abfad772233"
  },
  "advisory": "contested",
  "advisory_why": "An independent adjudicating reading finds the result not required: map(alloc: r) of an associated pointer maps its target as if implicitly mapped. The default-mapper rule for components says an allocatable component that is not an explicit list item may be treated as unallocated if the corresponding component lacks allocated storage. Whether target update to(r) transfers the pointer target and the allocatable component nx is not stated."

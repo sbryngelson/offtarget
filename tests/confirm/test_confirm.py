@@ -1106,10 +1106,16 @@ def test_local_scheduler_runs_the_script():
     assert jid.startswith("local-") and run.calls[0][-1] == "t.sh"
 
 
-def test_inside_job():
+def test_inside_job(monkeypatch):
     tu = M.load()["tuolumne"]
+    # the scheduler's own answer, outside a flux job (the suite itself may run inside one)
+    monkeypatch.delenv("FLUX_JOB_ID", raising=False)
     assert J.inside_job(tu, runner=FakeRunner_3(out="1\n"))
     assert not J.inside_job(tu, runner=FakeRunner_3(out="0\n"))
+    # inside a flux job (FLUX_JOB_ID, passed through env -i by the leads and confirmer jobs)
+    monkeypatch.setenv("FLUX_JOB_ID", "f3abc")
+    assert J.inside_job(tu, runner=FakeRunner_3(out="0\n"))
+    monkeypatch.delenv("FLUX_JOB_ID")
     g = M.load(data=NVIDIA)["gpubox"]
     import os
     old = os.environ.pop("SLURM_JOB_ID", None)
@@ -2634,3 +2640,52 @@ def test_a_flux_run_job_step_is_inside_a_job(monkeypatch):
     monkeypatch.delenv("FLUX_JOB_ID")
     monkeypatch.setattr(T, "detect_gpu", lambda: (tu.arch, ""))
     assert not J.inside_job(tu, runner=level0)
+
+
+def test_an_openacc_programs_elision_is_its_build_without_openacc(tmp_path, monkeypatch):
+    """An OpenACC program's elision (offload.engine.fuzz_acc.elided_run_acc): built without OpenACC against the
+    sequential openacc module and run with both initial fills, which must print one value."""
+    from offload.engine import fuzz_acc
+    text = ("! Reduced by tools/reduce.py from fuzz seed 7 (fuzz-mfcacc1) in programs.jsonl on cce19/0\n"
+            "program x\n  !$acc parallel loop\n  do i = 1, 2\n  end do\nend program x\n")
+    ref = ProgramRef("file", "red/x.f90", "f90", 52, text=text, expected="check=pass")
+    case = Case(ref, "cce19", "tuolumne", "gfx942", "copy", "wrong_answer", "", "check=fail")
+    outs = {fuzz_acc.INITS[0]: "RESULT ran_on_host=0 check=pass\n", fuzz_acc.INITS[1]: "RESULT ran_on_host=0 check=pass\n"}
+    monkeypatch.setattr(fuzz_acc, "elided_run_acc", lambda src, init: (outs[init], ""))
+    ev = C.Elision().collect(case, C.Context(I.Index([]), Store(path=tmp_path / "a.jsonl")))[0]
+    assert (ev.status, ev.value) == ("value", "check=pass")
+    outs[fuzz_acc.INITS[1]] = "RESULT ran_on_host=0 check=fail\n"
+    ev = C.Elision().collect(case, C.Context(I.Index([]), Store(path=tmp_path / "b.jsonl")))[0]
+    assert ev.status == "no_value" and "initial fills" in ev.detail
+
+
+def test_a_c_programs_elision_is_its_sequential_run(tmp_path, monkeypatch):
+    """A C program's elision (offload.engine.fuzz.elided_run_c): built without OpenMP or OpenACC under the
+    undefined-behaviour sanitizer and run on the host; its RESULT line is the value."""
+    from offload.engine import fuzz as FZ
+    text = ('// Reduced by tools/reduce.py from fuzz seed 56 (fuzz-capp1) in programs.jsonl on afar/0\n'
+            'int main(void) {\n#pragma omp target\n  {}\n  printf("RESULT ran_on_host=%d check=%s\\n", 0, "pass");\n}\n')
+    ref = ProgramRef("file", "red/x.c", "c", 52, text=text, expected="check=pass")
+    case = Case(ref, "afar", "tuolumne", "gfx942", "copy", "wrong_answer", "", "check=fail")
+    monkeypatch.setattr(FZ, "elided_run_c", lambda src: ("RESULT ran_on_host=0 check=pass\n", ""))
+    ev = C.Elision().collect(case, C.Context(I.Index([]), Store(path=tmp_path / "c.jsonl")))[0]
+    assert (ev.status, ev.value) == ("value", "check=pass")
+    monkeypatch.setattr(FZ, "elided_run_c", lambda src: (None, "elided run: rc=1 runtime error: signed integer overflow"))
+    ev = C.Elision().collect(case, C.Context(I.Index([]), Store(path=tmp_path / "d.jsonl")))[0]
+    assert ev.status == "no_value" and "overflow" in ev.detail
+
+
+def test_a_hand_written_c_or_openacc_program_has_no_elision(tmp_path, monkeypatch):
+    """Only a generated program (or a reduction of one) is equivalent to its sequential run by construction; a
+    hand-written C or OpenACC program's result may depend on device semantics (a present check that must fail),
+    so its elision stays inapplicable."""
+    from offload.engine import fuzz as FZ
+    from offload.engine import fuzz_acc
+    monkeypatch.setattr(FZ, "elided_run_c", lambda src: ("RESULT ran_on_host=0 check=fail\n", ""))
+    monkeypatch.setattr(fuzz_acc, "elided_run_acc", lambda src, init: ("RESULT ran_on_host=0 check=fail\n", ""))
+    for lang, text in (("c", "int main(void) {\n#pragma acc parallel default(present)\n  {}\n}\n"),
+                       ("f90", "program x\n  !$acc parallel default(present)\n  !$acc end parallel\nend program x\n")):
+        ref = ProgramRef("catalog", "acc34-clause-default-present", lang, 34, text=text, expected="error_termination")
+        case = Case(ref, "cce19", "tuolumne", "gfx942", "copy", "wrong_answer", "", "check=fail")
+        ev = C.Elision().collect(case, C.Context(I.Index([]), Store(path=tmp_path / f"{lang}.jsonl")))[0]
+        assert ev.status == "inapplicable" and ev.value is None, (lang, ev)

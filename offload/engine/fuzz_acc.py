@@ -280,26 +280,49 @@ def check_flang_acc(source: str) -> str | None:
     return None if b.returncode == 0 else (b.stderr or b.stdout).strip()[:500]
 
 
-def elided_checksum_acc(source: str, init: str = "-finit-integer=-77777") -> int | str:
-    """The checksum of the program built without OpenACC (-O0, run-time checks) against the
-    sequential openacc module, or why there is none."""
+INITS = ("-finit-integer=-77777", "-finit-integer=31313")
+
+
+def elided_run_acc(source: str, init: str = INITS[0]) -> tuple[str | None, str]:
+    """(stdout or None, why) of the program built without OpenACC (-O0, run-time checks) against the
+    sequential openacc module, run on the host."""
     with tempfile.TemporaryDirectory(prefix="fuzz_acc_") as d:
         (Path(d) / "openacc.f90").write_text(OPENACC_SEQ)
         (Path(d) / "p.f90").write_text(source)
         b = _gfortran(["-std=f2008", "-O0", "-fcheck=all", init, "openacc.f90", "p.f90", "-o", "p"], d)
         if b.returncode:
-            return "elided build: " + (b.stderr or b.stdout).strip()[:400]
+            return None, "elided build: " + (b.stderr or b.stdout).strip()[:400]
         run = subprocess.run(["./p"], cwd=d, capture_output=True, text=True, timeout=300)
-    m = re.search(r"RESULT checksum=\s*(-?\d+)", run.stdout)
-    if run.returncode or not m:
-        return f"elided run: rc={run.returncode} {(run.stderr or run.stdout).strip()[:300]}"
+    if run.returncode:
+        return None, f"elided run: rc={run.returncode} {(run.stderr or run.stdout).strip()[:300]}"
+    return run.stdout, ""
+
+
+def elided_checksum_acc(source: str, init: str = INITS[0]) -> int | str:
+    """The checksum of the program built without OpenACC against the sequential openacc module, or
+    why there is none."""
+    out, why = elided_run_acc(source, init)
+    m = re.search(r"RESULT checksum=\s*(-?\d+)", out or "")
+    if out is None or not m:
+        return why or f"elided run: no RESULT checksum line: {(out or '').strip()[:300]}"
     return int(m.group(1))
+
+
+def elided_value_acc(source: str) -> int | str:
+    """The elided checksum when the runs with both initial fills (INITS) agree (an undefined value
+    shows as a difference), else why there is none."""
+    vals = [elided_checksum_acc(source, init) for init in INITS]
+    bad = next((v for v in vals if isinstance(v, str)), None)
+    if bad:
+        return bad
+    return vals[0] if vals[0] == vals[1] else \
+        f"the elided runs with two initial fills print {vals[0]} and {vals[1]} (an undefined value)"
 
 
 def check_defined_acc(source: str, expected: int | None) -> str | None:
     """Two elided runs with different initial fills of the integers (an undefined value
     shows as a difference) must both print the model's checksum."""
-    for init in ("-finit-integer=-77777", "-finit-integer=31313"):
+    for init in INITS:
         v = elided_checksum_acc(source, init)
         if isinstance(v, str):
             return v

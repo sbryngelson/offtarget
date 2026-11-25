@@ -156,7 +156,7 @@
    "intel_f90": "accept"
   },
   "program_sha": "1dda6d5de54ba1464960195f2345bfa041f847d4ef8674ffa9f85d524b5ecece",
-  "inputs": "b75e72b822c7d8db0825839c18755f1063494acfbe7f6e786e0cad84edca0a57"
+  "inputs": "2bb9cf91ca6a260f61615e3d30132c2ea8d637fa6be072fa0c338bdf680d17c4"
  },
  "advisory": "confirmed",
  "advisory_why": "2 independent readings find the program legal and the result required."
