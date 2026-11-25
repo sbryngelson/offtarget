@@ -1,0 +1,5980 @@
+{
+ "findings": {
+  "afar-c-error-directive-in-target-link.c": {
+   "files": 1,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:at",
+      "clause:message",
+      "clause:severity",
+      "dir:error",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "afar-c-lastprivate-distribute-parallel-for-small-type.c": {
+   "measurable": false
+  },
+  "afar-c-teams-distribute-reduction-first-team.c": {
+   "measurable": false
+  },
+  "afar-c-update-iterator-copy-mode.c": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:to:iterator"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "afar-c-xnack1-target-is-present.c": {
+   "measurable": false
+  },
+  "afar-cce19-character-defaultmap.f90": {
+   "measurable": false
+  },
+  "afar-cce19-task-in-target-ice.f90": {
+   "files": 0,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:default",
+      "clause:default:shared",
+      "dir:target",
+      "dir:task",
+      "dir:taskwait"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "afar-clang-requires-device-safesync-hang.c": {
+   "measurable": false
+  },
+  "afar-flang-firstprivate-map-two-targets.f90": {
+   "files": 74,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 39,
+   "signature": [
+    {
+     "features": [
+      "clause:firstprivate",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "afar-flang-loop-bind-teams-reduction.f90": {
+   "files": 2,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "clause:bind",
+      "dir:loop",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "afar-flang-task-reduction-max.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "red:max"
+     ],
+     "file_features": [
+      "mod:in_reduction:max",
+      "mod:task_reduction:max"
+     ],
+     "words": [
+      "max"
+     ]
+    }
+   ]
+  },
+  "afar-flang-thread-limit-target-parallel-do.f90": {
+   "files": 6,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 5,
+   "signature": [
+    {
+     "features": [
+      "clause:thread_limit",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "afar-linear-ref-omp50.f90": {
+   "measurable": false
+  },
+  "afar-loop-bind-thread-in-teams.f90": {
+   "files": 2,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "clause:bind",
+      "dir:loop",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "afar-nontemporal-assumed-shape-ice.f90": {
+   "files": 1,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:nontemporal",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:simd",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:nontemporal",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:simd",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:nontemporal",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:simd",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "afar-udr-derived-type-link.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:derived",
+      "clause:map",
+      "clause:reduction",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom",
+      "red:padd"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "afar-xnack1-atomic-min-nested-parallel.f90": {
+   "files": 1,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "dir:atomic",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable",
+      "allocate"
+     ]
+    }
+   ]
+  },
+  "afar-xnack1-present-not-enforced.f90": {
+   "measurable": false
+  },
+  "afar-xnack1-target-is-present.f90": {
+   "measurable": false
+  },
+  "apps/afar-cce-teams-private-array-nested-parallel-wrong.f90": {
+   "measurable": false
+  },
+  "apps/cce20-device-link-infer-address-spaces-crash.f90": {
+   "measurable": false
+  },
+  "apps/cce21-device-link-agpr-copy-mfma-assert.f90": {
+   "measurable": false
+  },
+  "apps/cce21-private-array-loaded-subscript-wrong.f90": {
+   "measurable": false
+  },
+  "apps/clang-c-loop-bind-teams-reduction-rejected.c": {
+   "measurable": false
+  },
+  "apps/gcc-acc-c-tile-partial-tiles-wrong.c": {
+   "files": 23,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 12,
+   "signature": [
+    {
+     "features": [
+      "clause:tile",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "apps/gcc-acc-tile-partial-tiles-wrong.f90": {
+   "files": 23,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 12,
+   "signature": [
+    {
+     "features": [
+      "clause:tile",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-c-complex-reduction-link.c": {
+   "measurable": false
+  },
+  "catalog/afar-c-critical-hint-link.c": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:hint",
+      "dir:critical",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-c-ordered-doacross-link.c": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:ordered",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:ordered",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "clause:ordered",
+      "clause:shared",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-c-reduction-task-link.c": {
+   "files": 1,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:reduction",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "red:+"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-absent-optional-target-crash.f90": {
+   "files": 0,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "else",
+      "present",
+      "then"
+     ]
+    }
+   ]
+  },
+  "catalog/afar-flang-critical-target-parallel-wrong.f90": {
+   "measurable": false
+  },
+  "catalog/afar-flang-deprecated-minus-reduction-rejected.f90": {
+   "measurable": false
+  },
+  "catalog/afar-flang-dist-schedule-chunk.f90": {
+   "measurable": false
+  },
+  "catalog/afar-flang-linear-parallel-ice.f90": {
+   "files": 0,
+   "ingredients": 12,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:default",
+      "clause:default:none",
+      "clause:linear",
+      "clause:map",
+      "clause:shared",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:from",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:from",
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-linear-ref-assumed-shape-rejected.f90": {
+   "files": 35,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 18,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:linear"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:linear"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-named-critical-link.f90": {
+   "files": 0,
+   "ingredients": 7,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:critical",
+      "clause:map",
+      "clause:private",
+      "dir:critical",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-nowait-combined-target-rejected.f90": {
+   "files": 4,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "clause:nowait",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:nowait",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-ordered-wrong.f90": {
+   "files": 0,
+   "ingredients": 12,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:default",
+      "clause:default:none",
+      "clause:map",
+      "clause:ordered",
+      "clause:shared",
+      "dir:do",
+      "dir:ordered",
+      "dir:parallel",
+      "dir:target",
+      "map:from",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:from",
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-reduction-minus-rejected.f90": {
+   "files": 3,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "red:-"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-reduction-task-ice.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:reduction",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "red:+"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-sections-in-target-ice.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:parallel",
+      "dir:section",
+      "dir:sections",
+      "dir:target",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/afar-flang-workdistribute-ice.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "clause:shared",
+      "clause:workdistribute",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/c-allocate-const-mem-firstprivate-wrong.c": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:allocate",
+      "clause:uses_allocators",
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [
+      "mod:allocate:omp_const_mem_alloc"
+     ],
+     "words": [
+      "allocate",
+      "omp_const_mem_alloc",
+      "uses_allocators"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-acc-allocate-in-compute-crash.f90": {
+   "files": 0,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:serial"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable",
+      "allocate",
+      "deallocate"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-acc-character-dummy-routine-ice.f90": {
+   "files": 91,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 49,
+   "signature": [
+    {
+     "features": [
+      "clause:private",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-acc-loop-seq-in-routine-wrong.f90": {
+   "measurable": false
+  },
+  "catalog/cce-acc-stop-in-compute-crash.f90": {
+   "files": 33,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 22,
+   "signature": [
+    {
+     "features": [
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": [
+      "stop"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-allocators-stack-ice.f90": {
+   "files": 0,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:allocate",
+      "clause:uses_allocators",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:allocate:omp_default_mem_alloc"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-atomic-default-mem-order-acquire-release-rejected.f90": {
+   "measurable": false
+  },
+  "catalog/cce-c-allocate-align-link.c": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:allocate:align",
+      "mod:allocate:allocator"
+     ],
+     "words": [
+      "align",
+      "allocator"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-c-allocate-allocator-modifier-rejected.c": {
+   "files": 0,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:allocate:allocator"
+     ],
+     "words": [
+      "allocator"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-c-device-type-directive-name-ice.c": {
+   "measurable": false
+  },
+  "catalog/cce-c-dist-schedule-chunk.c": {
+   "measurable": false
+  },
+  "catalog/cce-c-f-pointer-device-link.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "base:derived",
+      "base:pointer",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "call"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-c-lastprivate-parallel-in-seq-loop-wrong.c": {
+   "measurable": false
+  },
+  "catalog/cce-c-long-double-ice.c": {
+   "files": 4,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "l",
+      "long"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-c-map-iterator-ice.c": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:map:iterator"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-motion-iterator-rejected.c": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:from:iterator"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-ordered-doacross-link.c": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:ordered",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:ordered",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "clause:ordered",
+      "clause:shared",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-ordered-link.c": {
+   "files": 0,
+   "ingredients": 14,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "clause:default",
+      "clause:default:none",
+      "clause:map",
+      "clause:ordered",
+      "clause:shared",
+      "dir:for",
+      "dir:ordered",
+      "dir:parallel",
+      "dir:target",
+      "map:from",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:from",
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": [
+      "map",
+      "tofrom"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-c-recursive-function-ice.c": {
+   "measurable": false
+  },
+  "catalog/cce-c-reduction-inscan-ice.c": {
+   "files": 0,
+   "ingredients": 14,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "clause:default",
+      "clause:default:none",
+      "clause:inclusive",
+      "clause:map",
+      "clause:reduction",
+      "clause:shared",
+      "dir:for",
+      "dir:parallel",
+      "dir:scan",
+      "dir:target",
+      "map:from",
+      "map:to",
+      "map:tofrom",
+      "red:+"
+     ],
+     "file_features": [
+      "mod:map:from",
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-reduction-task-link.c": {
+   "files": 1,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:reduction",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "red:+"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-sections-in-target-wrong.c": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "clause:map",
+      "dir:parallel",
+      "dir:section",
+      "dir:sections",
+      "dir:target",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-single-masked-task-link.c": {
+   "files": 3,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "clause:map",
+      "dir:parallel",
+      "dir:single",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-task-in-target-link.c": {
+   "files": 0,
+   "ingredients": 11,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "clause:default",
+      "clause:default:shared",
+      "clause:map",
+      "clause:private",
+      "dir:parallel",
+      "dir:target",
+      "dir:task",
+      "dir:taskwait",
+      "map:from",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:from",
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-c-uses-allocators-traits-rejected.c": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:uses_allocators",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocate",
+      "traits",
+      "uses_allocators"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-flang-allocate-const-mem-ice.f90": {
+   "files": 0,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:allocate",
+      "clause:uses_allocators",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [
+      "mod:allocate:omp_const_mem_alloc"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-flang-allocate-in-target-crash.f90": {
+   "files": 22,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 13,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable",
+      "allocate",
+      "deallocate"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-flang-lastprivate-parallel-in-seq-loop-wrong.f90": {
+   "measurable": false
+  },
+  "catalog/cce-flang-stop-in-target-crash.f90": {
+   "files": 17,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 5,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "stop"
+     ]
+    }
+   ]
+  },
+  "catalog/cce-iterator-link.f90": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:from:iterator"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-linear-lastprivate-ice.f90": {
+   "files": 0,
+   "ingredients": 12,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:default",
+      "clause:default:none",
+      "clause:linear",
+      "clause:map",
+      "clause:shared",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:from",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:from",
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-nohost-link.f90": {
+   "measurable": false
+  },
+  "catalog/cce-reduction-inscan-ice.f90": {
+   "files": 0,
+   "ingredients": 14,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:default",
+      "clause:default:none",
+      "clause:inclusive",
+      "clause:map",
+      "clause:reduction",
+      "clause:shared",
+      "dir:do",
+      "dir:parallel",
+      "dir:scan",
+      "dir:target",
+      "map:from",
+      "map:to",
+      "map:tofrom",
+      "red:+"
+     ],
+     "file_features": [
+      "mod:map:from",
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce-reduction-task-link.f90": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce19-reduction-task-addrspacecast-ice.f90": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:reduction:task"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce20-c-defaultmap-private-storage-rejected.c": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap:private",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce20-map-self-rejected.f90": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:map:self"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce21-c-declare-target-local-rejected.c": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:local"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "catalog/cce21-c-target-loop-ice.c": {
+   "measurable": false
+  },
+  "catalog/defaultmap-present-private-array-abort.f90": {
+   "files": 0,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:present",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "catalog/nvhpc-acc-associate-illegal-address.f90": {
+   "files": 2,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": [
+      "associate"
+     ]
+    }
+   ]
+  },
+  "catalog/nvhpc-c-function-pointer-kernel-missing.c": {
+   "files": 115,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 37,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "f"
+     ]
+    }
+   ]
+  },
+  "catalog/nvhpc-c-long-double-kernel-missing.c": {
+   "files": 4,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "l",
+      "long"
+     ]
+    }
+   ]
+  },
+  "catalog/nvhpc-c-static-local-kernel-missing.c": {
+   "files": 186,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 89,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "static"
+     ]
+    }
+   ]
+  },
+  "catalog/nvhpc-c-vla-kernel-missing.c": {
+   "measurable": false
+  },
+  "catalog/nvhpc-flang-type-bound-kernel-missing.f90": {
+   "measurable": false
+  },
+  "cce-acc-init-set-runtime-assert.f90": {
+   "measurable": false
+  },
+  "cce-acc-reduction-200-int8-scalars-wrong.f90": {
+   "measurable": false
+  },
+  "cce-acc-routine-bind-module-ice.f90": {
+   "files": 40,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 23,
+   "signature": [
+    {
+     "features": [
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": [
+      "contains",
+      "module",
+      "use"
+     ]
+    }
+   ]
+  },
+  "cce-acc-self-condition-ignored.f90": {
+   "measurable": false
+  },
+  "cce-c-dist-schedule-segv.c": {
+   "files": 4,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:dist_schedule",
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "dist_schedule",
+      "static"
+     ]
+    }
+   ]
+  },
+  "cce-c-map-delete-refcount.c": {
+   "measurable": false
+  },
+  "cce-c-map-present-assert.c": {
+   "files": 6,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 5,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:mod:present"
+     ],
+     "file_features": [
+      "mod:map:present"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "cce-c-openmp45-device-link.c": {
+   "measurable": false
+  },
+  "cce-c-parallel-for-in-target.c": {
+   "files": 1,
+   "ingredients": 9,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:schedule",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:lastprivate",
+      "clause:linear",
+      "clause:schedule",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:lastprivate",
+      "clause:linear",
+      "clause:schedule",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "cce-defaultmap-tofrom-explicit-map.f90": {
+   "files": 27,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 19,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:tofrom",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "cce-mapper-next-map-copy-back.f90": {
+   "measurable": false
+  },
+  "cce-trim-merge-output-one-character.f90": {
+   "measurable": false
+  },
+  "cce-uses-allocators-traits-omp50.f90": {
+   "measurable": false
+  },
+  "cce19-acc-if-false-link.f90": {
+   "measurable": false
+  },
+  "cce19-c-reduction-63-scalars-one-wrong.c": {
+   "measurable": false
+  },
+  "cce19-target-parallel-guarded-loop.f90": {
+   "measurable": false
+  },
+  "cce19-target-parallel-single-ice.f90": {
+   "measurable": false
+  },
+  "cce21-alloc-2e32-sum-wrong.f90": {
+   "measurable": false
+  },
+  "cce21-defaultmap-aggregate-flag.f90": {
+   "files": 6,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:to",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "cce21-in-reduction-assumed-shape-write-lost.f90": {
+   "measurable": false
+  },
+  "cce21-in-reduction-taskwait-link.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:in_reduction",
+      "dir:target",
+      "red:.and."
+     ],
+     "file_features": [
+      "clause:task_reduction",
+      "dir:taskgroup"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "cce21-linear-modifier-default-none.f90": {
+   "files": 1,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "clause:linear",
+      "clause:shared",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "clang-c-declare-target-to-omp52.c": {
+   "files": 165,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 49,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:to"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "clang-c-linear-directive-name-hang.c": {
+   "measurable": false
+  },
+  "clang-c-map-iterator-omp51.c": {
+   "files": 0,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:map:iterator"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:map:iterator"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "clang-c-shared-declare-target-combined.c": {
+   "files": 3,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "clause:shared",
+      "dir:loop",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "dataenv/cce-value-dummy-target-write-visible.f90": {
+   "measurable": false
+  },
+  "defaultmap-none-loop-variable.f90": {
+   "files": 8,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 4,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:none",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fortran-loop-bind-thread-in-parallel.f90": {
+   "files": 1,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:bind",
+      "dir:loop",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fortran-schedule-static-in-target.f90": {
+   "measurable": false
+  },
+  "fresh/cce-common-block-name-in-map-rejected.f90": {
+   "measurable": false
+  },
+  "fresh/cce-if-stop-in-target-ice-one-condition.f90": {
+   "files": 58,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 18,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "stop"
+     ]
+    }
+   ]
+  },
+  "fresh/cce-if-stop-in-target-ice.f90": {
+   "files": 58,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 18,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "stop"
+     ]
+    }
+   ]
+  },
+  "fresh/cce-list-directed-print-in-target-copy-crash.f90": {
+   "measurable": false
+  },
+  "fresh/cce19-acc-automatic-array-copyout-copy-crash.f90": {
+   "measurable": false
+  },
+  "fresh/cce21-combined-if-runtime-expr-loop-skipped.f90": {
+   "measurable": false
+  },
+  "fresh/nvhpc-acc-gang-worker-collapse-nested-vector-reduction-lost.f90": {
+   "files": 76,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 21,
+   "signature": [
+    {
+     "features": [
+      "clause:worker",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fresh/nvhpc-teams-loop-module-allocatable-assign-fort2-crash.f90": {
+   "measurable": false
+  },
+  "fuzz/1131-afar.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:mod:close",
+      "map:mod:present",
+      "map:to"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/1391-cce20.f90": {
+   "files": 1,
+   "ingredients": 4,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "clause:private",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/14-cce20.f90": {
+   "files": 0,
+   "ingredients": 7,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "clause:map",
+      "clause:num_threads",
+      "clause:private",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:simd",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/1505-cce20.f90": {
+   "files": 0,
+   "ingredients": 10,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:if",
+      "clause:map",
+      "clause:reduction",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:tofrom",
+      "red:min"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "min",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/1540-afar.f90": {
+   "files": 2,
+   "ingredients": 3,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/158-afar.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:mod:close",
+      "map:mod:present",
+      "map:section",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/16-cce20.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "omp_get_thread_num",
+      "then"
+     ]
+    }
+   ]
+  },
+  "fuzz/1644-cce21.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:tofrom",
+      "clause:map",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/165-cce19.f90": {
+   "files": 0,
+   "ingredients": 7,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:depend",
+      "clause:lastprivate",
+      "clause:private",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/1749-cce20.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:parallel",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "ior",
+      "omp_get_thread_num",
+      "then"
+     ]
+    }
+   ]
+  },
+  "fuzz/1936-afar.f90": {
+   "files": 0,
+   "ingredients": 7,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:map",
+      "dir:critical",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "ieor",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/1978-cce19.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:firstprivate",
+      "clause:map",
+      "clause:private",
+      "dir:target",
+      "map:from",
+      "map:mod:always"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/2014-cce19.f90": {
+   "files": 0,
+   "ingredients": 7,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:parallel",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "omp_get_thread_num",
+      "then"
+     ]
+    }
+   ]
+  },
+  "fuzz/2224-cce19.f90": {
+   "files": 0,
+   "ingredients": 0,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:masked",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/2334-cce19.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:atomic",
+      "dir:do",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "merge",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/536-cce19.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "omp_get_thread_num",
+      "then"
+     ]
+    }
+   ]
+  },
+  "fuzz/591-cce19.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "clause:nontemporal",
+      "clause:private",
+      "dir:distribute",
+      "dir:simd",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/650-afar.f90": {
+   "files": 0,
+   "ingredients": 9,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:firstprivate",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "_8",
+      "do",
+      "end",
+      "int",
+      "modulo",
+      "print",
+      "program"
+     ]
+    }
+   ]
+  },
+  "fuzz/698-afar.f90": {
+   "files": 0,
+   "ingredients": 16,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:dist_schedule",
+      "clause:map",
+      "clause:num_threads",
+      "clause:proc_bind",
+      "clause:reduction",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom",
+      "red:iand",
+      "red:max"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "iand",
+      "ishft",
+      "max",
+      "min",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/700-afar.f90": {
+   "files": 3,
+   "ingredients": 3,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:firstprivate",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/775-cce21.f90": {
+   "files": 0,
+   "ingredients": 10,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:tofrom",
+      "clause:map",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "ior",
+      "omp_get_team_num",
+      "then"
+     ]
+    }
+   ]
+  },
+  "fuzz/87-afar.f90": {
+   "files": 1,
+   "ingredients": 4,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:firstprivate",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/916-afar.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:map",
+      "clause:reduction",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom",
+      "red:iand"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "iand"
+     ]
+    }
+   ]
+  },
+  "fuzz/958-cce20.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/98-cce19.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:firstprivate",
+      "clause:map",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b1-121-afar.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:firstprivate",
+      "clause:map",
+      "clause:reduction",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom",
+      "red:iand"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/b1-183-afar.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:map",
+      "dir:atomic",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "iand",
+      "min",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/b1-22-cce20.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "clause:map",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b1-231-afar.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:map",
+      "dir:atomic",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/b1-268-afar.f90": {
+   "files": 1,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:firstprivate",
+      "clause:private",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b2-183-afar.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:map",
+      "dir:atomic",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:mod:always",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "min",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/b2-209-cce19.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "clause:private",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/b2-213-afar.f90": {
+   "files": 0,
+   "ingredients": 9,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:map",
+      "clause:reduction",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom",
+      "red:ieor"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "iand",
+      "ieor"
+     ]
+    }
+   ]
+  },
+  "fuzz/b2-52-afar.f90": {
+   "files": 3,
+   "ingredients": 3,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:firstprivate",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b2-68-afar.f90": {
+   "files": 0,
+   "ingredients": 9,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:if",
+      "clause:map",
+      "clause:reduction",
+      "dir:loop",
+      "dir:parallel",
+      "dir:target",
+      "map:tofrom",
+      "red:+"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "merge",
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/b2-85-cce20.f90": {
+   "files": 0,
+   "ingredients": 12,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:defaultmap",
+      "clause:defaultmap:firstprivate",
+      "clause:map",
+      "clause:private",
+      "dir:distribute",
+      "dir:target",
+      "dir:teams",
+      "map:component",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "ior",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-188-cce19.f90": {
+   "files": 4,
+   "ingredients": 4,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:dist_schedule",
+      "clause:schedule",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-190-cce21.f90": {
+   "files": 5,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "clause:private",
+      "dir:target",
+      "map:to"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-197-cce19.f90": {
+   "files": 0,
+   "ingredients": 10,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:in_reduction",
+      "clause:map",
+      "dir:target",
+      "map:tofrom",
+      "red:+"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "iand",
+      "merge",
+      "mod",
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-250-cce20.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:in_reduction",
+      "clause:map",
+      "dir:target",
+      "map:tofrom",
+      "red:+"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "merge",
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-278-cce19.f90": {
+   "files": 1,
+   "ingredients": 6,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:reduction",
+      "dir:distribute",
+      "dir:target",
+      "dir:teams",
+      "red:max"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "max"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-45-cce21.f90": {
+   "files": 5,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "clause:private",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:to"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-54-afar.f90": {
+   "files": 29,
+   "ingredients": 2,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 20,
+   "signature": [
+    {
+     "features": [
+      "clause:depend",
+      "clause:nowait",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/b3-61-cce20.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:in_reduction",
+      "clause:map",
+      "dir:target",
+      "map:tofrom",
+      "red:+"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "merge",
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-9-afar.f90": {
+   "files": 1,
+   "ingredients": 3,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:nontemporal",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-9-cce21.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "clause:num_teams",
+      "dir:loop",
+      "dir:target",
+      "dir:teams",
+      "map:to"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end"
+     ]
+    }
+   ]
+  },
+  "fuzz/b3-94-afar.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:allocatable",
+      "clause:firstprivate",
+      "clause:map",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:component",
+      "map:to"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/b4-39-afar.f90": {
+   "files": 0,
+   "ingredients": 18,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:device",
+      "clause:map",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "base:allocatable",
+      "clause:map",
+      "clause:private",
+      "clause:proc_bind",
+      "clause:reduction",
+      "clause:shared",
+      "clause:thread_limit",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom",
+      "red:*",
+      "red:max"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "merge",
+      "min",
+      "mod"
+     ]
+    }
+   ]
+  },
+  "fuzz/b4-86-cce19.f90": {
+   "files": 0,
+   "ingredients": 7,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:distribute",
+      "dir:target",
+      "dir:teams",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "if",
+      "merge",
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/cce-acc-kernels-nested-loop-reduction-lost.f90": {
+   "files": 124,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 43,
+   "signature": [
+    {
+     "features": [
+      "clause:independent",
+      "dir:kernels",
+      "dir:loop"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:independent",
+      "dir:kernels",
+      "dir:loop"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:independent",
+      "dir:kernels",
+      "dir:loop"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce-acc-parallel-and-gang-loop-reduction-lost.f90": {
+   "files": 156,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 55,
+   "signature": [
+    {
+     "features": [
+      "clause:gang",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce-c-simd-if-variable-ice.c": {
+   "files": 19,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 13,
+   "signature": [
+    {
+     "features": [
+      "clause:if",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:if",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:if",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce19-collapse-defaultmap-device-run-error.f90": {
+   "measurable": false
+  },
+  "fuzz/cce19-declare-target-abort.f90": {
+   "measurable": false
+  },
+  "fuzz/cce19-masked-target-parallel-rejected.c": {
+   "measurable": false
+  },
+  "fuzz/cce19-parallel-loop-if-default-rejected.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "dir:loop",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:if",
+      "dir:loop",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:loop",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "clause:if",
+      "dir:loop",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce19-schedule-distribute-for-rejected.c": {
+   "files": 43,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 25,
+   "signature": [
+    {
+     "features": [
+      "clause:schedule",
+      "dir:distribute",
+      "dir:for",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:schedule",
+      "dir:distribute",
+      "dir:for",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce20-if-num-threads-reduction-wrong.f90": {
+   "measurable": false
+  },
+  "fuzz/cce21-declare-target-parallel-run-error.f90": {
+   "measurable": false
+  },
+  "fuzz/cce21-defaultmap-device-dist-schedule-abort.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:dist_schedule",
+      "dir:distribute",
+      "dir:target",
+      "dir:teams",
+      "map:section",
+      "red:ior"
+     ],
+     "file_features": [
+      "mod:reduction:ior"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce21-defaultmap-wrong.f90": {
+   "files": 6,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:to",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce21-if-declare-target-parallel-wrong.f90": {
+   "files": 28,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 14,
+   "signature": [
+    {
+     "features": [
+      "clause:if",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/cce21-target-teams-if-pointer-write-lost.f90": {
+   "files": 2,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "clause:if",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:if",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "base:pointer",
+      "clause:if",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-acc-async-kernels-reduction-lost.f90": {
+   "files": 30,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 12,
+   "signature": [
+    {
+     "features": [
+      "clause:async",
+      "dir:kernels",
+      "dir:loop"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:async",
+      "dir:kernels",
+      "dir:loop"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-complex-pointer-do-simd-ice.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-declare-reduction-module-not-found.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-defaultmap-reduction-parallel-do-rejected.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-do-reduction-rejected.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:reduction",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "red:ior"
+     ],
+     "file_features": [
+      "mod:reduction:ior"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:reduction",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "red:ior"
+     ],
+     "file_features": [
+      "mod:reduction:ior"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-int8-mod-narrowed-o2-wrong.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-loop-reduction-parallel-rejected.f90": {
+   "files": 0,
+   "ingredients": 6,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:reduction",
+      "dir:loop",
+      "dir:parallel",
+      "dir:target",
+      "red:ieor"
+     ],
+     "file_features": [
+      "mod:reduction:ieor"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:loop",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:reduction",
+      "dir:loop",
+      "dir:parallel",
+      "dir:target",
+      "red:ieor"
+     ],
+     "file_features": [
+      "mod:reduction:ieor"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-loop-wrong.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-signed-widening-multiply-o2-wrong.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-small-int-reduction-atomic-link.f90": {
+   "files": 0,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:reduction",
+      "dir:target",
+      "dir:teams",
+      "red:ieor"
+     ],
+     "file_features": [
+      "mod:reduction:ieor"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-strided-target-update-rejected.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-target-parallel-after-nowait-copyback-lost.f90": {
+   "files": 1,
+   "ingredients": 10,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:map",
+      "dir:parallel",
+      "dir:target",
+      "map:section",
+      "map:to"
+     ],
+     "file_features": [
+      "mod:map:to"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:nowait",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:nowait",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:parallel",
+      "dir:target",
+      "map:section",
+      "map:to"
+     ],
+     "file_features": [
+      "mod:depend:in",
+      "mod:map:to"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-target-parallel-do-map-nowait-abort.f90": {
+   "files": 0,
+   "ingredients": 13,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:component",
+      "map:to"
+     ],
+     "file_features": [
+      "mod:map:to"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:nowait",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:depend",
+      "clause:lastprivate",
+      "clause:nowait",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "map:component",
+      "map:to"
+     ],
+     "file_features": [
+      "mod:depend:in",
+      "mod:depend:out",
+      "mod:map:to"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-target-repeated-parallel-num-threads-abort.f90": {
+   "files": 54,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 26,
+   "signature": [
+    {
+     "features": [
+      "clause:num_threads",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:num_threads",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:num_threads",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-target-simd-map-nontemporal-rejected.f90": {
+   "files": 3,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:nontemporal",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-target-teams-loop-thread-limit-abort.f90": {
+   "files": 1,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:private",
+      "clause:thread_limit",
+      "dir:loop",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:private",
+      "dir:loop",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-target-teams-reduction-rejected.f90": {
+   "files": 0,
+   "ingredients": 8,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:reduction",
+      "dir:target",
+      "dir:teams",
+      "red:iand"
+     ],
+     "file_features": [
+      "mod:reduction:iand"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:reduction",
+      "dir:target",
+      "dir:teams",
+      "red:iand"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:reduction",
+      "dir:target",
+      "dir:teams",
+      "red:iand"
+     ],
+     "file_features": [
+      "mod:reduction:iand"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/gcc-teams-distribute-simd-simd-wrong.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-teams-loop-thread-limit-abort.f90": {
+   "measurable": false
+  },
+  "fuzz/gcc-thread-limit-target-and-teams-fault.f90": {
+   "measurable": false
+  },
+  "fuzz/nvhpc-allocatable-component-implicit-map-illegal-address.f90": {
+   "measurable": false
+  },
+  "fuzz/nvhpc-assumed-length-character-dummy-map-ice.f90": {
+   "measurable": false
+  },
+  "fuzz/nvhpc-default-none-reduction-lastprivate-fort1-crash.f90": {
+   "files": 10,
+   "ingredients": 5,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "clause:shared",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:default:none",
+      "clause:shared",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-defaultmap-firstprivate-lastprivate-ice.f90": {
+   "files": 0,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:firstprivate",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:defaultmap:firstprivate",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-defaultmap-to-scalar-reduction-lost.f90": {
+   "files": 0,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:to",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-depend-implicit-map-illegal-address.f90": {
+   "files": 19,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 16,
+   "signature": [
+    {
+     "features": [
+      "clause:depend",
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:depend:inout"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-distribute-parallel-num-threads-writes-lost.f90": {
+   "files": 4,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:num_threads",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:num_threads",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-end-distribute-simd-rejected.f90": {
+   "measurable": false
+  },
+  "fuzz/nvhpc-loop-character-achar-unsupported.f90": {
+   "measurable": false
+  },
+  "fuzz/nvhpc-map-always-after-map-to-not-copied-back.f90": {
+   "files": 35,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 19,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:mod:always"
+     ],
+     "file_features": [
+      "mod:map:always"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-num-threads-reduction-identity-lost.f90": {
+   "files": 4,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:num_threads",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-target-parallel-firstprivate-translate-failure.f90": {
+   "files": 3,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:firstprivate",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-target-parallel-single-hang.f90": {
+   "measurable": false
+  },
+  "fuzz/nvhpc-target-simd-collapse-translate-failure.f90": {
+   "files": 27,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 14,
+   "signature": [
+    {
+     "features": [
+      "clause:collapse",
+      "clause:collapse2",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:collapse2",
+      "dir:simd",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/nvhpc-target-simd-no-end-directive-rejected.f90": {
+   "measurable": false
+  },
+  "fuzz/par-s1-2082-gcc_g90.f90": {
+   "files": 0,
+   "ingredients": 7,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:pointer",
+      "clause:map",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "do",
+      "end",
+      "merge",
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/s1-2370-cce21.f90": {
+   "files": 3,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:firstprivate",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/s1-2592-cce21.f90": {
+   "measurable": false
+  },
+  "fuzz/s1-3463-cce21.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:component",
+      "map:section",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/s1-4339-afar.f90": {
+   "files": 5,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 5,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:mod:close"
+     ],
+     "file_features": [
+      "mod:map:close"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/s1-6085-cce21.f90": {
+   "files": 8,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 7,
+   "signature": [
+    {
+     "features": [
+      "clause:reduction",
+      "dir:target",
+      "dir:teams",
+      "red:min"
+     ],
+     "file_features": [
+      "mod:reduction:min"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/s1-6760-cce20.f90": {
+   "files": 2,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:enter"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/s1-6888-cce21.f90": {
+   "measurable": false
+  },
+  "fuzz/s1-7882-cce20.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:mod:present",
+      "map:tofrom"
+     ],
+     "file_features": [],
+     "words": [
+      "merge",
+      "omp_is_initial_device"
+     ]
+    }
+   ]
+  },
+  "fuzz/s1-8634-cce21.f90": {
+   "measurable": false
+  },
+  "fuzz/s1-91-cce21.f90": {
+   "files": 21,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 10,
+   "signature": [
+    {
+     "features": [
+      "clause:default",
+      "clause:default:none",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/s1-9443-afar.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "minimal",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:mod:close",
+      "map:mod:present",
+      "map:to"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "fuzz/s1-9914-cce19.f90": {
+   "files": 311,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 47,
+   "signature": [
+    {
+     "features": [
+      "clause:thread_limit",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "gcc/gcc-acc-bind-device-type-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-acc-c-bind-device-type-rejected.c": {
+   "measurable": false
+  },
+  "gcc/gcc-acc-c-detach-delete-attach-underflow.c": {
+   "files": 4,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [
+      "clause:detach"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "gcc/gcc-acc-c-gang-dim-rejected.c": {
+   "measurable": false
+  },
+  "gcc/gcc-acc-c-link-in-routine-rejected.c": {
+   "measurable": false
+  },
+  "gcc/gcc-acc-detach-delete-attach-underflow.f90": {
+   "files": 4,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [
+      "clause:detach"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "gcc/gcc-acc-gang-dim-collapse-force-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-acc-init-set-shutdown-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-acc-link-in-routine-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-acc-use-device-allocatable-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-c-motion-mapper-rejected.c": {
+   "measurable": false
+  },
+  "gcc/gcc-c-omp60-undocumented-rejected.c": {
+   "measurable": false
+  },
+  "gcc/gcc-c-omp60-unimplemented-rejected.c": {
+   "measurable": false
+  },
+  "gcc/gcc-c-target-in-task-mandatory-device-not-found.c": {
+   "files": 15,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 11,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:shared",
+      "dir:task",
+      "dir:taskwait"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "gcc/gcc-c-uses-allocators-traits-unimplemented.c": {
+   "measurable": false
+  },
+  "gcc/gcc-declare-mapper-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-defaultmap-to-pointer-copy-back.f90": {
+   "files": 6,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:to",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "gcc/gcc-loop-bind-default-none-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-omp60-undocumented-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-omp60-unimplemented-rejected.f90": {
+   "measurable": false
+  },
+  "gcc/gcc-target-in-task-mandatory-device-not-found.f90": {
+   "files": 15,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 11,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:shared",
+      "dir:task",
+      "dir:taskwait"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "gcc/gcc-uses-allocators-traits-unimplemented.f90": {
+   "measurable": false
+  },
+  "harvest/afar-flang-strided-target-update.f90": {
+   "measurable": false
+  },
+  "harvest/cce-acc-declare-create-module-allocatable-xnack1-fault.f90": {
+   "files": 157,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 71,
+   "signature": [
+    {
+     "features": [
+      "clause:present",
+      "dir:loop",
+      "dir:parallel"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "harvest/cce-c-implicit-struct-map-partly-present.c": {
+   "files": 222,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 72,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "dir:data",
+      "map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "harvest/cce-c-strided-target-update.c": {
+   "measurable": false
+  },
+  "harvest/cce-ftn-target-parallel-thread-query-ice.f90": {
+   "measurable": false
+  },
+  "harvest/cce-named-constant-array-declare-target-routine-rejected.f90": {
+   "measurable": false
+  },
+  "harvest/cce-use-device-ptr-c-ptr-not-converted.f90": {
+   "measurable": false
+  },
+  "harvest/cce21-declare-target-link-module-variable-write-lost.f90": {
+   "measurable": false
+  },
+  "harvest/cce21-internal-procedure-calls-internal-in-target-fault.f90": {
+   "measurable": false
+  },
+  "harvest/gcc-acc-declare-create-allocatable-not-mapped.f90": {
+   "measurable": false
+  },
+  "harvest/gcc-c-same-item-two-maps-rejected.c": {
+   "files": 55,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 30,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:alloc"
+     ],
+     "file_features": [
+      "mod:map:alloc"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "harvest/gcc-c-strided-section-rejected.c": {
+   "measurable": false
+  },
+  "harvest/gcc-c-target-data-struct-pointer-section-ice.c": {
+   "measurable": false
+  },
+  "harvest/gcc-c-target-data-two-maps-ice.c": {
+   "measurable": false
+  },
+  "harvest/gcc-same-item-two-maps-rejected.f90": {
+   "files": 55,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 30,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:alloc"
+     ],
+     "file_features": [
+      "mod:map:alloc"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "harvest/gcc-teams-simd-matmul-allocatable-ice.f90": {
+   "files": 3,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:simd",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "matmul"
+     ]
+    }
+   ]
+  },
+  "harvest/nvhpc-c-target-data-if-false-use-device-ptr-garbage.c": {
+   "measurable": false
+  },
+  "harvest/nvhpc-named-constant-array-declare-target-routine-rejected.f90": {
+   "measurable": false
+  },
+  "harvest/nvhpc-use-device-ptr-c-ptr-not-found.f90": {
+   "measurable": false
+  },
+  "harvest/nvhpc2511-target-nowait-in-parallel-for-ice.c": {
+   "measurable": false
+  },
+  "hecbench/gcc-c-float16-array-in-target-lto-ice.c": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "_float16"
+     ]
+    }
+   ]
+  },
+  "hecbench/gcc-c-swar-popcount-assembler-error.c": {
+   "measurable": false
+  },
+  "malloc/afar-device-malloc-in-kernel-corrupts-records.c": {
+   "files": 12,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 5,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": [
+      "memcpy"
+     ]
+    }
+   ]
+  },
+  "multithread-allocatable-section-maps.f90": {
+   "measurable": false
+  },
+  "nested/afar-cce-c-call-result-member-in-target-rejected.c": {
+   "files": 71,
+   "ingredients": 5,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 38,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:to",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:to",
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "nested/afar-cce-c-update-struct-and-member-rejected.c": {
+   "measurable": false
+  },
+  "nested/afar-flang-pointer-root-allocatable-component-enter-data-fault.f90": {
+   "files": 0,
+   "ingredients": 12,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "pointer"
+     ]
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable"
+     ]
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "dir:data",
+      "dir:enter",
+      "dir:exit",
+      "map:to",
+      "mod:map:to"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable",
+      "and",
+      "sum"
+     ]
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "and",
+      "sum"
+     ]
+    }
+   ]
+  },
+  "nested/cce-c-struct-and-nested-pointee-sections-ice.c": {
+   "files": 2,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "base:pointer_member",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "calloc"
+     ]
+    }
+   ]
+  },
+  "nested/cce-fortran-nested-allocatable-component-copy-fault.f90": {
+   "files": 39,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 16,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable",
+      "allocate"
+     ]
+    }
+   ]
+  },
+  "nested/cce-fortran-pointer-to-type-with-allocatable-scalar-component-typed-transfer.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable"
+     ]
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "null",
+      "pointer"
+     ]
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable"
+     ]
+    }
+   ]
+  },
+  "nested/cce-fortran-update-to-pointer-root-allocatable-scalar-component-no-accelerator-object.f90": {
+   "files": 4,
+   "ingredients": 5,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "pointer"
+     ]
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:to",
+      "dir:update",
+      "map:alloc",
+      "mod:map:alloc"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "nested/gcc-acc-c-exit-data-of-a-pointer-array-element-target-hangs.c": {
+   "measurable": false
+  },
+  "nested/gcc-acc-c-parent-and-shared-pointee-one-directive.c": {
+   "measurable": false
+  },
+  "nested/gcc-acc-c-struct-and-member-array-one-directive.c": {
+   "files": 3,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:present",
+      "dir:serial"
+     ],
+     "file_features": [
+      "dir:data"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "nested/gcc-c-always-on-pointer-member-section-ice.c": {
+   "files": 35,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 19,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:mod:always"
+     ],
+     "file_features": [
+      "mod:map:always"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "nested/gcc-c-declare-mapper-pointer-member-section-gpu-fault.c": {
+   "files": 15,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 8,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:declare_mapper",
+      "dir:declare",
+      "dir:mapper"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "nested/gcc-c-from-struct-and-pointee-section-rejected.c": {
+   "files": 1,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "base:pointer_member",
+      "base:struct_array_member",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:from"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:from"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "nested/gcc-fortran-pointer-component-alloc-bounds-lost.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "map:alloc",
+      "mod:map:alloc"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "null",
+      "pointer"
+     ]
+    }
+   ]
+  },
+  "nested/gcc-fortran-root-and-element-pointer-components-ice.f90": {
+   "measurable": false
+  },
+  "nested/nvhpc-c-pointee-before-parent-in-one-map-list-copy-fault.c": {
+   "measurable": false
+  },
+  "nested/nvhpc-c-update-from-structure-overwrites-attached-pointer-segv.c": {
+   "files": 0,
+   "ingredients": 12,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:pointer_member",
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:from",
+      "dir:update",
+      "map:delete",
+      "mod:map:delete"
+     ],
+     "words": [
+      "calloc"
+     ]
+    },
+    {
+     "features": [
+      "base:pointer_member",
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:from",
+      "dir:update",
+      "map:delete",
+      "mod:map:delete"
+     ],
+     "words": [
+      "calloc"
+     ]
+    }
+   ]
+  },
+  "nvhpc-acc-atomic-update-sum-fort2-crash.f90": {
+   "measurable": false
+  },
+  "nvhpc-c-acc-atomic-update-sum-ice.c": {
+   "measurable": false
+  },
+  "nvhpc-c-dist-schedule-chunk-compile-hang.c": {
+   "files": 9,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 8,
+   "signature": [
+    {
+     "features": [
+      "clause:dist_schedule",
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "nvhpc-c-map-present-ignored.c": {
+   "measurable": false
+  },
+  "nvhpc-c-ordered-in-target-nvcpfe-crash.c": {
+   "measurable": false
+  },
+  "nvhpc-c-parallel-for-firstprivate-in-target.c": {
+   "files": 21,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 17,
+   "signature": [
+    {
+     "features": [
+      "clause:firstprivate",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "nvhpc-c-parallel-if-in-target-nvvm-ice.c": {
+   "files": 29,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 17,
+   "signature": [
+    {
+     "features": [
+      "clause:if",
+      "dir:for",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "nvhpc-defaultmap-firstprivate-explicit-map.f90": {
+   "files": 7,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 4,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap",
+      "clause:defaultmap:firstprivate",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "nvhpc-defaultmap-from-allocatable-indexing.f90": {
+   "files": 5,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:defaultmap:from",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "nvhpc-depend-inoutset-ignored.f90": {
+   "files": 0,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "mod:depend:inoutset"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "nvhpc-dist-schedule-chunk-illegal-address.f90": {
+   "files": 4,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:dist_schedule",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "nvhpc-managed-acc-shutdown-host-access.f90": {
+   "measurable": false
+  },
+  "nvhpc-parallel-if-in-target-nvvm-ice.f90": {
+   "files": 17,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 6,
+   "signature": [
+    {
+     "features": [
+      "clause:if",
+      "dir:do",
+      "dir:parallel",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "oop/afar-final-dealloc-device-link.f90": {
+   "files": 22,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 13,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable",
+      "allocate",
+      "deallocate"
+     ]
+    }
+   ]
+  },
+  "oop/afar-pdt-length-parameter-not-implemented.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "len"
+     ]
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:from"
+     ],
+     "file_features": [],
+     "words": [
+      "len",
+      "lv"
+     ]
+    }
+   ]
+  },
+  "oop/cce-class-is-device-link.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "base:derived",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce-copy-alloc-component-section-fault.f90": {
+   "files": 1,
+   "ingredients": 10,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:section"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:map",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:component",
+      "map:section",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:component",
+      "map:section",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce-copy-parent-to-component-tofrom-lost.f90": {
+   "files": 16,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 9,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:to"
+     ],
+     "file_features": [
+      "mod:map:to"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce-copy-second-member-section-lost.f90": {
+   "files": 1,
+   "ingredients": 9,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:component",
+      "map:section",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:component",
+      "map:section",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce-element-component-map-lost.f90": {
+   "files": 0,
+   "ingredients": 9,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:component"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:component",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "base:derived",
+      "dir:target",
+      "map:component",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce-final-dealloc-device-abort.f90": {
+   "files": 22,
+   "ingredients": 3,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 13,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "allocatable",
+      "allocate",
+      "deallocate"
+     ]
+    }
+   ]
+  },
+  "oop/cce-pdt-default-mapper-rejected.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "len"
+     ]
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:from"
+     ],
+     "file_features": [],
+     "words": [
+      "len",
+      "lv"
+     ]
+    }
+   ]
+  },
+  "oop/cce-polymorphic-dispatch-device-link.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:derived",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "base:derived",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce-section-of-element-component-overlap.f90": {
+   "files": 1,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 1,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "map:component",
+      "map:section"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce-select-type-guard-not-taken.f90": {
+   "files": 0,
+   "ingredients": 12,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:call",
+      "base:derived",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "base:call",
+      "base:derived",
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": [
+      "call",
+      "extends",
+      "inout",
+      "subroutine"
+     ]
+    }
+   ]
+  },
+  "oop/cce-udr-derived-type-unsupported.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "base:derived",
+      "clause:reduction",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams",
+      "red:vsum"
+     ],
+     "file_features": [
+      "mod:reduction:vsum"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/cce21-element-component-map-lost.f90": {
+   "files": 0,
+   "ingredients": 9,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:component"
+     ],
+     "file_features": [],
+     "words": []
+    },
+    {
+     "features": [
+      "clause:map",
+      "dir:target",
+      "map:component",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "base:derived",
+      "dir:target",
+      "map:component",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "oop/gcc-acc-parent-and-member-data-rejected.f90": {
+   "measurable": false
+  },
+  "oop/gcc-pdt-length-parameter-abort.f90": {
+   "files": 0,
+   "ingredients": 5,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target",
+      "map:tofrom"
+     ],
+     "file_features": [
+      "mod:map:tofrom"
+     ],
+     "words": []
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:from"
+     ],
+     "file_features": [],
+     "words": [
+      "len",
+      "lv"
+     ]
+    }
+   ]
+  },
+  "oop/gcc-polymorphic-dispatch-abort.f90": {
+   "files": 3,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "base:derived",
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "oop/gcc-vtab-not-marked-for-offload.f90": {
+   "measurable": false
+  },
+  "oop/nvhpc-copy-alloc-component-illegal-address.f90": {
+   "measurable": false
+  },
+  "oop/nvhpc-copy-pdt-length-parameter-illegal-address.f90": {
+   "files": 0,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 0,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [],
+     "words": [
+      "len"
+     ]
+    },
+    {
+     "features": [
+      "dir:target",
+      "map:from"
+     ],
+     "file_features": [],
+     "words": [
+      "len",
+      "lv"
+     ]
+    }
+   ]
+  },
+  "oop/nvhpc-named-mapper-rejected.f90": {
+   "measurable": false
+  },
+  "oop/nvhpc-polymorphic-dispatch-translate-failure.f90": {
+   "measurable": false
+  },
+  "oop/nvhpc-polymorphism-runtime-unsupported.f90": {
+   "measurable": false
+  },
+  "oop/nvhpc-type-bound-call-rejected.f90": {
+   "measurable": false
+  },
+  "oop/nvhpc-udr-derived-type-rejected.f90": {
+   "measurable": false
+  },
+  "stress/afar-c-lastprivate-combined-target-not-mapped.c": {
+   "measurable": false
+  },
+  "stress/afar-target-scalar-implicit-firstprivate.f90": {
+   "measurable": false
+  },
+  "stress/cce-acc-declare-create-scalar-serial-firstprivate.f90": {
+   "measurable": false
+  },
+  "stress/cce-c-distribute-lastprivate-lost.c": {
+   "files": 12,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 10,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "dir:distribute",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "stress/cce-c-flto-offload-dropped.c": {
+   "measurable": false
+  },
+  "stress/cce-ftn-cif-record-split-abort.f90": {
+   "measurable": false
+  },
+  "stress/cce-lastprivate-num-threads-collapse-simd.f90": {
+   "files": 4,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 3,
+   "signature": [
+    {
+     "features": [
+      "clause:num_threads",
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "stress/cce-teams-reduction-many-teams-wrap.f90": {
+   "measurable": false
+  },
+  "stress/cce21-declare-target-scalar-map-write-lost.f90": {
+   "measurable": false
+  },
+  "stress/gcc-declare-target-allocatable-component-ice.f90": {
+   "files": 2,
+   "ingredients": 2,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 2,
+   "signature": [
+    {
+     "features": [
+      "dir:distribute",
+      "dir:do",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [
+      "clause:declare_target",
+      "dir:declare"
+     ],
+     "words": []
+    }
+   ]
+  },
+  "stress/nvhpc-acc-derived-type-component-not-copied.f90": {
+   "measurable": false
+  },
+  "stress/nvhpc-c-lastprivate-teams-distribute-parallel-for-lost.c": {
+   "files": 7,
+   "ingredients": 1,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 6,
+   "signature": [
+    {
+     "features": [
+      "clause:lastprivate",
+      "dir:distribute",
+      "dir:for",
+      "dir:parallel",
+      "dir:target",
+      "dir:teams"
+     ],
+     "file_features": [],
+     "words": []
+    }
+   ]
+  },
+  "stress/nvhpc-declare-target-scalar-write-lost.f90": {
+   "measurable": false
+  },
+  "stress/nvhpc-lastprivate-combined-target-not-mapped.f90": {
+   "measurable": false
+  },
+  "stress/nvhpc-target-scalar-implicit-firstprivate.f90": {
+   "measurable": false
+  },
+  "target-update-sections-in-parallel.f90": {
+   "files": 4,
+   "ingredients": 4,
+   "kind": "controls",
+   "measurable": true,
+   "repos": 4,
+   "signature": [
+    {
+     "features": [
+      "dir:target"
+     ],
+     "file_features": [
+      "clause:num_threads",
+      "clause:private",
+      "dir:do",
+      "dir:parallel"
+     ],
+     "words": []
+    }
+   ]
+  }
+ },
+ "meta": {
+  "corpus": "bigcode/the-stack-dedup",
+  "files": 3205,
+  "langs": [
+   "c",
+   "cpp",
+   "fortran"
+  ],
+  "repos": 513,
+  "snapshot": "deduplicated; a 2022 snapshot of permissively licensed GitHub files"
+ }
+}

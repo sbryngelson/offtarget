@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DIR = ROOT / "site" / "inputs"
 ATOMS = DIR / "atoms.json.gz"
 CITATIONS = DIR / "citations.json"
+EXPOSURE = DIR / "exposure.json"
 GENERATOR = "python3 -I tools/site/site_inputs.py"
 
 # every committed path tools/site/site_build.py reads (measured with an audit hook on a
@@ -35,7 +36,7 @@ MANIFEST = (
     "data/vendor/checks/src/*/control/*-control.f90", "data/vendor/checks/src/*/control/*-control.c",
     "data/vendor/checks/results-compact/*.jsonl.gz", "data/vendor/checks/results-site/*.jsonl.gz",
     "site/templates/base.html", "site/static/*.js", "site/static/*.css",
-    "site/inputs/atoms.json.gz", "site/inputs/citations.json",
+    "site/inputs/atoms.json.gz", "site/inputs/citations.json", "site/inputs/exposure.json",
 )
 # the atom fields the site reads besides the support columns
 ATOM_FIELDS = ("scope", "atom", "id", "version", "lang", "citation")
@@ -104,6 +105,15 @@ def load_citations() -> dict:
     if not CITATIONS.is_file():
         raise _missing(CITATIONS, "the findings' specification citations")
     return json.loads(CITATIONS.read_text())
+
+
+def load_exposure() -> dict:
+    """The findings' exposure in public code (tools/campaigns/exposure.py count)."""
+    if not EXPOSURE.is_file():
+        raise SiteInputError(f"the findings' exposure in public code: {_rel(EXPOSURE)} is missing; write it "
+                             "with `python3 -I tools/campaigns/exposure.py count` (needs the git-ignored "
+                             "corpus scan, docs/tooling/regenerate.md)")
+    return json.loads(EXPOSURE.read_text())
 
 
 def citations_of(rel: str, table: dict) -> list[dict]:

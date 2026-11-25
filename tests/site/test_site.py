@@ -1376,3 +1376,41 @@ def test_every_page_credits_its_author_and_links_the_repository_when_there_is_on
     # the profile URL is public on purpose; the handle alone elsewhere is still a leak
     assert SCR.leaks(f"by {name} ({url})") == []
     assert SCR.leaks("/home/" + url.rsplit("/", 1)[1] + "/x") != []
+
+
+EXPOSURE = {"meta": {"corpus": "bigcode/the-stack-dedup", "snapshot": "a 2022 snapshot",
+                     "langs": ["c", "cpp", "fortran"], "files": 3205, "repos": 513},
+            "findings": {"e.f90": {"measurable": True, "kind": "controls", "repos": 19, "files": 35,
+                                   "ingredients": 2,
+                                   "signature": [{"features": ["clause:if", "dir:target", "dir:teams"],
+                                                  "words": ["stop"], "file_features": ["mod:to:iterator"]}]},
+                         "n.f90": {"measurable": False}}}
+
+
+def test_an_issue_page_says_how_much_public_code_has_its_ingredients(tmp_path):
+    recs = D.records([finding("e"), finding("n"), finding("x")], exposure=EXPOSURE)
+    D.write(tmp_path, recs)
+    e = json.loads((tmp_path / "data/issues/e.json").read_text())
+    assert e["exposure"]["repos"] == 19
+    html = SB.issue_page(e)
+    assert "19 public repositories" in html and "35 files" in html
+    for ing in ("<code>if</code>", "<code>teams</code>", "<code>stop</code>", "<code>to(iterator…)</code>"):
+        assert ing in html, ing
+    assert "C, C++ and Fortran" in html
+    assert "not code known to fail" in html
+    n = SB.issue_page(json.loads((tmp_path / "data/issues/n.json").read_text()))
+    assert "Not measured" in n
+    x = SB.issue_page(json.loads((tmp_path / "data/issues/x.json").read_text()))
+    assert "public repositories" not in x and "Not measured" not in x
+
+
+def test_one_repository_is_singular():
+    x = dict(EXPOSURE["findings"]["e.f90"], repos=1, files=1, corpus=EXPOSURE["meta"])
+    assert "1 public repository (1 file)" in SB.exposure_card(x)
+
+
+def test_a_count_from_one_proven_ingredient_reads_as_an_upper_bound():
+    one = dict(EXPOSURE["findings"]["e.f90"], ingredients=1, corpus=EXPOSURE["meta"])
+    t = SB.exposure_card(one)
+    assert "At most 19 public repositories" in t and "upper bound" in t
+    assert "At most" not in SB.exposure_card(dict(EXPOSURE["findings"]["e.f90"], corpus=EXPOSURE["meta"]))

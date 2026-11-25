@@ -60,6 +60,15 @@ TYPE_SPEC = re.compile(
 
 # --- low-level text handling ---------------------------------------------------------------
 
+_STRING = re.compile(r"'[^'\n]*'|\"(?:\\.|[^\"\\\n])*\"")
+_WORD = re.compile(r"[a-z_][a-z0-9_]*")
+
+
+def code_words(text: str) -> set:
+    """The lower-case words of code text, string literals left out."""
+    return set(_WORD.findall(_STRING.sub(" ", text.lower())))
+
+
 def _strip_f_comment(line: str) -> str:
     """The line without a trailing ``!`` comment (strings respected)."""
     q = None
@@ -421,6 +430,7 @@ class Region:
     idents: set = field(default_factory=set)   # names not declared locally
     last: int = 0
     proc: str = ""
+    words: set = field(default_factory=set)    # lower-case words of its statements, no strings
 
 
 @dataclass
@@ -813,6 +823,7 @@ def _mark_device(d: Directive, proc, stack, fs, module_decls) -> None:
 def _close_region(region: Region, stmts: list[str], decls: dict,
                   args: set, listed: set) -> None:
     region.loop_depth = _loop_depth(stmts)
+    region.words = code_words("\n".join(stmts))
     used = set()
     for s in stmts:
         low = s.lower()
@@ -927,6 +938,7 @@ def scan_c(text: str, path: str = "") -> FileScan:
                 if started and depth <= 0 and (";" in t or "}" in t):
                     break
             btxt = "\n".join(body_lines)
+            r.words = code_words(btxt)
             r.loop_depth = _c_loop_depth(btxt)
             r.statements = btxt.count(";")
             r.calls = set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", btxt)) - {

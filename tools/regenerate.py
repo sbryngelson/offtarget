@@ -101,6 +101,9 @@ STEPS = [
      "tools/review/review.py mechanical (rules, other-family runs, stored front-end rows); "
      "tools/jobs/run_mechanical.sh on a compute node also runs AMD's front end where it is needed",
      "data/findings/reviews/*.json (verdict, mechanical), catalog/finding_witness.yaml"),
+    ("exposure", "offline (after the corpus scan and the generated controls: compute nodes)",
+     "tools/campaigns/exposure.py scan, queue, controls, count",
+     "site/inputs/exposure.json"),
     ("site-inputs", "offline",
      "tools/site/site_inputs.py (feature support from results/dash/atoms.json, "
      "the published findings' verified citations from the spec cache)",
@@ -510,6 +513,14 @@ def check_site_inputs() -> list[str]:
             for n in si.stale()]
 
 
+def check_exposure() -> list[str]:
+    """The findings' exposure in public code (site/inputs/exposure.json) is the one the stored
+    corpus scan and generated controls give (tools/campaigns/exposure.py count)."""
+    ex = _tool("exposure")
+    _need(ex.SCAN, ex.CONTROLS)
+    return [f"{s}: stale (python3 -I tools/campaigns/exposure.py count)" for s in ex.stale()]
+
+
 CHECKS = [("confirm-batch", check_batch),
           ("claims", check_claims),
           ("toolchains-gen", check_toolchains_gen),
@@ -526,6 +537,7 @@ CHECKS = [("confirm-batch", check_batch),
           ("widen-table", check_widen_table),
           ("widen-batch", check_widen_batch),
           ("legality", check_legality),
+          ("exposure", check_exposure),
           ("site-inputs", check_site_inputs)]
 NOT_CHECKED = {
     "measure, audits, expected-runs, fuzz, confirm-evidence":
@@ -572,6 +584,7 @@ def run_offline(log=print) -> None:
             ["tools/derive/ompvv_compare.py"],
             ["tools/derive/ompvv_compare.py", "--lang", "c"],
             ["tools/confirm.py", "triage"],
+            ["tools/campaigns/exposure.py", "count"],
             ["tools/site/site_inputs.py"]]
     for c in cmds:
         log("$ python3 -I " + " ".join(c))

@@ -287,9 +287,16 @@ def report_urls(repo_url: str, finding_id: str) -> dict:
             for k, form in REPORT_FORMS.items()}
 
 
-def records(findings: list[dict], repo_url: str = "", branch: str = "master") -> dict:
+def _exposure(f: dict, table: dict | None) -> dict | None:
+    """A finding's row of the exposure table, with the corpus it counts in."""
+    row = (table or {}).get("findings", {}).get(f["file"])
+    return dict(row, corpus=table.get("meta", {})) if row else None
+
+
+def records(findings: list[dict], repo_url: str = "", branch: str = "master", exposure: dict | None = None) -> dict:
     """`branch`: the repository branch the source links point into (the default branch;
-    the workflow passes the repository's)."""
+    the workflow passes the repository's). `exposure`: the exposure table
+    (site/inputs/exposure.json)."""
     pub = {f["id"]: f for f in findings if published(f)}
     defect = _defects(pub)
     members: dict = {}
@@ -341,7 +348,7 @@ def records(findings: list[dict], repo_url: str = "", branch: str = "master") ->
             members=[{"id": m, "page": page_name(m)} for m in members[defect[fid]]],
             defect_page=page_name(defect[fid]),
             source_url=(f"{repo_url.rstrip('/')}/blob/{branch}/data/findings/{f['file']}" if repo_url else None),
-            report_urls=report_urls(repo_url, fid))
+            report_urls=report_urls(repo_url, fid), exposure=_exposure(f, exposure))
     ran_tc: dict = {}
     for f in pub.values():
         for c in f["cells"]:
@@ -625,7 +632,8 @@ def canuse(atoms: list | None = None, recs: dict | None = None) -> dict:
 
 
 def build(out: Path, repo_url: str = "", branch: str = "master") -> dict:
-    recs = records(gather(), repo_url, branch)
+    from offload.engine.site import inputs as I
+    recs = records(gather(), repo_url, branch, I.load_exposure())
     write(out, recs, allow=(repo_url.rstrip("/"),) if repo_url else ())
     d = Path(out) / "data"
     (d / "compilers").mkdir(parents=True, exist_ok=True)

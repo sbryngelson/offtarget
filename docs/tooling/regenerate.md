@@ -38,7 +38,8 @@ Run the commands from the repository root. GPU steps need a compute node, for ex
 | 19 | `validate` | offline | `python3 -I tools/confirm.py validate` | `data/reports/confirm-validation.md` | - |
 | 20 | `dashboard` | offline, then publish | `python3 -I tools/site/dashboard_data.py OUT_DIR`, then publish each changed dataset ([dashboard-publish.md](dashboard-publish.md)) | the published datasets (not committed) | - |
 | 21 | `legality` | offline; the front-end rows on a compute node | `python3 -I tools/review/review.py mechanical`; `tools/jobs/run_mechanical.sh` on a compute node also runs AMD's front end, `review.py mechanical --nvhpc` (ssh to the NVHPC checkers) NVHPC's and `review.py mechanical --intel` (a compute node) Intel's, where no run of another family witnesses a finding | `data/findings/reviews/*.json`, `catalog/finding_witness.yaml` | `legality` |
-| 22 | `site-inputs` | offline (`tools/lanes/wingtip_offline.sh site-inputs`) | `python3 -I tools/site/site_inputs.py` (feature support from `results/dash/atoms.json`; verified citations of the published findings from `results/spec_cache`) | `site/inputs/atoms.json.gz`, `site/inputs/citations.json` | `site-inputs` |
+| 22 | `exposure` | compute nodes, then offline | `python3 -I tools/campaigns/exposure.py fetch fortran c cpp` (The Stack, a Hugging Face token in `HF_TOKEN` or `~/.cache/huggingface/token`), `scan fortran c cpp` and `controls` on a compute node, `queue` and `count` offline | `results/exposure/{stack,scan,controls}/`, `site/inputs/exposure.json` | `exposure` |
+| 23 | `site-inputs` | offline (`tools/lanes/wingtip_offline.sh site-inputs`) | `python3 -I tools/site/site_inputs.py` (feature support from `results/dash/atoms.json`; verified citations of the published findings from `results/spec_cache`) | `site/inputs/atoms.json.gz`, `site/inputs/citations.json` | `site-inputs` |
 
 The site pages are built from committed data only. `tools/site_publish.sh OUT_DIR` builds them (see [publishing.md](publishing.md) and [site.md](site.md)), and on GitHub `.github/workflows/site.yml` does. The build needs node 22 and Chrome, and the pages are not committed.
 
@@ -80,6 +81,7 @@ Rule R12a applies when every family rejects a program, an independent checker ac
 | `data/vendor/checks/results-site` (the packed site matrix) | `finding-releases`, then `confirm-batch` (the headers are findings) |
 | `data/findings/index.yaml`, a new finding file | `confirm-batch` through `validate`; `site-inputs` when the finding is published on the site (its citations) |
 | `results/dash/atoms.json` (from `dashboard`), `results/spec_cache` | `site-inputs` |
+| a finding file or its controls, `offload/engine/exposure.py`, `offload/engine/usage.py` | `exposure` (`queue` and `controls` for a new finding, then `count`) |
 | a finding's program or rows, `offload/engine/prerun.py`, the rules, `catalog/finding_witness.yaml` | `legality` |
 | `catalog/mode_differences.yaml` | `support-tables` (the report rejects a class its cells contradict; `tests/cluster/test_reports.py` checks that every entry still classifies a current difference), then `confirm-batch` through `validate` |
 | `catalog/expected_triage.yaml`, `catalog/omp/derivations.yaml` | `expected-report`, then `confirm-batch` through `validate` |

@@ -158,6 +158,57 @@ def spec_section(p):
             + note + '<div class="grid2">' + "".join(items) + '</div></section>')
 
 
+def ingredient_words(sig: list[dict]) -> list[str]:
+    """The ingredients of a signature as code: directive and clause names, clause arguments and
+    modifiers, base-language words."""
+    out = []
+    for part in sig:
+        for f in part["features"] + part["file_features"]:
+            kind, _, rest = f.partition(":")
+            head, _, tail = rest.partition(":")
+            if kind in ("dir", "clause"):
+                out.append(f"{head}({tail})" if tail else head)
+            elif kind == "map" and rest in ("section", "component"):
+                out.append("an array section in a map" if rest == "section" else "a structure component in a map")
+            elif kind == "map":
+                out.append(f"map({tail or head}…)")
+            elif kind == "mod":
+                out.append(f"{head}({tail}…)")
+            elif kind == "red":
+                out.append(f"reduction({rest}…)")
+            elif kind == "base":
+                out.append(rest.replace("_", " "))
+        out += part["words"]
+    return list(dict.fromkeys(out))
+
+
+def _n(k: int, one: str, many: str) -> str:
+    return f"{k} {one if k == 1 else many}"
+
+
+def exposure_card(x: dict) -> str:
+    if not x.get("measurable"):
+        return ('<div class="card"><h3>In public code</h3><p>Not measured: no passing one-change control or '
+                'minimized program shows which of its parts, beyond the names of its directives, the failure '
+                'needs.</p></div>')
+    c = x.get("corpus") or {}
+    names = {"fortran": "Fortran", "c": "C", "cpp": "C++"}
+    langs = [names.get(g, g) for g in c.get("langs", [])]
+    langs = ", ".join(langs[:-1]) + (" and " if len(langs) > 1 else "") + langs[-1] if langs else ""
+    how = ("the minimized program needs every part it kept" if x["kind"] == "minimal" else
+           "each same-compiler control that runs correctly lacks one of them")
+    loose = x["kind"] == "controls" and x.get("ingredients", 0) <= 1
+    return ('<div class="card"><h3>In public code</h3>'
+            f'<p>{"At most " if loose else ""}{_n(x["repos"], "public repository", "public repositories")} '
+            f'({_n(x["files"], "file", "files")}), of {c.get("repos", "?")} with offload code in The Stack '
+            f'({e(c.get("snapshot", ""))}; {e(langs)}), hold every ingredient the failure is shown to need: '
+            + ", ".join(f"<code>{e(w)}</code>" for w in ingredient_words(x["signature"]))
+            + f'. Shown to need: {e(how)}. This counts code with the ingredients, not code known to fail'
+            + ('; with one proven ingredient beyond the directive names, it is a loose upper bound' if loose else '')
+            + '. '
+              '<a href="../method.html#exposure">How this is counted</a></p></div>')
+
+
 def issue_page(p):
     tag = "Mixed evidence" if p["status"] == "mixed" else KIND_TAG[p["kind"]]
     status = {"open": "Open", "changed": f"Changed in {p['status_version']}",
@@ -218,6 +269,8 @@ def issue_page(p):
             + (f'<details><summary>Control program</summary><pre class="light">{e(c["source"])}</pre></details>'
                if c.get("source") else "") + '</li>'
             for c in p["controls"]) + '</ul></div>')
+    if p.get("exposure"):
+        ev.append(exposure_card(p["exposure"]))
     if p["witnesses"]:
         ev.append(f'<div class="card"><h3>Other compilers run it correctly</h3><p>{e(", ".join(p["witnesses"]))}</p></div>')
     if ev:
@@ -374,6 +427,16 @@ as evidence too.</p></section>
 <dt>At link time</dt><dd>the link step refuses it (an undefined symbol, a missing library) or the offload or LTO tool crashes.</dd>
 <dt>At run time</dt><dd>the program crashes or aborts, stops with a run-time error, hangs, or finishes with a wrong answer.</dd>
 </dl>
+<h2 id="exposure">In public code</h2>
+<p>An issue's "In public code" count is the number of public repositories whose offload code has every
+ingredient the failure is shown to need. A minimized program needs every part it kept: each region's directives,
+clauses and statements. A hand-written program needs what each of its same-compiler controls removes, since the
+control runs correctly without it. Ingredients are directive and clause features and base-language words, such as
+keywords, intrinsics and library routines; names the program declares are not ingredients. A program with no
+passing control and no minimization is not measured. The corpus is The Stack (the deduplicated release of a 2022
+snapshot of permissively licensed GitHub files, Fortran, C and C++), with identical files counted once. The count
+is of code with the ingredients, not of code known to fail. More controls make it smaller; a count resting on one
+proven ingredient beyond the directive names reads "at most" and is a loose upper bound.</p>
 <h2 id="legality">Legality</h2>
 <p>A program counts as legal only on evidence that does not come from the compiler under test. The rules engine
 checks each program against rules written from the specification (data races, the nesting of constructs and
