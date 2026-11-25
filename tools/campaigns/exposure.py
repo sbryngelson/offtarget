@@ -6,6 +6,7 @@
     python3 -I tools/campaigns/exposure.py scan LANG [LANG ...] [--jobs N]   # a compute node
     python3 -I tools/campaigns/exposure.py queue                       # findings to make controls for
     python3 -I tools/campaigns/exposure.py controls [--minutes M]      # a compute node: make them
+    python3 -I tools/campaigns/exposure.py links                       # the example commits still exist
     python3 -I tools/campaigns/exposure.py count
 
 scan keeps the files with an OpenMP or OpenACC directive: their regions and words, in
@@ -34,6 +35,8 @@ CONTROLS = OUT / "controls"
 QUEUE = CONTROLS / "queue.jsonl"
 FINDINGS = ROOT / "data" / "findings"
 TABLE = ROOT / "site" / "inputs" / "exposure.json"
+LINKS = OUT / "links.json"
+EXAMPLES = 5
 DIRECTIVE = re.compile(r"(!\$|#\s*pragma\s+)(omp|acc)\b", re.I)
 EXT = {"fortran": ".f90", "c": ".c", "cpp": ".cpp"}
 
@@ -90,34 +93,41 @@ def scan_shard(args) -> tuple[str, int, int]:
     n = kept = 0
     tmp = out.with_suffix(".part")
     with tmp.open("w") as fh:
-        for batch in pf.iter_batches(columns=["content", "max_stars_repo_name",
-                                              "max_stars_repo_path"], batch_size=2000):
+        for batch in pf.iter_batches(columns=["content", "max_stars_repo_name", "max_stars_repo_path",
+                                              "max_stars_repo_head_hexsha", "max_stars_count"],
+                                     batch_size=2000):
             d = batch.to_pydict()
-            for text, repo, path in zip(d["content"], d["max_stars_repo_name"],
-                                        d["max_stars_repo_path"]):
+            for text, repo, path, sha, stars in zip(d["content"], d["max_stars_repo_name"],
+                                                    d["max_stars_repo_path"], d["max_stars_repo_head_hexsha"],
+                                                    d["max_stars_count"]):
                 n += 1
                 if not text or not DIRECTIVE.search(text):
                     continue
                 name = path if Path(path).suffix else path + EXT[lang]
-                r = E.record(text, name, repo)
+                r = E.record(text, name, repo, sha or "", int(stars or 0))
                 if not r.regions:
                     continue
                 kept += 1
                 fh.write(json.dumps({"repo": repo, "path": path,
                                      "regions": [[sorted(f), sorted(w)] for f, w in r.regions],
-                                     "words": sorted(r.words),
-                                     "features": sorted(r.features)}) + "\n")
+                                     "words": sorted(r.words), "features": sorted(r.features),
+                                     "lines": list(r.lines), "sha": r.sha, "stars": r.stars}) + "\n")
     tmp.rename(out)
     return shard, n, kept
 
 
-def load_records():
+def load_records(everything: bool = False):
+    """The scanned files; only application code (offload.engine.exposure.is_application) unless
+    `everything`."""
     for f in sorted(SCAN.rglob("*.jsonl")):
         for ln in f.open():
             d = json.loads(ln)
+            if not everything and not E.is_application(d["repo"], d["path"]):
+                continue
             yield E.Record(d["repo"], d["path"],
                            [(frozenset(a), frozenset(b)) for a, b in d["regions"]],
-                           frozenset(d["words"]), frozenset(d["features"]))
+                           frozenset(d["words"]), frozenset(d["features"]), tuple(d.get("lines", ())),
+                           d.get("sha", ""), d.get("stars", 0))
 
 
 def queue() -> list[dict]:
@@ -184,7 +194,9 @@ def table() -> dict:
     generated controls."""
     recs = list(load_records())
     sigs = E.signatures(FINDINGS, CONTROLS)
-    got = E.count(sigs, recs)
+    live = _live()
+    gone = {r.repo for r in recs if live.get(f"{r.repo}@{r.sha}") != "ok"}
+    got = E.count(sigs, recs, EXAMPLES, gone)
     rows = {}
     for name, s in sigs.items():
         if not E.measurable(s):
@@ -194,11 +206,37 @@ def table() -> dict:
         rows[name] = {"measurable": True, "kind": s.kind, **got[name], "ingredients": E.ingredients(s),
                       "signature": [{"features": sorted(p.features), "words": sorted(p.words),
                                      "file_features": sorted(p.file_features)} for p in req]}
+    every = list(load_records(everything=True))
     meta = {"corpus": "bigcode/the-stack-dedup",
+            "left_out": {"files": len(every) - len(recs),
+                         "repos": len({r.repo for r in every}) - len({r.repo for r in recs}),
+                         "why": "compiler and runtime source trees, and files under test directories"},
             "snapshot": "deduplicated; a 2022 snapshot of permissively licensed GitHub files",
             "langs": sorted(p.name for p in SCAN.iterdir() if p.is_dir()),
             "files": len(recs), "repos": len({r.repo for r in recs})}
     return {"meta": meta, "findings": rows}
+
+
+def _live() -> dict:
+    """repo@commit -> "ok" or "gone", from the last links check (results/exposure/links.json)."""
+    return json.loads(LINKS.read_text()) if LINKS.is_file() else {}
+
+
+def links() -> tuple[int, int]:
+    """Check every commit a finding could link to (up to twice the examples shown, so a deleted
+    one has a replacement) once, with the GitHub API; reads only. Returns (checked, gone)."""
+    import subprocess
+    recs = list(load_records())
+    sigs = {k: s for k, s in E.signatures(FINDINGS, CONTROLS).items() if E.measurable(s)}
+    want = {f"{x['repo']}@{x['url'].split('/blob/')[1].split('/')[0]}"
+            for v in E.count(sigs, recs, 2 * EXAMPLES).values() for x in v.get("examples", [])}
+    live = _live()
+    for key in sorted(want - set(live)):
+        repo, sha = key.split("@")
+        r = subprocess.run(["gh", "api", f"repos/{repo}/commits/{sha}", "--silent"], capture_output=True)
+        live[key] = "ok" if r.returncode == 0 else "gone"
+    LINKS.write_text(json.dumps(live, indent=1, sort_keys=True) + "\n")
+    return len(want), sum(1 for k in want if live[k] == "gone")
 
 
 def render(t: dict) -> str:
@@ -220,6 +258,7 @@ def main(argv=None) -> int:
     s.add_argument("--jobs", type=int, default=32)
     sub.add_parser("count")
     sub.add_parser("queue")
+    sub.add_parser("links")
     cc = sub.add_parser("controls")
     cc.add_argument("--minutes", type=float, default=27)
     cc.add_argument("--per-job", type=float, default=4)
@@ -237,6 +276,10 @@ def main(argv=None) -> int:
     if a.cmd == "queue":
         jobs = queue()
         print(f"{len(jobs)} findings queued in {QUEUE.relative_to(ROOT)}")
+        return 0
+    if a.cmd == "links":
+        n, g = links()
+        print(f"{n} commits checked, {g} gone; {LINKS.relative_to(ROOT)}")
         return 0
     if a.cmd == "controls":
         run_controls(a.minutes, a.per_job)

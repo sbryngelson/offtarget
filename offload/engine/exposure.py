@@ -43,6 +43,9 @@ class Record:
     regions: list                      # [(features, words)]
     words: frozenset
     features: frozenset = frozenset()  # of every directive
+    lines: tuple = ()                  # each region's first line
+    sha: str = ""                      # the commit the file was taken from
+    stars: int = 0
 
 
 def _is_c(name: str) -> bool:
@@ -269,23 +272,58 @@ def control_job(rel: str, obs, local, named=None) -> dict | None:
             "reference": f"host:{ref}" if ref else None}
 
 
-def record(text: str, path: str, repo: str) -> Record:
+def record(text: str, path: str, repo: str, sha: str = "", stars: int = 0) -> Record:
     fs = _scan(text, path)
-    regions = [(frozenset(r.features), frozenset(r.words)) for r in fs.regions] if fs else []
-    return Record(repo, path, regions, frozenset(U.code_words(_code(text, path))),
-                  _directive_features(fs))
+    regs = fs.regions if fs else []
+    return Record(repo, path, [(frozenset(r.features), frozenset(r.words)) for r in regs],
+                  frozenset(U.code_words(_code(text, path))), _directive_features(fs),
+                  tuple(r.line for r in regs), sha, stars or 0)
+
+
+_COMPILER_TREE = re.compile(r"(^|/)(clang|llvm|flang|mlir|openmp|libomptarget|libgomp|compiler-rt|polly)/")
+_TEST_DIR = re.compile(r"(^|/)(tests?|testsuite|unittests?|testing|validation|conformance)(/|$)", re.I)
+_COMPILER_REPO = re.compile(r"/(llvm[\w.-]*|clang[\w.-]*|gcc[\w.-]*|flang[\w.-]*|f18)$", re.I)
+
+
+def is_application(repo: str, path: str) -> bool:
+    """Not a compiler's or runtime's own source tree, and not under a test directory: the code
+    the count is about is code people run, not the compilers' tests of themselves."""
+    return not (_COMPILER_TREE.search(path) or _TEST_DIR.search(path) or _COMPILER_REPO.search(repo))
+
+
+def match_line(sig: Signature, rec: Record) -> int | None:
+    """The first line of the region that matches the signature's first part, None when the
+    file does not hold every requirement."""
+    if sig.kind == "minimal":
+        hits = [[i for i, (f, w) in enumerate(rec.regions) if p.features <= f and p.words <= w]
+                for p in sig.parts]
+    else:
+        if not all(q.words <= rec.words and q.file_features <= rec.features for q in sig.requirements):
+            return None
+        hits = [[i for i, (f, _) in enumerate(rec.regions) if q.features <= f] for q in sig.requirements]
+    if not all(hits):
+        return None
+    i = hits[0][0]
+    return rec.lines[i] if i < len(rec.lines) else 0
 
 
 def exposed(sig: Signature, rec: Record) -> bool:
-    if sig.kind == "minimal":
-        return all(any(p.features <= f and p.words <= w for f, w in rec.regions)
-                   for p in sig.parts)
-    return all(any(q.features <= f for f, _ in rec.regions) and q.words <= rec.words
-               and q.file_features <= rec.features for q in sig.requirements)
+    return match_line(sig, rec) is not None
 
 
-def count(sigs: dict, records) -> dict:
-    """Finding to the distinct repositories and files exposed (copies once)."""
+def shows_examples(sig: Signature) -> bool:
+    """Its matches are worth showing: a minimized program, or two proven ingredients."""
+    return sig.kind == "minimal" or ingredients(sig) >= 2
+
+
+def permalink(rec: Record, line: int) -> str:
+    return f"https://github.com/{rec.repo}/blob/{rec.sha}/{rec.path}" + (f"#L{line}" if line else "")
+
+
+def count(sigs: dict, records, examples: int = 0, gone=frozenset()) -> dict:
+    """Finding to the distinct repositories and files exposed (copies once), and with `examples`
+    up to that many pinned links to matching files, one a repository, most stars first,
+    none in a repository of `gone` (deleted since the snapshot)."""
     seen, recs = set(), []
     for r in records:
         key = (tuple(sorted(map(str, r.regions))), r.words)
@@ -295,6 +333,16 @@ def count(sigs: dict, records) -> dict:
     out = {}
     for name, s in sigs.items():
         if s is not None:
-            hit = [r for r in recs if exposed(s, r)]
-            out[name] = {"repos": len({r.repo for r in hit}), "files": len(hit)}
+            hit = [(r, ln) for r in recs if (ln := match_line(s, r)) is not None]
+            out[name] = {"repos": len({r.repo for r, _ in hit}), "files": len(hit)}
+            if examples and shows_examples(s):
+                ex, used = [], set()
+                for r, ln in sorted(hit, key=lambda x: (-x[0].stars, x[0].repo, x[0].path)):
+                    if r.repo in used or r.repo in gone or not r.sha:
+                        continue
+                    used.add(r.repo)
+                    ex.append({"repo": r.repo, "path": r.path, "line": ln, "url": permalink(r, ln)})
+                    if len(ex) >= examples:
+                        break
+                out[name]["examples"] = ex
     return out

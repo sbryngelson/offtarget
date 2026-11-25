@@ -264,3 +264,37 @@ def test_a_clause_removed_from_one_of_two_regions_counts_on_that_region(tmp_path
         TWO.replace("map(tofrom: a) nowait depend(out: a)", "map(tofrom: a) depend(out: a)"))
     (req,) = E.signature(f, tmp_path, extra).requirements
     assert req.features == {"dir:target", "clause:nowait"}
+
+
+def test_a_match_says_where_and_examples_link_pinned_code():
+    sig = E.Signature("minimal", parts=[E.Part(frozenset({"dir:target", "dir:teams"}), frozenset({"ishft"}))])
+    hit = MIN.replace("Minimized", "Written")
+    a = E.record(hit, "src/a.f90", "org/a", sha="abc123", stars=5)
+    b = E.record(hit.replace("ishft(x, 1)", "ishft(x, 1) + y"), "b.f90", "org/b", sha="def456", stars=50)
+    assert E.match_line(sig, a) == 6 and E.match_line(sig, E.record(MIN.replace("ishft", "iand"), "c.f90", "o/c")) is None
+    got = E.count({"f": sig}, [a, b], examples=5)
+    ex = got["f"]["examples"]
+    assert [x["repo"] for x in ex] == ["org/b", "org/a"]        # most stars first
+    assert ex[1]["url"] == "https://github.com/org/a/blob/abc123/src/a.f90#L6"
+    assert E.count({"f": sig}, [a, b], examples=5, gone={"org/b"})["f"]["examples"][0]["repo"] == "org/a"
+
+
+def test_examples_need_two_proven_ingredients():
+    one = E.Signature("controls", requirements=[E.Part(frozenset({"dir:target"}), frozenset({"stop"}))])
+    two = E.Signature("controls", requirements=[E.Part(frozenset({"dir:target", "clause:if"}), frozenset({"stop"}))])
+    assert not E.shows_examples(one) and E.shows_examples(two)
+    assert E.shows_examples(E.Signature("minimal", parts=[E.Part(frozenset({"dir:target"}))]))
+
+
+def test_compiler_trees_and_test_suites_are_not_application_code():
+    for repo, path in (("someone/llvm-project", "clang/test/OpenMP/target_map.c"),
+                       ("someone/llvm", "openmp/libomptarget/test/mapping/a.c"),
+                       ("x/clang", "test/OpenMP/a.cpp"),
+                       ("x/aomp", "test/smoke/red/red.c"),
+                       ("x/gcc", "gcc/testsuite/gfortran.dg/gomp/a.f90"),
+                       ("x/suite", "Tests/validation/acc_copy.c")):
+        assert not E.is_application(repo, path), path
+    for repo, path in (("BeauJoh/HeCBench", "lid-driven-cavity-omp/calculate_v.h"),
+                       ("fspiga/FluTAS", "src/apps/main__two_phase_ht.f90"),
+                       ("me/latest", "src/contest/solver.f90")):
+        assert E.is_application(repo, path), path

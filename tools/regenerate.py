@@ -517,7 +517,7 @@ def check_exposure() -> list[str]:
     """The findings' exposure in public code (site/inputs/exposure.json) is the one the stored
     corpus scan and generated controls give (tools/campaigns/exposure.py count)."""
     ex = _tool("exposure")
-    _need(ex.SCAN, ex.CONTROLS)
+    _need(ex.SCAN, ex.CONTROLS, ex.LINKS)
     return [f"{s}: stale (python3 -I tools/campaigns/exposure.py count)" for s in ex.stale()]
 
 

@@ -154,3 +154,4 @@ section { margin-top: 26px; }
 .foot p { margin: 0; }
 .foot a { color: inherit; text-underline-offset: 3px; }
 .foot .src { margin-left: 14px; }
+.card li code{overflow-wrap:anywhere}

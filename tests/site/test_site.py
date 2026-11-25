@@ -1414,3 +1414,13 @@ def test_a_count_from_one_proven_ingredient_reads_as_an_upper_bound():
     t = SB.exposure_card(one)
     assert "At most 19 public repositories" in t and "upper bound" in t
     assert "At most" not in SB.exposure_card(dict(EXPOSURE["findings"]["e.f90"], corpus=EXPOSURE["meta"]))
+
+
+def test_examples_link_pinned_public_code_and_say_it_is_not_known_to_fail():
+    x = dict(EXPOSURE["findings"]["e.f90"], corpus=EXPOSURE["meta"], examples=[
+        {"repo": "org/app", "path": "src/k.c", "line": 12,
+         "url": "https://github.com/org/app/blob/abc/src/k.c#L12"}])
+    t = SB.exposure_card(x)
+    assert 'href="https://github.com/org/app/blob/abc/src/k.c#L12"' in t and "org/app" in t
+    assert "uses the same constructs" in t and "not known to fail" in t
+    assert "uses the same constructs" not in SB.exposure_card(dict(x, examples=[]))

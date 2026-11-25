@@ -200,13 +200,24 @@ def exposure_card(x: dict) -> str:
     loose = x["kind"] == "controls" and x.get("ingredients", 0) <= 1
     return ('<div class="card"><h3>In public code</h3>'
             f'<p>{"At most " if loose else ""}{_n(x["repos"], "public repository", "public repositories")} '
-            f'({_n(x["files"], "file", "files")}), of {c.get("repos", "?")} with offload code in The Stack '
+            f'({_n(x["files"], "file", "files")}), of {c.get("repos", "?")} with offload application code in The Stack '
             f'({e(c.get("snapshot", ""))}; {e(langs)}), hold every ingredient the failure is shown to need: '
             + ", ".join(f"<code>{e(w)}</code>" for w in ingredient_words(x["signature"]))
             + f'. Shown to need: {e(how)}. This counts code with the ingredients, not code known to fail'
             + ('; with one proven ingredient beyond the directive names, it is a loose upper bound' if loose else '')
             + '. '
-              '<a href="../method.html#exposure">How this is counted</a></p></div>')
+              '<a href="../method.html#exposure">How this is counted</a></p>'
+            + exposure_examples(x.get("examples") or []) + '</div>')
+
+
+def exposure_examples(ex: list[dict]) -> str:
+    if not ex:
+        return ""
+    return ('<p class="small">Public code that uses the same constructs (not known to fail; the code as it was '
+            'in the snapshot):</p><ul class="small">' + "".join(
+                f'<li><a href="{e(x["url"])}" rel="nofollow noopener">{e(x["repo"])}</a>: '
+                f'<code>{e(x["path"])}</code>{" line " + str(x["line"]) if x.get("line") else ""}</li>'
+                for x in ex) + '</ul>')
 
 
 def issue_page(p):
@@ -436,7 +447,10 @@ keywords, intrinsics and library routines; names the program declares are not in
 passing control and no minimization is not measured. The corpus is The Stack (the deduplicated release of a 2022
 snapshot of permissively licensed GitHub files, Fortran, C and C++), with identical files counted once. The count
 is of code with the ingredients, not of code known to fail. More controls make it smaller; a count resting on one
-proven ingredient beyond the directive names reads "at most" and is a loose upper bound.</p>
+proven ingredient beyond the directive names reads "at most" and is a loose upper bound. Compilers' and runtimes'
+own source trees, and files under test directories, are left out: the count is of code people run. Where at least
+two ingredients are proven, up to five matching files are linked as they were in the snapshot, from the
+repositories with the most stars, after a check that the commit still exists.</p>
 <h2 id="legality">Legality</h2>
 <p>A program counts as legal only on evidence that does not come from the compiler under test. The rules engine
 checks each program against rules written from the specification (data races, the nesting of constructs and
