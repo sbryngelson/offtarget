@@ -1421,9 +1421,11 @@ def test_a_run_dies_with_its_runner(tmp_path):
     assert _pid_alive(pid)
     runner.kill()
     runner.wait()
-    for _ in range(50):
-        if not _pid_alive(pid):
-            break
+    # the death signal kills it at once on Linux; elsewhere (macOS) or when it misses, the watchdog
+    # does, with SIGKILL at most KILL_AFTER_S after its SIGTERM: the bound the harness promises
+    from offload.engine import harness
+    deadline = time.monotonic() + harness.KILL_AFTER_S + 5
+    while _pid_alive(pid) and time.monotonic() < deadline:
         time.sleep(0.1)
     alive = _pid_alive(pid)
     if alive:
