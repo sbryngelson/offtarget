@@ -8,7 +8,7 @@ const LEGALITY = ['checked', 'supported', 'ruled', 'open', 'refuted'];
 const LANGS = ['f90', 'c'];
 const MODELS = ['omp', 'acc'];
 const STATUSES = ['open', 'changed', 'mixed', 'fixed', 'not-reproduced', 'not-run'];
-const SORTS = ['fixed', 'version', 'construct'];
+const SORTS = ['fixed', 'version', 'construct', 'public'];
 // fams: the compiler families shown; all of them by default
 const DEFAULTS = { fams: FAMILIES.slice(), vers: [], tg: [], kinds: [], stages: [], legal: [], langs: [], models: [], st: ['open', 'changed', 'mixed'],
   regOnly: false, q: '', sort: 'fixed' };

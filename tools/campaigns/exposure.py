@@ -82,48 +82,65 @@ def fetch(langs) -> None:
             print(f"{lang}/{name}", flush=True)
 
 
-def scan_shard(args) -> tuple[str, int, int]:
+def _rows(lang: str, shard: str):
+    """(text, repo, path, commit, stars) of a shard: a Stack parquet file, or a GitHub search shard
+    (tools/campaigns/exposure_github.py fetch) with the stars it measured."""
+    if shard.endswith(".jsonl.gz"):
+        import gzip
+        stars_f = OUT / "github" / "stars.json"
+        stars = json.loads(stars_f.read_text()) if stars_f.is_file() else {}
+        with gzip.open(shard, "rt") as fh:
+            for d in map(json.loads, fh):
+                yield d["content"], d["repo"], d["path"], d["sha"], stars.get(d["repo"], 0)
+        return
     import pyarrow.parquet as pq
+    pf = pq.ParquetFile(shard)
+    for batch in pf.iter_batches(columns=["content", "max_stars_repo_name", "max_stars_repo_path",
+                                          "max_stars_repo_head_hexsha", "max_stars_count"], batch_size=2000):
+        d = batch.to_pydict()
+        yield from zip(d["content"], d["max_stars_repo_name"], d["max_stars_repo_path"],
+                       d["max_stars_repo_head_hexsha"], d["max_stars_count"])
+
+
+def scan_shard(args) -> tuple[str, int, int]:
     lang, shard = args
-    out = SCAN / lang / (Path(shard).stem + ".jsonl")
+    out = SCAN / lang / (Path(shard).name.split(".")[0] + ".jsonl")
     if out.exists():
         return shard, -1, -1
     out.parent.mkdir(parents=True, exist_ok=True)
-    pf = pq.ParquetFile(shard)
     n = kept = 0
     tmp = out.with_suffix(".part")
     with tmp.open("w") as fh:
-        for batch in pf.iter_batches(columns=["content", "max_stars_repo_name", "max_stars_repo_path",
-                                              "max_stars_repo_head_hexsha", "max_stars_count"],
-                                     batch_size=2000):
-            d = batch.to_pydict()
-            for text, repo, path, sha, stars in zip(d["content"], d["max_stars_repo_name"],
-                                                    d["max_stars_repo_path"], d["max_stars_repo_head_hexsha"],
-                                                    d["max_stars_count"]):
-                n += 1
-                if not text or not DIRECTIVE.search(text):
-                    continue
-                name = path if Path(path).suffix else path + EXT[lang]
-                r = E.record(text, name, repo, sha or "", int(stars or 0))
-                if not r.regions:
-                    continue
-                kept += 1
-                fh.write(json.dumps({"repo": repo, "path": path,
-                                     "regions": [[sorted(f), sorted(w)] for f, w in r.regions],
-                                     "words": sorted(r.words), "features": sorted(r.features),
-                                     "lines": list(r.lines), "sha": r.sha, "stars": r.stars,
-                                     "details": [sorted(x) for x in r.details]}) + "\n")
+        for text, repo, path, sha, stars in _rows(lang, shard):
+            n += 1
+            if not text or not DIRECTIVE.search(text):
+                continue
+            name = path if Path(path).suffix else path + EXT.get(lang, ".c")
+            r = E.record(text, name, repo, sha or "", int(stars or 0))
+            if not r.regions:
+                continue
+            kept += 1
+            fh.write(json.dumps({"repo": repo, "path": path,
+                                 "regions": [[sorted(f), sorted(w)] for f, w in r.regions],
+                                 "words": sorted(r.words), "features": sorted(r.features),
+                                 "lines": list(r.lines), "sha": r.sha, "stars": r.stars,
+                                 "details": [sorted(x) for x in r.details]}) + "\n")
     tmp.rename(out)
     return shard, n, kept
 
 
 def load_records(everything: bool = False):
     """The scanned files; only application code (offload.engine.exposure.is_application) unless
-    `everything`."""
+    `everything`. A file GitHub's search gave (current) replaces The Stack's copy (2022)."""
+    newer = {(d["repo"], d["path"]) for f in sorted((SCAN / "github").glob("*.jsonl"))
+             for d in map(json.loads, f.open())}
     for f in sorted(SCAN.rglob("*.jsonl")):
+        github = f.parent.name == "github"
         for ln in f.open():
             d = json.loads(ln)
             if not everything and not E.is_application(d["repo"], d["path"]):
+                continue
+            if not github and (d["repo"], d["path"]) in newer:
                 continue
             yield E.Record(d["repo"], d["path"],
                            [(frozenset(a), frozenset(b)) for a, b in d["regions"]],
@@ -222,12 +239,16 @@ def table() -> dict:
         if name in similar:
             rows[name]["similar"] = similar[name]
     every = list(load_records(everything=True))
-    meta = {"corpus": "bigcode/the-stack-dedup",
+    sources = sorted(p.name for p in SCAN.iterdir() if p.is_dir())
+    github = "github" in sources
+    meta = {"corpus": "bigcode/the-stack-dedup" + (" and GitHub code search" if github else ""),
             "left_out": {"files": len(every) - len(recs),
                          "repos": len({r.repo for r in every}) - len({r.repo for r in recs}),
                          "why": "compiler and runtime source trees, and files under test directories"},
-            "snapshot": "deduplicated; a 2022 snapshot of permissively licensed GitHub files",
-            "langs": sorted(p.name for p in SCAN.iterdir() if p.is_dir()),
+            "snapshot": "deduplicated; a 2022 snapshot of permissively licensed GitHub files"
+                        + ("; and the default branches of GitHub repositories its code search finds, not forks"
+                           if github else ""),
+            "langs": sorted(x for x in sources if x != "github"),
             "files": len(recs), "repos": len({r.repo for r in recs})}
     return {"meta": meta, "findings": rows}
 
@@ -285,7 +306,8 @@ def main(argv=None) -> int:
         fetch(a.langs)
         return 0
     if a.cmd == "scan":
-        work = [(lang, str(p)) for lang in a.langs for p in sorted((STACK / lang).glob("*.parquet"))]
+        work = [(lang, str(p)) for lang in a.langs for p in sorted((STACK / lang).glob("*.parquet"))
+                + sorted((STACK / lang).glob("*.jsonl.gz"))]
         with ProcessPoolExecutor(a.jobs) as ex:
             for shard, n, kept in ex.map(scan_shard, work):
                 print(f"{Path(shard).parent.name}/{Path(shard).name}: "

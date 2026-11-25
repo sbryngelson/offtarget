@@ -386,3 +386,19 @@ def test_a_wingtip_finding_runs_in_its_a100_memory_mode():
     job = E.control_job("x.c", obs, local={"nvhpc", "gcc_sm80"}, named=({"nvhpc"}, {2}))
     assert job["targets"] == ["nvhpc/2"] and job["reference"] == "host:gcc_sm80"
     assert E.named_compilers({"toolchains": ["nvhpc"], "modes": ["copy", "managed"]}, "") == ({"nvhpc"}, {0, 2})
+
+
+def test_github_search_splits_by_size_until_each_query_fits_the_cap(monkeypatch):
+    import importlib.util
+    root = Path(__file__).resolve().parents[2]
+    spec = importlib.util.spec_from_file_location("exg", root / "tools/campaigns/exposure_github.py")
+    G = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(G)
+    sizes = list(range(0, 3000, 1))            # 3000 files, one per byte size
+
+    def fake(q, page=1):
+        lo, hi = map(int, q.split("size:")[1].split(".."))
+        return {"total_count": sum(lo <= s <= hi for s in sizes)}
+    monkeypatch.setattr(G, "_search", fake)
+    leaves = list(G._leaves('"omp target"', "c", 0, 4095))
+    assert all(n <= G.CAP for _, n in leaves) and sum(n for _, n in leaves) == len(sizes)

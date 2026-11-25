@@ -104,7 +104,8 @@ console.log(JSON.stringify([two.fams, two.vers, toQuery(fromQuery('')), toQuery(
 def test_csv_columns():
     js = (ROOT / "site/static/issues.js").read_text()
     assert "const CSV_COLUMNS = ['id', 'title', 'kind', 'phase', 'stage', 'symptom', 'legality', 'lang', 'model', 'versions_failing', " \
-           "'targets_failing', 'status', 'status_version', 'regression', 'reproducers', 'specs']" in js
+           "'targets_failing', 'status', 'status_version', 'regression', 'reproducers', 'specs', 'public', " \
+           "'public_similar']" in js
 
 
 def test_static_size_limits(site):
@@ -1432,3 +1433,20 @@ def test_the_card_gives_the_code_that_closely_resembles_the_reproducer():
     assert "3 public repositories (4 files) closely resemble" in t
     n = SB.exposure_card({"measurable": False, "similar": {"repos": 1, "files": 1}, "corpus": EXPOSURE["meta"]})
     assert "Not measured" in n and "1 public repository (1 file) closely resembles" in n
+
+
+def test_the_issue_list_carries_public_code_counts_for_its_sort():
+    table = {"meta": EXPOSURE["meta"], "findings": {
+        "d.f90": {"measurable": True, "kind": "controls", "repos": 4, "files": 4, "ingredients": 2,
+                  "signature": [], "similar": {"repos": 1, "files": 1}},
+        "r.f90": {"measurable": True, "kind": "controls", "repos": 9, "files": 9, "ingredients": 2,
+                  "signature": [], "similar": {"repos": 0, "files": 0}},
+        "u.f90": {"measurable": False, "similar": {"repos": 2, "files": 2}}}}
+    recs = D.records([finding("d"), finding("r", SiteHeader(same_as="d")), finding("u"), finding("z")],
+                     exposure=table)
+    by = {i["id"]: i for i in recs["issues"]}
+    assert (by["d"]["public"], by["d"]["public_similar"]) == (9, 1)      # the largest of its reproducers
+    assert (by["u"]["public"], by["u"]["public_similar"]) == (None, 2)
+    assert (by["z"]["public"], by["z"]["public_similar"]) == (None, None)
+    js = (ROOT / "site/static/issues.js").read_text()
+    assert "public:" in js and "'public'" in (ROOT / "site/static/query.js").read_text()

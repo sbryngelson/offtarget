@@ -293,6 +293,15 @@ def _exposure(f: dict, table: dict | None) -> dict | None:
     return dict(row, corpus=table.get("meta", {})) if row else None
 
 
+def _public(rows: list) -> dict:
+    """The issue list's public-code counts of a defect: the largest among its reproducers of the
+    repositories with every proven ingredient (None: none measured) and of the ones that closely
+    resemble a reproducer (None: no count)."""
+    most = [r["repos"] for r in rows if r and r.get("measurable")]
+    sim = [r["similar"]["repos"] for r in rows if r and r.get("similar")]
+    return {"public": max(most) if most else None, "public_similar": max(sim) if sim else None}
+
+
 def records(findings: list[dict], repo_url: str = "", branch: str = "master", exposure: dict | None = None) -> dict:
     """`branch`: the repository branch the source links point into (the default branch;
     the workflow passes the repository's). `exposure`: the exposure table
@@ -316,6 +325,7 @@ def records(findings: list[dict], repo_url: str = "", branch: str = "master", ex
         group = members[defect[fid]] if defect[fid] == fid else [fid]
         fams = _merge_views([views[m] for m in group])
         title = _title(h, kind, cells, f["constructs"], fams)
+        public = _public([_exposure(pub[m], exposure) for m in group])
         issue = {"id": fid, "page": page_name(fid), "title": S.scrub(title), "kind": kind,
                  "kinds": sorted({_kind(pub[m]["outcome"]) for m in group}),
                  "phase": _phase(f["outcome"]), "stage": (st := _stage(f["outcome"], cells)),
@@ -330,7 +340,8 @@ def records(findings: list[dict], repo_url: str = "", branch: str = "master", ex
                  "specs": _spec_labels(cites[fid][0]),
                  "regression": any(_regression(pub[m]["cells"]) for m in group),
                  "search": " | ".join(x for x in (_search_text(pub[m]["cells"]) for m in group) if x)[:600],
-                 "mixed_reason": h.disposition[1] if h.disposition and h.disposition[0] == "mixed" else None}
+                 "mixed_reason": h.disposition[1] if h.disposition and h.disposition[0] == "mixed" else None,
+                 **public}
         issues.append(issue)
         observed = next((c.output or c.message for c in cells if c.state == "fails-like" and (c.output or c.message)),
                         "")

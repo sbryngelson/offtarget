@@ -1,5 +1,5 @@
 // Observed issues: filters, search, sort, one row per defect, shareable URL, CSV.
-const CSV_COLUMNS = ['id', 'title', 'kind', 'phase', 'stage', 'symptom', 'legality', 'lang', 'model', 'versions_failing', 'targets_failing', 'status', 'status_version', 'regression', 'reproducers', 'specs'];
+const CSV_COLUMNS = ['id', 'title', 'kind', 'phase', 'stage', 'symptom', 'legality', 'lang', 'model', 'versions_failing', 'targets_failing', 'status', 'status_version', 'regression', 'reproducers', 'specs', 'public', 'public_similar'];
 // FAM_NAME, TG_NAME, TG_SHORT and TG_ISA come from static/toolchains.js (generated from
 // catalog/toolchains.yaml and catalog/machines.yaml), loaded before this script.
 const KIND_NAME = { incorrect: 'Appears to behave incorrectly', unsupported: 'Appears not to support' };
@@ -90,6 +90,16 @@ function wrongAnswer(i) { return i.phase === 'offload' && (i.kinds || [i.kind]).
 const LEGALITY_RANK = { checked: 2, supported: 2, ruled: 2, open: 1, refuted: 0 };
 function legalityRank(i) { return LEGALITY_RANK[i.legality] ?? 1; }
 
+// "In public code" of a row (offload/engine/site/data.py _public): repositories that closely resemble a
+// reproducer, and at most how many have every proven ingredient
+function publicLine(i) {
+  const parts = [];
+  if (i.public_similar) parts.push(i.public_similar + (i.public_similar === 1 ? ' repository resembles it' : ' repositories resemble it'));
+  if (i.public) parts.push('at most ' + i.public + ' have its ingredients');
+  return parts.length ? el('div', { class: 'small', title: 'public GitHub code (method page: In public code)' },
+    'In public code: ' + parts.join('; ')) : null;
+}
+
 function sorted(rows) {
   // newest failing version: 0 when an issue fails on the newest release of a family it is shown
   // under, -1 on the one before, and so on
@@ -106,6 +116,9 @@ function sorted(rows) {
       || reach(b) - reach(a) || a.title.localeCompare(b.title),
     version: (a, b) => newest(b) - newest(a) || a.title.localeCompare(b.title),
     construct: (a, b) => (a.constructs[0] || '').localeCompare(b.constructs[0] || '') || a.title.localeCompare(b.title),
+    // code that closely resembles a reproducer first, then code with every proven ingredient; unmeasured last
+    public: (a, b) => (b.public_similar ?? -1) - (a.public_similar ?? -1) || (b.public ?? -1) - (a.public ?? -1)
+      || a.title.localeCompare(b.title),
   };
   return rows.slice().sort((a, b) => rank(a, b) || by[S.sort](a, b));
 }
@@ -153,7 +166,8 @@ function row(i) {
     el('div', {}, el('div', { style: 'font-weight:500' }, i.title),
       el('div', { class: 'small mono' }, i.constructs.join(' · ')),
       (i.specs || []).length ? el('div', { class: 'small spec' }, 'Specification: ' + i.specs.join(' · ')) : null,
-      i.reproducers > 1 ? el('div', { class: 'small' }, i.reproducers + ' reproducers') : null),
+      i.reproducers > 1 ? el('div', { class: 'small' }, i.reproducers + ' reproducers') : null,
+      publicLine(i)),
     el('div', {}, fams.map((f) => famLine(i, f))));
 }
 
@@ -230,7 +244,8 @@ function render() {
   const list = document.getElementById('list');
   list.replaceChildren(...(rows.length ? rows.map(row) : [el('p', { class: 'sub', style: 'padding:16px' }, 'No issues match these filters.')]));
   document.getElementById('sorts').replaceChildren(el('span', { class: 'small' }, 'Sort by'),
-    ...[['fixed', 'Wrong answers, legality, regressions, reach'], ['version', 'Newest failing version'], ['construct', 'Construct']]
+    ...[['fixed', 'Wrong answers, legality, regressions, reach'], ['version', 'Newest failing version'], ['construct', 'Construct'],
+      ['public', 'Most public code']]
       .map(([k, l]) => el('button', { type: 'button', class: 'btn', 'aria-pressed': String(S.sort === k),
         'data-key': 'sort', 'data-value': k, onclick: () => set({ sort: k }) }, l)),
     el('button', { type: 'button', class: 'btn', id: 'copy-link', 'data-key': 'copy', onclick: copyLink },

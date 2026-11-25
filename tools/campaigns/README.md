@@ -10,7 +10,7 @@ Drivers for measurement campaigns, corpus harvests, audits and program generator
 | generated program families | `fuzz.py`, `stress.py`, `kbody.py`, `nested.py`, `oop.py`, `combination_matrix.py` |
 | expected values | `c_slices.py` |
 | corpus harvest and ingestion | `harvest.py`, `harvest2.py`, `harvest_known.py`, `harvest_probe.py`, `hecbench.py`, `app_bench.py`, `fresh_bench.py`, `index_corpus.py` |
-| findings in public code | `exposure.py` (fetch, scan, queue, controls, count: The Stack) |
+| findings in public code | `exposure.py` (fetch, scan, queue, controls, links, count: The Stack), `exposure_github.py` (search, fetch, stars: GitHub's code search) |
 | audits | `oracle_audit.py`, `map_audit.py`, `nvhpc_audit.py`, `stress_audit.py`, `c_coverage.py` |
 | GCC lane | `gcc_lane.py`, `gcc_compile_sweep.py`, `gcc_probe.py`, `gcc_subset.py`, `parity.py` |
 | single-defect studies | `malloc_dd.py` (AFAR device malloc), `devtemps.py` (device heap temporaries), `nvhpc_managed_probe.py`, `ftn_cif_split.py` (CCE ftn CIF records) |
